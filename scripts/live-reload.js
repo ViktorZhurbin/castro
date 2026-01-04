@@ -1,11 +1,23 @@
-// Simple live reload: poll every 2 seconds
-let lastModified = Date.now();
-setInterval(async () => {
-  try {
-    const res = await fetch('/reload-check');
-    const { modified } = await res.json();
-    if (modified > lastModified) {
-      location.reload();
-    }
-  } catch(e) {}
-}, 2000);
+// Live reload using Server-Sent Events
+const events = new EventSource('/events');
+
+events.onopen = () => {
+  console.log('[Live Reload] Connected');
+};
+
+events.onmessage = (event) => {
+  if (event.data === 'reload') {
+    console.log('[Live Reload] Reloading page...');
+    location.reload();
+  }
+};
+
+events.onerror = () => {
+  console.warn('[Live Reload] Connection lost, reconnecting...');
+  // EventSource will automatically reconnect
+};
+
+// Cleanup on page unload to close connection gracefully
+window.addEventListener('beforeunload', () => {
+  events.close();
+});
