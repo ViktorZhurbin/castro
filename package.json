@@ -1,0 +1,13 @@
+{
+  "name": "micro-blog",
+  "version": "1.0.0",
+  "description": "Minimal markdown to HTML blog generator",
+  "type": "module",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "marked": "^12.0.0"
+  }
+}

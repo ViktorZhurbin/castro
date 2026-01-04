@@ -1,0 +1,72 @@
+# Micro Blog
+
+A minimal markdown-to-HTML blog generator with only 1 dependency.
+
+## Features
+
+- ✓ Converts markdown files to HTML
+- ✓ Dev server with live reload
+- ✓ Only 1 npm dependency (`marked`)
+- ✓ ~150 lines of code total
+- ✓ Built with Node.js built-ins
+
+## Quick Start
+
+```bash
+# Install dependency
+npm install
+
+# Build static HTML files
+npm run build
+
+# Run dev server with live reload
+npm run dev
+```
+
+Then open http://localhost:3000 in your browser.
+
+## Project Structure
+
+```
+/
+├── content/          # Your .md files go here
+├── dist/            # Generated .html files
+├── build.js         # Converts markdown to HTML
+├── server.js        # Dev server with file watcher
+└── package.json     # Just one dependency: marked
+```
+
+## Usage
+
+### Writing Posts
+
+1. Create a `.md` file in the `content/` folder
+2. Write your content in markdown
+3. Run `npm run build` or `npm run dev`
+4. Find your HTML in `dist/`
+
+### Development
+
+The dev server watches for changes in `content/` and automatically rebuilds. The browser will reload when changes are detected.
+
+### Production
+
+Run `npm run build` to generate HTML files, then deploy the `dist/` folder to any static host.
+
+## How It Works
+
+**build.js** (~70 lines):
+- Reads all `.md` files from `content/`
+- Converts markdown to HTML using `marked`
+- Wraps HTML in a template with basic styles
+- Writes files to `dist/`
+
+**server.js** (~80 lines):
+- Runs the build process
+- Watches `content/` for changes
+- Serves files from `dist/` via HTTP
+- Provides live reload via polling
+
+## Why So Minimal?
+
+This project demonstrates that you don't need complex frameworks or build tools to create a static site generator. Just Node.js built-ins and one tiny dependency.
