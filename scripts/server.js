@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { EventEmitter } from 'events';
 import {ColorLog} from '../lib/colorLog.js';
-import { buildAll, CONTENT_DIR, OUTPUT_DIR } from '../lib/builder.js';
+import { buildAll, buildSingle, CONTENT_DIR, OUTPUT_DIR } from '../lib/builder.js';
 
 const LIVE_RELOAD_SCRIPT = './scripts/live-reload.js';
 const PORT = 3000;
@@ -38,7 +38,7 @@ try {
     if (filename && filename.endsWith('.md')) {
       console.log(`${ColorLog.dim("File changed:")} ${CONTENT_DIR}/${filename}`);
 
-      buildAll({ injectScript: liveReloadScript });
+      buildSingle(filename, { injectScript: liveReloadScript, logOnSuccess: true });
 
       // Notify all connected SSE clients
       reloadEmitter.emit('reload');
