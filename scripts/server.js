@@ -2,27 +2,29 @@ import { buildAll, CONTENT_DIR, OUTPUT_DIR } from '../lib/builder.js';
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
+import {colorLog} from '../lib/logger.js';
 
 const LIVE_RELOAD_SCRIPT = './scripts/live-reload.js';
 const PORT = 3000;
+
+console.log(`➜ ${colorLog("Local:", "dim")} ${colorLog(`http://localhost:${PORT}`, "cyan")}\n`);
 
 // Read live reload script and wrap in <script> tag
 const liveReloadJs = fs.readFileSync(LIVE_RELOAD_SCRIPT, 'utf-8');
 const liveReloadScript = `<script>\n${liveReloadJs}\n</script>`;
 
 // Initial build
-console.log('Building site...');
-const count = buildAll({ injectScript: liveReloadScript });
-console.log(`Built ${count} page(s)`);
+buildAll({ injectScript: liveReloadScript });
 
 // Watch for changes
 let lastModified = Date.now();
 fs.watch(CONTENT_DIR, (eventType, filename) => {
   if (filename && filename.endsWith('.md')) {
-    console.log(`Change detected: ${filename}`);
-    buildAll({ injectScript: liveReloadScript });
+    const startMessage = `building ${colorLog(filename, "dim")}`;
+
+    buildAll({ injectScript: liveReloadScript, startMessage });
+
     lastModified = Date.now();
-    console.log('Rebuilt!');
   }
 });
 
@@ -51,6 +53,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`\nDev server running at http://localhost:${PORT}`);
-  console.log('Watching for changes...\n');
+
 });
