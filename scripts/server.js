@@ -1,8 +1,8 @@
-import { buildAll, CONTENT_DIR, OUTPUT_DIR } from '../lib/builder.js';
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
-import {colorLog} from '../lib/logger.js';
+import {ColorLog} from '../lib/colorLog.js';
+import { buildAll, CONTENT_DIR, OUTPUT_DIR } from '../lib/builder.js';
 
 const LIVE_RELOAD_SCRIPT = './scripts/live-reload.js';
 const PORT = 3000;
@@ -16,14 +16,14 @@ const liveReloadScript = `<script>\n${liveReloadJs}\n</script>`;
 buildAll({ injectScript: liveReloadScript });
 
 console.log("Watching...")
-console.log(`Server at ${colorLog(`http://localhost:${PORT}`, "cyan")}`);
+console.log(`Server at ${ColorLog.cyan(`http://localhost:${PORT}`)}`);
 
 
 // Watch for changes
 let lastModified = Date.now();
 fs.watch(CONTENT_DIR, (eventType, filename) => {
   if (filename && filename.endsWith('.md')) {
-    console.log(`${colorLog("File changed:", "dim")} ${CONTENT_DIR}/${filename}`);
+    console.log(`${ColorLog.dim("File changed:")} ${CONTENT_DIR}/${filename}`);
 
     buildAll({ injectScript: liveReloadScript });
 
