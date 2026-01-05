@@ -9,8 +9,9 @@ export const CONTENT_DIR = "./content";
 export const OUTPUT_DIR = "./dist";
 export const TEMPLATE_FILE = "./template.html";
 
+const formatMs = (ms) => `${Math.round(ms)}ms`;
+
 // Read template once at module load
-// NOTE: Defensive - could simplify to: const template = fs.readFileSync(...)
 let template;
 try {
 	template = fs.readFileSync(TEMPLATE_FILE, "utf-8");
@@ -66,7 +67,7 @@ export async function buildSingle(mdFileName, options = {}) {
 		await fsPromises.writeFile(htmlFilePath, pageHtml);
 
 		if (logOnSuccess) {
-			const buildTime = msToSeconds(performance.now() - startTime);
+			const buildTime = formatMs(performance.now() - startTime);
 			console.info(ColorLog.green(`Wrote ${htmlFileName} in ${buildTime}`));
 		}
 		return true;
@@ -87,7 +88,6 @@ export async function buildAll(options = {}) {
 	const startTime = performance.now();
 
 	// Create output directory if it doesn't exist
-	// NOTE: Defensive - directory creation rarely fails in practice
 	try {
 		await fsPromises.mkdir(OUTPUT_DIR, { recursive: true });
 	} catch (err) {
@@ -127,7 +127,7 @@ export async function buildAll(options = {}) {
 	const successCount = results.filter((r) => r === true).length;
 	const failCount = buildPromises.length - successCount;
 
-	const buildTime = msToSeconds(performance.now() - startTime);
+	const buildTime = formatMs(performance.now() - startTime);
 
 	const successMessage = ColorLog.green(
 		`Wrote ${successCount} files in ${buildTime}`,
@@ -139,14 +139,4 @@ export async function buildAll(options = {}) {
 	} else {
 		console.info(successMessage);
 	}
-}
-
-function msToSeconds(ms) {
-	const seconds = ms / 1000;
-
-	if (seconds < 0.01) {
-		return `${ms.toFixed(0)} ms`;
-	}
-
-	return `${seconds.toFixed(2)} seconds`;
 }

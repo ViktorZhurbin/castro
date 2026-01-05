@@ -1,7 +1,7 @@
-import { EventEmitter } from "events";
-import fs from "fs";
-import http from "http";
-import path from "path";
+import { EventEmitter } from "node:events";
+import fs from "node:fs";
+import http from "node:http";
+import path from "node:path";
 import {
 	buildAll,
 	buildSingle,
