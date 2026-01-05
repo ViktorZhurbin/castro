@@ -11,7 +11,8 @@
 			"Bash(git commit:*)",
 			"Bash(grep:*)",
 			"Bash(tree:*)",
-			"Bash(npm run:*)"
+			"Bash(pnpm:*)",
+			"Bash(npm info:*)"
 		]
 	}
 }

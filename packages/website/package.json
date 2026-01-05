@@ -1,0 +1,13 @@
+{
+	"name": "website",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "micro-blog",
+		"build": "micro-blog build"
+	},
+	"dependencies": {
+		"micro-blog": "workspace:*"
+	}
+}
