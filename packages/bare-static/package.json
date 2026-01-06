@@ -1,0 +1,29 @@
+{
+	"name": "@vktrz/bare-static",
+	"version": "1.0.1",
+	"description": "Minimal markdown to HTML static site generator",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ViktorZhurbin/bare-static.git",
+		"directory": "packages/bare-static"
+	},
+	"type": "module",
+	"engines": {
+		"node": ">=24.0.0"
+	},
+	"bin": {
+		"bare-static": "./bin/bare-static"
+	},
+	"files": [
+		"bin/",
+		"lib/"
+	],
+	"scripts": {
+		"prepublishOnly": "cp ../../README.md ."
+	},
+	"dependencies": {
+		"marked": "^12.0.0",
+		"polka": "^0.5.2",
+		"sirv": "^3.0.2"
+	}
+}

@@ -4,10 +4,10 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "micro-blog",
-		"build": "micro-blog build"
+		"dev": "bare-static",
+		"build": "bare-static build"
 	},
 	"dependencies": {
-		"micro-blog": "workspace:*"
+		"@vktrz/bare-static": "workspace:*"
 	}
 }
