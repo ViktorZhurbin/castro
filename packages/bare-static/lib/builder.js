@@ -2,6 +2,7 @@ import fsPromises from "node:fs/promises";
 import path from "node:path";
 import { styleText } from "node:util";
 import { marked } from "marked";
+import { copyStaticAssets } from "./static-assets.js";
 
 // Shared constants
 export const CONTENT_DIR = "./content";
@@ -83,12 +84,15 @@ export async function buildAll(options = {}) {
 	// Create output directory if it doesn't exist
 	await fsPromises.mkdir(OUTPUT_DIR, { recursive: true });
 
+	const componentScripts = await copyStaticAssets(OUTPUT_DIR);
+
 	// Read all .md files and build them in parallel
 	const buildPromises = await Array.fromAsync(
 		fsPromises.glob(path.join(CONTENT_DIR, "*.md")),
 		(filePath) =>
 			buildSingle(path.basename(filePath), {
-				injectScript,
+				// Combine component scripts with any additional injected scripts (e.g., live reload)
+				injectScript: [...componentScripts, injectScript].filter(Boolean).join("\n"),
 				logOnStart: verbose,
 			}),
 	);

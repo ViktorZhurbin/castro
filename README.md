@@ -2,7 +2,7 @@
 
 A minimal markdown-to-HTML generator that happens to work.
 
-Exploring what it takes to build a minimal static site generator tool. Ended up with roughly 150 LOC of actual logic.
+Exploring what it takes to build a minimal static site generator tool.
 
 
 ## Features

@@ -2,7 +2,7 @@
 
 A minimal markdown-to-HTML generator that happens to work.
 
-Exploring what it takes to build a minimal static site generator tool. Ended up with roughly 150 LOC of actual logic.
+Exploring what it takes to build a minimal static site generator tool.
 
 ## Recent Posts
 
@@ -17,6 +17,14 @@ Check out these articles:
 ✓ Converts markdown files to HTML
 
 ✓ Dev server with live reload
+
+✓ Interactive islands using bare-signals
+
+## Try It Out
+
+Here's an interactive component powered by bare-signals reactivity:
+
+<counter-component></counter-component>
 
 
 ## Quick Start
