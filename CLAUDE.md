@@ -1,9 +1,10 @@
-Read the README file
-
 ## IMPORTANT
 
-This is an experimental personal project for now. No need to take care of backward compatibility and maintaining legacy logic
-
+- Read the README.md and EXPLORATION.md for context
+- This is an experimental personal project for now. No need to take care of backward compatibility and maintaining legacy logic
+- website/ is the playground where all tools from packages/ are being used
+- you can run pnpm build/dev from the root to build/start dev server of the website
+- website/dist/ is cleaned up automatically on build/dev
 
 ## Core Principles
 
@@ -14,5 +15,3 @@ This is an experimental personal project for now. No need to take care of backwa
 5. **No defensive programming** - Startup failures crash with native errors. Runtime failures degrade gracefully only where expected
 
 **Bloat detection:** Watch out for LOC count (check with `npm run loc`), but not at the expense of the core principles above.
-
-
