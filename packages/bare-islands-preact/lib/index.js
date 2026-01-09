@@ -7,24 +7,24 @@ import {
 } from "@vktrz/bare-static/plugin-utils";
 import { compileJSXIsland } from "./jsx-compiler.js";
 
-const DEFAULT_ISLANDS_DIR = "islands";
+const DEFAULT_ISLANDS_DIR = "islands-preact";
 const OUTPUT_DIR = "dist";
 
 /**
- * Bare Islands Plugin
- * Enables interactive islands architecture with Solid.js JSX components
+ * Bare Islands Preact Plugin
+ * Enables interactive islands architecture with Preact JSX components
  *
  * @param {Object} options - Plugin configuration
  * @param {string} [options.islandsDir] - Directory containing JSX islands
  * @returns {Object} Plugin instance with hooks
  */
-export function bareIslands(options = {}) {
+export function bareIslandsPreact(options = {}) {
 	const { islandsDir = DEFAULT_ISLANDS_DIR } = options;
 
 	let discoveredComponents = [];
 
 	return {
-		name: "bare-islands",
+		name: "bare-islands-preact",
 
 		// Watch islands directory for changes in dev mode
 		watchDirs: [islandsDir],
@@ -42,7 +42,7 @@ export function bareIslands(options = {}) {
 		},
 
 		/**
-		 * Hook: Returns import map for Solid.js runtime from CDN
+		 * Hook: Returns import map for Preact runtime from CDN
 		 * @returns {Promise<string|null>} Import map script tag or null
 		 */
 		async getImportMap() {
@@ -50,9 +50,10 @@ export function bareIslands(options = {}) {
 
 			const importMap = {
 				imports: {
-					"solid-js": "https://esm.sh/solid-js",
-					"solid-js/web": "https://esm.sh/solid-js/web",
-					"solid-element": "https://esm.sh/solid-element",
+					preact: "https://esm.sh/preact@10.25.4",
+					"preact/hooks": "https://esm.sh/preact@10.25.4/hooks",
+					"preact-custom-element":
+						"https://esm.sh/preact-custom-element@4.3.0",
 				},
 			};
 
@@ -102,7 +103,7 @@ async function processIslands(islandsDir, outputDir, discoveredComponents) {
 		await fsPromises.mkdir(outputComponentsDir, { recursive: true });
 
 		for (const fileName of jsxFiles) {
-			const elementName = getElementName(fileName, "-solid");
+			const elementName = getElementName(fileName, "-preact");
 			const outputFileName = `${elementName}.js`;
 
 			try {

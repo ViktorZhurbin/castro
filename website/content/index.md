@@ -23,7 +23,11 @@ Check out these articles:
 
 Here's an interactive Solid.js counter island:
 
-<counter-component></counter-component>
+<counter-solid></counter-solid>
+
+Here's a Preact counter island:
+
+<counter-preact></counter-preact>
 
 ## Quick Start
 

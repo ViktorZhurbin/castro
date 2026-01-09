@@ -9,7 +9,9 @@
 	},
 	"dependencies": {
 		"@vktrz/bare-islands": "workspace:*",
+		"@vktrz/bare-islands-preact": "workspace:*",
 		"@vktrz/bare-static": "workspace:*",
+		"preact": "^10.25.4",
 		"solid-js": "^1.9.10"
 	}
 }
