@@ -90,13 +90,14 @@ The 5% that's interactive (comments, search, code playground) can be isolated is
 
 **Insight**: Building bare-signals taught more about reactivity than using Solid.
 
-Understanding primitives (signals, effects, memos) at ~167 LOC lets you see through framework abstractions. You now understand *why* Solid makes certain API decisions and *how* fine-grained reactivity works under the hood.
+Understanding primitives (signals, effects, memos) at ~167 LOC lets you see through framework abstractions. You now understand _why_ Solid makes certain API decisions and _how_ fine-grained reactivity works under the hood.
 
 **Implication**: Keep bare-signals as educational reference. Don't delete it even when switching to Solid for production. The learning has value independent of production use.
 
 ### Discovery 5: Bundle Size Matters
 
 **Data**:
+
 ```
 bare-signals:    ~2kb   (educational reference)
 Mastro:          2.8kb  (maverick-js/signals)
@@ -125,6 +126,7 @@ Big frameworks like Eleventy, Hugo, Docusaurus ship with template languages, i18
 **Insight**: `connectedCallback()` fires when element is added to DOM - perfect hydration point.
 
 This is the key architectural insight. Web components already provide:
+
 - Lifecycle hooks (connectedCallback, disconnectedCallback)
 - Attribute observation (attributeChangedCallback)
 - Custom element registry (customElements.define)
@@ -141,17 +143,20 @@ This is the key architectural insight. Web components already provide:
 **Size**: 2.8kb (uses maverick-js/signals)
 
 **Approach**:
+
 - Signals + data-bind attributes
 - Custom elements + ReactiveElement base class
 - HTML web components (server renders, client enhances)
 - Progressive enhancement philosophy
 
 **What's Interesting**:
+
 - Tiny bundle size
 - Server-side rendering with HTML web components
 - Progressive enhancement approach (works without JS)
 
 **Where We Differ**:
+
 - They use data-bind attributes; we use Solid JSX
 - They ship custom ReactiveElement; we wrap Solid components
 - Their approach is more "HTML-first"; ours is "JavaScript-first"
@@ -163,17 +168,20 @@ This is the key architectural insight. Web components already provide:
 **Size**: Full framework (not minimal)
 
 **Approach**:
+
 - Signals via WebContext (state/store/derived)
 - Build-time optimizations for reactivity
 - Transferable store (server ↔ client)
 - Server-side rendering with hydration
 
 **What's Interesting**:
+
 - Signals exposed through context API
 - Build-time signal tracking
 - Server/client state synchronization
 
 **Where We Differ**:
+
 - Full framework vs minimal tool
 - We're client-only islands; they're full SSR + hydration
 - We use Solid signals; they have custom implementation
@@ -185,17 +193,20 @@ This is the key architectural insight. Web components already provide:
 **Size**: Full framework + adapters
 
 **Approach**:
+
 - Multi-framework support (React, Vue, Svelte, etc.)
 - Partial hydration with client directives
 - Islands architecture
 - Component-based with Astro files
 
 **What's Interesting**:
+
 - Popularized islands architecture
 - Client directives (load/visible/idle) are elegant API
 - Multi-framework support
 
 **Where We Differ**:
+
 - They build custom partial hydration; we use web components
 - Multi-framework vs single-framework (Solid)
 - Complex build system vs simple tool
@@ -207,17 +218,20 @@ This is the key architectural insight. Web components already provide:
 **Size**: Full framework
 
 **Approach**:
+
 - Template languages (Nunjucks, Liquid, Handlebars, etc.)
 - Data cascade
 - Plugin ecosystem
 - Zero-JS by default
 
 **What's Interesting**:
+
 - Pure static by default
 - Flexible template system
 - Large community
 
 **Where We Differ**:
+
 - Template soup vs markdown + Solid islands
 - Magic globals vs explicit imports
 - We're learning; they're production-ready
@@ -233,6 +247,7 @@ This is the key architectural insight. Web components already provide:
 **Examples**: Nunjucks, Liquid, Handlebars, Pug
 
 **Why Not**:
+
 - Learning another syntax for basic conditionals/loops
 - Poor TypeScript support
 - Debugging is painful (no source maps)
@@ -245,6 +260,7 @@ This is the key architectural insight. Web components already provide:
 **Idea**: Support React, Vue, Preact, Solid, Alpine, etc.
 
 **Why Not**:
+
 - Complexity explosion (different APIs, lifecycles, build tools)
 - Goes against "learning first" principle
 - Maintenance nightmare for one person
@@ -257,6 +273,7 @@ This is the key architectural insight. Web components already provide:
 **Idea**: Build client directives like `client:load`, `client:visible`, `client:idle`
 
 **Why Not**:
+
 - Web components already provide hydration via `connectedCallback()`
 - Intersection Observer already exists for lazy loading
 - Months of work for marginal benefit
@@ -269,6 +286,7 @@ This is the key architectural insight. Web components already provide:
 **Examples**: React, Preact, Vue
 
 **Why Not**:
+
 - Solid's fine-grained reactivity is more efficient
 - Larger bundle sizes (reconciliation overhead)
 - We're shipping runtime to browser - size matters
@@ -280,6 +298,7 @@ This is the key architectural insight. Web components already provide:
 **Idea**: Mix React, Vue, Solid islands on same page
 
 **Why Not**:
+
 - Shipping multiple runtimes (React 45kb + Vue 33kb + Solid 7kb = 85kb!)
 - Supporting multiple build pipelines
 - Complexity with no learning benefit for this project
@@ -291,6 +310,7 @@ This is the key architectural insight. Web components already provide:
 **Idea**: Maintain compatibility across versions
 
 **Why Not**:
+
 - This is an experimental project
 - Early stage - APIs will change
 - Slows down iteration and learning
@@ -304,12 +324,13 @@ This is the key architectural insight. Web components already provide:
 ### Pattern 1: Web Components as Island Containers
 
 **Code**:
+
 ```javascript
 class CounterComponent extends HTMLElement {
-  connectedCallback() {
-    const props = this.getAttributeProps();
-    render(() => <Counter {...props} />, this);
-  }
+	connectedCallback() {
+		const props = this.getAttributeProps();
+		render(() => <Counter {...props} />, this);
+	}
 }
 ```
 
@@ -318,6 +339,7 @@ class CounterComponent extends HTMLElement {
 ### Pattern 2: Shared Runtime, Separate Islands
 
 **Code**:
+
 ```html
 <!-- One runtime for entire page -->
 <script src="/vendor/solid-runtime.js"></script>
@@ -332,11 +354,12 @@ class CounterComponent extends HTMLElement {
 ### Pattern 3: Progressive Enhancement (Future)
 
 **Code**:
+
 ```html
 <!-- Server-rendered HTML works without JS -->
-<counter-component initial="5">
-  <p>Count: 5</p>
-  <button>+</button>
+<counter-component>
+	<p>Count: 5</p>
+	<button>+</button>
 </counter-component>
 
 <!-- JS enhances with interactivity -->
@@ -348,6 +371,7 @@ class CounterComponent extends HTMLElement {
 ### Pattern 4: Attributes → Props Conversion
 
 **Code**:
+
 ```javascript
 // HTML: <counter-component initial="5" step="2">
 getAttributeProps() {
@@ -375,6 +399,7 @@ getAttributeProps() {
 ### Decision 1: Solid.js for Islands
 
 **Options Considered**:
+
 - bare-signals (2kb) - Educational but limited
 - Preact (4kb) - Small but VDOM overhead
 - Alpine (10kb) - Attribute-based, not component-focused
@@ -383,6 +408,7 @@ getAttributeProps() {
 **Decision**: Solid.js
 
 **Reasoning**:
+
 - Fine-grained reactivity (no VDOM diffing)
 - JSX support (familiar, TypeScript-friendly)
 - Small runtime (~7kb)
@@ -392,6 +418,7 @@ getAttributeProps() {
 ### Decision 2: Web Components for Hydration
 
 **Options Considered**:
+
 - Custom partial hydration (Astro approach)
 - Framework-specific hydration (React.hydrate)
 - Web components (native browser API)
@@ -399,6 +426,7 @@ getAttributeProps() {
 **Decision**: Web components
 
 **Reasoning**:
+
 - Browser handles lifecycle automatically
 - No custom hydration infrastructure needed
 - Standard API, good browser support
@@ -407,6 +435,7 @@ getAttributeProps() {
 ### Decision 3: esbuild for JSX Compilation (Likely)
 
 **Options Considered**:
+
 - esbuild - Well-tested, plugin ecosystem
 - Bun - Native JSX, faster, simpler API
 - Babel - Too slow, too complex
@@ -414,6 +443,7 @@ getAttributeProps() {
 **Decision**: Leaning toward esbuild, may try Bun
 
 **Reasoning**:
+
 - esbuild is battle-tested and fast
 - Solid plugin exists for esbuild
 - Bun is interesting but less mature
@@ -422,6 +452,7 @@ getAttributeProps() {
 ### Decision 4: islands/ Directory for JSX Files
 
 **Options Considered**:
+
 - Mix `.jsx` and `.component.js` files
 - Dedicated `islands/` directory
 - Flexible (anywhere, detect by extension)
@@ -429,6 +460,7 @@ getAttributeProps() {
 **Decision**: Dedicated `islands/` directory
 
 **Reasoning**:
+
 - Clear separation (vanilla JS components vs Solid islands)
 - Easy to glob for build system
 - Conventional (Astro uses this pattern)
@@ -437,6 +469,7 @@ getAttributeProps() {
 ### Decision 5: CSS Modules (Probably)
 
 **Options Considered**:
+
 - Shadow DOM - True encapsulation but complex theming
 - Global styles - Simple but naming conflicts
 - CSS Modules - Build-time solution, scoped classes
@@ -444,6 +477,7 @@ getAttributeProps() {
 **Decision**: Leaning toward CSS Modules
 
 **Reasoning**:
+
 - Scoped by default, global when needed
 - No Shadow DOM complexity
 - Good TypeScript support
@@ -458,6 +492,7 @@ getAttributeProps() {
 ### Phase 1: Framework Evaluation (Months Ago)
 
 **Activities**:
+
 - Explored Eleventy, Astro, Hugo, Jekyll
 - Questioned framework complexity vs value
 - Concluded: DIY beats learning framework quirks for simple use case
@@ -467,6 +502,7 @@ getAttributeProps() {
 ### Phase 2: Building Fundamentals (Recent Weeks)
 
 **Activities**:
+
 - Built core SSG engine (~200 LOC)
 - Implemented plugin system
 - Added markdown conversion, dev server, live reload
@@ -477,6 +513,7 @@ getAttributeProps() {
 ### Phase 3: Reactivity Exploration (Past Week)
 
 **Activities**:
+
 - Built bare-signals (~167 LOC) to understand primitives
 - Studied Mastro Reactive, Brisa, Astro patterns
 - Discovered web components as hydration mechanism
@@ -487,11 +524,13 @@ getAttributeProps() {
 ### Phase 4: Current Focus (Now)
 
 **Activities**:
+
 - Planning JSX compilation pipeline
 - Designing web component wrapper generation
 - Preparing to integrate Solid.js
 
 **Next Steps**:
+
 1. Proof of concept (counter island)
 2. Build pipeline integration
 3. Complex island test
@@ -539,6 +578,7 @@ getAttributeProps() {
 **Status**: Not started
 
 **Approach**:
+
 - `.tsx` files for islands
 - Type-safe props with interfaces
 - May generate types from component metadata
@@ -574,6 +614,7 @@ getAttributeProps() {
 **Status**: Future
 
 **Ideas**:
+
 - Tree-shake unused Solid features
 - Dead code elimination
 - Minification strategies
@@ -590,6 +631,7 @@ getAttributeProps() {
 Should we validate props at runtime or rely on TypeScript?
 
 **Options**:
+
 - Runtime validation (add bundle size)
 - TypeScript only (no runtime cost)
 - Component metadata (optional validation)
@@ -599,6 +641,7 @@ Should we validate props at runtime or rely on TypeScript?
 How should Solid errors in islands be handled?
 
 **Options**:
+
 - Let errors crash the island (fail loudly)
 - Error boundary per island (graceful degradation)
 - Global error handler
@@ -608,6 +651,7 @@ How should Solid errors in islands be handled?
 How should islands communicate if needed?
 
 **Options**:
+
 - Custom events (dispatchEvent/addEventListener)
 - Shared state in window object
 - Don't - islands should be isolated
@@ -619,6 +663,7 @@ How should islands communicate if needed?
 Should dev mode be different from production?
 
 **Options**:
+
 - Same - simplicity
 - Different - better DX (HMR, verbose errors)
 
@@ -651,4 +696,4 @@ Should dev mode be different from production?
 
 ---
 
-*This document captures the "why" behind bare-static. Update it when discoveries are made or decisions change. It's a living document that should evolve with the project.*
+_This document captures the "why" behind bare-static. Update it when discoveries are made or decisions change. It's a living document that should evolve with the project._

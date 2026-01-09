@@ -60,7 +60,7 @@ customElements.define("counter-component", CounterComponent);
 **In markdown:**
 
 ```html
-<counter-component initial="5"></counter-component>
+<counter-component></counter-component>
 ```
 
 ### Implementation Tasks
@@ -77,10 +77,12 @@ customElements.define("counter-component", CounterComponent);
 ### Open Questions
 
 1. **Build tool**: esbuild vs Bun for JSX compilation?
+
    - esbuild: Well-tested, plugin ecosystem
    - Bun: Native JSX support, faster, simpler API
 
 2. **Islands directory**: Where do `.jsx` files live?
+
    - `islands/` (dedicated directory) ← **Leaning toward this**
    - Mix with `.component.js` files
    - Flexible (anywhere, detected by extension)
@@ -114,7 +116,7 @@ customElements.define("counter-component", CounterComponent);
 
 ```html
 <!-- Simple attributes -->
-<counter-component initial="5"></counter-component>
+<counter-component></counter-component>
 
 <!-- JSON data attribute for complex props -->
 <data-fetcher data='{"url": "/api/posts", "limit": 10}'></data-fetcher>
@@ -123,6 +125,7 @@ customElements.define("counter-component", CounterComponent);
 **Implementation**: Components read attributes in `connectedCallback()`.
 
 **Tasks:**
+
 - [ ] Design props parsing strategy (string vs JSON)
 - [ ] Implement attribute → props conversion in wrapper generator
 - [ ] Handle type coercion (string "5" → number 5)
@@ -150,6 +153,7 @@ export default function Counter({ initial = 0 }) {
 ```
 
 **Tasks:**
+
 - [ ] Define metadata format
 - [ ] Extract metadata during build
 - [ ] Use for validation/optimization (optional)
@@ -289,6 +293,7 @@ Most SSG value comes from ~20% of features. For markdown → HTML, DIY beats lea
 ## 📍 Current Status
 
 **What Works:**
+
 - ✅ Core SSG engine (~200 LOC)
 - ✅ Plugin system (onBuild, getScripts hooks)
 - ✅ Markdown → HTML conversion with live reload
@@ -300,6 +305,7 @@ Most SSG value comes from ~20% of features. For markdown → HTML, DIY beats lea
 Proof of concept: Solid JSX → web component wrapper with working counter island
 
 **Exploration Journey:**
+
 1. Framework evaluation → DIY decision
 2. Built SSG fundamentals (routing, markdown, dev server, plugins)
 3. Built bare-signals (~167 LOC) to understand reactivity primitives
@@ -321,4 +327,4 @@ Proof of concept: Solid JSX → web component wrapper with working counter islan
 
 ---
 
-*This is a learning project. It's okay to change direction based on discoveries. Document learnings and tradeoffs.*
+_This is a learning project. It's okay to change direction based on discoveries. Document learnings and tradeoffs._

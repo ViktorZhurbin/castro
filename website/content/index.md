@@ -11,7 +11,6 @@ Check out these articles:
 - [Getting Started with Modern JavaScript](getting-started-with-javascript.html)
 - [Understanding CSS Grid Layout](understanding-css-grid.html)
 
-
 ## Features
 
 ✓ Converts markdown files to HTML
@@ -24,13 +23,14 @@ Check out these articles:
 
 Here's an interactive Solid.js counter island:
 
-<counter-component initial="5"></counter-component>
-
+<counter-component></counter-component>
 
 ## Quick Start
+
 Install: `npm i @vktrz/bare-static`
 
 Add scripts to `package.json`:
+
 ```json
 "scripts": {
     "dev": "bare-static",
@@ -47,13 +47,16 @@ Example: https://github.com/ViktorZhurbin/bare-static/tree/main/packages/website
 ## How It Works
 
 **builder.js**:
+
 - Async build logic with parallel file processing
 
 **dev.js**:
+
 - Dev server serving static files
 - Watches `content/`, rebuilds and reloads page on file change
 
 **live-reload.js**:
+
 - Client-side script for live reload in dev mode
 - Connects to `/events` endpoint of dev server for real-time updates
 - Automatically reloads page when server pushes 'reload' event

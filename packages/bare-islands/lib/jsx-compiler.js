@@ -5,39 +5,54 @@ import tsPreset from "@babel/preset-typescript";
 import solidPreset from "babel-preset-solid";
 import * as esbuild from "esbuild";
 
+/**
+ * A tiny esbuild plugin to handle Solid JSX via Babel
+ */
+const solidBabelPlugin = {
+	name: "solid-babel",
+	setup(build) {
+		build.onLoad({ filter: /\.[jt]sx$/ }, async (args) => {
+			const source = await fsPromises.readFile(args.path, "utf8");
+
+			const { code } = await babel.transformAsync(source, {
+				filename: args.path,
+				presets: [
+					[solidPreset, { generate: "dom", hydratable: false }],
+					[tsPreset],
+				],
+			});
+
+			return { contents: code, loader: "js" };
+		});
+	},
+};
+
 export async function compileJSXIsland({
 	sourcePath,
 	outputPath,
 	elementName,
 }) {
 	const absoluteSourcePath = path.resolve(sourcePath);
-	const sourceCode = await fsPromises.readFile(absoluteSourcePath, "utf8");
+	const sourceFileName = path.basename(absoluteSourcePath);
 
-	// --- STEP 1: Compile JSX with Babel using the Solid Preset ---
-	// This turns JSX into Solid's reactive template instructions
-	const babelResult = await babel.transformAsync(sourceCode, {
-		filename: absoluteSourcePath,
-		presets: [
-			[solidPreset, { generate: "dom", hydratable: false }],
-			[tsPreset],
-		],
-	});
-
-	// --- STEP 2: Create the Virtual Entry ---
-	// We use the transformed code from Babel
+	/**
+	 * Now the virtual entry is extremely clean.
+	 * We just import the component normally; esbuild will use the
+	 * plugin above to transform it during the "bundle" phase.
+	 */
 	const virtualEntry = `
     import { customElement, noShadowDOM } from 'solid-element';
+    import Component from './${sourceFileName}';
 
-    // Injected Babel Code
-    ${babelResult.code.replace(/export default/g, "const Component = ")}
-
-    const observedAttributes = Component.defaultProps
-      ? Object.keys(Component.defaultProps)
-      : ['initial'];
+		const defaultPropsKeys = Object.keys(Component.defaultProps ?? {});
+		const defaultProps = defaultPropsKeys.reduce((acc, curr) => {
+			acc[curr] = undefined;
+			return acc;
+		}, {});
 
     customElement(
       '${elementName}',
-      observedAttributes.reduce((acc, curr) => ({ ...acc, [curr]: undefined }), {}),
+      defaultProps,
       (props) => {
         noShadowDOM();
         return Component(props);
@@ -45,8 +60,6 @@ export async function compileJSXIsland({
     );
   `.trim();
 
-	// --- STEP 3: Bundle with esbuild ---
-	// Now esbuild doesn't handle JSX at all; it just bundles imports
 	const result = await esbuild.build({
 		stdin: {
 			contents: virtualEntry,
@@ -57,7 +70,7 @@ export async function compileJSXIsland({
 		format: "esm",
 		target: "es2020",
 		write: false,
-		// Keep these external so they load from your Import Map
+		plugins: [solidBabelPlugin], // <--- Injecting our specialist worker
 		external: ["solid-js", "solid-js/web", "solid-element"],
 		logLevel: "warning",
 	});
