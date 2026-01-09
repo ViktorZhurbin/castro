@@ -1,5 +1,6 @@
 import fsPromises from "node:fs/promises";
 import path from "node:path";
+import { styleText } from "node:util";
 import { getElementName } from "./get-element-name.js";
 
 /**
@@ -30,6 +31,21 @@ export async function processJSXIslands({
 	elementSuffix,
 	compileIsland,
 }) {
+	// Check if islands directory exists
+	try {
+		await fsPromises.access(islandsDir);
+	} catch (err) {
+		if (err.code === "ENOENT") {
+			console.warn(
+				styleText("red", `Islands directory not found:`),
+				styleText("magenta", islandsDir),
+			);
+			return;
+		}
+		// rethrow
+		throw err;
+	}
+
 	try {
 		const files = await fsPromises.readdir(islandsDir);
 		const jsxFiles = files.filter(
