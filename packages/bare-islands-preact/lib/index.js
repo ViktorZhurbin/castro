@@ -50,10 +50,13 @@ export function bareIslandsPreact(options = {}) {
 
 			const importMap = {
 				imports: {
-					preact: "https://esm.sh/preact@10.25.4",
-					"preact/hooks": "https://esm.sh/preact@10.25.4/hooks",
+					preact: "https://cdn.jsdelivr.net/npm/preact@10.28.2/+esm",
+					"preact/hooks":
+						"https://cdn.jsdelivr.net/npm/preact@10.28.2/hooks/+esm",
+					"preact/jsx-runtime":
+						"https://cdn.jsdelivr.net/npm/preact@10.28.2/jsx-runtime/+esm",
 					"preact-custom-element":
-						"https://esm.sh/preact-custom-element@4.3.0",
+						"https://cdn.jsdelivr.net/npm/preact-custom-element@4.6.0/dist/preact-custom-element.esm.js",
 				},
 			};
 

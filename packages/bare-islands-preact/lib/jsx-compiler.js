@@ -65,7 +65,12 @@ export async function compileJSXIsland({
 		target: "es2020",
 		write: false,
 		plugins: [preactBabelPlugin],
-		external: ["preact", "preact/hooks", "preact-custom-element"],
+		external: [
+			"preact",
+			"preact/hooks",
+			"preact/jsx-runtime",
+			"preact-custom-element",
+		],
 		logLevel: "warning",
 	});
 
