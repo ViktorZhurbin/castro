@@ -34,6 +34,7 @@ export async function processJSXIslands({
 }) {
 	const OUTPUT_COMPONENTS_DIR = "components";
 	const discoveredComponents = [];
+	const compiledIslands = [];
 
 	// Check if islands directory exists
 	try {
@@ -86,8 +87,21 @@ export async function processJSXIslands({
 				}
 
 				discoveredComponents.push(component);
+				compiledIslands.push({ sourcePath, elementName });
 			} catch (err) {
 				throw new Error(`Failed to process island ${fileName}: ${err.message}`);
+			}
+		}
+
+		// Log compiled islands
+		if (compiledIslands.length > 0) {
+			console.info(
+				styleText("green", `✓ Compiled ${compiledIslands.length} island${compiledIslands.length > 1 ? "s" : ""}:`),
+			);
+			for (const { sourcePath, elementName } of compiledIslands) {
+				console.info(
+					`  ${styleText("cyan", sourcePath)} → ${styleText("magenta", `<${elementName}>`)}`
+				);
 			}
 		}
 	} catch (err) {

@@ -82,8 +82,6 @@ export async function loadLayouts() {
 	await fsPromises.rm(TEMP_DIR, { recursive: true, force: true });
 	await fsPromises.mkdir(TEMP_DIR, { recursive: true });
 
-	console.info(`Compiling ${layoutFiles.length} layouts...`);
-
 	// Compile and load each layout
 	for (const fileName of layoutFiles) {
 		const layoutName = fileName.replace(/\.[jt]sx$/, ""); // Strip .jsx/.tsx extension
@@ -111,8 +109,7 @@ export async function loadLayouts() {
 	}
 
 	console.info(
-		styleText("green", "✓"),
-		`Loaded layouts:`,
+		styleText("green", "✓ Loaded layouts:"),
 		Array.from(layouts.keys()).join(", "),
 	);
 
