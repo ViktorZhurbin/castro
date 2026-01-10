@@ -1,18 +1,13 @@
 import fsPromises from "node:fs/promises";
 import path from "node:path";
 import { styleText } from "node:util";
-import { marked } from "marked";
 import matter from "gray-matter";
+import { marked } from "marked";
+import { CONTENT_DIR, OUTPUT_DIR, PUBLIC_DIR } from "../constants/dir.js";
 import { loadConfig } from "./config-loader.js";
 import { loadLayouts } from "./layouts.js";
 import { resolveLayout } from "./reef-resolver.js";
 import { renderLayout } from "./render-layout.js";
-
-// Shared constants
-export const CONTENT_DIR = "./content";
-export const OUTPUT_DIR = "./dist";
-export const PUBLIC_DIR = "./public";
-export const LAYOUTS_DIR = "layouts";
 
 const formatMs = (ms) => `${Math.round(ms)}ms`;
 
@@ -44,7 +39,10 @@ export async function buildSingle(mdFileName, options = {}) {
 	try {
 		if (logOnStart) {
 			console.info(
-				`Writing ${OUTPUT_DIR}/${htmlFileName} ${styleText("gray", `from ${mdFilePath}`)}`,
+				`Writing ${OUTPUT_DIR}/${htmlFileName} ${styleText(
+					"gray",
+					`from ${mdFilePath}`,
+				)}`,
 			);
 		}
 

@@ -1,3 +1,4 @@
+import { OUTPUT_DIR } from "@vktrz/bare-static/constants";
 import {
 	generateTagsForUsedComponents,
 	processJSXIslands,
@@ -9,7 +10,6 @@ import { compileJSXIsland } from "./jsx-compiler.js";
  */
 
 const DEFAULT_ISLANDS_DIR = "islands-solid";
-const OUTPUT_DIR = "dist";
 
 /**
  * Bare Islands Plugin

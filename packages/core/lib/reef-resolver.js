@@ -1,7 +1,7 @@
 import fsPromises from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { CONTENT_DIR } from "./builder.js";
+import { CONTENT_DIR } from "../constants/dir.js";
 
 /**
  * Walk up directory tree from file path looking for reef.js files

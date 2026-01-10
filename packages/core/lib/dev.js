@@ -4,14 +4,8 @@ import { fileURLToPath } from "node:url";
 import { styleText } from "node:util";
 import polka from "polka";
 import sirv from "sirv";
-import {
-	buildAll,
-	buildSingle,
-	reloadLayouts,
-	CONTENT_DIR,
-	OUTPUT_DIR,
-	LAYOUTS_DIR,
-} from "./builder.js";
+import { CONTENT_DIR, LAYOUTS_DIR, OUTPUT_DIR } from "../constants/dir.js";
+import { buildAll, buildSingle, reloadLayouts } from "./builder.js";
 import { loadConfig } from "./config-loader.js";
 
 const PORT = 3000;
@@ -52,12 +46,12 @@ function notifyReload() {
 (async () => {
 	try {
 		const watcher = fsPromises.watch("./bare.config.js");
-		for await (const event of watcher) {
+		for await (const _event of watcher) {
 			console.info(styleText("yellow", "\n⚙️  Config changed, restarting..."));
 			server.server.close();
 			process.exit(0);
 		}
-	} catch (err) {
+	} catch {
 		// Config file doesn't exist, that's fine (optional)
 	}
 })();

@@ -1,12 +1,12 @@
 import fsPromises from "node:fs/promises";
-import path from "node:path";
 import os from "node:os";
+import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { styleText } from "node:util";
 import tsPreset from "@babel/preset-typescript";
-import { createBabelPlugin } from "./plugin-utils/index.js";
 import * as esbuild from "esbuild";
-import { LAYOUTS_DIR } from "./builder.js";
+import { LAYOUTS_DIR } from "../constants/dir.js";
+import { createBabelPlugin } from "./plugin-utils/index.js";
 
 const TEMP_DIR = path.join(os.tmpdir(), "bare-static-layouts");
 

@@ -16,7 +16,8 @@
 	},
 	"exports": {
 		"./plugin-utils": "./lib/plugin-utils/index.js",
-		"./plugin-utils/types.js": "./lib/plugin-utils/types.js"
+		"./plugin-utils/types.js": "./lib/plugin-utils/types.js",
+		"./constants": "./constants/dir.js"
 	},
 	"files": [
 		"bin/",

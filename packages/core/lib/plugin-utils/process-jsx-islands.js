@@ -96,11 +96,14 @@ export async function processJSXIslands({
 		// Log compiled islands
 		if (compiledIslands.length > 0) {
 			console.info(
-				styleText("green", `✓ Compiled ${compiledIslands.length} island${compiledIslands.length > 1 ? "s" : ""}:`),
+				styleText(
+					"green",
+					`✓ Compiled ${compiledIslands.length} island${compiledIslands.length > 1 ? "s" : ""}:`,
+				),
 			);
 			for (const { sourcePath, elementName } of compiledIslands) {
 				console.info(
-					`  ${styleText("cyan", sourcePath)} → ${styleText("magenta", `<${elementName}>`)}`
+					`  ${styleText("cyan", sourcePath)} → ${styleText("magenta", `<${elementName}>`)}`,
 				);
 			}
 		}
