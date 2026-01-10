@@ -28,13 +28,13 @@ importers:
         version: 4.6.0(preact@10.28.2)
     devDependencies:
       '@babel/core':
-        specifier: ^7.27.0
+        specifier: ^7.28.5
         version: 7.28.5
       '@babel/plugin-transform-react-jsx':
-        specifier: ^7.27.0
+        specifier: ^7.27.1
         version: 7.27.1(@babel/core@7.28.5)
       '@babel/preset-typescript':
-        specifier: ^7.27.0
+        specifier: ^7.28.5
         version: 7.28.5(@babel/core@7.28.5)
 
   packages/bare-islands-solid:
@@ -79,6 +79,10 @@ importers:
       sirv:
         specifier: ^3.0.2
         version: 3.0.2
+    devDependencies:
+      '@babel/core':
+        specifier: ^7.28.5
+        version: 7.28.5
 
   website:
     dependencies:

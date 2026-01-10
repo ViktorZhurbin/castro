@@ -1,40 +1,25 @@
 import fsPromises from "node:fs/promises";
 import path from "node:path";
-import * as babel from "@babel/core";
 import tsPreset from "@babel/preset-typescript";
+import {
+	createBabelPlugin,
+	writeEsbuildOutput,
+} from "@vktrz/bare-static/plugin-utils";
 import solidPreset from "babel-preset-solid";
 import * as esbuild from "esbuild";
 
 /**
  * A tiny esbuild plugin to handle Solid JSX via Babel
  */
-const solidBabelPlugin = {
-	name: "solid-babel",
-	setup(build) {
-		build.onLoad({ filter: /\.[jt]sx$/ }, async (args) => {
-			const source = await fsPromises.readFile(args.path, "utf8");
-
-			const { code } = await babel.transformAsync(source, {
-				filename: args.path,
-				presets: [
-					[solidPreset, { generate: "dom", hydratable: false }],
-					[tsPreset],
-				],
-			});
-
-			return { contents: code, loader: "js" };
-		});
-	},
-};
+const solidBabelPlugin = createBabelPlugin("solid-babel", () => ({
+	presets: [[solidPreset, { generate: "dom", hydratable: false }], [tsPreset]],
+}));
 
 export async function compileJSXIsland({
 	sourcePath,
 	outputPath,
 	elementName,
 }) {
-	const absoluteSourcePath = path.resolve(sourcePath);
-	const sourceFileName = path.basename(absoluteSourcePath);
-
 	/**
 	 * Now the virtual entry is extremely clean.
 	 * We just import the component normally; esbuild will use the
@@ -42,7 +27,7 @@ export async function compileJSXIsland({
 	 */
 	const virtualEntry = `
     import { customElement, noShadowDOM } from 'solid-element';
-    import Component from './${sourceFileName}';
+    import Component from './${path.basename(sourcePath)}';
 
 		const defaultPropsKeys = Object.keys(Component.defaultProps ?? {});
 		const defaultProps = defaultPropsKeys.reduce((acc, curr) => {
@@ -60,18 +45,19 @@ export async function compileJSXIsland({
 	const result = await esbuild.build({
 		stdin: {
 			contents: virtualEntry,
-			resolveDir: path.dirname(absoluteSourcePath),
+			resolveDir: path.dirname(sourcePath),
 			loader: "js",
 		},
 		bundle: true,
 		format: "esm",
 		target: "es2020",
 		write: false,
-		plugins: [solidBabelPlugin], // <--- Injecting our specialist worker
+		outfile: outputPath, // Helper for CSS generation
+		plugins: [solidBabelPlugin], // Let esbuild handle CSS natively
 		external: ["solid-js", "solid-js/web", "solid-element"],
 		logLevel: "warning",
 	});
 
 	await fsPromises.mkdir(path.dirname(outputPath), { recursive: true });
-	await fsPromises.writeFile(outputPath, result.outputFiles[0].text);
+	return writeEsbuildOutput(result);
 }

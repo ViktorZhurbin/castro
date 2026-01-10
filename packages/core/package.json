@@ -30,6 +30,9 @@
 		"polka": "^0.5.2",
 		"sirv": "^3.0.2"
 	},
+	"devDependencies": {
+		"@babel/core": "^7.28.5"
+	},
 	"keywords": [
 		"minimal",
 		"minimalist",

@@ -1,5 +1,5 @@
 import {
-	generateScriptsForUsedComponents,
+	generateTagsForUsedComponents,
 	processJSXIslands,
 } from "@vktrz/bare-static/plugin-utils";
 import { compileJSXIsland } from "./jsx-compiler.js";
@@ -40,10 +40,9 @@ export function bareIslandsPreact(options = {}) {
 			discoveredComponents = [];
 
 			// Process JSX islands
-			await processJSXIslands({
+			discoveredComponents = await processJSXIslands({
 				islandsDir,
 				outputDir,
-				discoveredComponents,
 				elementSuffix: "-preact",
 				compileIsland: compileJSXIsland,
 			});
@@ -68,7 +67,11 @@ export function bareIslandsPreact(options = {}) {
 				},
 			};
 
-			return `<script type="importmap">${JSON.stringify(importMap, null, 2)}</script>`;
+			return `<script type="importmap">${JSON.stringify(
+				importMap,
+				null,
+				2,
+			)}</script>`;
 		},
 
 		/**
@@ -79,8 +82,7 @@ export function bareIslandsPreact(options = {}) {
 		 * @returns {Promise<string[]>} Array of script tag strings
 		 */
 		async getScripts({ pageContent }) {
-			return generateScriptsForUsedComponents(discoveredComponents, pageContent);
+			return generateTagsForUsedComponents(discoveredComponents, pageContent);
 		},
 	};
 }
-

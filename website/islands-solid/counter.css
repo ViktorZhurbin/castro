@@ -1,0 +1,45 @@
+.counter-solid {
+	padding: 20px;
+	border: 2px solid var(--border);
+	border-radius: 8px;
+	max-width: 300px;
+	background-color: var(--bg-secondary);
+	color: var(--text);
+}
+
+.counter-solid h3 {
+	margin-top: 0;
+}
+
+.counter-solid p {
+	font-size: 24px;
+	margin: 10px 0;
+	font-weight: 600;
+}
+
+.counter-solid .buttons {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.counter-solid button {
+	padding: 10px 16px;
+	border-radius: 4px;
+	border: none;
+	background-color: var(--link);
+	color: #fff;
+	cursor: pointer;
+	font-weight: 500;
+	transition: opacity 0.2s;
+}
+
+.counter-solid button:hover {
+	opacity: 0.9;
+}
+
+.counter-solid button:last-child {
+	border: 1px solid var(--border);
+	background-color: transparent;
+	color: var(--text);
+}

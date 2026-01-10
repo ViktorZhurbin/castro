@@ -14,16 +14,14 @@ import { getElementName } from "./get-element-name.js";
  * @param {Object} options - Processing options
  * @param {string} options.islandsDir - Directory containing JSX island files
  * @param {string} options.outputDir - Build output directory
- * @param {IslandComponent[]} options.discoveredComponents - Array to populate with discovered components
  * @param {string} options.elementSuffix - Suffix for custom element names (e.g., '-preact', '-solid')
  * @param {Function} options.compileIsland - Compiler function that takes {sourcePath, outputPath, elementName}
- * @returns {Promise<void>}
+ * @returns {Promise<IslandComponent[]>} Array of discovered components
  *
  * @example
- * await processJSXIslands({
+ * const components = await processJSXIslands({
  *   islandsDir: 'islands-preact',
  *   outputDir: 'dist',
- *   discoveredComponents: [],
  *   elementSuffix: '-preact',
  *   compileIsland: compilePreactIsland
  * })
@@ -31,10 +29,12 @@ import { getElementName } from "./get-element-name.js";
 export async function processJSXIslands({
 	islandsDir,
 	outputDir,
-	discoveredComponents,
 	elementSuffix,
 	compileIsland,
 }) {
+	const OUTPUT_COMPONENTS_DIR = "components";
+	const discoveredComponents = [];
+
 	// Check if islands directory exists
 	try {
 		await fsPromises.access(islandsDir);
@@ -44,7 +44,7 @@ export async function processJSXIslands({
 				styleText("red", `Islands directory not found:`),
 				styleText("magenta", islandsDir),
 			);
-			return;
+			return [];
 		}
 		// rethrow
 		throw err;
@@ -52,13 +52,11 @@ export async function processJSXIslands({
 
 	try {
 		const files = await fsPromises.readdir(islandsDir);
-		const jsxFiles = files.filter(
-			(f) => f.endsWith(".jsx") || f.endsWith(".tsx"),
-		);
+		const jsxFiles = files.filter((f) => /\.[jt]sx$/.test(f));
 
-		if (jsxFiles.length === 0) return;
+		if (jsxFiles.length === 0) return [];
 
-		const outputComponentsDir = path.join(outputDir, "components");
+		const outputComponentsDir = path.join(outputDir, OUTPUT_COMPONENTS_DIR);
 		await fsPromises.mkdir(outputComponentsDir, { recursive: true });
 
 		for (const fileName of jsxFiles) {
@@ -67,26 +65,35 @@ export async function processJSXIslands({
 
 			try {
 				const sourcePath = path.join(islandsDir, fileName);
+				const outputPath = path.join(outputComponentsDir, outputFileName);
 
-				await compileIsland({
+				const result = await compileIsland({
 					sourcePath,
-					outputPath: path.join(outputComponentsDir, outputFileName),
+					outputPath,
 					elementName,
 				});
-
-				const OUTPUT_COMPONENTS_DIR = "components";
 
 				/** @type {IslandComponent} */
 				const component = {
 					elementName,
 					outputPath: `/${OUTPUT_COMPONENTS_DIR}/${outputFileName}`,
 				};
+
+				// Add CSS path if it exists
+				if (result?.cssOutputPath) {
+					const cssFileName = path.basename(result.cssOutputPath);
+					component.cssPath = `/${OUTPUT_COMPONENTS_DIR}/${cssFileName}`;
+				}
+
+				discoveredComponents.push(component);
 			} catch (err) {
 				throw new Error(`Failed to process island ${fileName}: ${err.message}`);
 			}
 		}
 	} catch (err) {
-		if (err.code === "ENOENT") return;
+		if (err.code === "ENOENT") return [];
 		throw err;
 	}
+
+	return discoveredComponents;
 }

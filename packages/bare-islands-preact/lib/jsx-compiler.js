@@ -1,52 +1,40 @@
 import fsPromises from "node:fs/promises";
 import path from "node:path";
-import * as babel from "@babel/core";
 import tsPreset from "@babel/preset-typescript";
+import {
+	createBabelPlugin,
+	writeEsbuildOutput,
+} from "@vktrz/bare-static/plugin-utils";
 import * as esbuild from "esbuild";
 
 /**
  * A tiny esbuild plugin to handle Preact JSX via Babel
  */
-const preactBabelPlugin = {
-	name: "preact-babel",
-	setup(build) {
-		build.onLoad({ filter: /\.[jt]sx$/ }, async (args) => {
-			const source = await fsPromises.readFile(args.path, "utf8");
-
-			const { code } = await babel.transformAsync(source, {
-				filename: args.path,
-				presets: [[tsPreset]],
-				plugins: [
-					[
-						"@babel/plugin-transform-react-jsx",
-						{
-							runtime: "automatic",
-							importSource: "preact",
-						},
-					],
-				],
-			});
-
-			return { contents: code, loader: "js" };
-		});
-	},
-};
+const preactBabelPlugin = createBabelPlugin("preact-babel", () => ({
+	presets: [[tsPreset]],
+	plugins: [
+		[
+			"@babel/plugin-transform-react-jsx",
+			{
+				runtime: "automatic",
+				importSource: "preact",
+			},
+		],
+	],
+}));
 
 export async function compileJSXIsland({
 	sourcePath,
 	outputPath,
 	elementName,
 }) {
-	const absoluteSourcePath = path.resolve(sourcePath);
-	const sourceFileName = path.basename(absoluteSourcePath);
-
 	/**
 	 * Virtual entry for Preact using preact-custom-element
 	 * Much simpler than Solid version - register() handles everything
 	 */
 	const virtualEntry = `
     import register from 'preact-custom-element';
-    import Component from './${sourceFileName}';
+    import Component from './${path.basename(sourcePath)}';
 
     // Register component as custom element
     // Empty array = no observed attributes (or infer from propTypes)
@@ -57,13 +45,14 @@ export async function compileJSXIsland({
 	const result = await esbuild.build({
 		stdin: {
 			contents: virtualEntry,
-			resolveDir: path.dirname(absoluteSourcePath),
+			resolveDir: path.dirname(sourcePath),
 			loader: "js",
 		},
 		bundle: true,
 		format: "esm",
 		target: "es2020",
 		write: false,
+		outfile: outputPath, // Helper for CSS generation
 		plugins: [preactBabelPlugin],
 		external: [
 			"preact",
@@ -75,5 +64,5 @@ export async function compileJSXIsland({
 	});
 
 	await fsPromises.mkdir(path.dirname(outputPath), { recursive: true });
-	await fsPromises.writeFile(outputPath, result.outputFiles[0].text);
+	return writeEsbuildOutput(result);
 }
