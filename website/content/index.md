@@ -1,4 +1,4 @@
-# bare-static
+# reef
 
 A minimal markdown-based static site generator with optional interactive islands.
 
@@ -25,10 +25,10 @@ Here's a Preact counter island:
 ## Quick Start
 
 ```bash
-npm install @vktrz/bare-static
+npm install @vktrz/reef
 ```
 
-Create `bare.config.js`:
+Create `reef.config.js`:
 
 ```javascript
 export default {
@@ -47,7 +47,7 @@ This is a static page.
 Build:
 
 ```bash
-bare-static build
+reef build
 ```
 
 Output goes to `dist/`.

@@ -27,7 +27,7 @@ export default function DefaultLayout({
 				<header>
 					<h1>
 						<nav>
-							<a href="/index.html">bare-static</a>
+							<a href="/index.html">reef</a>
 							<a href="/blog/index.html">blog</a>
 						</nav>
 					</h1>

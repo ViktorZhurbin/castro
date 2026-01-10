@@ -16,14 +16,14 @@ A minimalist SSG framework with optional reactivity islands.
 
 ## Quick Start
 
-Install: `npm i @vktrz/bare-static`
+Install: `npm i @vktrz/reef`
 
 Add scripts to `package.json`:
 
 ```json
 "scripts": {
-    "dev": "bare-static",
-    "build": "bare-static build"
+    "dev": "reef",
+    "build": "reef build"
 }
 ```
 
@@ -33,7 +33,7 @@ TODO: needs update
 
 At the root of the project, add `content/` folder with `.md` files, and a `template.html` with `{{title}}` and `{{content}}` placeholders.
 
-Example: https://github.com/ViktorZhurbin/bare-static/tree/main/packages/website
+Example: https://github.com/ViktorZhurbin/reef/tree/main/packages/website
 
 ### Plugin API
 

@@ -8,7 +8,7 @@ import * as esbuild from "esbuild";
 import { LAYOUTS_DIR } from "../constants/dir.js";
 import { createBabelPlugin } from "../utils/index.js";
 
-const TEMP_DIR = path.join(os.tmpdir(), "bare-static-layouts");
+const TEMP_DIR = path.join(os.tmpdir(), "reef-layouts");
 
 /**
  * Babel plugin for Preact JSX compilation

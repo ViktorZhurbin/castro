@@ -1,16 +1,10 @@
 # Roadmap
 
-## 🎯 Meta
-
-- Should probably think of a better naming for the core package. And update naming for plugins (plugin-solid, plugin-\*)
-
----
-
 ## 🚀 Core Features
 
 ### Configuration
 
-- [ ] Configurable paths (output, content)
+- [ ] Configurable paths (output, content, islands)
 
 ---
 
@@ -49,7 +43,7 @@
 
 ## 🛠️ Developer Experience
 
-- [ ] Add `bare-static create <project-name>` CLI command (new project scaffold)
+- [ ] Add `reef create <project-name>` CLI command (new project scaffold)
 - [ ] Better error messages (e.g., "Island X used but not found")
 - [ ] Validate JSX compilation errors (helpful error messages)
 

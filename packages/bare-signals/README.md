@@ -10,21 +10,6 @@ Built as a learning project to understand how fine-grained reactivity works unde
 **Effects** - Functions that auto-run when their signal dependencies change
 **Memos** - Cached computed values that only recompute when dependencies change
 
-## Usage
-
-```js
-import { createSignal, createEffect, createMemo } from '@vktrz/bare-signals';
-
-const [count, setCount] = createSignal(0);
-const doubled = createMemo(() => count() * 2);
-
-createEffect(() => {
-  console.log(`Count: ${count()}, Doubled: ${doubled()}`);
-});
-
-setCount(5); // Logs: "Count: 5, Doubled: 10"
-```
-
 ## Interactive Demo
 
 ```bash

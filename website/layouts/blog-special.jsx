@@ -24,7 +24,7 @@ export default function BlogLayout({
 			<body>
 				<header>
 					<h1>
-						<a href="/index.html">bare-static</a> / Blog
+						<a href="/index.html">reef</a> / Blog
 					</h1>
 					<nav>
 						<a href="/index.html">← Back to Home</a>

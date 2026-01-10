@@ -24,11 +24,6 @@
 		"solid",
 		"learning"
 	],
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/ViktorZhurbin/bare-static.git",
-		"directory": "packages/bare-signals"
-	},
 	"engines": {
 		"node": ">=24.0.0"
 	}

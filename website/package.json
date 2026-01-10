@@ -4,11 +4,11 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "bare-static",
-		"build": "bare-static build"
+		"dev": "reef",
+		"build": "reef build"
 	},
 	"dependencies": {
-		"@vktrz/bare-static": "workspace:*",
+		"@vktrz/reef": "workspace:*",
 		"preact": "^10.25.4"
 	}
 }

@@ -1,10 +1,10 @@
 {
-	"name": "@vktrz/bare-static",
+	"name": "@vktrz/reef",
 	"version": "1.0.4",
 	"description": "Minimal markdown to HTML static site generator",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/ViktorZhurbin/bare-static.git",
+		"url": "git+https://github.com/ViktorZhurbin/reef.git",
 		"directory": "packages/core"
 	},
 	"type": "module",
@@ -12,12 +12,7 @@
 		"node": ">=24.0.0"
 	},
 	"bin": {
-		"bare-static": "./bin/bare-static"
-	},
-	"exports": {
-		"./plugin-utils": "./lib/plugin-utils/index.js",
-		"./plugin-utils/types.js": "./lib/plugin-utils/types.js",
-		"./constants": "./constants/dir.js"
+		"reef": "./bin/reef"
 	},
 	"files": [
 		"bin/",
