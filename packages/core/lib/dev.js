@@ -47,6 +47,20 @@ function notifyReload() {
 	}
 }
 
+// Watch config file for changes
+(async () => {
+	try {
+		const watcher = fsPromises.watch("./bare.config.js");
+		for await (const event of watcher) {
+			console.info(styleText("yellow", "\n⚙️  Config changed, restarting..."));
+			server.server.close();
+			process.exit(0);
+		}
+	} catch (err) {
+		// Config file doesn't exist, that's fine (optional)
+	}
+})();
+
 // Watch content directory for markdown changes
 (async () => {
 	const watcher = fsPromises.watch(CONTENT_DIR);
