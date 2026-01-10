@@ -2,37 +2,31 @@ import fsPromises from "node:fs/promises";
 import path from "node:path";
 import { styleText } from "node:util";
 import { marked } from "marked";
+import matter from "gray-matter";
 import { loadConfig } from "./config-loader.js";
+import { loadLayouts } from "./layouts.js";
+import { resolveLayout } from "./reef-resolver.js";
+import { renderLayout } from "./render-layout.js";
 
 // Shared constants
 export const CONTENT_DIR = "./content";
 export const OUTPUT_DIR = "./dist";
-export const TEMPLATE_FILE = "./template.html";
 export const PUBLIC_DIR = "./public";
+export const LAYOUTS_DIR = "layouts";
 
 const formatMs = (ms) => `${Math.round(ms)}ms`;
 
-// Read template once at module load
-const template = await fsPromises.readFile(TEMPLATE_FILE, "utf-8");
+// Load layouts once at module load
+let layouts = await loadLayouts();
 
 // Load config once at module load
 const config = await loadConfig();
 
 /**
- * @param {string} title
- * @param {string} content
- * @param {string} [injectScript]
+ * Reload layouts (for dev mode when layout files change)
  */
-function generateHtml(title, content, injectScript = "") {
-	let html = template
-		.replace("{{title}}", title)
-		.replace("{{content}}", content);
-
-	if (injectScript) {
-		html = html.replace("</head>", `${injectScript}\n</head>`);
-	}
-
-	return html;
+export async function reloadLayouts() {
+	layouts = await loadLayouts();
 }
 
 /**
@@ -44,20 +38,24 @@ export async function buildSingle(mdFileName, options = {}) {
 	const { injectScript = "", logOnSuccess, logOnStart, plugins = [] } = options;
 	const startTime = performance.now();
 
-	const title = mdFileName.replace(".md", "");
-	const htmlFileName = `${title}.html`;
+	const htmlFileName = mdFileName.replace(".md", ".html");
+	const mdFilePath = path.join(CONTENT_DIR, mdFileName);
 
 	try {
 		if (logOnStart) {
 			console.info(
-				`Writing ${OUTPUT_DIR}/${htmlFileName} ${styleText("gray", `from ${CONTENT_DIR}/${mdFileName}`)}`,
+				`Writing ${OUTPUT_DIR}/${htmlFileName} ${styleText("gray", `from ${mdFilePath}`)}`,
 			);
 		}
 
-		const markdown = await fsPromises.readFile(
-			path.join(CONTENT_DIR, mdFileName),
-			"utf-8",
-		);
+		// Read file and parse frontmatter
+		const fileContent = await fsPromises.readFile(mdFilePath, "utf-8");
+		const { data: frontmatter, content: markdown } = matter(fileContent);
+
+		// Use frontmatter title or derive from filename
+		const title = frontmatter.title || mdFileName.replace(".md", "");
+
+		// Render markdown to HTML
 		const contentHtml = marked(markdown);
 
 		// Get import maps from plugins (must come before module scripts)
@@ -78,14 +76,30 @@ export async function buildSingle(mdFileName, options = {}) {
 			}
 		}
 
-		// Combine import maps, plugin scripts, and injected scripts
-		const allScripts = [...importMaps, ...pluginScripts, injectScript]
-			.filter(Boolean)
-			.join("\n");
+		// Combine all scripts
+		const allScripts = [...pluginScripts, injectScript].filter(Boolean);
 
-		const pageHtml = generateHtml(title, contentHtml, allScripts);
+		// Resolve which layout to use
+		const layoutName = await resolveLayout(mdFilePath, frontmatter);
+
+		const layoutFn = layouts.get(layoutName);
+
+		if (!layoutFn) {
+			throw new Error(`Layout '${layoutName}' not found in layouts/`);
+		}
+
+		// Render layout with props
+		const pageHtml = renderLayout(layoutFn, {
+			title,
+			content: contentHtml,
+			scripts: allScripts,
+			importMaps,
+			...frontmatter,
+		});
 
 		const htmlFilePath = path.join(OUTPUT_DIR, htmlFileName);
+		// Ensure directory exists for nested files (e.g., blog/post.html)
+		await fsPromises.mkdir(path.dirname(htmlFilePath), { recursive: true });
 		await fsPromises.writeFile(htmlFilePath, pageHtml);
 
 		if (logOnSuccess) {
@@ -133,15 +147,18 @@ export async function buildAll(options = {}) {
 		}
 	}
 
-	// Read all .md files and build them in parallel
+	// Read all .md files recursively and build them in parallel
 	const buildPromises = await Array.fromAsync(
-		fsPromises.glob(path.join(CONTENT_DIR, "*.md")),
-		(filePath) =>
-			buildSingle(path.basename(filePath), {
+		fsPromises.glob(path.join(CONTENT_DIR, "**/*.md")),
+		(filePath) => {
+			// Convert absolute path to relative path from CONTENT_DIR
+			const relativePath = path.relative(CONTENT_DIR, filePath);
+			return buildSingle(relativePath, {
 				injectScript,
 				logOnStart: verbose,
 				plugins: allPlugins,
-			}),
+			});
+		},
 	);
 
 	if (buildPromises.length === 0) {
