@@ -6,7 +6,7 @@ import { styleText } from "node:util";
 import tsPreset from "@babel/preset-typescript";
 import * as esbuild from "esbuild";
 import { LAYOUTS_DIR } from "../constants/dir.js";
-import { createBabelPlugin } from "./plugin-utils/index.js";
+import { createBabelPlugin } from "../utils/index.js";
 
 const TEMP_DIR = path.join(os.tmpdir(), "bare-static-layouts");
 

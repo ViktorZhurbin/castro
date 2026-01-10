@@ -2,11 +2,11 @@ import { OUTPUT_DIR } from "../../constants/dir.js";
 import {
 	generateTagsForUsedComponents,
 	processJSXIslands,
-} from "../../lib/plugin-utils";
+} from "../../utils/index.js";
 import { compileJSXIsland } from "./jsx-compiler.js";
 
 /**
- * @typedef {import('../../lib/plugin-utils/types.js').IslandComponent} IslandComponent
+ * @typedef {import('../../utils/types.js').IslandComponent} IslandComponent
  */
 
 const DEFAULT_ISLANDS_DIR = "islands-solid";

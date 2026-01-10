@@ -1,11 +1,8 @@
 import fsPromises from "node:fs/promises";
 import path from "node:path";
 import tsPreset from "@babel/preset-typescript";
-import {
-	createBabelPlugin,
-	writeEsbuildOutput,
-} from "@vktrz/bare-static/plugin-utils";
 import * as esbuild from "esbuild";
+import { createBabelPlugin, writeEsbuildOutput } from "../../utils";
 
 /**
  * A tiny esbuild plugin to handle Preact JSX via Babel
