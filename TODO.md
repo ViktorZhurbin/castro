@@ -10,9 +10,11 @@ Then: Clean up based on real usage pain points
 
 ### Explore Similar Projects
 
-[ ] Fresh (Deno) - Islands without build step
-[ ] Lume - Modern 11ty-style SSG with JSX
-[ ] Lit - Native web components reactivity
+- Astro 
+- 11ty
+- Fresh (Deno) - Islands without build step
+- Lume - Modern 11ty-style SSG with JSX
+- Lit - Native web components reactivity
 
 
 ## 🏗️ Core Architecture
@@ -46,9 +48,9 @@ Then: Clean up based on real usage pain points
     layout: 'default',
     // custom fields...
   };
-[ ] Implement data cascade: default > reef.js > metadata
-[ ] Pass all metadata fields as props to layout
-[ ] Detect full-page vs content-only (warn if layout + )
+- [ ] Implement data cascade: default > reef.js > metadata
+- [ ] Pass all metadata fields as props to layout
+- [ ] Detect full-page vs content-only (warn if layout + )
 
 ### Island Lazy Loading
 
@@ -66,8 +68,8 @@ IntersectionObserver for on:visible
 - Promise-based state machine (~60 LOC)
 
 ## Developer Experience
-[ ] reef create <project-name> CLI command (scaffold new projects)
-[ ] Improved dev server logging (clearer rebuild messages)
+- [ ] reef create <project-name> CLI command (scaffold new projects)
+- [ ] Improved dev server logging (clearer rebuild messages)
 
 ## 📚 Documentation
 
