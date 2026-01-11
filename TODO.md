@@ -1,4 +1,4 @@
-# Roadmapp
+# Roadmap
 
 ## Clean up and better organize lib and utils folders
 
@@ -14,7 +14,8 @@ Allow layout wrapping in pages/.
 
 
 1. **Metadata exports** - Title, layout selection, custom fields
-   ```jsx
+
+```jsx
   export const metadata = {
       title: 'Welcome',
       layout: 'default'
@@ -28,16 +29,23 @@ Allow layout wrapping in pages/.
         </main>
       );
     }
-   ```
+```
+
 ---
 
 ## 🏝️ Plugin Features
 
 ### Islands Architecture
 
-- [ ] Lazy load islands (Intersection Observer for below-fold islands)
-- [ ] Consider preloading framework runtime for critical islands
-- [ ] Consider static > island swapping to avoid layout jump
+Check is-land implementation and functionality: 
+
+1. Lazy Loading: Borrow the on:visible logic to prevent your web component from calling its render() or mount() function until it's in the viewport.
+
+2. Import Maps Management: You are already using CDN-based import maps. Look at how is-land manages these globally to avoid duplication.
+
+3. Data-Save/Media Triggers: Borrow the logic that checks for prefers-reduced-data or specific media queries before loading heavy JS bundles.
+
+4. Static HTML as placeholder. Progressive enhancement, plus to avoid layout jump
 
 ### Plugin Development
 
