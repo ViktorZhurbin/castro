@@ -40,6 +40,50 @@ Then: Clean up based on real usage pain points
 
 ---
 
+### Refactoring 
+- use import.meta
+
+1. Getting Current File Path (Most Useful)
+Current approach:
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Use __dirname
+const configPath = path.join(__dirname, '../config.js');
+With import.meta.dirname (Node 20.11+):
+// That's it - no imports needed
+const configPath = path.join(import.meta.dirname, '../config.js');
+Where in Reef:
+lib/dev.js - loading live-reload.js
+lib/layouts.js - temp directory handling
+Any file that needs to know "where am I?"
+2. Import Resolution
+Current approach:
+import { pathToFileURL } from "node:url";
+
+const moduleUrl = pathToFileURL(tempPath).href;
+const module = await import(`${moduleUrl}?t=${Date.now()}`);
+With import.meta.resolve (Node 20.6+):
+const moduleUrl = import.meta.resolve(tempPath);
+const module = await import(`${moduleUrl}?t=${Date.now()}`);
+Simpler, but honestly not a huge win.
+3. Cache Busting (What You Already Do)
+// You already do this correctly:
+await import(`${moduleUrl}?t=${Date.now()}`);
+
+// import.meta.url changes per file, useful for:
+const uniqueId = import.meta.url + Date.now();
+Actual Simplification Potential
+Realistic savings in Reef: ~10-15 LOC total
+Most of your code doesn't need file path introspection. The main wins would be in:
+dev.js (loading live-reload script)
+layouts.js (temp director
+
+---
+
 ## 🎨 Features
 
 ### JSX Pages v2 - Layout Support
