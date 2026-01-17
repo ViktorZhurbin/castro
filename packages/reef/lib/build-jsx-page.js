@@ -2,7 +2,7 @@ import { basename, extname, join } from "node:path";
 import { styleText } from "node:util";
 import render from "preact-render-to-string";
 import { createTempDirPath } from "../utils/dir.js";
-import { compileJSX, loadCompiledModule } from "../utils/jsx-compiler.js";
+import { compileJSX } from "../utils/jsx-compiler.js";
 import { builderShell } from "./builder-shell.js";
 import { layouts } from "./layouts-registry.js";
 import { resolveLayout } from "./reef-resolver.js";
@@ -26,10 +26,7 @@ export async function buildJSXPage(sourceFileName, options = {}) {
 		const tempFileName = `${basename(sourceFileName, extname(sourceFileName))}.mjs`;
 		const tempPath = join(TEMP_DIR, tempFileName);
 
-		await compileJSX(sourceFilePath, tempPath);
-
-		// Always load fresh
-		const pageModule = await loadCompiledModule(tempPath);
+		const pageModule = await compileJSX(sourceFilePath, tempPath);
 
 		if (!pageModule.default || typeof pageModule.default !== "function") {
 			throw new Error(

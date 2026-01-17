@@ -3,7 +3,7 @@ import { basename, extname, join } from "node:path";
 import { styleText } from "node:util";
 import { LAYOUTS_DIR } from "../constants/dir.js";
 import { createTempDirPath } from "../utils/dir.js";
-import { compileJSX, loadCompiledModule } from "../utils/jsx-compiler.js";
+import { compileJSX } from "../utils/jsx-compiler.js";
 
 const TEMP_DIR = createTempDirPath("layouts");
 
@@ -43,8 +43,7 @@ export async function loadLayouts() {
 				const tempPath = join(TEMP_DIR, `${layoutName}.mjs`);
 
 				// Compile and load layout module
-				await compileJSX(sourceFilePath, tempPath);
-				const layoutModule = await loadCompiledModule(tempPath);
+				const layoutModule = await compileJSX(sourceFilePath, tempPath);
 
 				if (!layoutModule.default) {
 					throw new Error(
