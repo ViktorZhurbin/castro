@@ -7,6 +7,7 @@ import { CONFIG_FILE } from "../constants/config.js";
 import { LAYOUTS_DIR, OUTPUT_DIR, PAGES_DIR } from "../constants/dir.js";
 import { buildMdPage } from "./build-md-page.js";
 import { buildAll } from "./builder.js";
+import { layouts } from "./layouts-registry.js";
 import { LiveReloadEvents } from "./live-reload/constants.js";
 
 const PORT = 3000;
