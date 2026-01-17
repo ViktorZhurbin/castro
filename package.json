@@ -6,7 +6,7 @@
 		"dev": "pnpm --filter website dev",
 		"build": "pnpm --filter website build",
 		"format": "biome format --write",
-		"loc": "find -E packages/reef/{lib,islands,utils} -type f -regex '.*.(js|ts)$' | xargs wc -l"
+		"loc": "pnpx cloc packages/reef/src/"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.11"
