@@ -1,5 +1,5 @@
 import { access } from "node:fs/promises";
-import { dirname, join, resolve } from "node:path";
+import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { PAGES_DIR } from "../constants/dir.js";
 
@@ -8,65 +8,82 @@ import { PAGES_DIR } from "../constants/dir.js";
  */
 
 /**
- * Resolve which layout to use for a content file via data cascade
+ * Resolve which layout to use via data cascade
  * Priority: frontmatter > reef.js (walking up tree) > default
  *
- * @param {string} filePath - Path to markdown file (relative or absolute)
- * @param {PageMeta} meta - Parsed frontmatter from file
- * @returns {Promise<string>} Layout name to use
+ * @param {string} filePath - Path to markdown file
+ * @param {PageMeta} meta - Parsed frontmatter
+ * @returns {Promise<string>} Layout name
  */
 export async function resolveLayout(filePath, meta = {}) {
+	// 1. Frontmatter has highest priority
 	if (meta?.layout) return meta.layout;
 
-	// Walk up directory tree looking for reef.js
+	// 2. Walk up tree for reef.js
 	const reefData = await findReefData(filePath);
-
 	if (reefData?.layout) return reefData.layout;
 
+	// 3. Fallback
 	return "default";
 }
 
 /**
- * Walk up directory tree from file path looking for reef.js files
+ * Walk up directory tree looking for reef.js
  * Stops at PAGES_DIR boundary
- *
- * @param {string} filePath - Path to page file (relative or absolute)
- * @returns {Promise<PageMeta|null>} reef.js data object or null if not found
- *
- * @example
- * // pages/blog/nested/post.md
- * // Checks: pages/blog/nested/reef.js → pages/blog/reef.js → pages/reef.js
- * const data = await findReefData('pages/blog/nested/post.md');
- * // → { layout: 'blog', tags: ['tech'] }
  */
 async function findReefData(filePath) {
-	// Resolve to absolute path to handle both relative and absolute inputs
 	const absoluteFilePath = resolve(filePath);
-	let currentDir = dirname(absoluteFilePath);
 	const pagesDirAbsolute = resolve(PAGES_DIR);
 
-	while (currentDir.startsWith(pagesDirAbsolute)) {
+	// Check if file is within PAGES_DIR; if not, return early
+	const initialRelPath = relative(pagesDirAbsolute, dirname(absoluteFilePath));
+	if (initialRelPath.startsWith("..")) {
+		return null;
+	}
+
+	let currentDir = dirname(absoluteFilePath);
+
+	while (true) {
 		const reefPath = join(currentDir, "reef.js");
 
 		try {
-			// Check if reef.js exists
 			await access(reefPath);
 
-			// Load with cache busting for dev mode
-			// Query param forces fresh load when file changes
 			const reefUrl = pathToFileURL(reefPath).href;
-			const reefModule = await import(`${reefUrl}?t=${Date.now()}`);
+
+			// Cache-busting in dev mode to pick up file changes
+			const importUrl =
+				process.env.NODE_ENV === "development"
+					? `${reefUrl}?t=${Date.now()}`
+					: reefUrl;
+
+			const reefModule = await import(importUrl);
 
 			if (reefModule.default) {
 				return reefModule.default;
 			}
-		} catch {
-			// reef.js doesn't exist or failed to load, continue up the tree
+		} catch (err) {
+			// If the file simply doesn't exist, that's fine. Continue.
+			if (err.code === "ENOENT") {
+				// Continue to next iteration
+			} else {
+				console.error(
+					styleText("red", `Error loading configuration at ${reefPath}`),
+				);
+				throw err;
+			}
 		}
 
-		// Move up one directory
+		// Try to move up
 		const parentDir = dirname(currentDir);
-		if (parentDir === currentDir) break; // Reached filesystem root
+
+		// Stop if we've reached filesystem root
+		if (parentDir === currentDir) break;
+
+		// Stop if next move would take us above PAGES_DIR
+		const nextRelPath = relative(pagesDirAbsolute, parentDir);
+		if (nextRelPath.startsWith("..")) break;
+
 		currentDir = parentDir;
 	}
 
