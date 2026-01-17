@@ -1,11 +1,11 @@
 import { basename, extname, join } from "node:path";
 import { styleText } from "node:util";
 import render from "preact-render-to-string";
+import { layouts } from "../layout/registry.js";
+import { resolveLayout } from "../layout/resolver.js";
+import { compileJSX } from "../utils/compile-jsx.js";
 import { createTempDirPath } from "../utils/dir.js";
-import { compileJSX } from "../utils/jsx-compiler.js";
 import { builderShell } from "./builder-shell.js";
-import { layouts } from "./layouts-registry.js";
-import { resolveLayout } from "./reef-resolver.js";
 import { writeHtmlPage } from "./write-html-page.js";
 
 const TEMP_DIR = createTempDirPath("pages");

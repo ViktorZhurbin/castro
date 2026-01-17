@@ -1,6 +1,6 @@
 import { basename, dirname } from "node:path";
 import * as esbuild from "esbuild";
-import { writeBuildOutput } from "../../utils/index.js";
+import { writeBuildOutput } from "../../utils/write-build-output.js";
 
 export async function compilePreactIsland({
 	sourcePath,

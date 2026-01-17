@@ -1,9 +1,9 @@
-import { filterUsedComponents } from "./filter-used-components.js";
-
 /**
  * @import { IslandComponent } from '../types/island.js';
  * @import { Asset } from '../types/plugin.js';
  */
+
+import { detectCustomElements } from "./detect-custom-elements.js";
 
 /**
  * Generate asset objects for components used on a page
@@ -12,27 +12,14 @@ import { filterUsedComponents } from "./filter-used-components.js";
  * @param {IslandComponent[]} discoveredComponents - All available components
  * @param {string} pageContent - HTML or markdown content to scan for usage
  * @returns {Asset[]} Array of asset objects
- *
- * @example
- * generateAssetsForUsedComponents(
- *   [
- *     {elementName: 'counter-preact', outputPath: '/components/counter-preact.js', cssPath: '/components/counter-preact.css'},
- *     {elementName: 'button-preact', outputPath: '/components/button-preact.js'}
- *   ],
- *   '<counter-preact></counter-preact>'
- * )
- * // Returns: [
- * //   { tag: 'script', attrs: { type: 'module', src: '/components/counter-preact.js' } },
- * //   { tag: 'link', attrs: { rel: 'stylesheet', href: '/components/counter-preact.css' } }
- * // ]
  */
 export function generateAssetsForUsedComponents(
 	discoveredComponents,
 	pageContent,
 ) {
-	const usedComponents = filterUsedComponents(
-		discoveredComponents,
-		pageContent,
+	const usedElements = detectCustomElements(pageContent);
+	const usedComponents = discoveredComponents.filter(({ elementName }) =>
+		usedElements.has(elementName),
 	);
 
 	/** @type {Asset[]} */

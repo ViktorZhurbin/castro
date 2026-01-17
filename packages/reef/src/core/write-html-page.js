@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
-import { collectAssets } from "./collect-assets.js";
-import { injectAssets } from "./inject-assets.js";
+import { collectAssets } from "../assets/collect.js";
+import { injectAssets } from "../assets/inject.js";
 
 /**
  * @import { ReefPlugin } from '../types/plugin.js';

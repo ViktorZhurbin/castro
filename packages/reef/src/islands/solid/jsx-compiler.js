@@ -3,7 +3,7 @@ import { basename, dirname } from "node:path";
 import tsPreset from "@babel/preset-typescript";
 import solidPreset from "babel-preset-solid";
 import * as esbuild from "esbuild";
-import { writeBuildOutput } from "../../utils/index.js";
+import { writeBuildOutput } from "../../utils/write-build-output.js";
 
 /**
  * A tiny esbuild plugin to handle Solid JSX via Babel

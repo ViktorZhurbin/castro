@@ -1,4 +1,4 @@
-import { generateAssetsHtml, generateImportMapHtml } from "./layout-helpers.js";
+import { generateAssetsHtml, generateImportMapHtml } from "../layout/helpers.js";
 
 /**
  * @import { Asset, ImportMapConfig } from '../types/plugin.js';

@@ -1,6 +1,6 @@
 import { join } from "node:path";
 import * as esbuild from "esbuild";
-import { defaultPlugins } from "./plugins.js";
+import { defaultPlugins } from "../constants/plugins.js";
 
 /**
  * Centralized asset and import map collection
@@ -38,7 +38,7 @@ export async function collectAssets({ pageContent }) {
 	// Auto-inject live reload asset in dev mode
 	if (process.env.REEF_DEV === "true") {
 		const result = await esbuild.build({
-			entryPoints: [join(import.meta.dirname, "live-reload/script.js")],
+			entryPoints: [join(import.meta.dirname, "../dev/live-reload.js")],
 			write: false,
 			bundle: true,
 			format: "esm",

@@ -2,8 +2,8 @@ import { access, glob, mkdir, rm } from "node:fs/promises";
 import { basename, extname, join } from "node:path";
 import { styleText } from "node:util";
 import { LAYOUTS_DIR } from "../constants/dir.js";
+import { compileJSX } from "../utils/compile-jsx.js";
 import { createTempDirPath } from "../utils/dir.js";
-import { compileJSX } from "../utils/jsx-compiler.js";
 
 const TEMP_DIR = createTempDirPath("layouts");
 

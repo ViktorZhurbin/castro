@@ -8,7 +8,7 @@ else
 fi
 
 if [ "$1" = "build" ]; then
-  exec $RUNTIME "$(dirname "$0")/../lib/build.js" "$@"
+  exec $RUNTIME "$(dirname "$0")/../src/cli/build.js" "$@"
 else
-  exec $RUNTIME "$(dirname "$0")/../lib/dev.js" "$@"
+  exec $RUNTIME "$(dirname "$0")/../src/cli/dev.js" "$@"
 fi

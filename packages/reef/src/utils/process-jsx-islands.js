@@ -1,7 +1,6 @@
 import { access, glob, mkdir } from "node:fs/promises";
-import { basename, join } from "node:path";
+import { basename, extname, join } from "node:path";
 import { styleText } from "node:util";
-import { getElementName } from "./get-element-name.js";
 
 /**
  * @import { IslandComponent } from '../types/island.js';
@@ -108,4 +107,11 @@ export async function processJSXIslands({
 	}
 
 	return discoveredComponents;
+}
+
+function getElementName(fileName, suffix = "-component") {
+	const ext = extname(fileName);
+	const baseName = basename(fileName, ext);
+
+	return `${baseName}${suffix}`;
 }

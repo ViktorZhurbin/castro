@@ -1,4 +1,4 @@
-import { loadLayouts } from "./layouts.js";
+import { loadLayouts } from "./loader.js";
 
 /**
  * @import { LayoutComponent } from '../types/layout.js';
