@@ -5,6 +5,7 @@ import polka from "polka";
 import sirv from "sirv";
 import { CONFIG_FILE } from "../constants/config.js";
 import { LAYOUTS_DIR, OUTPUT_DIR, PAGES_DIR } from "../constants/dir.js";
+import { buildJSXPage } from "./build-jsx-page.js";
 import { buildMdPage } from "./build-md-page.js";
 import { buildAll } from "./builder.js";
 import { layouts } from "./layouts-registry.js";
