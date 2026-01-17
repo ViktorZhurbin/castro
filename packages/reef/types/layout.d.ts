@@ -4,16 +4,13 @@
 
 /**
  * Props passed to layout component functions
+ * Note: Assets and import maps are injected automatically by the framework
  */
 export interface LayoutProps {
 	/** Page title */
 	title: string;
 	/** Rendered HTML content from markdown */
 	content: string;
-	/** Array of script tag strings to inject */
-	scripts: string[];
-	/** Array of import map script tags */
-	importMaps: string[];
 	/** Additional properties from frontmatter are spread here */
 	[key: string]: unknown;
 }
@@ -21,12 +18,12 @@ export interface LayoutProps {
 /**
  * Frontmatter data parsed from markdown files
  */
-export interface Frontmatter {
+export interface PageMeta {
 	/** Optional page title (overrides filename) */
 	title?: string;
 	/** Optional layout name (defaults to 'default') */
 	layout?: string;
-	/** Any other custom frontmatter fields */
+	/** Any other custom fields */
 	[key: string]: unknown;
 }
 

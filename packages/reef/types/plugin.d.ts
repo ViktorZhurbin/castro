@@ -21,6 +21,26 @@ export interface PluginScriptContext {
 }
 
 /**
+ * Asset (script or link) to inject into page
+ */
+export interface Asset {
+	/** Tag name (script or link) */
+	tag: "script" | "link";
+	/** Tag attributes */
+	attrs: Record<string, string>;
+	/** Inline content (for script tags) */
+	content?: string;
+}
+
+/**
+ * Import map configuration object
+ */
+export interface ImportMapConfig {
+	/** Import mappings */
+	imports: Record<string, string>;
+}
+
+/**
  * Reef plugin interface
  */
 export interface ReefPlugin {
@@ -37,16 +57,16 @@ export interface ReefPlugin {
 	onBuild?(context: PluginBuildContext): Promise<void>;
 
 	/**
-	 * Hook: Returns import map script tag for runtime dependencies
+	 * Hook: Returns import map configuration for runtime dependencies
 	 * Should return null if plugin has no components to load
 	 */
-	getImportMap?(): Promise<string | null>;
+	getImportMap?(): Promise<ImportMapConfig | null>;
 
 	/**
-	 * Hook: Returns script tags to inject into pages
-	 * Use context.pageContent to determine which scripts are needed
+	 * Hook: Returns assets (scripts/links) to inject into pages
+	 * Use context.pageContent to determine which assets are needed
 	 */
-	getScripts?(context: PluginScriptContext): Promise<string[]>;
+	getAssets?(context: PluginScriptContext): Promise<Asset[]>;
 }
 
 /**

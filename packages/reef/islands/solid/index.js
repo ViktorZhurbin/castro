@@ -1,6 +1,6 @@
 import { OUTPUT_DIR } from "../../constants/dir.js";
 import {
-	generateTagsForUsedComponents,
+	generateAssetsForUsedComponents,
 	processJSXIslands,
 } from "../../utils/index.js";
 import { compileJSXIsland } from "./jsx-compiler.js";
@@ -48,35 +48,29 @@ export function solidIslands(options = {}) {
 		},
 
 		/**
-		 * Hook: Returns import map for Solid.js runtime from CDN
-		 * @returns {Promise<string|null>} Import map script tag or null
+		 * Hook: Returns import map configuration for Solid.js runtime from CDN
+		 * @returns {Promise<import('../../types/plugin.js').ImportMapConfig|null>} Import map config or null
 		 */
 		async getImportMap() {
 			if (discoveredComponents.length === 0) return null;
 
-			const importMap = {
+			return {
 				imports: {
 					"solid-js": "https://esm.sh/solid-js",
 					"solid-js/web": "https://esm.sh/solid-js/web",
 					"solid-element": "https://esm.sh/solid-element",
 				},
 			};
-
-			return `<script type="importmap">${JSON.stringify(
-				importMap,
-				null,
-				2,
-			)}</script>`;
 		},
 
 		/**
-		 * Hook: Returns script tags to inject into pages
-		 * Only injects scripts for components actually used on the page
+		 * Hook: Returns assets to inject into pages
+		 * Only injects assets for components actually used on the page
 		 * @param {PluginScriptContext} context - Script context
-		 * @returns {Promise<string[]>} Array of script tag strings
+		 * @returns {Promise<import('../../types/plugin.js').Asset[]>} Array of assets
 		 */
-		async getScripts({ pageContent }) {
-			return generateTagsForUsedComponents(discoveredComponents, pageContent);
+		async getAssets({ pageContent }) {
+			return generateAssetsForUsedComponents(discoveredComponents, pageContent);
 		},
 	};
 }

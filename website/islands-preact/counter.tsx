@@ -1,5 +1,5 @@
-import { useState } from "preact/hooks";
 import type { FunctionComponent } from "preact";
+import { useState } from "preact/hooks";
 import "./counter.css";
 
 interface CounterProps {

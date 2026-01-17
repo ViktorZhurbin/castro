@@ -1,4 +1,4 @@
-import fsPromises from "node:fs/promises";
+import { access } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import { CONFIG_FILE } from "../constants/config.js";
 
@@ -12,7 +12,7 @@ import { CONFIG_FILE } from "../constants/config.js";
  */
 export async function loadConfig() {
 	try {
-		await fsPromises.access(CONFIG_FILE);
+		await access(CONFIG_FILE);
 		const configUrl = pathToFileURL(CONFIG_FILE).href;
 		const config = await import(configUrl);
 		return config.default;

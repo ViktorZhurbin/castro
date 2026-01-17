@@ -1,16 +1,33 @@
-import fsPromises from "node:fs/promises";
-import path from "node:path";
+import { readFile } from "node:fs/promises";
+import { basename, dirname } from "node:path";
 import tsPreset from "@babel/preset-typescript";
 import solidPreset from "babel-preset-solid";
 import * as esbuild from "esbuild";
-import { createBabelPlugin, writeEsbuildOutput } from "../../utils/index.js";
+import { writeBuildOutput } from "../../utils/index.js";
 
 /**
  * A tiny esbuild plugin to handle Solid JSX via Babel
  */
-const solidBabelPlugin = createBabelPlugin("solid-babel", () => ({
-	presets: [[solidPreset, { generate: "dom", hydratable: false }], [tsPreset]],
-}));
+const solidBabelPlugin = {
+	name: "solid-babel",
+	setup(build) {
+		build.onLoad({ filter: /\.[jt]sx$/ }, async (args) => {
+			const source = await readFile(args.path, "utf8");
+
+			const { code } = await import("@babel/core").then((babel) =>
+				babel.transformAsync(source, {
+					filename: args.path,
+					presets: [
+						[solidPreset, { generate: "dom", hydratable: false }],
+						[tsPreset],
+					],
+				}),
+			);
+
+			return { contents: code, loader: "js" };
+		});
+	},
+};
 
 export async function compileJSXIsland({
 	sourcePath,
@@ -24,7 +41,7 @@ export async function compileJSXIsland({
 	 */
 	const virtualEntry = `
     import { customElement, noShadowDOM } from 'solid-element';
-    import Component from './${path.basename(sourcePath)}';
+    import Component from './${basename(sourcePath)}';
 
 		const defaultPropsKeys = Object.keys(Component.defaultProps ?? {});
 		const defaultProps = defaultPropsKeys.reduce((acc, curr) => {
@@ -34,7 +51,6 @@ export async function compileJSXIsland({
 
     customElement('${elementName}', defaultProps, (props) => {
     	noShadowDOM();
-
 			return Component(props);
 		});
   `.trim();
@@ -42,7 +58,7 @@ export async function compileJSXIsland({
 	const result = await esbuild.build({
 		stdin: {
 			contents: virtualEntry,
-			resolveDir: path.dirname(sourcePath),
+			resolveDir: dirname(sourcePath),
 			loader: "js",
 		},
 		bundle: true,
@@ -55,6 +71,5 @@ export async function compileJSXIsland({
 		logLevel: "warning",
 	});
 
-	await fsPromises.mkdir(path.dirname(outputPath), { recursive: true });
-	return writeEsbuildOutput(result);
+	return writeBuildOutput(result, outputPath);
 }

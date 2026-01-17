@@ -17,7 +17,7 @@ export default function Landing() {
 					<section>
 						<h2>Try the Interactive Counter</h2>
 						<p>This island is automatically detected and hydrated:</p>
-						<counter-solid></counter-solid>
+						<counter-preact></counter-preact>
 					</section>
 
 					<section>

@@ -1,20 +1,20 @@
 import { filterUsedComponents } from "./filter-used-components.js";
-import { generateScriptTag } from "./generate-script-tag.js";
 
 /**
  * @import { IslandComponent } from '../types/island.js';
+ * @import { Asset } from '../types/plugin.js';
  */
 
 /**
- * Generate script and CSS link tags for components used on a page
- * Filters components by page content and returns both script and stylesheet tags
+ * Generate asset objects for components used on a page
+ * Filters components by page content and returns both script and stylesheet assets
  *
  * @param {IslandComponent[]} discoveredComponents - All available components
  * @param {string} pageContent - HTML or markdown content to scan for usage
- * @returns {string[]} Array of script and link tag strings
+ * @returns {Asset[]} Array of asset objects
  *
  * @example
- * generateScriptsAndCSSForUsedComponents(
+ * generateAssetsForUsedComponents(
  *   [
  *     {elementName: 'counter-preact', outputPath: '/components/counter-preact.js', cssPath: '/components/counter-preact.css'},
  *     {elementName: 'button-preact', outputPath: '/components/button-preact.js'}
@@ -22,11 +22,11 @@ import { generateScriptTag } from "./generate-script-tag.js";
  *   '<counter-preact></counter-preact>'
  * )
  * // Returns: [
- * //   '<script type="module" src="/components/counter-preact.js"></script>',
- * //   '<link rel="stylesheet" href="/components/counter-preact.css">'
+ * //   { tag: 'script', attrs: { type: 'module', src: '/components/counter-preact.js' } },
+ * //   { tag: 'link', attrs: { rel: 'stylesheet', href: '/components/counter-preact.css' } }
  * // ]
  */
-export function generateTagsForUsedComponents(
+export function generateAssetsForUsedComponents(
 	discoveredComponents,
 	pageContent,
 ) {
@@ -34,17 +34,25 @@ export function generateTagsForUsedComponents(
 		discoveredComponents,
 		pageContent,
 	);
-	const tags = [];
+
+	/** @type {Asset[]} */
+	const assets = [];
 
 	for (const component of usedComponents) {
-		// Add script tag
-		tags.push(generateScriptTag(component.outputPath));
+		// Add script asset
+		assets.push({
+			tag: "script",
+			attrs: { type: "module", src: component.outputPath },
+		});
 
-		// Add CSS link tag if component has CSS
+		// Add CSS link asset if component has CSS
 		if (component.cssPath) {
-			tags.push(`<link rel="stylesheet" href="${component.cssPath}">`);
+			assets.push({
+				tag: "link",
+				attrs: { rel: "stylesheet", href: component.cssPath },
+			});
 		}
 	}
 
-	return tags;
+	return assets;
 }

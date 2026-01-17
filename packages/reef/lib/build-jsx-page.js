@@ -1,115 +1,74 @@
-import fsPromises from "node:fs/promises";
-import os from "node:os";
-import path from "node:path";
+import { basename, extname, join } from "node:path";
 import { styleText } from "node:util";
 import render from "preact-render-to-string";
-import { OUTPUT_DIR, PAGES_DIR } from "../constants/dir.js";
-import { compileAndLoadJSX } from "../utils/index.js";
+import { createTempDirPath } from "../utils/dir.js";
+import { compileJSX, loadCompiledModule } from "../utils/jsx-compiler.js";
+import { builderShell } from "./builder-shell.js";
+import { layouts } from "./layouts-registry.js";
+import { resolveLayout } from "./reef-resolver.js";
+import { writeHtmlPage } from "./write-html-page.js";
 
-const TEMP_DIR = path.join(os.tmpdir(), "reef-pages");
+const TEMP_DIR = createTempDirPath("pages");
 
 /**
  * Build a single JSX page to HTML
- * Compiles JSX → renders to HTML → detects islands → injects scripts → writes output
- *
- * @param {string} jsxFileName - JSX file name (relative to pages directory)
+ * @param {string} sourceFileName
  * @param {object} [options] - Build options
- * @param {string} [options.injectScript] - Script to inject (e.g., live reload)
+ * @param {boolean} [options.logOnSuccess] - Log when build succeeds
  * @param {boolean} [options.logOnStart] - Log when build starts
- * @param {Array} [options.plugins] - Plugin instances
- * @returns {Promise<boolean>} - True if build succeeded, false otherwise
  */
-export async function buildJSXPage(jsxFileName, options = {}) {
-	const { injectScript = "", logOnStart, plugins = [] } = options;
+export async function buildJSXPage(sourceFileName, options = {}) {
+	await builderShell(sourceFileName, /\.[jt]sx$/, options, async (ctx) => {
+		const { sourceFilePath, outputFilePath } = ctx;
 
-	const htmlFileName = jsxFileName.replace(/\.[jt]sx$/, ".html");
-	const jsxFilePath = path.join(PAGES_DIR, jsxFileName);
+		const allLayouts = layouts.getAll();
 
-	try {
-		if (logOnStart) {
-			console.info(
-				`Writing ${OUTPUT_DIR}/${htmlFileName} ${styleText(
-					"gray",
-					`from ${jsxFilePath}`,
-				)}`,
+		const tempFileName = `${basename(sourceFileName, extname(sourceFileName))}.mjs`;
+		const tempPath = join(TEMP_DIR, tempFileName);
+
+		await compileJSX(sourceFilePath, tempPath);
+
+		// Always load fresh
+		const pageModule = await loadCompiledModule(tempPath);
+
+		if (!pageModule.default || typeof pageModule.default !== "function") {
+			throw new Error(
+				`JSX page ${sourceFileName} must have a default export function`,
 			);
 		}
 
-		// Compile JSX and load module
-		await fsPromises.mkdir(TEMP_DIR, { recursive: true });
-		// Use timestamp in filename to avoid module cache issues in dev mode
-		const timestamp = Date.now();
-		const tempFileName =
-			path.basename(jsxFileName, path.extname(jsxFileName)) +
-			`.${timestamp}.js`;
-		const tempPath = path.join(TEMP_DIR, tempFileName);
+		// Extract metadata (includes layout preference)
+		const meta = pageModule.meta || {};
 
-		// Compile and import in one step
-		const pageModule = await compileAndLoadJSX(jsxFilePath, tempPath);
+		let layoutVNode;
 
-		if (!pageModule.default) {
-			throw new Error(`JSX page ${jsxFileName} must have default export`);
-		}
+		if (meta.layout === false) {
+			layoutVNode = pageModule.default();
+		} else {
+			const contentVNode = pageModule.default();
 
-		// Render component to HTML
-		const vnode = pageModule.default();
-		let htmlOutput = render(vnode);
+			const layoutName = await resolveLayout(sourceFilePath, meta);
 
-		// Get import maps and scripts from plugins
-		const importMaps = [];
-		const pluginScripts = [];
+			const layoutFn = allLayouts.get(layoutName);
 
-		for (const plugin of plugins) {
-			if (plugin.getImportMap) {
-				const importMap = await plugin.getImportMap();
-				if (importMap) importMaps.push(importMap);
+			if (!layoutFn) {
+				throw new Error(
+					`Layout '${styleText("magenta", layoutName)}' not found in layouts/`,
+				);
 			}
 
-			if (plugin.getScripts) {
-				// CRITICAL: Pass rendered HTML, not JSX source
-				const scripts = await plugin.getScripts({ pageContent: htmlOutput });
-				pluginScripts.push(...scripts);
-			}
+			const title = meta.title || sourceFileName.replace(/\.[jt]sx$/, "");
+			const contentHtml = render(contentVNode);
+
+			layoutVNode = layoutFn({
+				title,
+				content: contentHtml,
+				...meta,
+			});
 		}
 
-		// Inject scripts/import maps into HTML
-		const allScripts = [...pluginScripts, injectScript].filter(Boolean);
+		const layoutHtml = render(layoutVNode);
 
-		if (importMaps.length > 0 || allScripts.length > 0) {
-			const headCloseIndex = htmlOutput.indexOf("</head>");
-			const bodyCloseIndex = htmlOutput.indexOf("</body>");
-
-			const scriptsHtml = [...importMaps, ...allScripts].join("\n    ");
-
-			if (headCloseIndex !== -1) {
-				htmlOutput =
-					htmlOutput.slice(0, headCloseIndex) +
-					`    ${scriptsHtml}\n  ` +
-					htmlOutput.slice(headCloseIndex);
-			} else if (bodyCloseIndex !== -1) {
-				htmlOutput =
-					htmlOutput.slice(0, bodyCloseIndex) +
-					`    ${scriptsHtml}\n  ` +
-					htmlOutput.slice(bodyCloseIndex);
-			}
-		}
-
-		// Ensure DOCTYPE
-		const finalHtml = !htmlOutput.startsWith("<!DOCTYPE")
-			? `<!DOCTYPE html>\n${htmlOutput}`
-			: htmlOutput;
-
-		// Write to output
-		const htmlFilePath = path.join(OUTPUT_DIR, htmlFileName);
-		await fsPromises.mkdir(path.dirname(htmlFilePath), { recursive: true });
-		await fsPromises.writeFile(htmlFilePath, finalHtml);
-
-		return true;
-	} catch (err) {
-		console.error(
-			`${styleText("gray", "Failed to build JSX page")} ${jsxFileName}`,
-			err.message,
-		);
-		return false;
-	}
+		await writeHtmlPage(layoutHtml, outputFilePath);
+	});
 }

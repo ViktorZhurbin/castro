@@ -1,55 +1,30 @@
-import fsPromises from "node:fs/promises";
-import path from "node:path";
+import { cp, glob, mkdir, rm } from "node:fs/promises";
+import { join, relative } from "node:path";
 import { styleText } from "node:util";
-import {
-	CONTENT_DIR,
-	OUTPUT_DIR,
-	PAGES_DIR,
-	PUBLIC_DIR,
-} from "../constants/dir.js";
-import { preactIslands } from "../islands/preact/index.js";
-import { solidIslands } from "../islands/solid/index.js";
+import { OUTPUT_DIR, PAGES_DIR, PUBLIC_DIR } from "../constants/dir.js";
+import { formatMs } from "../utils/format.js";
 import { buildJSXPage } from "./build-jsx-page.js";
-import { loadConfig } from "./config-loader.js";
-import { loadLayouts } from "./layouts.js";
 import { buildMdPage } from "./build-md-page.js";
+import { defaultPlugins } from "./plugins.js";
 
-/**
- * @import { BuildAllOptions } from '../types/build.js';
- */
-
-const formatMs = (ms) => `${Math.round(ms)}ms`;
-
-// Load layouts once at module load
-let layouts = await loadLayouts();
-
-// Load config once at module load
-const config = await loadConfig();
-
-/**
- * Reload layouts (for dev mode when layout files change)
- */
-export async function reloadLayouts() {
-	layouts = await loadLayouts();
-}
-
-const defaultPlugins = [solidIslands(), preactIslands()];
+const allPlugins = defaultPlugins;
 
 /**
  * Build all markdown files to HTML
- * @param {BuildAllOptions} [options] - Build options
+ * @param {object} [options]
+ * @param {boolean} [options.verbose]
  */
 export async function buildAll(options = {}) {
-	const { injectScript = "", verbose = false, plugins = [] } = options;
+	const { verbose = false } = options;
 	const startTime = performance.now();
 
 	// Clean up output directory and recreate it
-	await fsPromises.rm(OUTPUT_DIR, { recursive: true, force: true });
-	await fsPromises.mkdir(OUTPUT_DIR, { recursive: true });
+	await rm(OUTPUT_DIR, { recursive: true, force: true });
+	await mkdir(OUTPUT_DIR, { recursive: true });
 
 	// Copy public directory to output if it exists
 	try {
-		await fsPromises.cp(PUBLIC_DIR, OUTPUT_DIR, { recursive: true });
+		await cp(PUBLIC_DIR, OUTPUT_DIR, { recursive: true });
 	} catch (err) {
 		// Silently skip if public directory doesn't exist
 		if (err.code !== "ENOENT") {
@@ -57,127 +32,84 @@ export async function buildAll(options = {}) {
 		}
 	}
 
-	// Merge plugins from config and options
-	const allPlugins = [
-		...(config?.plugins || []),
-		...defaultPlugins,
-		...plugins,
-	];
-
 	// Run plugin onBuild hooks (for file copying, etc.)
 	for (const plugin of allPlugins) {
 		if (plugin.onBuild) {
-			await plugin.onBuild({ outputDir: OUTPUT_DIR, contentDir: CONTENT_DIR });
+			await plugin.onBuild({ outputDir: OUTPUT_DIR, contentDir: PAGES_DIR });
 		}
 	}
 
-	// Helper to safely build files from a directory (handles missing directories)
-	const safeBuildFrom = async (dir, pattern, buildFn, extraOptions = {}) => {
-		try {
-			return await Array.fromAsync(
-				fsPromises.glob(path.join(dir, pattern)),
-				(filePath) => {
-					const relativePath = path.relative(dir, filePath);
-					return buildFn(relativePath, {
-						injectScript,
-						logOnStart: verbose,
-						plugins: allPlugins,
-						...extraOptions,
-					});
-				},
-			);
-		} catch (err) {
-			// Directory doesn't exist, return empty array
-			if (err.code === "ENOENT") {
-				return [];
-			}
-			throw err;
-		}
-	};
-
-	// Detect route conflicts between content/ and pages/
-	const mdFiles = new Set();
-	const jsxFiles = new Set();
+	// Collect all files and detect route conflicts in one pass
+	const mdFilePaths = [];
+	const jsxFilePaths = [];
+	const outputMap = new Map(); // htmlPath → sourceFile (for conflict detection)
 
 	try {
-		for await (const filePath of fsPromises.glob(
-			path.join(CONTENT_DIR, "**/*.md"),
-		)) {
-			const relativePath = path.relative(CONTENT_DIR, filePath);
-			const htmlPath = relativePath.replace(".md", ".html");
-			mdFiles.add(htmlPath);
-		}
-	} catch (err) {
-		if (err.code !== "ENOENT") throw err;
-	}
+		await Array.fromAsync(
+			glob(join(PAGES_DIR, "**/*.{md,jsx,tsx}")),
+			(filePath) => {
+				const relativePath = relative(PAGES_DIR, filePath);
 
-	try {
-		for await (const filePath of fsPromises.glob(
-			path.join(PAGES_DIR, "**/*.{jsx,tsx}"),
-		)) {
-			const relativePath = path.relative(PAGES_DIR, filePath);
-			const htmlPath = relativePath.replace(/\.[jt]sx$/, ".html");
-			jsxFiles.add(htmlPath);
-		}
-	} catch (err) {
-		if (err.code !== "ENOENT") throw err;
-	}
+				const htmlPath = relativePath.replace(/\.(md|[jt]sx)$/, ".html");
 
-	// Warn about conflicts
-	const conflicts = [...mdFiles].filter((file) => jsxFiles.has(file));
-	if (conflicts.length > 0) {
-		console.warn(
-			styleText("yellow", "⚠ Route conflicts detected:"),
-			conflicts
-				.map((file) => {
-					const mdPath = `content/${file.replace(".html", ".md")}`;
-					const jsxPath = `pages/${file.replace(".html", ".jsx")}`;
-					return `\n  ${file} - both ${mdPath} and ${jsxPath}[tsx] exist`;
-				})
-				.join(""),
-			styleText("yellow", "\n  → JSX pages will take precedence"),
+				// Detect conflicts inline
+				if (outputMap.has(htmlPath)) {
+					const existingFile = outputMap.get(htmlPath);
+					const errorMessage = [
+						styleText("yellow", "⚠ Duplicate route conflict detected."),
+						`\n${styleText("yellow", "Remove/rename one of the conflicting files to continue:")}`,
+						`\n - ${PAGES_DIR}/${existingFile}`,
+						`\n - ${PAGES_DIR}/${relativePath}`,
+					].join("");
+
+					throw new Error(errorMessage);
+				}
+
+				outputMap.set(htmlPath, relativePath);
+
+				// Categorize by type for building
+				if (relativePath.endsWith(".md")) {
+					mdFilePaths.push(relativePath);
+				} else {
+					jsxFilePaths.push(relativePath);
+				}
+			},
 		);
+	} catch (err) {
+		// Directory doesn't exist, return empty array
+		if (err.code === "ENOENT") {
+			return [];
+		}
+		throw err;
 	}
 
-	// Build all markdown files
-	const mdBuildPromises = await safeBuildFrom(
-		CONTENT_DIR,
-		"**/*.md",
-		buildMdPage,
-		{ layouts },
-	);
+	// Build all collected files
+	let resultsCount = 0;
 
-	// Build all JSX pages (after markdown, so JSX deterministically wins conflicts)
-	const jsxBuildPromises = await safeBuildFrom(
-		PAGES_DIR,
-		"**/*.{jsx,tsx}",
-		buildJSXPage,
-	);
+	for (const relativePath of mdFilePaths) {
+		await buildMdPage(relativePath, {
+			logOnStart: verbose,
+		});
+		resultsCount++;
+	}
 
-	// Combine all build promises
-	const allBuildPromises = [...mdBuildPromises, ...jsxBuildPromises];
+	for (const relativePath of jsxFilePaths) {
+		await buildJSXPage(relativePath, {
+			logOnStart: verbose,
+		});
+		resultsCount++;
+	}
 
-	if (allBuildPromises.length === 0) {
-		console.warn(`No files found in ${CONTENT_DIR} or ${PAGES_DIR}`);
+	if (resultsCount === 0) {
+		console.warn(`No files found in ${PAGES_DIR}`);
 		return;
 	}
 
-	const results = await Promise.all(allBuildPromises);
-
-	const successCount = results.filter((r) => r === true).length;
-	const failCount = allBuildPromises.length - successCount;
-
 	const buildTime = formatMs(performance.now() - startTime);
-
 	const successMessage = styleText(
 		"green",
-		`Wrote ${successCount} files in ${buildTime}`,
+		`Wrote ${resultsCount} files in ${buildTime}`,
 	);
-	if (failCount > 0) {
-		console.info(
-			`${successMessage} ${styleText("yellow", `(${failCount} failed)`)}`,
-		);
-	} else {
-		console.info(successMessage);
-	}
+
+	console.info(successMessage);
 }

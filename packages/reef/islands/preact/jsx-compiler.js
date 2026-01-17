@@ -1,7 +1,6 @@
-import fsPromises from "node:fs/promises";
-import path from "node:path";
+import { basename, dirname } from "node:path";
 import * as esbuild from "esbuild";
-import { preactBabelPlugin, writeEsbuildOutput } from "../../utils/index.js";
+import { writeBuildOutput } from "../../utils/index.js";
 
 export async function compileJSXIsland({
 	sourcePath,
@@ -13,7 +12,7 @@ export async function compileJSXIsland({
 	 */
 	const virtualEntry = `
     import register from 'preact-custom-element';
-    import Component from './${path.basename(sourcePath)}';
+    import Component from './${basename(sourcePath)}';
 
     // Register component as custom element
     // Empty array = no observed attributes (or infer from propTypes)
@@ -23,7 +22,7 @@ export async function compileJSXIsland({
 	const result = await esbuild.build({
 		stdin: {
 			contents: virtualEntry,
-			resolveDir: path.dirname(sourcePath),
+			resolveDir: dirname(sourcePath),
 			loader: "js",
 		},
 		bundle: true,
@@ -31,7 +30,8 @@ export async function compileJSXIsland({
 		target: "es2020",
 		write: false,
 		outfile: outputPath, // Helper for CSS generation
-		plugins: [preactBabelPlugin],
+		jsx: "automatic",
+		jsxImportSource: "preact",
 		external: [
 			"preact",
 			"preact/hooks",
@@ -41,6 +41,5 @@ export async function compileJSXIsland({
 		logLevel: "warning",
 	});
 
-	await fsPromises.mkdir(path.dirname(outputPath), { recursive: true });
-	return writeEsbuildOutput(result);
+	return writeBuildOutput(result, outputPath);
 }

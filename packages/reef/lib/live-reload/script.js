@@ -1,3 +1,5 @@
+import { LiveReloadEvents } from "./constants.js";
+
 // Live reload using Server-Sent Events
 const events = new EventSource("/events");
 
@@ -6,7 +8,7 @@ events.onopen = () => {
 };
 
 events.onmessage = (event) => {
-	if (event.data === "reload") {
+	if (event.data === LiveReloadEvents.Reload) {
 		console.info("[Live Reload] Reloading page...");
 		location.reload();
 	}

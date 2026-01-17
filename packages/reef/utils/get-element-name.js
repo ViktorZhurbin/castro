@@ -1,4 +1,4 @@
-import path from "node:path";
+import { basename, extname } from "node:path";
 
 /**
  * Convert a file name to a custom element name
@@ -19,8 +19,8 @@ import path from "node:path";
  * // Returns: 'data-table-island'
  */
 export function getElementName(fileName, suffix = "-component") {
-	const ext = path.extname(fileName);
-	const baseName = path.basename(fileName, ext);
+	const ext = extname(fileName);
+	const baseName = basename(fileName, ext);
 
 	return `${baseName}${suffix}`;
 }

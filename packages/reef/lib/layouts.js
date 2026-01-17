@@ -1,15 +1,15 @@
-import fsPromises from "node:fs/promises";
-import os from "node:os";
-import path from "node:path";
+import { access, mkdir, readdir, rm } from "node:fs/promises";
+import { basename, extname, join } from "node:path";
 import { styleText } from "node:util";
 import { LAYOUTS_DIR } from "../constants/dir.js";
-import { compileAndLoadJSX } from "../utils/index.js";
+import { createTempDirPath } from "../utils/dir.js";
+import { compileJSX, loadCompiledModule } from "../utils/jsx-compiler.js";
+
+const TEMP_DIR = createTempDirPath("layouts");
 
 /**
  * @import { LayoutComponent } from '../types/layout.js';
  */
-
-const TEMP_DIR = path.join(os.tmpdir(), "reef-layouts");
 
 /**
  * Discover, compile, and load all JSX layouts
@@ -21,7 +21,7 @@ export async function loadLayouts() {
 
 	// Check if layouts directory exists
 	try {
-		await fsPromises.access(LAYOUTS_DIR);
+		await access(LAYOUTS_DIR);
 	} catch (err) {
 		if (err.code === "ENOENT") {
 			throw new Error(
@@ -32,7 +32,7 @@ export async function loadLayouts() {
 	}
 
 	// Discover layout files
-	const files = await fsPromises.readdir(LAYOUTS_DIR);
+	const files = await readdir(LAYOUTS_DIR);
 	const layoutFiles = files.filter((f) => /\.[jt]sx$/.test(f));
 
 	if (layoutFiles.length === 0) {
@@ -42,18 +42,20 @@ export async function loadLayouts() {
 	}
 
 	// Clean and recreate temp directory
-	await fsPromises.rm(TEMP_DIR, { recursive: true, force: true });
-	await fsPromises.mkdir(TEMP_DIR, { recursive: true });
+	await rm(TEMP_DIR, { recursive: true, force: true });
+	await mkdir(TEMP_DIR, { recursive: true });
 
 	// Compile and load each layout
 	for (const fileName of layoutFiles) {
-		const layoutName = path.basename(fileName, path.extname(fileName));
-		const sourcePath = path.join(LAYOUTS_DIR, fileName);
-		const outputPath = path.join(TEMP_DIR, `${layoutName}.js`);
+		const layoutName = basename(fileName, extname(fileName));
 
 		try {
+			const sourceFilePath = join(LAYOUTS_DIR, fileName);
+			const tempPath = join(TEMP_DIR, `${layoutName}.mjs`);
+
 			// Compile and load layout module
-			const layoutModule = await compileAndLoadJSX(sourcePath, outputPath);
+			await compileJSX(sourceFilePath, tempPath);
+			const layoutModule = await loadCompiledModule(tempPath);
 
 			if (!layoutModule.default) {
 				throw new Error(

@@ -1,9 +1,4 @@
-export default function BlogLayout({
-	title,
-	content,
-	scripts = [],
-	importMaps = [],
-}) {
+export default function BlogSpecialLayout({ title, content }) {
 	return (
 		<html lang="en">
 			<head>
@@ -11,15 +6,6 @@ export default function BlogLayout({
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 				<title>{title} - Blog</title>
 				<link rel="stylesheet" href="/styles.css" />
-				{importMaps.map((html, i) => (
-					<div
-						key={`importmap-${i}`}
-						dangerouslySetInnerHTML={{ __html: html }}
-					/>
-				))}
-				{scripts.map((html, i) => (
-					<div key={`script-${i}`} dangerouslySetInnerHTML={{ __html: html }} />
-				))}
 			</head>
 			<body>
 				<header>

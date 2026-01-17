@@ -1,5 +1,5 @@
-import fsPromises from "node:fs/promises";
-import path from "node:path";
+import { access, mkdir, readdir } from "node:fs/promises";
+import { basename, join } from "node:path";
 import { styleText } from "node:util";
 import { getElementName } from "./get-element-name.js";
 
@@ -38,9 +38,9 @@ export async function processJSXIslands({
 	/** @type {{ sourcePath: string, elementName: string }[]} */
 	const compiledIslands = [];
 
-	// Check if islands directory exists
 	try {
-		await fsPromises.access(islandsDir);
+		// Check if islands directory exists
+		await access(islandsDir);
 	} catch (err) {
 		if (err.code === "ENOENT") {
 			console.warn(
@@ -49,26 +49,25 @@ export async function processJSXIslands({
 			);
 			return [];
 		}
-		// rethrow
 		throw err;
 	}
 
 	try {
-		const files = await fsPromises.readdir(islandsDir);
+		const files = await readdir(islandsDir);
 		const jsxFiles = files.filter((f) => /\.[jt]sx$/.test(f));
 
 		if (jsxFiles.length === 0) return [];
 
-		const outputComponentsDir = path.join(outputDir, OUTPUT_COMPONENTS_DIR);
-		await fsPromises.mkdir(outputComponentsDir, { recursive: true });
+		const outputComponentsDir = join(outputDir, OUTPUT_COMPONENTS_DIR);
+		await mkdir(outputComponentsDir, { recursive: true });
 
 		for (const fileName of jsxFiles) {
 			const elementName = getElementName(fileName, elementSuffix);
 			const outputFileName = `${elementName}.js`;
 
 			try {
-				const sourcePath = path.join(islandsDir, fileName);
-				const outputPath = path.join(outputComponentsDir, outputFileName);
+				const sourcePath = join(islandsDir, fileName);
+				const outputPath = join(outputComponentsDir, outputFileName);
 
 				const result = await compileIsland({
 					sourcePath,
@@ -84,7 +83,7 @@ export async function processJSXIslands({
 
 				// Add CSS path if it exists
 				if (result?.cssOutputPath) {
-					const cssFileName = path.basename(result.cssOutputPath);
+					const cssFileName = basename(result.cssOutputPath);
 					component.cssPath = `/${OUTPUT_COMPONENTS_DIR}/${cssFileName}`;
 				}
 
