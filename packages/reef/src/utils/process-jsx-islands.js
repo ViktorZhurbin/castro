@@ -46,7 +46,10 @@ export async function processJSXIslands({
 
 	// 3. Glob files and process them using Array.fromAsync
 	// This iterates over the glob generator and runs the async mapper for each file
-	const results = await Array.fromAsync(
+	const discoveredComponents = [];
+	const compiledIslands = [];
+
+	await Array.fromAsync(
 		glob(join(islandsDir, "**/*.{jsx,tsx}")),
 		async (sourcePath) => {
 			const fileName = basename(sourcePath);
@@ -73,32 +76,25 @@ export async function processJSXIslands({
 					component.cssPath = `/${OUTPUT_COMPONENTS_DIR}/${cssFileName}`;
 				}
 
-				// Return both the public component data and internal logging metadata
-				return {
-					component,
-					logMeta: { sourcePath, elementName },
-				};
+				discoveredComponents.push(component);
+				compiledIslands.push({ sourcePath, elementName });
 			} catch (err) {
 				throw new Error(`Failed to process island ${fileName}: ${err.message}`);
 			}
 		},
 	);
 
-	// 4. Separate results for Logging and Return
-	const discoveredComponents = results.map((r) => r.component);
-	const compiledLog = results.map((r) => r.logMeta);
-
-	// 5. Log results (Preserving original format)
-	if (compiledLog.length > 0) {
+	// Log compiled islands
+	if (compiledIslands.length > 0) {
 		console.info(
 			styleText(
 				"green",
-				`✓ Compiled ${compiledLog.length} island${
-					compiledLog.length > 1 ? "s" : ""
+				`✓ Compiled ${compiledIslands.length} island${
+					compiledIslands.length > 1 ? "s" : ""
 				}:`,
 			),
 		);
-		for (const { sourcePath, elementName } of compiledLog) {
+		for (const { sourcePath, elementName } of compiledIslands) {
 			console.info(
 				`  ${styleText("cyan", sourcePath)} → ${styleText(
 					"magenta",

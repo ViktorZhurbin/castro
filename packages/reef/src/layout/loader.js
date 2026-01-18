@@ -16,6 +16,9 @@ const TEMP_DIR = createTempDirPath("layouts");
  * @returns {Promise<Map<string, LayoutComponent>>} Map of layout name to render function
  */
 export async function loadLayouts() {
+	/** @type {Map<string, LayoutComponent>} */
+	const layouts = new Map();
+
 	// Check if layouts directory exists
 	try {
 		await access(LAYOUTS_DIR);
@@ -33,7 +36,7 @@ export async function loadLayouts() {
 	await mkdir(TEMP_DIR, { recursive: true });
 
 	// Process layouts concurrently using Array.fromAsync + glob
-	const layoutEntries = await Array.fromAsync(
+	await Array.fromAsync(
 		glob(join(LAYOUTS_DIR, "**/*.{jsx,tsx}")),
 		async (sourceFilePath) => {
 			const fileName = basename(sourceFilePath);
@@ -51,8 +54,7 @@ export async function loadLayouts() {
 					);
 				}
 
-				// Return as a [key, value] pair for Map construction
-				return [layoutName, layoutModule.default];
+				layouts.set(layoutName, layoutModule.default);
 			} catch (err) {
 				throw new Error(`Failed to load layout ${fileName}: ${err.message}`);
 			}
@@ -60,14 +62,11 @@ export async function loadLayouts() {
 	);
 
 	// Validate results
-	if (layoutEntries.length === 0) {
+	if (layouts.size === 0) {
 		throw new Error(
 			`No layout files found in ${LAYOUTS_DIR}\nCreate at least default.jsx`,
 		);
 	}
-
-	/** @type {Map<string, LayoutComponent>} */
-	const layouts = new Map(layoutEntries);
 
 	console.info(
 		styleText("green", "✓ Loaded layouts:"),

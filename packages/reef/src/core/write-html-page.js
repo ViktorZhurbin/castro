@@ -5,10 +5,6 @@ import { injectAssets } from "../assets/inject.js";
 import { defaultPlugins } from "../plugins/defaultPlugins.js";
 
 /**
- * @import { ReefPlugin } from '../types/plugin.js';
- */
-
-/**
  * Collect assets, inject them into HTML, and write to file.
  *
  * @param {string} html - HTML content to process

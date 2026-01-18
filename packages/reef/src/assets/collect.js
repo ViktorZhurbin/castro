@@ -36,7 +36,7 @@ export async function collectAssets({ pageContent }) {
 	}
 
 	// Auto-inject live reload asset in dev mode
-	if (process.env.REEF_DEV === "true") {
+	if (process.env.NODE_ENV === "development") {
 		const result = await esbuild.build({
 			entryPoints: [join(import.meta.dirname, "../dev/live-reload.js")],
 			write: false,

@@ -4,7 +4,7 @@ import solidPreset from "babel-preset-solid";
 import { compileIslandWithConfig } from "./helpers.js";
 
 /**
- * A tiny esbuild plugin to handle Solid JSX via Babel
+ * A tiny plugin to handle Solid JSX via Babel
  */
 const solidBabelPlugin = {
 	name: "solid-babel",
@@ -33,6 +33,8 @@ export async function compileSolidIsland({ sourcePath, outputPath }) {
 		outputPath,
 		frameworkConfig: {
 			plugins: [solidBabelPlugin],
+			jsx: "automatic",
+			jsxImportSource: "preact",
 			external: ["solid-js", "solid-js/web"],
 		},
 	});

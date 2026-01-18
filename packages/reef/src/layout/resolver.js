@@ -1,6 +1,7 @@
 import { access } from "node:fs/promises";
-import { dirname, isAbsolute, join, relative, resolve } from "node:path";
+import { dirname, join, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { styleText } from "node:util";
 import { PAGES_DIR } from "../constants/dir.js";
 
 /**
@@ -52,12 +53,12 @@ async function findReefData(filePath) {
 			const reefUrl = pathToFileURL(reefPath).href;
 
 			// Cache-busting in dev mode to pick up file changes
-			const importUrl =
+			const importPath =
 				process.env.NODE_ENV === "development"
 					? `${reefUrl}?t=${Date.now()}`
 					: reefUrl;
 
-			const reefModule = await import(importUrl);
+			const reefModule = await import(importPath);
 
 			if (reefModule.default) {
 				return reefModule.default;

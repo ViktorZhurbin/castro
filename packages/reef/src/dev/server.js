@@ -13,11 +13,8 @@ import { LiveReloadEvents } from "./constants.js";
 
 const PORT = 3000;
 
-/**
- * Start the development server with live reload
- */
 export async function startDevServer() {
-	process.env.REEF_DEV = "true";
+	process.env.NODE_ENV = "development";
 
 	// Initial build
 	await buildAll();
