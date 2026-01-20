@@ -9,6 +9,7 @@
 	},
 	"dependencies": {
 		"@vktrz/reef": "workspace:*",
-		"preact": "^10.28.2"
+		"preact": "^10.28.2",
+		"solid-js": "1.9.10"
 	}
 }

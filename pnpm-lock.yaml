@@ -63,6 +63,9 @@ importers:
       preact:
         specifier: ^10.28.2
         version: 10.28.2
+      solid-js:
+        specifier: 1.9.10
+        version: 1.9.10
 
 packages:
 
