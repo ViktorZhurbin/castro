@@ -42,6 +42,10 @@ export type IslandPluginConfig = {
 	elementSuffix: string;
 	getBuildConfig: (ssr?: boolean) => Partial<BuildOptions>;
 	importMap: ImportMap;
+	renderSSR: (
+		Component: unknown,
+		props: Record<string, unknown>,
+	) => Promise<string>;
 };
 
 /**

@@ -12,6 +12,7 @@ export const FrameworkConfig = {
 		framework: "solid",
 		defaultDir: "islands-solid",
 		elementSuffix: "-solid",
+
 		getBuildConfig: (ssr) => ({
 			plugins: [getSolidBabelPlugin(ssr)],
 			external: ["solid-js", "solid-js/web"],
@@ -20,12 +21,25 @@ export const FrameworkConfig = {
 			"solid-js": "https://esm.sh/solid-js",
 			"solid-js/web": "https://esm.sh/solid-js/web",
 		},
+
+		renderSSR: async (Component, props) => {
+			const { renderToString, generateHydrationScript } = await import(
+				"solid-js/web"
+			);
+
+			const hydrationScript = generateHydrationScript();
+			// @ts-expect-error: type later, maybe
+			const html = renderToString(() => Component(props));
+
+			return hydrationScript + html;
+		},
 	},
 
 	preact: {
 		framework: "preact",
 		defaultDir: "islands-preact",
 		elementSuffix: "-preact",
+
 		getBuildConfig: () => ({
 			jsx: "automatic",
 			jsxImportSource: "preact",
@@ -35,6 +49,14 @@ export const FrameworkConfig = {
 			preact: "https://esm.sh/preact",
 			"preact/hooks": "https://esm.sh/preact/hooks",
 			"preact/jsx-runtime": "https://esm.sh/preact/jsx-runtime",
+		},
+
+		renderSSR: async (Component, props) => {
+			const { h } = await import("preact");
+			const { render } = await import("preact-render-to-string");
+
+			// @ts-expect-error: type later, maybe
+			return render(h(Component, props));
 		},
 	},
 };

@@ -1,5 +1,6 @@
 import { styleText } from "node:util";
 import { getModule } from "../../../utils/tempDir.js";
+import { FrameworkConfig } from "../framework-config.js";
 
 /**
  * @import { SupportedFramework } from '../../../types/island.js';
@@ -8,11 +9,12 @@ import { getModule } from "../../../utils/tempDir.js";
 /**
  * Renders island component to static HTML string at build time
  *
- * @param {Object} params
- * @param {string} params.compiledCode - Compiled SSR code (ESM)
- * @param {Object} params.props - Component props (camelCase)
- * @param {SupportedFramework} params.framework
- * @param {string} params.elementName - Element name for debugging
+ * @param {{
+ * 	compiledCode: string;
+ * 	props: Record<string, unknown>; // Component props (camelCase)
+ * 	framework: SupportedFramework;
+ * 	elementName: string; // Element name for debugging
+ * }} params
  *
  * @returns {Promise<string | undefined>} Rendered HTML or undefined
  */
@@ -35,25 +37,10 @@ export async function renderIslandSSR({
 			return;
 		}
 
-		if (framework === "preact") {
-			const { h } = await import("preact");
-			const { render } = await import("preact-render-to-string");
+		const config = FrameworkConfig[framework];
+		const html = await config.renderSSR(Component, props);
 
-			return render(h(Component, props));
-		}
-
-		if (framework === "solid") {
-			const { renderToString, generateHydrationScript } = await import(
-				"solid-js/web"
-			);
-
-			const hydrationScript = generateHydrationScript();
-			const html = renderToString(() => Component(props));
-
-			return hydrationScript + html;
-		}
-
-		console.warn(styleText("yellow", `SSR: Unknown framework ${framework}`));
+		return html;
 	} catch (e) {
 		const err = /** @type {NodeJS.ErrnoException} */ (e);
 

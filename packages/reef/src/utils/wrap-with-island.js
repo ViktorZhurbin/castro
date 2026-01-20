@@ -54,8 +54,8 @@ export async function wrapWithIsland(
 			let staticHtml = innerContent;
 			if (component.ssrCode) {
 				const rendered = await renderIslandSSR({
-					compiledCode: component.ssrCode,
 					props,
+					compiledCode: component.ssrCode,
 					framework: component.framework,
 					elementName: component.elementName,
 				});
@@ -92,6 +92,7 @@ export async function wrapWithIsland(
  * Supports: Numbers, Booleans, and JSON strings.
  */
 function extractProps(attrsString) {
+	/** @type Record<string, unknown> */
 	const props = {};
 	// Match data-prop="value" or data-prop='value'
 	const attrRegex = /data-([a-z0-9-]+)=["']([^"']*)["']/g;
