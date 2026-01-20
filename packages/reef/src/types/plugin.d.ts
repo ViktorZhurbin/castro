@@ -50,7 +50,7 @@ export interface ReefPlugin {
 	 * Hook: Returns import map configuration for runtime dependencies
 	 * Should return null if plugin has no components to load
 	 */
-	getImportMap?(): Promise<ImportMap | null>;
+	getImportMap?(): ImportMap | null;
 
 	/**
 	 * Hook: Returns assets (scripts/links) to inject into pages

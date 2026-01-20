@@ -25,7 +25,7 @@ export async function collectAssets({ pageContent }) {
 	// Collect from plugins
 	for (const plugin of defaultPlugins) {
 		if (plugin.getImportMap) {
-			const importMap = await plugin.getImportMap();
+			const importMap = plugin.getImportMap();
 			if (importMap) Object.assign(mergedImportMap, importMap);
 		}
 

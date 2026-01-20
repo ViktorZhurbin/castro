@@ -4,8 +4,8 @@ import { processJSXIslands } from "./process-jsx-islands.js";
 import { wrapWithIsland } from "./wrap-with-island.js";
 
 /**
- * @import { IslandPluginOptions, IslandComponent, SupportedFramework, ImportMap } from '../../../types/island.js';
- * @import { ReefPlugin,  PluginBuildContext, PluginTransformContext } from '../../../types/plugin.js';
+ * @import { IslandPluginOptions, IslandComponent, SupportedFramework } from '../../../types/island.js';
+ * @import { ReefPlugin } from '../../../types/plugin.js';
  */
 
 /**
@@ -18,7 +18,6 @@ import { wrapWithIsland } from "./wrap-with-island.js";
 export function createIslandPlugin({ framework }) {
 	const { defaultDir, importMap } = FrameworkConfig[framework];
 
-	/** @type {(options: IslandPluginOptions) => ReefPlugin} */
 	return (options = {}) => {
 		const { sourceDir = defaultDir } = options;
 
@@ -33,7 +32,6 @@ export function createIslandPlugin({ framework }) {
 
 			/**
 			 * Hook: Called during build to discover, compile, and copy components
-			 * @param {PluginBuildContext} context - Build context
 			 */
 			async onBuild({ outputDir = OUTPUT_DIR }) {
 				discoveredComponents = await processJSXIslands({
@@ -45,9 +43,8 @@ export function createIslandPlugin({ framework }) {
 
 			/**
 			 * Hook: Returns import map configuration for framework runtime from CDN
-			 * @returns {Promise<ImportMap | null>} Import map config or null
 			 */
-			async getImportMap() {
+			getImportMap() {
 				if (discoveredComponents.length === 0) return null;
 
 				return importMap;
@@ -55,8 +52,6 @@ export function createIslandPlugin({ framework }) {
 
 			/**
 			 * Hook: Transform HTML to wrap components in <reef-island> tags and render SSR
-			 * @param {PluginTransformContext} context - Transform context
-			 * @returns {Promise<string>} Transformed HTML
 			 */
 			async transform({ content }) {
 				if (discoveredComponents.length === 0) return content;
