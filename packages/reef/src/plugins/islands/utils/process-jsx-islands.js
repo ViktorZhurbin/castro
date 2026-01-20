@@ -10,11 +10,12 @@ import { compileIsland } from "./compile-island.js";
 
 /**
  * Process JSX island files - compile and register as web components
+ * @param {{
+ * 	sourceDir: string,
+ * 	outputDir: string;
+ * 	framework: SupportedFramework;
+ * }} options
  *
- * @param {Object} options - Processing options
- * @param {string} options.sourceDir - Directory containing JSX island files
- * @param {string} options.outputDir - Build output directory
- * @param {SupportedFramework} options.framework
  * @returns {Promise<IslandComponent[]>}
  */
 export async function processJSXIslands({ sourceDir, outputDir, framework }) {
