@@ -1,25 +1,23 @@
 /**
- * @import { Asset, ImportMapConfig } from '../types/plugin.js';
+ * @import { Asset, ImportMap } from '../types/island.js';
  */
 
 /**
  * Merge multiple import map objects into one HTML string
  * @param {Object} options
- * @param {ImportMapConfig[]} options.importMapConfigs - Import map configs to inject
+ * @param {ImportMap} options.mergedImportMap - Import map configs to inject
  * @returns {string} The <script type="importmap">... string
  */
-export function generateImportMapHtml({ importMapConfigs }) {
-	if (!importMapConfigs?.length) return "";
+export function generateImportMapHtml({ mergedImportMap }) {
+	if (!Object.keys(mergedImportMap)?.length) return "";
 
-	// Merge the "imports" keys from all maps
-	const mergedImports = importMapConfigs.reduce((acc, config) => {
-		return Object.assign(acc, config.imports);
-	}, {});
+	const importMap = { imports: mergedImportMap };
 
 	return `
-<script type="importmap">
-${JSON.stringify({ imports: mergedImports }, null, 2)}
-</script>`.trim();
+		<script type="importmap">
+			${JSON.stringify(importMap, null, 2)}
+		</script>
+	`.trim();
 }
 
 /**

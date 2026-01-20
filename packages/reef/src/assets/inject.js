@@ -1,10 +1,7 @@
-import {
-	generateAssetsHtml,
-	generateImportMapHtml,
-} from "../layout/helpers.js";
+import { generateAssetsHtml, generateImportMapHtml } from "./helpers.js";
 
 /**
- * @import { Asset, ImportMapConfig } from '../types/plugin.js';
+ * @import { Asset, ImportMap } from '../types/island.js';
  */
 
 /**
@@ -12,14 +9,14 @@ import {
  * @param {string} html - HTML to inject into
  * @param {Object} options
  * @param {Asset[]} options.assets - Assets to inject
- * @param {ImportMapConfig[]} options.importMapConfigs - Import map configs to inject
+ * @param {ImportMap} options.mergedImportMap - Import map configs to inject
  * @returns {string} HTML with injected assets
  */
-export function injectAssets(html, { assets = [], importMapConfigs = [] }) {
+export function injectAssets(html, { assets = [], mergedImportMap = {} }) {
 	let output = html;
 
 	// Render helpers to HTML strings
-	const importMapHtml = generateImportMapHtml({ importMapConfigs });
+	const importMapHtml = generateImportMapHtml({ mergedImportMap });
 	const assetsHtml = generateAssetsHtml({ assets });
 
 	// Inject into HTML

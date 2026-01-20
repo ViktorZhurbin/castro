@@ -7,26 +7,26 @@ import { defaultPlugins } from "../plugins/defaultPlugins.js";
  */
 
 /**
- * @import { Asset, ImportMapConfig } from '../types/plugin.js';
+ * @import { Asset, ImportMap } from '../types/island.js';
  */
 
 /**
  * Collect all assets and import maps from plugins and auto-inject dev scripts
  * @param {Object} params
  * @param {string} params.pageContent - Page content to scan for component usage
- * @returns {Promise<{ assets: Asset[], importMapConfigs: ImportMapConfig[] }>}
+ * @returns {Promise<{ assets: Asset[]; mergedImportMap: ImportMap;}>}
  */
 export async function collectAssets({ pageContent }) {
-	/** @type {ImportMapConfig[]} */
-	const importMapConfigs = [];
+	/** @type {ImportMap} */
+	const mergedImportMap = {};
 	/** @type {Asset[]} */
 	const assets = [];
 
 	// Collect from plugins
 	for (const plugin of defaultPlugins) {
 		if (plugin.getImportMap) {
-			const importMapConfig = await plugin.getImportMap();
-			if (importMapConfig) importMapConfigs.push(importMapConfig);
+			const importMap = await plugin.getImportMap();
+			if (importMap) Object.assign(mergedImportMap, importMap);
 		}
 
 		if (plugin.getAssets) {
@@ -55,5 +55,5 @@ export async function collectAssets({ pageContent }) {
 		});
 	}
 
-	return { assets, importMapConfigs };
+	return { assets, mergedImportMap };
 }

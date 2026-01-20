@@ -3,10 +3,8 @@ import tsPreset from "@babel/preset-typescript";
 import solidPreset from "babel-preset-solid";
 
 /**
- * @import { Plugin } from "esbuild"
- *
  * A tiny plugin to handle Solid JSX via Babel
- * @type { (ssr?: boolean) => Plugin }
+ * @type { (ssr?: boolean) => import("esbuild").Plugin }
  */
 export const getSolidBabelPlugin = (ssr) => ({
 	name: "solid-babel",

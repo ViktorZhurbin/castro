@@ -17,18 +17,17 @@ export async function writeHtmlPage(html, outputPath) {
 		if (plugin.transform) {
 			processedHtml = await plugin.transform({
 				content: processedHtml,
-				filePath: outputPath,
 			});
 		}
 	}
 
 	// 2. Collect assets from transformed HTML
-	const { assets, importMapConfigs } = await collectAssets({
+	const { assets, mergedImportMap } = await collectAssets({
 		pageContent: processedHtml,
 	});
 
 	// 3. Inject assets and ensure DOCTYPE
-	const finalHtml = injectAssets(processedHtml, { assets, importMapConfigs });
+	const finalHtml = injectAssets(processedHtml, { assets, mergedImportMap });
 
 	// 4. Write to disk
 	await mkdir(dirname(outputPath), { recursive: true });

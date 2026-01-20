@@ -1,41 +1,37 @@
 import { access, glob, mkdir } from "node:fs/promises";
 import { basename, extname, join } from "node:path";
 import { styleText } from "node:util";
+import { FrameworkConfig } from "../framework-config.js";
+import { compileIsland } from "./compile-island.js";
 
 /**
- * @import { IslandComponent, SupportedFramework } from '../types/island.js';
+ * @import { IslandComponent, SupportedFramework } from '../../../types/island.js';
  */
 
 /**
  * Process JSX island files - compile and register as web components
  *
  * @param {Object} options - Processing options
- * @param {string} options.islandsDir - Directory containing JSX island files
+ * @param {string} options.sourceDir - Directory containing JSX island files
  * @param {string} options.outputDir - Build output directory
- * @param {string} options.elementSuffix - Suffix for custom element names
- * @param {Function} options.compilerFn - Compiler function
- * @param {SupportedFramework} options.framework - Framework identifier (e.g., 'preact', 'solid')
- * @returns {Promise<IslandComponent[]>} Array of discovered components
+ * @param {SupportedFramework} options.framework
+ * @returns {Promise<IslandComponent[]>}
  */
-export async function processJSXIslands({
-	islandsDir,
-	outputDir,
-	elementSuffix,
-	compilerFn,
-	framework,
-}) {
+export async function processJSXIslands({ sourceDir, outputDir, framework }) {
 	const OUTPUT_COMPONENTS_DIR = "components";
+
+	const { elementSuffix } = FrameworkConfig[framework];
 
 	try {
 		// 1. Check if islands directory exists
-		await access(islandsDir);
+		await access(sourceDir);
 	} catch (e) {
 		const err = /** @type {NodeJS.ErrnoException} */ (e);
 
 		if (err.code === "ENOENT") {
 			console.warn(
 				styleText("red", `Islands directory not found:`),
-				styleText("magenta", islandsDir),
+				styleText("magenta", sourceDir),
 			);
 			return [];
 		}
@@ -52,7 +48,7 @@ export async function processJSXIslands({
 	const compiledIslands = [];
 
 	await Array.fromAsync(
-		glob(join(islandsDir, "**/*.{jsx,tsx}")),
+		glob(join(sourceDir, "**/*.{jsx,tsx}")),
 		async (sourcePath) => {
 			const fileName = basename(sourcePath);
 			const elementName = getElementName(fileName, elementSuffix);
@@ -60,9 +56,10 @@ export async function processJSXIslands({
 			const outputPath = join(outputComponentsDir, outputFileName);
 
 			try {
-				const compilationResult = await compilerFn({
+				const compilationResult = await compileIsland({
 					sourcePath,
 					outputPath,
+					framework,
 				});
 
 				/** @type {IslandComponent} */
@@ -112,6 +109,10 @@ export async function processJSXIslands({
 	return discoveredComponents;
 }
 
+/**
+ * @param {string} fileName
+ * @param {string} [suffix]
+ */
 function getElementName(fileName, suffix = "-component") {
 	const ext = extname(fileName);
 	const baseName = basename(fileName, ext);

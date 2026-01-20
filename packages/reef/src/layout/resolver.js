@@ -31,6 +31,7 @@ export async function resolveLayout(filePath, meta = {}) {
 /**
  * Walk up directory tree looking for reef.js
  * Stops at PAGES_DIR boundary
+ * @param {string} filePath
  */
 async function findReefData(filePath) {
 	const absoluteFilePath = resolve(filePath);

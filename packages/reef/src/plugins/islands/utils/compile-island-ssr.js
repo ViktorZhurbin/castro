@@ -1,9 +1,16 @@
 import { styleText } from "node:util";
 import * as esbuild from "esbuild";
+import { FrameworkConfig } from "../framework-config.js";
+
+/**
+ * @import { Plugin } from "esbuild"
+ * @import { SupportedFramework } from "../../../types/island.js"
+ */
 
 /**
  * esbuild plugin to stub out CSS imports for SSR
  * CSS is not needed for server-side rendering
+ * @type { Plugin }
  */
 const cssStubPlugin = {
 	name: "css-stub",
@@ -27,24 +34,25 @@ const cssStubPlugin = {
  *
  * @param {Object} params
  * @param {string} params.sourcePath - Source file path
- * @param {string} params.framework - Framework identifier
- * @param {Object} [params.buildConfig] - Optional framework-specific build config
- * @returns {Promise<string|null>} Compiled code or null if compilation fails
+ * @param {SupportedFramework} params.framework
+ * @returns {Promise<string | null>} Compiled code or null if compilation fails
  */
-export async function compileIslandSSR({ sourcePath, buildConfig = {} }) {
+export async function compileIslandSSR({ sourcePath, framework }) {
+	const config = FrameworkConfig[framework];
+	const buildConfig = config.getBuildConfig(true);
+
 	try {
 		// Merge plugins: CSS stub plugin must come after framework plugins
 		// so that framework-specific transformations happen first
-		const mergedPlugins = [...(buildConfig.plugins || []), cssStubPlugin];
+		const mergedPlugins = [...(buildConfig.plugins ?? []), cssStubPlugin];
 
 		const result = await esbuild.build({
 			entryPoints: [sourcePath],
 			bundle: true,
 			format: "esm", // ESM for Node.js dynamic import
-			platform: "node", // Node.js platform
-			target: "node24", // Match reef's node requirement
+			platform: "node",
+			target: "node24",
 			write: false, // Keep in memory
-			logLevel: "silent", // Suppress esbuild logs
 			...buildConfig,
 			plugins: mergedPlugins, // Override plugins with merged list
 		});

@@ -1,3 +1,7 @@
+import type { BuildOptions } from "esbuild";
+
+export type SupportedFramework = "solid" | "preact";
+
 /**
  * Represents a compiled island component
  */
@@ -13,4 +17,37 @@ export interface IslandComponent {
 	ssrCode?: string | null;
 }
 
-export type SupportedFramework = "solid" | "preact";
+export type IslandCompilerConfig = {
+	framework: SupportedFramework;
+	getBuildConfig: (ssr?: boolean) => Partial<BuildOptions>;
+};
+
+export type ImportMap = Record<string, string>;
+
+/**
+ * Asset (script or link) to inject into page
+ */
+export interface Asset {
+	/** Tag name */
+	tag: "script" | "link";
+	/** Tag attributes */
+	attrs: Record<string, string | undefined>;
+	/** Inline content (for script tags) */
+	content?: string;
+}
+
+export type IslandPluginConfig = {
+	framework: SupportedFramework;
+	defaultDir: string;
+	elementSuffix: string;
+	getBuildConfig: (ssr?: boolean) => Partial<BuildOptions>;
+	importMap: ImportMap;
+};
+
+/**
+ * Configuration options for island plugins (Preact, Solid)
+ */
+export interface IslandPluginOptions {
+	/** Directory containing JSX island files */
+	sourceDir?: string;
+}

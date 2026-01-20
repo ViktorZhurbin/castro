@@ -2,6 +2,8 @@
  * Plugin API type definitions
  */
 
+import type { Asset, ImportMap } from "./island.js";
+
 /**
  * Context passed to plugin onBuild hook
  */
@@ -26,28 +28,6 @@ export interface PluginScriptContext {
 export interface PluginTransformContext {
 	/** HTML content to transform */
 	content: string;
-	/** Output file path (for debugging) */
-	filePath: string;
-}
-
-/**
- * Asset (script or link) to inject into page
- */
-export interface Asset {
-	/** Tag name (script or link) */
-	tag: "script" | "link";
-	/** Tag attributes */
-	attrs: Record<string, string | undefined>;
-	/** Inline content (for script tags) */
-	content?: string;
-}
-
-/**
- * Import map configuration object
- */
-export interface ImportMapConfig {
-	/** Import mappings */
-	imports: Record<string, string>;
 }
 
 /**
@@ -70,7 +50,7 @@ export interface ReefPlugin {
 	 * Hook: Returns import map configuration for runtime dependencies
 	 * Should return null if plugin has no components to load
 	 */
-	getImportMap?(): Promise<ImportMapConfig | null>;
+	getImportMap?(): Promise<ImportMap | null>;
 
 	/**
 	 * Hook: Returns assets (scripts/links) to inject into pages
@@ -83,12 +63,4 @@ export interface ReefPlugin {
 	 * Allows plugins to modify HTML markup (e.g., wrapping components)
 	 */
 	transform?(context: PluginTransformContext): Promise<string>;
-}
-
-/**
- * Configuration options for island plugins (Preact, Solid)
- */
-export interface IslandPluginOptions {
-	/** Directory containing JSX island files */
-	islandsDir?: string;
 }

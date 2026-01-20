@@ -1,37 +1,28 @@
 import { OUTPUT_DIR } from "../../../constants/dir.js";
-import { processJSXIslands } from "../../../utils/process-jsx-islands.js";
 import { wrapWithIsland } from "../../../utils/wrap-with-island.js";
+import { FrameworkConfig } from "../framework-config.js";
+import { processJSXIslands } from "./process-jsx-islands.js";
 
 /**
- * @import { IslandComponent, SupportedFramework } from '../../../types/island.js';
- * @import { ImportMapConfig } from '../../../types/plugin.js';
- * @import { ReefPlugin, IslandPluginOptions, PluginBuildContext, PluginTransformContext } from '../../../types/plugin.js';
+ * @import { IslandPluginOptions, IslandComponent, SupportedFramework, ImportMap } from '../../../types/island.js';
+ * @import { ReefPlugin,  PluginBuildContext, PluginTransformContext } from '../../../types/plugin.js';
  */
 
 /**
  * Factory function to create island plugins for different frameworks
  *
- * @param {Object} config - Framework configuration
- * @param {SupportedFramework} config.framework
- * @param {string} config.defaultDir - Default islands directory
- * @param {string} config.elementSuffix - Element name suffix
- * @param {Record<string, string>} config.importMap - CDN import map
- * @param {Function} config.compilerFn - Compiler function
+ * @param {Object} params
+ * @param {SupportedFramework} params.framework
  * @returns {(options?: IslandPluginOptions) => ReefPlugin} Plugin factory
  */
-export function createIslandPlugin({
-	framework,
-	defaultDir,
-	elementSuffix,
-	importMap,
-	compilerFn,
-}) {
+export function createIslandPlugin({ framework }) {
+	const { defaultDir, importMap } = FrameworkConfig[framework];
 	/**
 	 * @param {IslandPluginOptions} [options] - Plugin configuration
 	 * @returns {ReefPlugin} Plugin instance with hooks
 	 */
 	return (options = {}) => {
-		const { islandsDir = defaultDir } = options;
+		const { sourceDir = defaultDir } = options;
 
 		/** @type {IslandComponent[]} */
 		let discoveredComponents = [];
@@ -40,35 +31,28 @@ export function createIslandPlugin({
 			name: `islands-${framework}`,
 
 			// Watch islands directory for changes in dev mode
-			watchDirs: [islandsDir],
+			watchDirs: [sourceDir],
 
 			/**
 			 * Hook: Called during build to discover, compile, and copy components
 			 * @param {PluginBuildContext} context - Build context
 			 */
 			async onBuild({ outputDir = OUTPUT_DIR }) {
-				discoveredComponents = [];
-
-				// Process JSX islands
 				discoveredComponents = await processJSXIslands({
-					islandsDir,
+					sourceDir,
 					outputDir,
-					elementSuffix,
-					compilerFn,
 					framework,
 				});
 			},
 
 			/**
 			 * Hook: Returns import map configuration for framework runtime from CDN
-			 * @returns {Promise<ImportMapConfig | null>} Import map config or null
+			 * @returns {Promise<ImportMap | null>} Import map config or null
 			 */
 			async getImportMap() {
 				if (discoveredComponents.length === 0) return null;
 
-				return {
-					imports: importMap,
-				};
+				return importMap;
 			},
 
 			/**
@@ -78,6 +62,7 @@ export function createIslandPlugin({
 			 */
 			async transform({ content }) {
 				if (discoveredComponents.length === 0) return content;
+
 				return await wrapWithIsland(
 					content,
 					discoveredComponents,

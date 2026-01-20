@@ -4,7 +4,7 @@ import { createTempPath, getModule } from "./tempDir.js";
 /**
  * Compile JSX/TSX to JavaScript using esbuild
  *
- * @param {string} sourcePath - Path to JSX/TSX source file
+ * @param {string} sourcePath
  *
  * @returns {Promise<any>} The imported module
  */
