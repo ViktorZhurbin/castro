@@ -2,12 +2,14 @@
  * Casts a string attribute value to its proper JS type.
  */
 export function castValue(val) {
-	if (val === "true") return true;
+	// covers "empty" attributes, like <my-tag data-active>
+	if (val === "true" || val === "" || val === null) return true;
+
 	if (val === "false") return false;
-	if (val === "" || val === null) return true; // Boolean attribute shorthand: data-is-active
 
 	// Attempt to parse as Number
-	if (val !== "" && !Number.isNaN(val)) return Number(val);
+	const num = Number(val);
+	if (val.trim() !== "" && !Number.isNaN(num)) return num;
 
 	// Attempt to parse as JSON (for arrays/objects)
 	if (val.startsWith("{") || val.startsWith("[")) {
