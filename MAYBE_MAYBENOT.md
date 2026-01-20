@@ -6,7 +6,6 @@
 * **Add Solid/Preact islands where needed**
 * **No hydration overhead** (web components self-hydrate)
 * **Minimal, understandable codebase**
-* **Bun-native** (fast, simple)
 
 ## Comparable To:
 * **Lighter than Astro:** Focused; not trying to be everything.
@@ -36,7 +35,7 @@
 ## My Recommendation
 **Given your situation:**
 
-1. **Finish Reef 1.0 as planned:** (JSX, islands, Bun, docs site).
+1. **Finish Reef 1.0 as planned:** (JSX, islands, docs site).
 2. **Position it clearly:** "Lightweight islands framework" not "SSG".
 3. **Write the learning blog post:** "Building an islands framework taught me X".
 4. **Ship it and move on:** Don't chase stars, extract the learning.

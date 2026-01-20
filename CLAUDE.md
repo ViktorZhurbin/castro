@@ -1,9 +1,9 @@
 ## IMPORTANT
 
-- Read the README.md and EXPLORATION.md for context
+- Read the README.md and EXPLORATION.md and GOOD_ENOUGH.md for context
 - This is an experimental personal project for now. No need to take care of backward compatibility and maintaining legacy logic
 - website/ is the playground where all tools from packages/ are being used
-- you can run pnpm build/dev from the root to build/start dev server of the website
+- you can run pnpm build / pnpm dev from the root to build/start dev server of the website
 - website/dist/ is cleaned up automatically on build/dev
 
 ## Core Principles
@@ -12,9 +12,8 @@
 2. **Keep it small** - No edge case coverage. Only use dependencies with high benefits/size ratio
 3. **Keep it readable** - No "hacks" to reduce LOC
 4. **Good DX** - Nice logging, proper error handling, live reload, etc
-5. **No defensive programming** - Startup failures crash with native errors. Runtime failures degrade gracefully only where expected
+5. **Less defensive programming** - Startup failures crash with native errors. Runtime failures degrade gracefully only where expected
 
-**Bloat detection:** Watch out for LOC count (check with `npm run loc`), but not at the expense of the core principles above.
 
 # Reef Guiding Principles
 
@@ -31,7 +30,7 @@ Future you should be able to return after 6 months and understand everything.
 Code is read 10x more than written. Optimize for reading.
 
 - Self-documenting: names explain intent, structure reveals flow
-- Types tell the story (TypeScript types are inline documentation)
+- Types tell the story (JSDoc/TypeScript types are inline documentation)
 - Comments explain "why" not "what"
 - Obvious file structure (where things are should be predictable)
 - Minimal cognitive load (grasp a module in <5 minutes)

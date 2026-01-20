@@ -2,6 +2,16 @@
 
 **AI-generated doc capturing my SSG/reactivity exploration**
 
+## Similar Projects
+
+- Astro
+- 11ty
+- SolidStart, SvelteKit - DX, conventions, approach to SSG
+- Fresh (Deno) - Islands without build step
+- Lume - Modern 11ty-style SSG with JSX
+- Lit - Native web components reactivity
+- Vite, esbuild, Parcel - for plugin architecture
+
 ## 🎯 Core Principles
 
 ### 1. Learning & Fun First, Production Second
