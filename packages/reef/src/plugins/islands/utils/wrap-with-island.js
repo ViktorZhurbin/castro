@@ -1,9 +1,9 @@
-import { renderIslandSSR } from "../plugins/islands/utils/render-ssr.js";
-import { castValue } from "./castValue.js";
-import { stripDataPrefix, toCamelCase } from "./props.js";
+import { castValue } from "../../../utils/castValue.js";
+import { stripDataPrefix, toCamelCase } from "../../../utils/props.js";
+import { renderIslandSSR } from "./render-ssr.js";
 
 /**
- * @import { IslandComponent } from '../types/island.js';
+ * @import { IslandComponent } from '../../../types/island.js';
  */
 
 /**

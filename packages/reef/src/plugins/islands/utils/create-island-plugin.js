@@ -1,7 +1,7 @@
 import { OUTPUT_DIR } from "../../../constants/dir.js";
-import { wrapWithIsland } from "../../../utils/wrap-with-island.js";
 import { FrameworkConfig } from "../framework-config.js";
 import { processJSXIslands } from "./process-jsx-islands.js";
+import { wrapWithIsland } from "./wrap-with-island.js";
 
 /**
  * @import { IslandPluginOptions, IslandComponent, SupportedFramework, ImportMap } from '../../../types/island.js';
@@ -17,10 +17,8 @@ import { processJSXIslands } from "./process-jsx-islands.js";
  */
 export function createIslandPlugin({ framework }) {
 	const { defaultDir, importMap } = FrameworkConfig[framework];
-	/**
-	 * @param {IslandPluginOptions} [options] - Plugin configuration
-	 * @returns {ReefPlugin} Plugin instance with hooks
-	 */
+
+	/** @type {(options: IslandPluginOptions) => ReefPlugin} */
 	return (options = {}) => {
 		const { sourceDir = defaultDir } = options;
 
