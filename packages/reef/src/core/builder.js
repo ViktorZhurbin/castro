@@ -2,6 +2,7 @@ import { cp, glob, mkdir, rm } from "node:fs/promises";
 import { join, relative } from "node:path";
 import { styleText } from "node:util";
 import { OUTPUT_DIR, PAGES_DIR, PUBLIC_DIR } from "../constants/dir.js";
+import { layouts } from "../layout/registry.js";
 import { defaultPlugins } from "../plugins/defaultPlugins.js";
 import { formatMs } from "../utils/format.js";
 import { buildJSXPage } from "./build-jsx-page.js";
@@ -17,6 +18,9 @@ const allPlugins = defaultPlugins;
 export async function buildAll(options = {}) {
 	const { verbose = false } = options;
 	const startTime = performance.now();
+
+	// init layouts registry
+	await layouts.load();
 
 	// Clean up output directory and recreate it
 	await rm(OUTPUT_DIR, { recursive: true, force: true });

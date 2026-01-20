@@ -40,6 +40,3 @@ class LayoutsRegistry {
 
 // Export singleton instance
 export const layouts = new LayoutsRegistry();
-
-// Load layouts on module initialization
-await layouts.load();
