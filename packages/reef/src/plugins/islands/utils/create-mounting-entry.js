@@ -1,10 +1,6 @@
 import { basename } from "node:path";
-import { castValue } from "../../../utils/castValue.js";
-import {
-	getPropsFromAttributes,
-	stripDataPrefix,
-} from "../../../utils/props.js";
 import { FrameworkConfig } from "../framework-config.js";
+import { CLIENT_RUNTIME_ALIAS } from "../reef-island/plugin.js";
 /**
  * @import { SupportedFramework } from "../../../types/island.js"
  */
@@ -17,6 +13,7 @@ import { FrameworkConfig } from "../framework-config.js";
 export function createMountingEntry(sourcePath, framework) {
 	const config = FrameworkConfig[framework];
 	const componentImport = `import Component from './${basename(sourcePath)}';`;
+	const helpersImport = `import { getPropsFromAttributes } from '${CLIENT_RUNTIME_ALIAS}';`;
 
 	const hydrateFn = `
 		export default async (container) => {
@@ -25,13 +22,7 @@ export function createMountingEntry(sourcePath, framework) {
 		}
 	`;
 
-	return [
-		componentImport,
-		hydrateFn,
-		getPropsFromAttributes.toString(),
-		castValue.toString(),
-		stripDataPrefix.toString(),
-	]
+	return [componentImport, helpersImport, hydrateFn]
 		.map((item) => item.trim())
 		.join("\n");
 }

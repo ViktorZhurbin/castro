@@ -1,6 +1,7 @@
 import { dirname } from "node:path";
 import * as esbuild from "esbuild";
 import { FrameworkConfig } from "../framework-config.js";
+import { CLIENT_RUNTIME_ALIAS } from "../reef-island/plugin.js";
 import { createMountingEntry } from "./create-mounting-entry.js";
 
 /**
@@ -23,6 +24,7 @@ export async function compileIslandClient({
 }) {
 	const config = FrameworkConfig[framework];
 	const entry = createMountingEntry(sourcePath, framework);
+	const pluginConfig = config.getBuildConfig();
 
 	const result = await esbuild.build({
 		stdin: {
@@ -35,7 +37,8 @@ export async function compileIslandClient({
 		format: "esm",
 		target: "es2020",
 		write: false,
-		...config.getBuildConfig(),
+		...pluginConfig,
+		external: [...(pluginConfig.external ?? []), CLIENT_RUNTIME_ALIAS],
 	});
 
 	return result;

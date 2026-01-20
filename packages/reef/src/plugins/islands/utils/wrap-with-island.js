@@ -1,5 +1,4 @@
-import { castValue } from "../../../utils/castValue.js";
-import { stripDataPrefix, toCamelCase } from "../../../utils/props.js";
+import { castValue, stripDataPrefix, toCamelCase } from "./client-runtime.js";
 import { renderIslandSSR } from "./render-ssr.js";
 
 /**
