@@ -24,7 +24,7 @@ importers:
         specifier: ^0.5.2
         version: 0.5.2
       preact:
-        specifier: ^10.28.0
+        specifier: ^10
         version: 10.28.2
       preact-render-to-string:
         specifier: ^6.5.12
@@ -61,7 +61,7 @@ importers:
         specifier: workspace:*
         version: link:../packages/reef
       preact:
-        specifier: ^10.25.4
+        specifier: ^10.28.2
         version: 10.28.2
 
 packages:

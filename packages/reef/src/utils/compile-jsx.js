@@ -1,17 +1,16 @@
-import { mkdir, writeFile } from "node:fs/promises";
-import { dirname } from "node:path";
-import { pathToFileURL } from "node:url";
 import * as esbuild from "esbuild";
+import { createTempPath, getModule } from "./tempDir.js";
 
 /**
  * Compile JSX/TSX to JavaScript using esbuild
  *
  * @param {string} sourcePath - Path to JSX/TSX source file
- * @param {string} outputPath - Path to write compiled JS
  *
  * @returns {Promise<any>} The imported module
  */
-export async function compileJSX(sourcePath, outputPath) {
+export async function compileJSX(sourcePath) {
+	const outputPath = createTempPath(sourcePath);
+
 	const result = await esbuild.build({
 		entryPoints: [sourcePath],
 		write: false,
@@ -25,10 +24,5 @@ export async function compileJSX(sourcePath, outputPath) {
 		logLevel: "warning",
 	});
 
-	await mkdir(dirname(outputPath), { recursive: true });
-	await writeFile(outputPath, result.outputFiles[0].text);
-
-	const moduleUrl = `${pathToFileURL(outputPath).href}?t=${Date.now()}`;
-
-	return await import(moduleUrl);
+	return await getModule(sourcePath, result.outputFiles[0].text);
 }

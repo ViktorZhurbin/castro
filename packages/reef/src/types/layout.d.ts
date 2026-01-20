@@ -24,8 +24,6 @@ export interface LayoutProps {
 	[key: string]: unknown;
 }
 
-
-
 /**
  * Layout component function type
  */

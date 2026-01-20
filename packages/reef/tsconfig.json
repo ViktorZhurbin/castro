@@ -1,22 +1,22 @@
 {
-  "compilerOptions": {
-    "allowJs": true,
-    "checkJs": true,
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true,
 
-    // Output Settings
-    "noEmit": true,
-    "module": "nodenext",
-    "target": "esnext",
+		// Output Settings
+		"noEmit": true,
+		"module": "nodenext",
+		"target": "esnext",
 
-    // Strictness
-    "strict": true,
-    "noImplicitAny": false,
+		// Strictness
+		"strict": true,
+		"noImplicitAny": false,
 
-    // Module Resolution
-    "moduleResolution": "nodenext",
-    "esModuleInterop": true,
-    "skipLibCheck": true
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+		// Module Resolution
+		"moduleResolution": "nodenext",
+		"esModuleInterop": true,
+		"skipLibCheck": true
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules"]
 }

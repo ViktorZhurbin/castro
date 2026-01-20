@@ -9,6 +9,6 @@
 	},
 	"dependencies": {
 		"@vktrz/reef": "workspace:*",
-		"preact": "^10.25.4"
+		"preact": "^10.28.2"
 	}
 }

@@ -1,14 +1,10 @@
-import { basename, extname, join } from "node:path";
 import { styleText } from "node:util";
 import { renderToString } from "preact-render-to-string";
 import { layouts } from "../layout/registry.js";
 import { resolveLayout } from "../layout/resolver.js";
 import { compileJSX } from "../utils/compile-jsx.js";
-import { createTempDirPath } from "../utils/dir.js";
 import { builderShell } from "./builder-shell.js";
 import { writeHtmlPage } from "./write-html-page.js";
-
-const TEMP_DIR = createTempDirPath("pages");
 
 /**
  * Build a single JSX page to HTML
@@ -23,10 +19,7 @@ export async function buildJSXPage(sourceFileName, options = {}) {
 
 		const allLayouts = layouts.getAll();
 
-		const tempFileName = `${basename(sourceFileName, extname(sourceFileName))}.mjs`;
-		const tempPath = join(TEMP_DIR, tempFileName);
-
-		const pageModule = await compileJSX(sourceFilePath, tempPath);
+		const pageModule = await compileJSX(sourceFilePath);
 
 		if (!pageModule.default || typeof pageModule.default !== "function") {
 			throw new Error(

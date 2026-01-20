@@ -1,5 +1,5 @@
-import { compilePreactIsland } from "./compilers/preact.js";
-import { createIslandPlugin } from "./index.js";
+import { compileIsland } from "../utils/compile-island.js";
+import { createIslandPlugin } from "../utils/create-island-plugin.js";
 
 /**
  * Reef Islands Preact Plugin
@@ -9,7 +9,7 @@ export const preactIslands = createIslandPlugin({
 	framework: "preact",
 	defaultDir: "islands-preact",
 	elementSuffix: "-preact",
-	compileIsland: compilePreactIsland,
+	compilerFn: compilePreactIsland,
 	importMap: {
 		preact: "https://cdn.jsdelivr.net/npm/preact@10.28.2/+esm",
 		"preact/hooks": "https://cdn.jsdelivr.net/npm/preact@10.28.2/hooks/+esm",
@@ -17,3 +17,16 @@ export const preactIslands = createIslandPlugin({
 			"https://cdn.jsdelivr.net/npm/preact@10.28.2/jsx-runtime/+esm",
 	},
 });
+
+async function compilePreactIsland({ sourcePath, outputPath }) {
+	return compileIsland({
+		sourcePath,
+		outputPath,
+		framework: "preact",
+		getBuildConfig: () => ({
+			jsx: "automatic",
+			jsxImportSource: "preact",
+			external: ["preact", "preact/hooks", "preact/jsx-runtime"],
+		}),
+	});
+}

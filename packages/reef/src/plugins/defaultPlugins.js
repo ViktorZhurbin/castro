@@ -1,9 +1,9 @@
-import { isLandCore } from "./islands/is-land-core.js";
-import { preactIslands } from "./islands/preact.js";
-import { solidIslands } from "./islands/solid.js";
+import { preactIslands } from "./islands/preact/plugin.js";
+import { reefIsland } from "./islands/reef-island/plugin.js";
+import { solidIslands } from "./islands/solid/plugin.js";
 
 export const defaultPlugins = [
-	isLandCore(), // Load is-land library first
+	reefIsland(), // Load reef-island custom element
 	solidIslands(),
 	preactIslands(),
 ];

@@ -8,6 +8,9 @@ export interface IslandComponent {
 	outputPath: string;
 	/** Optional path to CSS file (e.g., '/components/counter-preact.css') */
 	cssPath?: string;
-	/** Framework identifier (e.g., 'preact', 'solid') */
-	framework: string;
+	framework: SupportedFramework;
+	/** Compiled SSR code (ESM string for Node.js execution) */
+	ssrCode?: string | null;
 }
+
+export type SupportedFramework = "solid" | "preact";

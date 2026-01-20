@@ -1,5 +1,5 @@
 // TODO: css doesn't work
-import "./index.css"
+import "./index.css";
 
 export const meta = {
 	layout: "default",
@@ -21,9 +21,13 @@ export default function About() {
 			<h2>Key Benefits</h2>
 			<ul>
 				<li>No need to write boilerplate HTML structure</li>
-				<li>Automatic layout application via <code>meta.layout</code></li>
+				<li>
+					Automatic layout application via <code>meta.layout</code>
+				</li>
 				<li>Same DX as markdown pages</li>
-				<li>Can still opt-out with <code>layout: false</code></li>
+				<li>
+					Can still opt-out with <code>layout: false</code>
+				</li>
 			</ul>
 		</>
 	);

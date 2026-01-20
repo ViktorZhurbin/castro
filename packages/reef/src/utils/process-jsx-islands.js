@@ -3,7 +3,7 @@ import { basename, extname, join } from "node:path";
 import { styleText } from "node:util";
 
 /**
- * @import { IslandComponent } from '../types/island.js';
+ * @import { IslandComponent, SupportedFramework } from '../types/island.js';
  */
 
 /**
@@ -13,15 +13,15 @@ import { styleText } from "node:util";
  * @param {string} options.islandsDir - Directory containing JSX island files
  * @param {string} options.outputDir - Build output directory
  * @param {string} options.elementSuffix - Suffix for custom element names
- * @param {Function} options.compileIsland - Compiler function
- * @param {string} options.framework - Framework identifier (e.g., 'preact', 'solid')
+ * @param {Function} options.compilerFn - Compiler function
+ * @param {SupportedFramework} options.framework - Framework identifier (e.g., 'preact', 'solid')
  * @returns {Promise<IslandComponent[]>} Array of discovered components
  */
 export async function processJSXIslands({
 	islandsDir,
 	outputDir,
 	elementSuffix,
-	compileIsland,
+	compilerFn,
 	framework,
 }) {
 	const OUTPUT_COMPONENTS_DIR = "components";
@@ -60,7 +60,7 @@ export async function processJSXIslands({
 			const outputPath = join(outputComponentsDir, outputFileName);
 
 			try {
-				const compilationResult = await compileIsland({
+				const compilationResult = await compilerFn({
 					sourcePath,
 					outputPath,
 				});
@@ -70,6 +70,7 @@ export async function processJSXIslands({
 					elementName,
 					outputPath: `/${OUTPUT_COMPONENTS_DIR}/${outputFileName}`,
 					framework,
+					ssrCode: compilationResult?.ssrCode || null,
 				};
 
 				// Add CSS path if it exists

@@ -1,11 +1,10 @@
-import { access, glob, mkdir, rm } from "node:fs/promises";
+import { rmSync } from "node:fs";
+import { access, glob } from "node:fs/promises";
 import { basename, extname, join } from "node:path";
 import { styleText } from "node:util";
 import { LAYOUTS_DIR } from "../constants/dir.js";
 import { compileJSX } from "../utils/compile-jsx.js";
-import { createTempDirPath } from "../utils/dir.js";
-
-const TEMP_DIR = createTempDirPath("layouts");
+import { resolveTempDir } from "../utils/tempDir.js";
 
 /**
  * @import { LayoutComponent } from '../types/layout.js';
@@ -34,8 +33,8 @@ export async function loadLayouts() {
 	}
 
 	// Ensure a clean temp dir
-	await rm(TEMP_DIR, { recursive: true, force: true });
-	await mkdir(TEMP_DIR, { recursive: true });
+	const tempDirPath = resolveTempDir(LAYOUTS_DIR);
+	rmSync(tempDirPath, { recursive: true, force: true });
 
 	// Process layouts concurrently using Array.fromAsync + glob
 	await Array.fromAsync(
@@ -45,10 +44,8 @@ export async function loadLayouts() {
 			const layoutName = basename(fileName, extname(fileName));
 
 			try {
-				const tempPath = join(TEMP_DIR, `${layoutName}.mjs`);
-
 				// Compile and load layout module
-				const layoutModule = await compileJSX(sourceFilePath, tempPath);
+				const layoutModule = await compileJSX(sourceFilePath);
 
 				if (!layoutModule.default) {
 					throw new Error(

@@ -1,21 +1,22 @@
-import { OUTPUT_DIR } from "../../constants/dir.js";
-import { processJSXIslands } from "../../utils/process-jsx-islands.js";
-import { wrapWithIsland } from "../../utils/wrap-with-island.js";
+import { OUTPUT_DIR } from "../../../constants/dir.js";
+import { processJSXIslands } from "../../../utils/process-jsx-islands.js";
+import { wrapWithIsland } from "../../../utils/wrap-with-island.js";
 
 /**
- * @import { IslandComponent } from '../../types/island.js';
- * @import { ReefPlugin, IslandPluginOptions, PluginBuildContext, PluginTransformContext } from '../../types/plugin.js';
+ * @import { IslandComponent, SupportedFramework } from '../../../types/island.js';
+ * @import { ImportMapConfig } from '../../../types/plugin.js';
+ * @import { ReefPlugin, IslandPluginOptions, PluginBuildContext, PluginTransformContext } from '../../../types/plugin.js';
  */
 
 /**
  * Factory function to create island plugins for different frameworks
  *
  * @param {Object} config - Framework configuration
- * @param {string} config.framework - Framework identifier (e.g., "preact", "solid")
+ * @param {SupportedFramework} config.framework
  * @param {string} config.defaultDir - Default islands directory
  * @param {string} config.elementSuffix - Element name suffix
  * @param {Record<string, string>} config.importMap - CDN import map
- * @param {Function} config.compileIsland - Compiler function
+ * @param {Function} config.compilerFn - Compiler function
  * @returns {(options?: IslandPluginOptions) => ReefPlugin} Plugin factory
  */
 export function createIslandPlugin({
@@ -23,7 +24,7 @@ export function createIslandPlugin({
 	defaultDir,
 	elementSuffix,
 	importMap,
-	compileIsland,
+	compilerFn,
 }) {
 	/**
 	 * @param {IslandPluginOptions} [options] - Plugin configuration
@@ -53,14 +54,14 @@ export function createIslandPlugin({
 					islandsDir,
 					outputDir,
 					elementSuffix,
-					compileIsland,
+					compilerFn,
 					framework,
 				});
 			},
 
 			/**
 			 * Hook: Returns import map configuration for framework runtime from CDN
-			 * @returns {Promise<import('../../types/plugin.js').ImportMapConfig|null>} Import map config or null
+			 * @returns {Promise<ImportMapConfig | null>} Import map config or null
 			 */
 			async getImportMap() {
 				if (discoveredComponents.length === 0) return null;
@@ -71,13 +72,17 @@ export function createIslandPlugin({
 			},
 
 			/**
-			 * Hook: Transform HTML to wrap components in <is-land> tags
+			 * Hook: Transform HTML to wrap components in <reef-island> tags and render SSR
 			 * @param {PluginTransformContext} context - Transform context
 			 * @returns {Promise<string>} Transformed HTML
 			 */
 			async transform({ content }) {
 				if (discoveredComponents.length === 0) return content;
-				return wrapWithIsland(content, discoveredComponents, "on:visible");
+				return await wrapWithIsland(
+					content,
+					discoveredComponents,
+					"on:visible",
+				);
 			},
 		};
 	};
