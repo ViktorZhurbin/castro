@@ -22,6 +22,14 @@ Build Reef's own docs site with Reef!
 - Simple nested components
 - Complex example: mini dashboard with multiple islands
 
+## 🛠️ Fixes & Updates
+
+### islands folder conventions & naming
+
+islands/solid/Counter.tsx   → <solid-counter>
+islands/solid/TodoList.tsx  → <solid-todo-list>
+islands/preact/Header.tsx   → <preact-header>
+
 
 ## 🎨 Features
 
