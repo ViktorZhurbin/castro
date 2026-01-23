@@ -10,7 +10,7 @@ const Counter: FunctionComponent<CounterProps> = ({ initial = 0 }) => {
 	const [count, setCount] = useState<number>(initial);
 
 	return (
-		<div class="counter-preact">
+		<div class="preact-counter">
 			<h3>Preact Counter Island</h3>
 			<p>Count: {count}</p>
 			<div class="buttons">

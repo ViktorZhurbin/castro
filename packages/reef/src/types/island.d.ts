@@ -6,11 +6,11 @@ export type SupportedFramework = "solid" | "preact";
  * Represents a compiled island component
  */
 export interface IslandComponent {
-	/** Custom element name (e.g., 'counter-preact') */
+	/** Custom element name (e.g., 'preact-counter') */
 	elementName: string;
-	/** Path to compiled JS file (e.g., '/components/counter-preact.js') */
+	/** Path to compiled JS file (e.g., '/components/preact-counter.js') */
 	outputPath: string;
-	/** Optional path to CSS file (e.g., '/components/counter-preact.css') */
+	/** Optional path to CSS file (e.g., '/components/preact-counter.css') */
 	cssPath?: string;
 	framework: SupportedFramework;
 	/** Compiled SSR code (ESM string for Node.js execution) */
@@ -40,8 +40,7 @@ export type Asset =
 
 export type IslandPluginConfig = {
 	framework: SupportedFramework;
-	defaultDir: string;
-	elementSuffix: string;
+	elementPrefix: string;
 	getBuildConfig: (ssr?: boolean) => Partial<BuildOptions>;
 	assets?: Asset[];
 	importMap: ImportMap;

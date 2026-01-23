@@ -17,7 +17,7 @@ export default function Landing() {
 					<section>
 						<h2>Try the Interactive Counter</h2>
 						<p>This island is automatically detected and hydrated:</p>
-						<counter-preact></counter-preact>
+						<preact-counter></preact-counter>
 					</section>
 
 					<section>
@@ -38,7 +38,7 @@ export default function Landing() {
 							rendered to static HTML at build time.
 						</p>
 						<p>
-							Islands like <code>&lt;counter-solid&gt;</code> are automatically
+							Islands like <code>&lt;solid-counter&gt;</code> are automatically
 							detected and their scripts injected.
 						</p>
 					</section>

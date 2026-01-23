@@ -5,7 +5,7 @@ const Counter = ({ initial }: { initial?: number }) => {
 	const [count, setCount] = createSignal<number>(initial ?? 0);
 
 	return (
-		<div class="counter-solid">
+		<div class="solid-counter">
 			<h3>Solid Counter Island</h3>
 			<p>Count: {count()}</p>
 			<div class="buttons">

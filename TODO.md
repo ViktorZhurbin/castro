@@ -13,7 +13,7 @@ Build Reef's own docs site with Reef!
 
 ### Island Usage
 
-- Component naming conventions (Counter.jsx → counter-solid)
+- Component naming conventions (Counter.jsx → solid-counter)
 - Props and attributes (how to pass data to islands)
 - Web component wrapper pattern explanation
 
@@ -24,25 +24,6 @@ Build Reef's own docs site with Reef!
 
 ## 🛠️ Fixes & Updates
 
-### Islands folder conventions & naming
-
-```
-islands/solid/Counter.tsx   → <solid-counter>
-islands/solid/TodoList.tsx  → <solid-todo-list>
-islands/preact/Header.tsx   → <preact-header>
-```
-
-```ts
-// packages/reef/types/islands.d.ts
-
-declare namespace JSX {
-  interface IntrinsicElements {
-    'solid-counter': { initial?: number };
-    'solid-todo-list': { items?: string[] };
-    'preact-header': { title?: string };
-  }
-}
-```
 
 ## 🎨 Features
 
@@ -65,19 +46,19 @@ declare namespace JSX {
 1. **Better error messages:**
    ```
    Error: Island 'Counter' used but not found.
-   Did you mean <counter-solid>?
+   Did you mean <solid-counter>?
    ```
 
 2. **Better build output:**
    ```
    ✓ Islands compiled:
-   
+
      Component         Element Name
      ─────────────────────────────
-     Counter.tsx    →  <counter-solid>
-     TodoList.tsx   →  <todo-list-solid>
-   
-   Usage: <counter-solid initial={0}></counter-solid>
+     Counter.tsx    →  <solid-counter>
+     TodoList.tsx   →  <solid-todo-list>
+
+   Usage: <solid-counter initial={0}></solid-counter>
    ```
 
 3. **TypeScript support:**
@@ -85,7 +66,7 @@ declare namespace JSX {
    // types/islands.d.ts (auto-generated)
    declare namespace JSX {
      interface IntrinsicElements {
-       'counter-solid': { initial?: number };
+       'solid-counter': { initial?: number };
      }
    }
    ```

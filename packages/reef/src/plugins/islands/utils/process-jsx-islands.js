@@ -21,7 +21,7 @@ import { compileIsland } from "./compile-island.js";
 export async function processJSXIslands({ sourceDir, outputDir, framework }) {
 	const OUTPUT_COMPONENTS_DIR = "components";
 
-	const { elementSuffix } = FrameworkConfig[framework];
+	const { elementPrefix } = FrameworkConfig[framework];
 
 	try {
 		// 1. Check if islands directory exists
@@ -52,7 +52,7 @@ export async function processJSXIslands({ sourceDir, outputDir, framework }) {
 		glob(join(sourceDir, "**/*.{jsx,tsx}")),
 		async (sourcePath) => {
 			const fileName = basename(sourcePath);
-			const elementName = getElementName(fileName, elementSuffix);
+			const elementName = getElementName(fileName, elementPrefix);
 			const outputFileName = `${elementName}.js`;
 			const outputPath = join(outputComponentsDir, outputFileName);
 
@@ -112,11 +112,11 @@ export async function processJSXIslands({ sourceDir, outputDir, framework }) {
 
 /**
  * @param {string} fileName
- * @param {string} [suffix]
+ * @param {string} [prefix]
  */
-function getElementName(fileName, suffix = "-component") {
+function getElementName(fileName, prefix = "component") {
 	const ext = extname(fileName);
 	const baseName = basename(fileName, ext);
 
-	return `${baseName}${suffix}`;
+	return `${prefix}-${baseName}`;
 }

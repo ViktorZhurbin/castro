@@ -55,7 +55,7 @@ class ReefIsland extends HTMLElement {
 
 			const target = this.firstElementChild;
 
-			// Call mounting function with the child element (e.g., <counter-preact>)
+			// Call mounting function with the child element (e.g., <preact-counter>)
 			// This allows static HTML to be replaced with interactive component
 			if (typeof module.default === "function" && target) {
 				await module.default(target);

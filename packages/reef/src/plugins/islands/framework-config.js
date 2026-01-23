@@ -11,8 +11,7 @@ import { getSolidBabelPlugin } from "./solid/babel-plugin.js";
 export const FrameworkConfig = {
 	solid: {
 		framework: "solid",
-		defaultDir: "islands-solid",
-		elementSuffix: "-solid",
+		elementPrefix: "solid",
 
 		getBuildConfig: (ssr) => ({
 			plugins: [getSolidBabelPlugin(ssr)],
@@ -39,8 +38,7 @@ export const FrameworkConfig = {
 
 	preact: {
 		framework: "preact",
-		defaultDir: "islands-preact",
-		elementSuffix: "-preact",
+		elementPrefix: "preact",
 
 		getBuildConfig: () => ({
 			jsx: "automatic",

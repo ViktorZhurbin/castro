@@ -9,7 +9,7 @@ export default function CounterDemo() {
 			<body>
 				<h1>Pages - Solid Counter Demo</h1>
 				<p>This page demonstrates a JSX page in a nested directory.</p>
-				<counter-solid></counter-solid>
+				<solid-counter></solid-counter>
 				<p>
 					<a href="/">Home</a> | <a href="/landing.html">Landing</a>
 				</p>

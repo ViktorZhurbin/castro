@@ -1,4 +1,4 @@
-import { OUTPUT_DIR } from "../../../constants/dir.js";
+import { OUTPUT_DIR, ISLANDS_DIR } from "../../../constants/dir.js";
 import { FrameworkConfig } from "../framework-config.js";
 import { processJSXIslands } from "./process-jsx-islands.js";
 import { wrapWithIsland } from "./wrap-with-island.js";
@@ -19,7 +19,7 @@ export function createIslandPlugin({ framework }) {
 	const config = FrameworkConfig[framework];
 
 	return (options = {}) => {
-		const { sourceDir = config.defaultDir } = options;
+		const { sourceDir = `${ISLANDS_DIR}/${framework}` } = options;
 
 		/** @type {IslandComponent[]} */
 		let discoveredComponents = [];
