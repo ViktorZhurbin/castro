@@ -2,13 +2,13 @@
 
 ## Project Overview
 
-Castro is a satirical educational Static Site Generator that teaches island architecture through ~1500 lines of well-commented code. Built on the existing Reef codebase, it wraps serious technical implementation in communist-themed presentation.
+Castro is a satirical educational Static Site Generator that teaches island architecture through ~1500 lines of well-commented, self-explanatory code. Built on the existing Reef codebase, it wraps serious technical implementation in communist-themed presentation.
 
 **Core Philosophy:**
 - Code is serious, clean, and educational
 - Satire is in presentation layer only (CLI, errors, docs, naming)
 - Educational value takes priority over jokes
-- <1500 LOC of actual code + ~1000 LOC of explanatory comments
+- Try to keep actual codebase slim (currently <1500 LOC) + add explanatory comments generously to make sure every bit is clear to those who want to understand islands architecture
 
 ## What We're Building
 
@@ -40,15 +40,16 @@ Castro is a satirical educational Static Site Generator that teaches island arch
 **Target state:** Someone opens repo and immediately understands layout
 
 **Action:**
-1. Create `STRUCTURE.md` at root documenting current organization
-2. Propose simplified structure (consider: `/core`, `/cli`, `/bundler`, `/parser`, `/runtime`)
-3. Each folder name should explain its purpose
-4. Reorganize files if needed for clarity
+1. Create a short `STRUCTURE.md` at root documenting current organization
+2. Propose simplified structure
+3. Each folder, file, function and variable name should explain its purpose.
+4. Reorganize files if needed for clarity. Each module should have clear purpose.
+5. Code duplication may be better for the purpose than "smart DRY" extracting helpers
 
 **Success criteria:**
 - Directory structure is logical and minimal
 - No ambiguity about where code lives
-- STRUCTURE.md explains architectural organization
+- Do we need STRUCTURE.md after all, if file tree is self explanatory?
 
 ---
 
@@ -69,14 +70,14 @@ Castro is a satirical educational Static Site Generator that teaches island arch
 ```javascript
 /**
  * Selective Hydration Controller
- * 
+ *
  * This is the core of island architecture. Instead of hydrating
  * everything at once (like traditional SPAs), we wait for specific
  * conditions based on the directive used.
- * 
+ *
  * Educational note: The "magic" is just IntersectionObserver API
  * and some conditional script tag injection. No framework needed.
- * 
+ *
  * @param {HTMLElement} element - The island component to hydrate
  * @param {string} directive - Hydration strategy (no:pasaran, lenin:awake, etc)
  */
@@ -88,7 +89,7 @@ function hydrateIsland(element, directive) {
 ---
 
 ### Task 1.3: Add Educational Comments
-**Goal:** ~1000 lines of explanatory comments across the codebase
+**Goal:** explanatory comments across the codebase
 
 **Guidelines:**
 - Every function gets: what it does, why it exists, how it works
@@ -101,14 +102,13 @@ function hydrateIsland(element, directive) {
 Go file by file adding:
 1. File-level comment explaining module purpose
 2. Function-level comments with educational context
-3. Inline comments for non-obvious logic
+3. Inline comments for non-obvious logic. But first making the logic obvious, and naming explicit
 4. "Educational note:" sections explaining broader concepts
 
 **Success criteria:**
 - Code is self-teaching
 - A developer can read through and understand islands
 - Comments add educational value, not noise
-- ~1000 LOC of comments across ~1500 LOC of code
 
 ---
 
@@ -119,9 +119,9 @@ Go file by file adding:
 
 **Action:**
 1. Update package.json: name to "castro"
-2. Rename config file support: `manifesto.js` (keep backward compat if needed)
+2. Rename config file support: `manifesto.js` (ignore backward compat - we don't need it)
 3. Update all internal references
-4. Update README with new branding
+4. Re-write README with new branding and purpose
 
 **Success criteria:**
 - All references say "Castro"
@@ -134,9 +134,9 @@ Go file by file adding:
 **Goal:** Communist-themed commands and logging
 
 **Commands:**
-- `castro` or `castro plan` - dev server
-- `castro build` - production build
-- `castro purge` - clean build artifacts
+- `castro` or `castro plan` - dev server - "Planning for the bright future..."
+- `castro build` - build for production - "Realizing the Five-Year Plan..."
+- `castro purge` - rm -rf .dist - "Eliminating counter-revolutionary artifacts..."
 
 **The Ministry of Logs (build output):**
 ```
@@ -371,19 +371,13 @@ Check your syntax for counter-revolutionary tendencies.
 
 **Structure:**
 ```markdown
-# Castro 🚩
+# Castro
 
 *An educational framework for understanding island architecture*
 
-Castro is a working Static Site Generator that implements 
-island architecture in <1500 lines of readable code. The 
+Castro is a working Static Site Generator that implements
+island architecture in <1500 lines of readable code. The
 communist theme makes it memorable. The code makes it useful.
-
-## Why Castro Exists
-
-Most SSG tutorials gloss over **how** islands actually work. 
-Castro is the tutorial. Every file includes explanatory 
-comments. The entire codebase is designed to be read.
 
 ## What You'll Learn
 
@@ -405,7 +399,7 @@ While learning, you get communist-themed hydration directives:
 - `lenin:awake` - Hydrate on page load
 - `comrade:visible` - Hydrate when visible
 
-These map to standard patterns. The names just make them 
+These map to standard patterns. The names just make them
 more memorable while learning.
 
 ## Documentation
@@ -425,71 +419,7 @@ Joke PRs are fun but secondary to learning value.
 ## License
 
 MIT - The people's license
-
----
-
-⚠️ **Note:** This framework is satire, but the code is real.
-The communist theme is for memorability while learning.
-The architecture lessons transfer to any modern SSG.
 ```
-
-**Success criteria:**
-- README clearly explains value
-- Code example shows directives
-- Educational focus is obvious
-- Contributing guidelines set expectations
-
----
-
-### Task 4.2: Marketing Assets
-**Goal:** Visual content for sharing
-
-**Create:**
-1. Screenshot of CLI output (Ministry of Logs)
-2. Screenshot of error message (Ministry of Errors)
-3. Code snippet showing directives in action
-4. Bundle size comparison (before/after)
-
-**Success criteria:**
-- Professional-looking screenshots
-- Easy to share on social media
-- Show both satire and substance
-
----
-
-### Task 4.3: Soft Launch
-**Goal:** Get initial feedback without big push
-
-**Action:**
-1. Make GitHub repo public
-2. Post on personal social accounts
-3. Share in 2-3 relevant communities
-4. Monitor feedback and questions
-
-**Watch for:**
-- What confuses people?
-- What questions come up?
-- What features do they want?
-- Does satire help or hurt?
-
-**Success criteria:**
-- Repo is public and accessible
-- Initial feedback collected
-- No major confusion/blockers
-
----
-
-## Future Roadmap (Don't Build Now)
-
-Track these for later, after launch feedback:
-
-- [ ] Custom `.castro` file syntax (DSL with frontmatter fence)
-- [ ] IDE extension for syntax highlighting
-- [ ] Additional hydration directives
-- [ ] Plugin system
-- [ ] Themed error message presets (zen, corporate, etc)
-- [ ] Advanced tutorial content
-- [ ] Performance benchmarks vs other SSGs
 
 ---
 
@@ -534,6 +464,8 @@ Use these in docs/marketing:
 - "Workers of the web, unite!"
 - "The performance is... mandatory"
 - "Bundle sizes will be redistributed equally"
+- "The people's framework. Bundle sizes will be redistributed equally. ✊"
+- "Redistribute interactivity to the components that need it most."
 - "Seize the means of rendering"
 - "Your 5-year plan to understand islands architecture"
 - "Coming to npm after the revolution 🚩"
@@ -543,12 +475,11 @@ Use these in docs/marketing:
 ## What Success Looks Like
 
 **Launch state:**
-- Codebase is educational-ready (<1500 LOC + ~1000 LOC comments)
+- Codebase is educational-ready (<1500 LOC + comments)
 - CLI works with themed output
 - 3 directives implemented and documented
 - Docs site exists with at least one tutorial
 - README sells the concept
-- Soft launched on 2-3 platforms
 
 **Long-term success:**
 - People say "I learned islands by reading Castro"

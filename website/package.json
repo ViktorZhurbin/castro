@@ -4,12 +4,11 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "reef",
-		"build": "reef build"
+		"dev": "castro",
+		"build": "castro build"
 	},
 	"dependencies": {
-		"@vktrz/reef": "workspace:*",
-		"preact": "^10.28.2",
-		"solid-js": "1.9.10"
+		"@vktrz/castro": "workspace:*",
+		"preact": "^10.28.2"
 	}
 }

@@ -4,13 +4,13 @@ export default function Landing() {
 			<head>
 				<meta charSet="UTF-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-				<title>Welcome to Reef</title>
+				<title>Welcome to Castro</title>
 				<link rel="stylesheet" href="/styles.css" />
 			</head>
 			<body>
 				<header>
-					<h1>Pages</h1>
-					<p>A minimal SSG with island architecture</p>
+					<h1>Island Demo</h1>
+					<p>Educational SSG with island architecture</p>
 				</header>
 
 				<main>
@@ -25,7 +25,7 @@ export default function Landing() {
 						<ul>
 							<li>Markdown + JSX layouts for content</li>
 							<li>Full JSX pages for structure</li>
-							<li>Island architecture with framework choice</li>
+							<li>Island architecture with Preact</li>
 							<li>Zero JavaScript by default</li>
 							<li>Live reload in dev mode</li>
 						</ul>
@@ -34,11 +34,11 @@ export default function Landing() {
 					<section>
 						<h2>Getting Started</h2>
 						<p>
-							This page is written in JSX (<code>pages/landing.jsx</code>) and
-							rendered to static HTML at build time.
+							This page is written in JSX (<code>pages/islands-preact.jsx</code>
+							) and rendered to static HTML at build time.
 						</p>
 						<p>
-							Islands like <code>&lt;solid-counter&gt;</code> are automatically
+							Islands like <code>&lt;preact-counter&gt;</code> are automatically
 							detected and their scripts injected.
 						</p>
 					</section>
@@ -46,7 +46,7 @@ export default function Landing() {
 
 				<footer>
 					<p>
-						Built with Reef | <a href="/">Back to home</a>
+						Built with Castro | <a href="/">Back to home</a>
 					</p>
 				</footer>
 			</body>

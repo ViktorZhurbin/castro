@@ -1,0 +1,67 @@
+/**
+ * Preact Islands Plugin
+ *
+ * Discovers, compiles, and manages Preact island components.
+ * Handles the build-time processing that makes islands work.
+ */
+
+import { ISLANDS_DIR, OUTPUT_DIR } from "../config.js";
+import { PreactConfig } from "./preact-config.js";
+import { processIslands } from "./processor.js";
+import { wrapWithIsland } from "./wrapper.js";
+
+/**
+ * @import { CastroPlugin, IslandComponent } from '../types.d.ts'
+ */
+
+/**
+ * Plugin that discovers and compiles Preact island components
+ *
+ * @param {{ sourceDir?: string }} [options]
+ * @returns {CastroPlugin}
+ */
+export function preactIslands(options = {}) {
+	const { sourceDir = ISLANDS_DIR } = options;
+
+	/** @type {IslandComponent[]} */
+	let discoveredComponents = [];
+
+	return {
+		name: "islands-preact",
+
+		// Watch islands directory for changes in dev mode
+		watchDirs: [sourceDir],
+
+		/**
+		 * Build hook: discover, compile, and copy components
+		 */
+		async onBuild({ outputDir = OUTPUT_DIR }) {
+			discoveredComponents = await processIslands({
+				sourceDir,
+				outputDir,
+			});
+		},
+
+		/**
+		 * Return import map for Preact runtime
+		 */
+		getImportMap() {
+			if (discoveredComponents.length === 0) return null;
+
+			return PreactConfig.importMap;
+		},
+
+		/**
+		 * Transform HTML: wrap components in <castro-island> tags and render SSR
+		 */
+		async transform({ content }) {
+			if (discoveredComponents.length === 0) return content;
+
+			return await wrapWithIsland(
+				content,
+				discoveredComponents,
+				"comrade:visible", // Default hydration directive
+			);
+		},
+	};
+}
