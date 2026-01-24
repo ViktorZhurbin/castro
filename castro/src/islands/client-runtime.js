@@ -2,11 +2,14 @@
  * Client Runtime Helpers
  *
  * Utilities that run in the browser to support island hydration.
- * These help extract props from HTML attributes and convert them
- * to the right JavaScript types.
  *
- * Educational note: When we SSR a component, we encode its props
- * as data-* attributes. This file decodes them back when hydrating.
+ * Problem: HTML attributes are always strings, but components expect
+ * typed props (numbers, booleans, objects). When we SSR a component,
+ * we serialize props as data-* attributes. During hydration, we need
+ * to deserialize them back to the correct types.
+ *
+ * Solution: These functions extract data-* attributes and intelligently
+ * cast string values to their intended types.
  */
 
 /**
@@ -51,33 +54,41 @@ export function toCamelCase(str) {
 /**
  * Cast string attribute value to proper JavaScript type
  *
- * Educational note: HTML attributes are always strings, but our
- * components expect real types. This function does smart conversion:
- * - "true"/"false" -> boolean
- * - "42" -> number
- * - '{"key": "value"}' -> object
+ * HTML attributes are always strings. This function uses heuristics
+ * to convert them back to their intended types:
+ * - "true"/"false" or empty -> boolean
+ * - "42" or "3.14" -> number
+ * - '{"key": "value"}' or '[1,2,3]' -> parsed JSON
+ * - Everything else -> string
+ *
+ * Examples:
+ *   data-count="5" → 5 (number)
+ *   data-enabled → true (boolean, empty value)
+ *   data-items='["a","b"]' → ["a","b"] (array)
  *
  * @param {string | null} val
  * @returns {unknown}
  */
 export function castValue(val) {
-	// Empty attributes like <tag data-active> become true
+	// Empty attributes like <tag data-active> have null or "" value
 	if (val === "true" || val === "" || val === null) return true;
 
 	if (val === "false") return false;
 
-	// Try to parse as number
+	// Try to parse as number (if it's numeric and not an empty string)
 	const num = Number(val);
 	if (val.trim() !== "" && !Number.isNaN(num)) return num;
 
-	// Try to parse as JSON (for arrays/objects)
+	// Try to parse as JSON for arrays/objects
 	if (val.startsWith("{") || val.startsWith("[")) {
 		try {
 			return JSON.parse(val);
 		} catch {
+			// Invalid JSON, fall through to string
 			return undefined;
 		}
 	}
 
+	// Default: keep as string
 	return val;
 }

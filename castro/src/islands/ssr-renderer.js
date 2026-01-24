@@ -3,13 +3,14 @@
  *
  * Renders island components to static HTML at build time.
  *
- * Educational note: This is what enables "progressive enhancement":
- * 1. At build time, we render the component to HTML
- * 2. Users see content immediately (no JS needed)
- * 3. When JS loads, it "hydrates" to become interactive
+ * Progressive enhancement flow:
+ * 1. Build time: Render component to HTML (this file)
+ * 2. Browser loads: User sees static HTML instantly
+ * 3. JS arrives: Component hydrates and becomes interactive
  *
- * If SSR fails (browser-only APIs, etc.), we just skip it.
- * The island will still work, just without initial HTML.
+ * SSR may fail if component uses browser-only APIs (window, document).
+ * That's fine - we skip SSR and the island will still hydrate and work,
+ * just without the initial static HTML.
  */
 
 import { styleText } from "node:util";

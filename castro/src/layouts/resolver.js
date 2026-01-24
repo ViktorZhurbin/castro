@@ -6,9 +6,9 @@
  * 2. castro.js file in directory tree (walking up)
  * 3. "default" layout (fallback)
  *
- * Educational note: This is a common pattern in SSGs like Eleventy.
- * It lets you set layout once for a whole directory instead of
- * repeating it in every file.
+ * The directory cascade pattern means you can create pages/blog/castro.js
+ * with `export default { layout: "blog" }` and all pages in pages/blog/
+ * will automatically use the blog layout, unless overridden.
  */
 
 import { access } from "node:fs/promises";

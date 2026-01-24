@@ -2,12 +2,15 @@
  * Island Wrapper
  *
  * Transforms HTML to wrap custom elements with <castro-island>.
- * This is where the magic happens - we find components in the HTML
- * and wrap them with our lazy-loading infrastructure.
  *
- * Educational note: This runs at BUILD TIME, not runtime.
- * We scan the rendered HTML for custom elements like <preact-counter>
- * and wrap them in <castro-island> which handles lazy hydration.
+ * Process:
+ * 1. Find all custom element tags in HTML (e.g., <preact-counter>)
+ * 2. Try to render them to static HTML at build time (SSR)
+ * 3. Wrap them in <castro-island> with import path and loading strategy
+ * 4. Browser will lazy-load and hydrate when conditions are met
+ *
+ * This runs at BUILD TIME. The output is static HTML with deferred
+ * JavaScript loading infrastructure.
  */
 
 import { castValue, toCamelCase } from "./client-runtime.js";
@@ -88,7 +91,10 @@ export async function wrapWithIsland(
 		}),
 	);
 
-	// Single-pass string reconstruction (performance optimization)
+	// Single-pass string reconstruction
+	// We build the new string by: keeping everything before a match,
+	// inserting the replacement markup, repeat for each match,
+	// then append everything after the last match.
 	let result = "";
 	let lastIndex = 0;
 

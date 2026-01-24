@@ -83,11 +83,20 @@ async function compileIslandClient({ sourcePath, outputPath }) {
 /**
  * Create the mounting entry point for a component
  *
- * Educational note: This generates the code that will run when
- * the island hydrates. It:
- * 1. Imports the component
- * 2. Extracts props from HTML attributes
- * 3. Calls the framework's hydrate function
+ * Generates code that will be bundled and loaded when the island hydrates.
+ * The generated module exports a function that:
+ * 1. Reads props from data-* attributes on the container element
+ * 2. Imports the framework runtime (Preact)
+ * 3. Calls hydrate() to attach event listeners to the static HTML
+ *
+ * Example output for counter.tsx:
+ *   import Component from './counter.tsx';
+ *   import { getPropsFromAttributes } from 'castro/client-runtime';
+ *   export default async (container) => {
+ *     const props = getPropsFromAttributes(container.attributes);
+ *     const { h, hydrate } = await import("preact");
+ *     hydrate(h(Component, props), container);
+ *   }
  *
  * @param {string} sourcePath
  * @returns {string}
@@ -111,10 +120,11 @@ function createMountingEntry(sourcePath) {
 /**
  * Compile island for server-side rendering (Node.js execution)
  *
- * Educational note: SSR compilation differs from client:
+ * SSR compilation differs from client:
  * - Target is Node.js, not browser
- * - CSS imports are stubbed out (not needed for HTML generation)
+ * - CSS imports are stubbed out (Node can't import CSS files)
  * - Result is kept in memory, not written to disk
+ * - Used only to generate static HTML at build time
  *
  * @param {{ sourcePath: string }} params
  * @returns {Promise<string | null>} Compiled code or null if fails
@@ -124,7 +134,10 @@ async function compileIslandSSR({ sourcePath }) {
 	const buildConfig = config.getBuildConfig();
 
 	try {
-		// CSS stub plugin - replaces CSS imports with empty exports
+		// CSS stub plugin - intercepts CSS imports and returns empty module.
+		// Components often import CSS (e.g., import "./counter.css"), which
+		// works in browsers but breaks in Node.js. During SSR we only need
+		// the HTML output, so we stub out CSS imports.
 		/** @type {esbuild.Plugin} */
 		const cssStubPlugin = {
 			name: "css-stub",

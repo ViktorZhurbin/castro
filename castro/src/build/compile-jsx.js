@@ -2,10 +2,12 @@
  * JSX Compiler
  *
  * Compiles JSX/TSX files to JavaScript using esbuild.
- * Used for both pages and layouts.
+ * Used for pages and layouts at build time.
  *
- * Educational note: esbuild is blazingly fast because it's
- * written in Go. We use it for all compilation in Castro.
+ * esbuild is very fast and handles:
+ * - JSX/TSX transpilation
+ * - TypeScript type stripping (types removed, not checked)
+ * - Module bundling
  */
 
 import * as esbuild from "esbuild";
@@ -22,14 +24,14 @@ export async function compileJSX(sourcePath) {
 
 	const result = await esbuild.build({
 		entryPoints: [sourcePath],
-		write: false,
+		write: false, // Keep output in memory, don't write to disk
 		outfile: outputPath,
-		jsx: "automatic",
-		jsxImportSource: "preact",
-		bundle: true,
-		packages: "external",
-		format: "esm",
-		target: "node22",
+		jsx: "automatic", // Use new JSX transform (no need to import h)
+		jsxImportSource: "preact", // Auto-import JSX runtime from preact
+		bundle: true, // Include all imports in output
+		packages: "external", // Don't bundle node_modules, keep as imports
+		format: "esm", // Output ES modules
+		target: "node22", // We're running this in Node.js, not browser
 		logLevel: "warning",
 	});
 

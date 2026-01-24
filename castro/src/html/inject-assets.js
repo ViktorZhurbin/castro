@@ -2,11 +2,14 @@
  * Asset Injection
  *
  * Collects assets from plugins and injects them into HTML.
- * Assets include scripts, stylesheets, and import maps.
  *
- * Educational note: Import maps are a browser feature that lets
- * you use bare module specifiers like `import { h } from "preact"`
- * without a bundler. We generate one to load framework code from CDN.
+ * Assets include:
+ * - Scripts (castro-island.js, component bundles)
+ * - Stylesheets (component CSS)
+ * - Import maps (tells browser where to load "preact" from)
+ *
+ * Import maps let us write `import { h } from "preact"` in browser code
+ * and have it resolve to a CDN URL, no bundler needed.
  */
 
 import { join } from "node:path";

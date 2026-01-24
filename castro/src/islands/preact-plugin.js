@@ -1,8 +1,13 @@
 /**
  * Preact Islands Plugin
  *
- * Discovers, compiles, and manages Preact island components.
- * Handles the build-time processing that makes islands work.
+ * Plugin that discovers, compiles, and integrates Preact islands.
+ *
+ * What it does:
+ * - onBuild: Scans islands/ directory and compiles each component
+ * - getImportMap: Returns CDN URLs for Preact runtime
+ * - transform: Wraps <preact-*> tags in HTML with <castro-island>
+ * - watchDirs: Tells dev server to rebuild when islands/ changes
  */
 
 import { ISLANDS_DIR, OUTPUT_DIR } from "../config.js";

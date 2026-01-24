@@ -12,19 +12,13 @@ export type Asset = {
 
 export type ImportMap = Record<string, string>;
 
-
 export type CastroPlugin = {
 	name: string;
 	watchDirs?: string[];
 	getAssets?: () => Asset[];
 	getImportMap?: () => ImportMap | null;
-	onBuild?: (ctx: {
-		outputDir: string;
-		contentDir: string;
-	}) => Promise<void>;
-	transform?: (ctx: {
-		content: string;
-	}) => Promise<string>;
+	onBuild?: (ctx: { outputDir: string; contentDir: string }) => Promise<void>;
+	transform?: (ctx: { content: string }) => Promise<string>;
 };
 
 export type IslandComponent = {

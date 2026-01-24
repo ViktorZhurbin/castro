@@ -3,9 +3,17 @@
  *
  * Discovers and compiles layout components from the layouts/ directory.
  *
- * Educational note: Layouts are JSX components that wrap your content.
- * They typically define the HTML shell (head, body) and common elements
- * (header, footer, navigation).
+ * Layouts are JSX components that wrap page content. They typically
+ * define the HTML shell (<html>, <head>, <body>) and common elements
+ * like headers, footers, and navigation.
+ *
+ * Example layout:
+ *   export default ({ title, content }) => (
+ *     <html>
+ *       <head><title>{title}</title></head>
+ *       <body dangerouslySetInnerHTML={{ __html: content }} />
+ *     </html>
+ *   );
  */
 
 import { rmSync } from "node:fs";
@@ -42,7 +50,8 @@ export async function loadLayouts() {
 		throw err;
 	}
 
-	// Ensure clean temp dir for compiled layouts
+	// Clean temp dir to ensure fresh compilation.
+	// In dev mode, stale cached layouts can cause issues when files change.
 	const tempDirPath = resolveTempDir(LAYOUTS_DIR);
 	rmSync(tempDirPath, { recursive: true, force: true });
 

@@ -3,11 +3,16 @@
  *
  * Builds a single JSX/TSX page to HTML.
  *
- * Educational note: JSX pages are React-like components that
- * render to HTML at build time. They can:
- * - Export metadata (title, layout preference)
+ * JSX pages are components that render at build time. They can:
+ * - Export `meta` object with { title, layout, custom fields }
  * - Use islands for interactive parts
  * - Import other components
+ *
+ * Example page structure:
+ *   export const meta = { title: "About", layout: "default" };
+ *   export default function About() {
+ *     return <div>Content here</div>;
+ *   }
  */
 
 import { styleText } from "node:util";
@@ -44,7 +49,8 @@ export async function buildJSXPage(sourceFileName, options = {}) {
 
 		let layoutVNode;
 
-		// Support layout: false for pages that render full HTML
+		// Support layout: false for pages that render full HTML themselves.
+		// Useful for special pages like RSS feeds, sitemaps, or custom layouts.
 		if (meta.layout === false) {
 			layoutVNode = pageModule.default();
 		} else {

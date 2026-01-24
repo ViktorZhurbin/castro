@@ -3,11 +3,19 @@
  *
  * Builds a single markdown file to HTML.
  *
- * Educational note: Markdown is great for content-heavy pages
- * like blog posts. This builder:
- * 1. Parses frontmatter (YAML at top) for metadata
- * 2. Converts markdown to HTML
- * 3. Wraps in a layout
+ * Process:
+ * 1. Parse frontmatter (YAML between --- delimiters) for metadata
+ * 2. Convert markdown body to HTML using marked
+ * 3. Resolve which layout to use (from frontmatter or directory config)
+ * 4. Wrap HTML in layout component
+ *
+ * Example markdown file:
+ *   ---
+ *   title: My Post
+ *   layout: blog
+ *   ---
+ *   # Heading
+ *   Content here...
  */
 
 import { readFile } from "node:fs/promises";

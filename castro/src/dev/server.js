@@ -4,11 +4,13 @@
  * A simple dev server with:
  * - Static file serving
  * - File watching for auto-rebuild
- * - Live reload via Server-Sent Events
+ * - Live reload via Server-Sent Events (SSE)
  *
- * Educational note: This is a minimal implementation showing
- * how dev servers work. Production servers like Vite do more,
- * but the core concepts are the same.
+ * Live reload works by:
+ * 1. Browser connects to /events and holds connection open
+ * 2. Server watches files and rebuilds on change
+ * 3. Server sends "reload" event through all open connections
+ * 4. Browser receives event and reloads the page
  */
 
 import { watch } from "node:fs/promises";
@@ -42,6 +44,8 @@ export async function startDevServer() {
 
 	const server = polka()
 		// SSE endpoint for live reload
+		// Client opens EventSource("/events") and we keep the connection alive.
+		// When files change, we write to all connections to trigger reload.
 		.get("/events", (req, res) => {
 			res.writeHead(200, {
 				"Content-Type": "text/event-stream",

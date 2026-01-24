@@ -2,10 +2,15 @@
  * Live Reload Client
  *
  * This runs in the BROWSER during development.
- * It listens for server events and reloads the page when files change.
  *
- * Educational note: Server-Sent Events (SSE) is simpler than WebSockets
- * for one-way communication. The server pushes events, the client listens.
+ * How it works:
+ * 1. Opens EventSource connection to /events endpoint
+ * 2. Server keeps connection alive and watches file system
+ * 3. When files change, server sends "reload" message through connection
+ * 4. Browser receives message and triggers full page reload
+ *
+ * Uses Server-Sent Events (SSE) which is simpler than WebSockets for
+ * one-way server→client messaging.
  */
 
 import { LiveReloadEvents } from "./live-reload-events.js";

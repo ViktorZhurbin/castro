@@ -2,19 +2,21 @@
  * HTML Page Writer
  *
  * Final step in page building:
- * 1. Run transform hooks (e.g., wrapping islands)
- * 2. Collect assets from plugins
- * 3. Inject assets into HTML
+ * 1. Run transform hooks (e.g., wrapping islands in <castro-island>)
+ * 2. Collect assets from plugins (scripts, import maps, CSS)
+ * 3. Inject assets into HTML <head>
  * 4. Write to disk
  *
- * Educational note: This is where all the plugin transforms
- * happen. The HTML goes through a pipeline before being saved.
+ * The HTML goes through a plugin pipeline. For islands, this means:
+ * - Find <preact-counter> tags in the HTML
+ * - Wrap them in <castro-island> with import paths
+ * - Add script tags and import maps to load the island code
  */
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
-import { defaultPlugins } from "../islands/plugins.js";
 import { collectAssets, injectAssets } from "../html/inject-assets.js";
+import { defaultPlugins } from "../islands/plugins.js";
 
 /**
  * Process HTML and write to file

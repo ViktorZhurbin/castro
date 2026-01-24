@@ -1,8 +1,13 @@
 /**
  * Castro Island Runtime Plugin
  *
- * Loads the castro-island custom element that handles lazy hydration.
- * This is the client-side infrastructure that makes islands work.
+ * Copies the island runtime files to dist/ and injects them into HTML.
+ *
+ * Runtime files:
+ * - castro-island.js: Custom element definition for <castro-island>
+ * - castro-client-runtime.js: Helper functions for prop extraction
+ *
+ * These files run in the browser and handle lazy loading/hydration.
  */
 
 import { copyFile, mkdir } from "node:fs/promises";

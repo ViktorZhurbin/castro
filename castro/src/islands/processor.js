@@ -2,13 +2,15 @@
  * Island Processor
  *
  * Discovers and compiles island components from the islands/ directory.
- * Each .jsx/.tsx file becomes a custom element.
  *
- * Educational note: The naming convention is important!
- * - File: counter.tsx
- * - Element: <preact-counter>
+ * File-to-element naming:
+ * - islands/counter.tsx → <preact-counter>
+ * - islands/nav.tsx → <preact-nav>
  *
- * This makes it obvious which framework powers which component.
+ * The prefix identifies the framework. Custom elements require a hyphen
+ * in their name (to distinguish from built-in HTML elements), so we use
+ * the framework name as the prefix. This makes it obvious which framework
+ * is hydrating each component.
  */
 
 import { access, glob, mkdir } from "node:fs/promises";

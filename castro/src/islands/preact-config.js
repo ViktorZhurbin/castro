@@ -1,12 +1,13 @@
 /**
  * Preact Framework Configuration
  *
- * This file contains all Preact-specific settings for island compilation.
- * Educational note: Each framework needs to know:
- * 1. How to compile components (esbuild config)
- * 2. How to hydrate on the client (runtime code)
+ * All Preact-specific settings for island compilation.
+ *
+ * To support a framework, we need to configure:
+ * 1. How to compile components (esbuild JSX settings)
+ * 2. How to hydrate on the client (framework-specific code)
  * 3. How to render on the server (SSR function)
- * 4. What imports the browser needs (import map)
+ * 4. Where to load the framework from (import map CDN URLs)
  */
 
 /**
@@ -51,11 +52,20 @@ export const PreactConfig = {
 
 	/**
 	 * Client-side hydration code
-	 * This runs in the browser when an island becomes interactive
 	 *
-	 * Educational note: hydrate() attaches event listeners to existing HTML
-	 * without re-rendering. This is the "magic" of islands - the HTML is
-	 * already there from SSR, we just make it interactive.
+	 * This code string gets injected into the compiled island bundle.
+	 * It runs in the browser when the island loads.
+	 *
+	 * What it does:
+	 * 1. Dynamically imports Preact runtime (resolved via import map)
+	 * 2. Calls hydrate() which attaches event listeners to existing HTML
+	 *    without re-rendering (the HTML came from SSR)
+	 * 3. Component becomes interactive
+	 *
+	 * Variables available when this runs:
+	 * - Component: the imported component function
+	 * - props: extracted from data-* attributes
+	 * - container: the DOM element to hydrate
 	 */
 	hydrateFnString: `
 		const { h, hydrate } = await import("preact");

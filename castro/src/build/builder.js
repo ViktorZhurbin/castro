@@ -59,6 +59,10 @@ export async function buildAll(options = {}) {
 	}
 
 	// Collect all pages and detect route conflicts
+	//
+	// We scan all .md, .jsx, and .tsx files in pages/ and check if any
+	// would produce the same .html output path (e.g., foo.md and foo.jsx
+	// both want to become foo.html). This prevents silent overwrites.
 	/** @type {string[]} */
 	const mdFilePaths = [];
 	/** @type {string[]} */

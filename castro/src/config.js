@@ -97,8 +97,12 @@ export function resolveTempDir(subpath) {
 
 /**
  * Generates the disk path for the temp file.
+ *
+ * Mirrors the source file structure inside node_modules/.castro-temp/
+ * For example: pages/blog/post.tsx → node_modules/.castro-temp/pages/blog/post.tsx.js
+ *
  * @param {string} sourcePath
- * @param {string} [subpath]
+ * @param {string} [subpath] - Optional subdirectory (e.g., "ssr" for SSR builds)
  * @returns {string}
  */
 export function createTempPath(sourcePath, subpath = "") {
@@ -130,8 +134,14 @@ function writeTempFile(sourcePath, content, subpath = "") {
 
 /**
  * Write code to temp file and import it as a module
+ *
+ * We can't directly import code from a string in ESM, so we:
+ * 1. Write the compiled code to a temp file
+ * 2. Generate a file:// URL with cache-busting timestamp
+ * 3. Dynamic import() the file URL
+ *
  * @param {string} sourcePath
- * @param {string} content
+ * @param {string} content - Compiled JavaScript code
  * @param {string} [subpath]
  */
 export async function getModule(sourcePath, content, subpath) {
