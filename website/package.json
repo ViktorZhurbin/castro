@@ -5,10 +5,14 @@
 	"type": "module",
 	"scripts": {
 		"dev": "castro",
-		"build": "castro build"
+		"build": "castro build",
+		"type-check": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@vktrz/castro": "workspace:*",
 		"preact": "^10.28.2"
+	},
+	"devDependencies": {
+		"typescript": "^5.9.3"
 	}
 }

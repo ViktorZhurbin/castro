@@ -34,8 +34,6 @@ async function getLiveReloadAsset() {
 		"utf-8",
 	);
 
-	console.log(cachedLiveReloadJs);
-
 	return cachedLiveReloadJs;
 }
 

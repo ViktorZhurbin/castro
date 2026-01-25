@@ -40,9 +40,17 @@ my-site/
 │   └── index.md
 ├── layouts/           # Page layouts (.jsx, .tsx)
 │   └── default.jsx
+├── components/        # Static reusable components (.jsx, .tsx)
+│   └── Button.jsx
 └── islands/           # Interactive components (.jsx, .tsx)
     └── counter.tsx
 ```
+
+**Component types:**
+- **`components/`** - Static UI components, server-side only, no JS shipped to client
+- **`islands/`** - Interactive components that ship JavaScript to the browser
+- Use `components/` for headers, footers, buttons, cards, etc.
+- Use `islands/` only when you need client-side interactivity
 
 **Add scripts to package.json:**
 ```json
@@ -74,6 +82,26 @@ title: My Site
 # Hello World
 
 This is static HTML. Fast to load, no JavaScript needed.
+```
+
+**Create reusable components** (`components/Button.jsx`):
+```jsx
+export function Button({ href, children }) {
+  return <a href={href} className="btn">{children}</a>;
+}
+```
+
+Import components in pages, layouts, or islands:
+```jsx
+import { Button } from "../components/Button.jsx";
+
+export default function Home() {
+  return (
+    <div>
+      <Button href="/about">Learn More</Button>
+    </div>
+  );
+}
 ```
 
 **Add an island** (`islands/counter.tsx`):

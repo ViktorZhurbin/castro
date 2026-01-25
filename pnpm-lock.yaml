@@ -54,6 +54,10 @@ importers:
       preact:
         specifier: ^10.28.2
         version: 10.28.2
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
 packages:
 
