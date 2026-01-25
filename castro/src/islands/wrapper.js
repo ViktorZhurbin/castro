@@ -13,7 +13,7 @@
  * JavaScript loading infrastructure.
  */
 
-import { castValue, toCamelCase } from "./client-runtime.js";
+import { getPropsFromAttributeString } from "./client-runtime.js";
 import { renderIslandSSR } from "./ssr-renderer.js";
 
 /**
@@ -65,7 +65,7 @@ export async function wrapWithIsland(
 			}
 
 			// Extract props from data-* attributes for SSR
-			const props = extractProps(attrs);
+			const props = getPropsFromAttributeString(attrs);
 			let staticHtml = innerContent;
 
 			// Try to render component at build time (SSR)
@@ -106,24 +106,4 @@ export async function wrapWithIsland(
 	result += content.slice(lastIndex);
 
 	return result;
-}
-
-/**
- * Extract props from data-* attributes string
- *
- * @param {string} attrsString - Raw attributes string from HTML
- * @returns {Record<string, unknown>}
- */
-function extractProps(attrsString) {
-	/** @type {Record<string, unknown>} */
-	const props = {};
-
-	const dataAttrRegex = /data-([a-z0-9-]+)=["']([^"']*)["']/g;
-
-	for (const [, key, value] of attrsString.matchAll(dataAttrRegex)) {
-		const camelKey = toCamelCase(key);
-		props[camelKey] = castValue(value);
-	}
-
-	return props;
 }
