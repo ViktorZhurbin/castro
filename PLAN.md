@@ -196,7 +196,7 @@ Infinite loops:
 ```
 ⚠️ Permanent Revolution detected in <Counter />.
 While ideologically sound, the browser is out of resources.
-The state has collapsed.
+The State has collapsed.
 ```
 
 Conflicting directives:
@@ -292,7 +292,7 @@ Check your syntax for counter-revolutionary tendencies.
    - Communist framing makes it memorable
    - Example: "Central Planning (Build-Time Rendering)"
      - Serious explanation of SSG benefits
-     - Satirical framing: "The state decides what renders"
+     - Satirical framing: "The State decides what renders"
 
 4. **The Codebase Tour**
    - Annotated walkthrough of the source
@@ -316,111 +316,9 @@ Check your syntax for counter-revolutionary tendencies.
 
 ---
 
-### Task 3.2: Write Educational Content
-**Goal:** Content that actually teaches islands architecture
-
-**Priority order:**
-1. Manifesto page (hook people)
-2. One complete tutorial ("Build your first Castro site")
-3. Codebase tour (architecture walkthrough)
-4. API reference (directives, config)
-
-**Don't write everything at once:**
-- Start with manifesto + one tutorial
-- Expand based on feedback
-- Quality over quantity
-
-**Tutorial should:**
-- Walk through building a simple site
-- Explain each step's purpose
-- Show the island architecture in action
-- Reference code comments for deeper learning
-
-**Success criteria:**
-- One complete, working tutorial exists
-- Manifesto explains value proposition clearly
-- Content teaches, doesn't just describe
-
----
-
-### Task 3.3: Add Examples
-**Goal:** Working examples demonstrating concepts
-
-**Required examples:**
-1. **Simple blog** - Static pages, no islands
-2. **Interactive components** - Islands demo (counter, form, etc)
-3. **Real-world use case** - Practical application
-
-**Each example:**
-- Demonstrates one concept clearly
-- Includes code comments
-- Shows both static and interactive patterns
-- Can be copy-pasted as starter
-
-**Success criteria:**
-- Examples work out of the box
-- Each teaches a specific concept
-- Code is clean and commented
-
----
-
 ## Phase 4: Polish & Launch
 
-### Task 4.1: Perfect README
-**Goal:** README that sells the educational value
-
-**Structure:**
-```markdown
-# Castro
-
-*An educational framework for understanding island architecture*
-
-Castro is a working Static Site Generator that implements
-island architecture in <1500 lines of readable code. The
-communist theme makes it memorable. The code makes it useful.
-
-## What You'll Learn
-
-- How to parse and transform JSX/templates
-- Build-time vs runtime rendering strategies
-- Selective hydration implementation
-- Dev server architecture
-- Plugin systems
-
-## Quick Start
-
-[Installation and basic usage]
-
-## The Revolutionary Directives
-
-While learning, you get communist-themed hydration directives:
-
-- `no:pasaran` - Static render only (no JS shipped)
-- `lenin:awake` - Hydrate on page load
-- `comrade:visible` - Hydrate when visible
-
-These map to standard patterns. The names just make them
-more memorable while learning.
-
-## Documentation
-
-[Link to docs site]
-
-## Contributing
-
-This is an educational project. PRs welcome if they:
-- Improve code clarity/comments
-- Add tutorial content
-- Fix bugs
-- Enhance educational value
-
-Joke PRs are fun but secondary to learning value.
-
-## License
-
-MIT - The people's license
-```
-
+Review README and update as needed, after all the changes above.
 ---
 
 ## Quality Gates

@@ -1,65 +1,66 @@
-# Reef
+---
+title: Castro - Island Architecture Framework
+---
 
-A minimalist SSG framework with simple reactivity "islands".
+# Castro
 
-## Quick Start
+*An educational framework for understanding island architecture*
 
-Install: `npm i @vktrz/reef` (not published yet, actually)
+Castro is a working Static Site Generator that implements island architecture in ~1500 lines of well-commented, readable code. The communist theme makes it memorable. The architecture lessons are real.
 
-Add scripts to `package.json`:
+## The Revolutionary Directives
 
-```json
-"scripts": {
-    "dev": "reef",
-    "build": "reef build"
-}
-```
+Castro supports three hydration strategies. Add them directly to your components:
 
-## Requirements
+### `no:pasaran` - Static Only
 
-TODO: needs update
+Component renders at build time, no JavaScript shipped to client.
 
-At the root of the project, add `content/` folder with `.md` files, and a `template.html` with `{{title}}` and `{{content}}` placeholders.
+*"They shall not pass (to the client)"*
 
-## Example
+<preact-counter no:pasaran data-initial="5"></preact-counter>
 
-https://github.com/ViktorZhurbin/reef/tree/main/packages/website
-# Reef
+This counter above is pure HTML. Click it - nothing happens. No JS was sent to your browser.
 
-A minimalist SSG framework with simple reactivity "islands".
+### `lenin:awake` - Immediate Hydration
 
-## Quick Start
+Component becomes interactive as soon as the page loads.
 
-Install: `npm i @vktrz/reef` (not published yet, actually)
+*"The leader is always ready"*
 
-Add scripts to `package.json`:
+<preact-counter lenin:awake data-initial="10"></preact-counter>
 
-```json
-"scripts": {
-    "dev": "reef",
-    "build": "reef build"
-}
-```
+This counter is interactive immediately. JavaScript loaded on page load.
 
-## Requirements
+### `comrade:visible` - Lazy Load
 
-TODO: needs update
+Component becomes interactive when scrolled into viewport (default).
 
-At the root of the project, add `content/` folder with `.md` files, and a `template.html` with `{{title}}` and `{{content}}` placeholders.
+*"Only work when the people are watching"*
 
-## Example
+<preact-counter comrade:visible data-initial="15"></preact-counter>
 
-https://github.com/ViktorZhurbin/reef/tree/main/packages/website
+This counter loads JavaScript only when you scroll it into view. Check your Network tab!
 
+---
 
-A minimal markdown-based static site generator with optional interactive islands.
+## How It Works
 
-## Islands
+1. **Build time**: All three counters render to static HTML
+2. **Page load**: HTML displays instantly (all three visible)
+3. **Hydration**: JavaScript loads based on directive
+   - `no:pasaran`: Never loads JS
+   - `lenin:awake`: Loads immediately
+   - `comrade:visible`: Loads when scrolled into view
 
-<solid-counter data-initial="8"></solid-counter>
-<preact-counter data-initial="2"></preact-counter>
+Result: Fast initial page load, progressive enhancement, minimal JavaScript.
 
-Add interactivity only where you need it:
+## More Examples
 
-- [islands-preact](/islands-preact.html)
-- [islands-solid](/islands-solid.html)
+- [Interactive Islands Demo](/islands-preact.html)
+- [Counter Component Demo](/demo/counter.html)
+- [About](/about/)
+
+---
+
+*Workers of the web, unite! Seize the means of rendering.*

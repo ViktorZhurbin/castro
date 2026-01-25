@@ -28,10 +28,12 @@ class CastroIsland extends HTMLElement {
 		if (this._hydrated) return;
 
 		// Wait for trigger condition based on directive
-		// Currently supports: comrade:visible (IntersectionObserver)
-		// Future: lenin:awake (immediate), party:priority (high priority)
 		if (this.hasAttribute("comrade:visible")) {
+			// Lazy load when scrolled into view
 			await this.waitVisible();
+		} else if (this.hasAttribute("lenin:awake")) {
+			// Immediate hydration, no waiting
+			// (fall through to hydrate())
 		}
 
 		// Load and mount component

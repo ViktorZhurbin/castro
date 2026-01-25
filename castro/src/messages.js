@@ -10,7 +10,7 @@ export const messages = {
 	devServer: {
 		starting: "📡 Consulting the Central Committee...",
 		ready: (/** @type {string} */ url) => `🚩 The revolution is live at ${url}`,
-		watching: "👁️  The state is watching for changes...",
+		watching: "👁️  The State is watching for changes...",
 	},
 
 	build: {
@@ -47,7 +47,7 @@ export const messages = {
 			`   Every page needs leadership. Create the missing layout.`,
 
 		missingDefaultLayout: () =>
-			`❌ The state has no foundation!\n\n` +
+			`❌ The State has no foundation!\n\n` +
 			`   Required layout 'default.jsx' not found in layouts/\n` +
 			`   The default layout is mandatory. Create it immediately.`,
 

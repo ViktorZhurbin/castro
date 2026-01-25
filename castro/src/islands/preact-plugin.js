@@ -62,11 +62,7 @@ export function preactIslands(options = {}) {
 		async transform({ content }) {
 			if (discoveredComponents.length === 0) return content;
 
-			return await wrapWithIsland(
-				content,
-				discoveredComponents,
-				"comrade:visible", // Default hydration directive
-			);
+			return await wrapWithIsland(content, discoveredComponents);
 		},
 	};
 }

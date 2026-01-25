@@ -23,16 +23,16 @@ import { renderIslandSSR } from "./ssr-renderer.js";
 /**
  * Wrap custom elements with <castro-island> for lazy loading
  *
+ * Reads hydration directive from the component tag itself:
+ * - <preact-counter no:pasaran> → Static only, no JS shipped
+ * - <preact-counter lenin:awake> → Immediate hydration
+ * - <preact-counter comrade:visible> → Hydrate when visible (default)
+ *
  * @param {string} content - HTML content to transform
  * @param {IslandComponent[]} components - Known island components
- * @param {string} loadingStrategy - Hydration directive (e.g., "comrade:visible")
  * @returns {Promise<string>} Transformed HTML
  */
-export async function wrapWithIsland(
-	content,
-	components,
-	loadingStrategy = "comrade:visible",
-) {
+export async function wrapWithIsland(content, components) {
 	if (!components.length) return content;
 
 	// Build lookup map for quick component access
@@ -64,6 +64,9 @@ export async function wrapWithIsland(
 				};
 			}
 
+			// Extract hydration directive from attributes
+			const directive = extractDirective(attrs);
+
 			// Extract props from data-* attributes for SSR
 			const props = getPropsFromAttributeString(attrs);
 			let staticHtml = innerContent;
@@ -78,11 +81,31 @@ export async function wrapWithIsland(
 				if (rendered) staticHtml = rendered;
 			}
 
-			// Build the wrapper markup
+			// Remove directive attributes from component tag
+			// castro-island wrapper will have the directive instead
+			let cleanedAttrs = attrs
+				.replace(/\s*no:pasaran\s*/g, "")
+				.replace(/\s*lenin:awake\s*/g, "")
+				.replace(/\s*comrade:visible\s*/g, "")
+				.trim();
+
+			// Ensure space before attributes if they exist
+			if (cleanedAttrs) {
+				cleanedAttrs = " " + cleanedAttrs;
+			}
+
+			// Handle no:pasaran - static only, no client JS
+			if (directive === "no:pasaran") {
+				// Return just the static HTML without castro-island wrapper
+				const markup = `<${component.elementName}${cleanedAttrs}>${staticHtml}</${component.elementName}>`;
+				return { index: match.index, length: fullMatch.length, markup };
+			}
+
+			// Build the wrapper markup with castro-island
 			const markup = `
 <div class="castro-island-container">
-  <castro-island ${loadingStrategy} import="${component.outputPath}">
-    <${component.elementName}${attrs}>${staticHtml}</${component.elementName}>
+  <castro-island ${directive} import="${component.outputPath}">
+    <${component.elementName}${cleanedAttrs}>${staticHtml}</${component.elementName}>
     ${component.cssPath ? `<link rel="stylesheet" href="${component.cssPath}">` : ""}
   </castro-island>
 </div>`.trim();
@@ -106,4 +129,22 @@ export async function wrapWithIsland(
 	result += content.slice(lastIndex);
 
 	return result;
+}
+
+/**
+ * Extract hydration directive from attributes string
+ *
+ * Looks for: no:pasaran, lenin:awake, or comrade:visible
+ * Returns the directive found, or defaults to "comrade:visible"
+ *
+ * @param {string} attrsString - Raw attributes string
+ * @returns {string} Directive name
+ */
+function extractDirective(attrsString) {
+	if (attrsString.includes("no:pasaran")) return "no:pasaran";
+	if (attrsString.includes("lenin:awake")) return "lenin:awake";
+	if (attrsString.includes("comrade:visible")) return "comrade:visible";
+
+	// Default to lazy loading when visible
+	return "comrade:visible";
 }
