@@ -1,19 +1,13 @@
-import type { FunctionComponent } from "preact";
 import { Footer } from "../components/Footer.tsx";
 
-interface DefaultLayoutProps {
+interface Props {
 	title: string;
 	content: string;
 }
 
-/**
- * Default layout for Castro website.
- * Uses the same structure as the homepage with header and footer components.
- */
-const DefaultLayout: FunctionComponent<DefaultLayoutProps> = ({
-	title,
-	content,
-}) => {
+const DefaultLayout = (props: Props) => {
+	const { title, content } = props;
+
 	return (
 		<html lang="en">
 			<head>
@@ -30,7 +24,7 @@ const DefaultLayout: FunctionComponent<DefaultLayoutProps> = ({
 					href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=PT+Sans:wght@400;700&display=swap"
 					rel="stylesheet"
 				/>
-				<link rel="stylesheet" href="/styles.css" />
+				<link rel="stylesheet" href="/global.css" />
 			</head>
 			<body>
 				<main dangerouslySetInnerHTML={{ __html: content }} />

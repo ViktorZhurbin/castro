@@ -20,7 +20,7 @@ import { createTempPath, getModule } from "../config.js";
  * Also extracts any imported CSS files for later injection.
  *
  * @param {string} sourcePath - Path to JSX/TSX file
- * @returns {Promise<{ module: any, cssFiles: { path: string, text: string }[] }>}
+ * @returns {Promise<{ module: any, cssFiles: esbuild.OutputFile[] }>}
  */
 export async function compileJSX(sourcePath) {
 	const outputPath = createTempPath(sourcePath);
@@ -52,9 +52,6 @@ export async function compileJSX(sourcePath) {
 
 	return {
 		module: await getModule(sourcePath, jsFile.text),
-		cssFiles: cssFiles.map((file) => ({
-			path: file.path,
-			text: file.text,
-		})),
+		cssFiles,
 	};
 }

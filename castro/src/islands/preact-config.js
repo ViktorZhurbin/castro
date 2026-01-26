@@ -13,7 +13,7 @@
 /**
  * @import * as preact from "preact"
  * @import * as esbuild from "esbuild"
- * @import { ImportMap } from "../types.d.ts"
+ * @import { ImportsMap } from "../types.d.ts"
  */
 
 /**
@@ -21,7 +21,7 @@
  * 	framework: "preact";
  * 	elementPrefix: string;
  * 	getBuildConfig: (ssr?: boolean) => esbuild.BuildOptions;
- * 	importMap: ImportMap;
+ * 	importMap: ImportsMap;
  * 	hydrateFnString: string;
  * 	renderSSR: (Component: preact.ComponentType, props: Record<string, unknown>) => Promise<string>;
  * }}

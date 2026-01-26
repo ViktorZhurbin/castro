@@ -34,9 +34,6 @@ export async function buildAll(options = {}) {
 
 	console.info(messages.build.starting);
 
-	// Initialize layouts registry
-	await layouts.load();
-
 	// Clean up output directory and recreate it
 	await rm(OUTPUT_DIR, { recursive: true, force: true });
 	await mkdir(OUTPUT_DIR, { recursive: true });
@@ -59,6 +56,9 @@ export async function buildAll(options = {}) {
 			await plugin.onBuild({ outputDir: OUTPUT_DIR, contentDir: PAGES_DIR });
 		}
 	}
+
+	// Initialize layouts registry
+	await layouts.load();
 
 	// Collect all pages and detect route conflicts
 	//

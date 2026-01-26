@@ -10,13 +10,15 @@ export type Asset = {
 	content?: string;
 };
 
-export type ImportMap = Record<string, string>;
+export type AssetsMap = Map<string, Asset[]>;
+
+export type ImportsMap = Record<string, string>;
 
 export type CastroPlugin = {
 	name: string;
 	watchDirs?: string[];
 	getAssets?: () => Asset[];
-	getImportMap?: () => ImportMap | null;
+	getImportMap?: () => ImportsMap | null;
 	onBuild?: (ctx: { outputDir: string; contentDir: string }) => Promise<void>;
 	transform?: (ctx: {
 		content: string;
@@ -30,6 +32,8 @@ export type IslandComponent = {
 	ssrCode: string | null;
 };
 
+export type IslandsMap = Map<string, IslandComponent>;
+
 export type PageMeta = {
 	layout?: string | "none" | false;
 	title?: string;
@@ -42,8 +46,8 @@ export type LayoutComponent = (props: {
 	[key: string]: unknown;
 }) => VNode;
 
+export type LayoutsMap = Map<string, LayoutComponent>;
+
 export type CastroConfig = {
 	plugins?: CastroPlugin[];
 };
-
-export type ComponentsMap = Map<string, IslandComponent>;

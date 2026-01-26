@@ -16,7 +16,7 @@ import { processIslands } from "./processor.js";
 import { wrapWithIsland } from "./wrapper.js";
 
 /**
- * @import { CastroPlugin, ComponentsMap } from '../types.d.ts'
+ * @import { CastroPlugin, IslandsMap } from '../types.d.ts'
  */
 
 /**
@@ -28,7 +28,7 @@ import { wrapWithIsland } from "./wrapper.js";
 export function preactIslands(options = {}) {
 	const { sourceDir = ISLANDS_DIR } = options;
 
-	/** @type {ComponentsMap} */
+	/** @type {IslandsMap} */
 	let componentsMap = new Map();
 
 	return {

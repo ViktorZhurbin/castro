@@ -17,7 +17,7 @@ import { getPropsFromAttributeString } from "./client-runtime.js";
 import { renderIslandSSR } from "./ssr-renderer.js";
 
 /**
- * @import { ComponentsMap } from '../types.d.ts'
+ * @import { IslandsMap } from '../types.d.ts'
  */
 
 /**
@@ -31,7 +31,7 @@ import { renderIslandSSR } from "./ssr-renderer.js";
  * Also collects CSS files used by islands on this page.
  *
  * @param {string} content - HTML content to transform
- * @param {ComponentsMap} componentsMap - Known island components
+ * @param {IslandsMap} componentsMap - Known island components
  * @returns {Promise<{ html: string, cssFiles: string[] }>} Transformed HTML and CSS files
  */
 export async function wrapWithIsland(content, componentsMap) {

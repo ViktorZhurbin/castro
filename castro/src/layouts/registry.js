@@ -12,27 +12,32 @@
 import { loadLayouts } from "./loader.js";
 
 /**
- * @import { LayoutComponent } from '../types.d.ts'
+ * @import { LayoutComponent, Asset, LayoutsMap, AssetsMap } from '../types.d.ts'
  */
 
 /**
  * Singleton registry for layouts
  */
 class LayoutsRegistry {
-	/** @type {Map<string, LayoutComponent>} */
+	/** @type {LayoutsMap} */
 	#layouts = new Map();
+
+	/** @type {AssetsMap} */
+	#layoutCssAssets = new Map();
 
 	/**
 	 * Load (or reload) all layouts from disk
 	 * @returns {Promise<void>}
 	 */
 	async load() {
-		this.#layouts = await loadLayouts();
+		const { layouts, cssAssets } = await loadLayouts();
+		this.#layouts = layouts;
+		this.#layoutCssAssets = cssAssets;
 	}
 
 	/**
 	 * Get all layouts
-	 * @returns {Map<string, LayoutComponent>}
+	 * @returns {LayoutsMap}
 	 */
 	getAll() {
 		return this.#layouts;
@@ -45,6 +50,15 @@ class LayoutsRegistry {
 	 */
 	get(name) {
 		return this.#layouts.get(name);
+	}
+
+	/**
+	 * Get CSS assets for a specific layout
+	 * @param {string} name - Layout name (filename without extension)
+	 * @returns {Asset[]}
+	 */
+	getCssAssets(name) {
+		return this.#layoutCssAssets.get(name) ?? [];
 	}
 }
 

@@ -17,7 +17,7 @@ import { join } from "node:path";
 import { defaultPlugins } from "../islands/plugins.js";
 
 /**
- * @import { Asset, ImportMap } from '../types.d.ts'
+ * @import { Asset, ImportsMap } from '../types.d.ts'
  */
 
 /**  @type {string | null} */
@@ -40,10 +40,10 @@ async function getLiveReloadAsset() {
 /**
  * Collect all assets and import maps from plugins
  *
- * @returns {Promise<{ assets: Asset[]; mergedImportMap: ImportMap }>}
+ * @returns {Promise<{ assets: Asset[]; mergedImportMap: ImportsMap }>}
  */
 export async function collectAssets() {
-	/** @type {ImportMap} */
+	/** @type {ImportsMap} */
 	const mergedImportMap = {};
 	/** @type {Asset[]} */
 	const assets = [];
@@ -75,7 +75,7 @@ export async function collectAssets() {
  * Inject assets and import maps into HTML
  *
  * @param {string} html - HTML to inject into
- * @param {{ assets?: Asset[], mergedImportMap?: ImportMap }} options
+ * @param {{ assets?: Asset[], mergedImportMap?: ImportsMap }} options
  * @returns {string} HTML with injected assets
  */
 export function injectAssets(html, { assets = [], mergedImportMap = {} }) {
@@ -116,7 +116,7 @@ export function injectAssets(html, { assets = [], mergedImportMap = {} }) {
 /**
  * Generate import map script tag
  *
- * @param {ImportMap} importMap
+ * @param {ImportsMap} importMap
  * @returns {string}
  */
 function generateImportMapHtml(importMap) {

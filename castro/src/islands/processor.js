@@ -21,21 +21,21 @@ import { compileIsland } from "./compiler.js";
 import { PreactConfig } from "./preact-config.js";
 
 /**
- * @import { IslandComponent, ComponentsMap } from '../types.d.ts'
+ * @import { IslandComponent, IslandsMap } from '../types.d.ts'
  */
 
 /**
  * Process all island files in a directory
  *
  * @param {{ sourceDir: string, outputDir: string }} options
- * @returns {Promise<ComponentsMap>} Discovered and compiled components
+ * @returns {Promise<IslandsMap>} Discovered and compiled components
  */
 export async function processIslands({ sourceDir, outputDir }) {
 	const OUTPUT_COMPONENTS_DIR = "components";
 
 	const { elementPrefix } = PreactConfig;
 
-	/** @type {ComponentsMap} */
+	/** @type {IslandsMap} */
 	const componentsMap = new Map();
 
 	try {
