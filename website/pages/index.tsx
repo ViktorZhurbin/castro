@@ -1,4 +1,5 @@
 import "./index.css";
+import { StarIcon } from "../components/icons/StarIcon.tsx";
 import { LinkButton } from "../components/LinkButton.tsx";
 
 export default function Home() {
@@ -7,9 +8,7 @@ export default function Home() {
 			<section className="hero">
 				<div className="hero-content">
 					<div className="star-emblem">
-						<svg viewBox="0 0 100 100">
-							<path d="M50 5 L61 38 L95 38 L68 58 L79 91 L50 71 L21 91 L32 58 L5 38 L39 38 Z" />
-						</svg>
+						<StarIcon />
 					</div>
 					<h1>
 						<span className="highlight">Castro</span>

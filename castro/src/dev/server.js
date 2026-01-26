@@ -13,6 +13,7 @@
  * 4. Browser receives event and reloads the page
  */
 
+import { readFileSync } from "node:fs";
 import { watch } from "node:fs/promises";
 import { join } from "node:path";
 import { styleText } from "node:util";
@@ -66,6 +67,19 @@ export async function startDevServer() {
 		})
 		// Serve static files from dist
 		.use(sirv(OUTPUT_DIR, { dev: true }))
+		// 404 fallback - serve 404.html for missing pages
+		.use((req, res) => {
+			// Only serve 404.html for HTML requests (navigation, not assets)
+			const acceptsHtml = req.headers.accept?.includes("text/html");
+			if (acceptsHtml) {
+				res.writeHead(404, { "Content-Type": "text/html" });
+				res.end(readFileSync(join(OUTPUT_DIR, "404.html")));
+			} else {
+				// For missing assets, just send a plain 404
+				res.writeHead(404);
+				res.end("Not Found");
+			}
+		})
 		.listen(PORT);
 
 	server.server?.on("error", (err) => {
