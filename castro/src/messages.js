@@ -57,16 +57,6 @@ export const messages = {
 			`   Create it and add at least default.jsx\n\n` +
 			`   The revolution needs structure.`,
 
-		// Island errors
-		islandBuildFailed: (
-			/** @type {string} */ fileName,
-			/** @type {string} */ errorMessage,
-		) =>
-			`❌ Island construction has failed.\n\n` +
-			`   Component: ${fileName}\n` +
-			`   Error: ${errorMessage}\n\n` +
-			`   Counter-revolutionary code detected.`,
-
 		islandNoExport: (/** @type {string} */ fileName) =>
 			`⚠️  Defective export detected.\n\n` +
 			`   ${fileName} must export a default function.\n` +

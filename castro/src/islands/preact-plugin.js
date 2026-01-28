@@ -22,23 +22,23 @@ import { islands } from "./registry.js";
 /**
  * Plugin that discovers and compiles Preact island components
  *
- * @param {{ sourceDir?: string }} [options]
+ * @param {{ islandsDir?: string }} [options]
  * @returns {CastroPlugin}
  */
 export function preactIslands(options = {}) {
-	const { sourceDir = ISLANDS_DIR } = options;
+	const { islandsDir = ISLANDS_DIR } = options;
 
 	return {
 		name: "islands-preact",
 
 		// Watch islands directory for changes in dev mode
-		watchDirs: [sourceDir],
+		watchDirs: [islandsDir],
 
 		/**
 		 * Build hook: discover, compile, and load islands into registry
 		 */
 		async onBuild({ outputDir = OUTPUT_DIR }) {
-			await islands.load({ sourceDir, outputDir });
+			await islands.load({ islandsDir, outputDir });
 		},
 
 		/**

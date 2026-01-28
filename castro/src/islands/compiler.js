@@ -5,25 +5,48 @@
  * - Client: Bundled JS that runs in the browser
  * - Server: Code that runs at build time for SSR
  *
- * Educational note: We compile twice because the environments differ:
+ * We compile twice because the environments differ:
  * - Browser needs bundled code with import map externals
  * - Node.js needs unbundled code that can import packages
  */
 
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { basename, dirname } from "node:path";
 import { styleText } from "node:util";
 import * as esbuild from "esbuild";
 import { PreactConfig } from "./preact-config.js";
 
 /**
+ * @import { IslandComponent } from "../types.d.ts"
+ */
+
+/**
  * Compile an island component for both client and SSR
  *
- * @param {{ sourcePath: string, outputPath: string }} params
- * @returns {Promise<{ ssrCode: string | null, cssOutputPath: string | null } | undefined>}
+ * Centralizes all path logic - takes filesystem paths, returns public HTTP paths.
+ *
+ * @param {{ sourcePath: string, outputPath: string, publicPath: string }} params
+ * @returns {Promise<IslandComponent>}
  */
-export async function compileIsland({ sourcePath, outputPath }) {
+export async function compileIsland({ sourcePath, outputPath, publicPath }) {
 	try {
+		// Read source to extract component name
+		const source = await readFile(sourcePath, "utf-8");
+		const componentName = extractComponentName(source);
+
+		// Validate that island uses defineIsland
+		if (!componentName) {
+			const fileName = basename(sourcePath);
+			throw new Error(
+				`\n❌ Island "${fileName}" must use defineIsland().\n\n` +
+					`Example:\n` +
+					`  ${styleText("cyan", "import { defineIsland } from 'castro';")}\n\n` +
+					`  ${styleText("cyan", `export default defineIsland(function ${fileName.replace(/\.(tsx?|jsx?)$/, "")}(props) {`)}\n` +
+					`  ${styleText("cyan", "  return <div>...</div>;")}\n` +
+					`  ${styleText("cyan", "});")}\n`,
+			);
+		}
+
 		// Compile client version (runs in browser)
 		const clientBuildResult = await compileIslandClient({
 			sourcePath,
@@ -33,15 +56,37 @@ export async function compileIsland({ sourcePath, outputPath }) {
 		// Compile SSR version (runs at build time in Node.js)
 		const ssrCode = await compileIslandSSR({ sourcePath });
 
-		// Write client bundle to disk
-		const { cssOutputPath } = await writeBuildOutput(
-			clientBuildResult,
-			outputPath,
-		);
+		// Write files and construct public paths
+		let publicCssPath;
 
-		return { ssrCode, cssOutputPath };
+		if (clientBuildResult.outputFiles) {
+			await mkdir(dirname(outputPath), { recursive: true });
+
+			for (const file of clientBuildResult.outputFiles) {
+				// Write to disk
+				await writeFile(file.path, file.text);
+
+				// Track CSS file for public path
+				if (file.path.endsWith(".css")) {
+					const cssFileName = basename(file.path);
+					publicCssPath = `/${dirname(publicPath)}/${cssFileName}`.replace(
+						/\/+/g,
+						"/",
+					);
+				}
+			}
+		}
+
+		return {
+			ssrCode,
+			sourcePath,
+			publicJsPath: publicPath,
+			publicCssPath,
+			name: componentName,
+		};
 	} catch (err) {
 		console.info(styleText("red", "Island build failed: "), err);
+		throw err;
 	}
 }
 
@@ -99,7 +144,7 @@ async function compileIslandClient({ sourcePath, outputPath }) {
  * - Used only to generate static HTML at build time
  *
  * @param {{ sourcePath: string }} params
- * @returns {Promise<string | null>} Compiled code or null if fails
+ * @returns {Promise<string | undefined>} Compiled code or null if fails
  */
 async function compileIslandSSR({ sourcePath }) {
 	const config = PreactConfig;
@@ -146,31 +191,57 @@ async function compileIslandSSR({ sourcePath }) {
 			styleText("yellow", `SSR compilation skipped for ${sourcePath}:`),
 			err.message,
 		);
-		return null;
 	}
 }
 
 /**
- * Write esbuild output files to disk
+ * Extract component name from island source
  *
- * @param {esbuild.BuildResult} result
- * @param {string} outputPath
- * @returns {Promise<{cssOutputPath: string | null}>}
+ * Looks for defineIsland() wrapper and extracts component name.
+ * Supports multiple patterns:
+ * - defineIsland(function Counter() { ... })
+ * - defineIsland((props) => { ... }) with const Counter = ...
+ * - defineIsland(Counter) where Counter is defined separately
+ *
+ * @param {string} source - Island source code
+ * @returns {string | null} Component name or null
  */
-async function writeBuildOutput(result, outputPath) {
-	let cssOutputPath = null;
-
-	if (result.outputFiles) {
-		await mkdir(dirname(outputPath), { recursive: true });
-
-		for (const file of result.outputFiles) {
-			await writeFile(file.path, file.text);
-
-			if (file.path.endsWith(".css")) {
-				cssOutputPath = file.path;
-			}
-		}
+function extractComponentName(source) {
+	// Check if this island uses defineIsland
+	if (!source.includes("defineIsland")) {
+		return null;
 	}
 
-	return { cssOutputPath };
+	// Match: defineIsland(function ComponentName
+	const namedFunctionMatch = source.match(
+		/defineIsland\s*\(\s*function\s+([A-Z]\w*)/,
+	);
+	if (namedFunctionMatch) {
+		return namedFunctionMatch[1];
+	}
+
+	// Match: const ComponentName = defineIsland(
+	const constMatch = source.match(/const\s+([A-Z]\w*)\s*=\s*defineIsland\s*\(/);
+	if (constMatch) {
+		return constMatch[1];
+	}
+
+	// Match: export default defineIsland(function ComponentName
+	const exportDefaultMatch = source.match(
+		/export\s+default\s+defineIsland\s*\(\s*function\s+([A-Z]\w*)/,
+	);
+	if (exportDefaultMatch) {
+		return exportDefaultMatch[1];
+	}
+
+	// Match: export default defineIsland(ComponentName)
+	// where ComponentName is a variable/const defined earlier
+	const exportDefaultVarMatch = source.match(
+		/export\s+default\s+defineIsland\s*\(\s*([A-Z]\w*)\s*\)/,
+	);
+	if (exportDefaultVarMatch) {
+		return exportDefaultVarMatch[1];
+	}
+
+	return null;
 }

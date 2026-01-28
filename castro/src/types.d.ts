@@ -28,9 +28,11 @@ export type CastroPlugin = {
 };
 
 export type IslandComponent = {
-	outputPath: string;
-	cssPath?: string;
-	ssrCode: string | null;
+	name: string;
+	sourcePath: string;
+	publicJsPath: string;
+	publicCssPath?: string;
+	ssrCode?: string;
 };
 
 export type IslandsMap = Map<string, IslandComponent>;

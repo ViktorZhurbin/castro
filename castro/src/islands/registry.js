@@ -8,7 +8,7 @@
  */
 
 import { access, glob, mkdir } from "node:fs/promises";
-import { basename, extname, join, relative } from "node:path";
+import { join, relative } from "node:path";
 import { styleText } from "node:util";
 import { messages } from "../messages.js";
 import { compileIsland } from "./compiler.js";
@@ -24,36 +24,60 @@ class IslandsRegistry {
 	/** @type {IslandsMap} */
 	#islands = new Map();
 
-	/** @type {string} */
-	#sourceDir = "";
+	/** @type {Set<string>} */
+	#currentPageCSS = new Set();
+
+	/**
+	 * Collects assets for currently processed island
+	 *
+	 * @param {string} componentName
+	 */
+	trackIsland(componentName) {
+		const island = this.getIsland(componentName);
+
+		if (island?.publicCssPath) {
+			this.#currentPageCSS.add(island.publicCssPath);
+		}
+	}
+
+	/**
+	 * Returns CSS paths for all islands detected on a page, and clears tracking state
+	 *
+	 * @returns {{ cssPaths: string[] }}
+	 */
+	untrackPageIslands() {
+		const cssPaths = Array.from(this.#currentPageCSS);
+		this.#currentPageCSS.clear();
+
+		return { cssPaths };
+	}
 
 	/**
 	 * Load (or reload) all islands from disk
-	 * @param {{ sourceDir: string, outputDir: string }} options
+	 * @param {{ islandsDir: string, outputDir: string }} options
 	 * @returns {Promise<void>}
 	 */
-	async load({ sourceDir, outputDir }) {
-		this.#sourceDir = sourceDir;
-		const componentsMap = new Map();
+	async load({ islandsDir, outputDir }) {
+		// Clear existing islands (for reload support)
+		this.#islands.clear();
 
 		try {
 			// Check if islands directory exists
-			await access(sourceDir);
+			await access(islandsDir);
 		} catch (e) {
 			const err = /** @type {NodeJS.ErrnoException} */ (e);
 			if (err.code === "ENOENT") {
 				console.warn(
 					styleText("red", `Islands directory not found:`),
-					styleText("magenta", sourceDir),
+					styleText("magenta", islandsDir),
 				);
-				this.#islands = componentsMap;
 				return;
 			}
 			throw err;
 		}
 
 		// Prepare output directory
-		const outputIslandsDir = join(outputDir, this.#sourceDir);
+		const outputIslandsDir = join(outputDir, islandsDir);
 		await mkdir(outputIslandsDir, { recursive: true });
 
 		// Process each island file
@@ -61,41 +85,49 @@ class IslandsRegistry {
 		const compiledIslands = [];
 
 		await Array.fromAsync(
-			glob(join(sourceDir, "**/*.{jsx,tsx}")),
+			glob(join(islandsDir, "**/*.{jsx,tsx}")),
 			async (sourcePath) => {
-				const fileName = basename(sourcePath);
-				const registryKey = this.deriveRegistryKey(sourcePath);
+				// Preserve directory structure in output
+				// e.g., islands/ui/Button.tsx → ui/Button.tsx → ui/Button.js
+				const outputFilePath = relative(
+					islandsDir,
+					sourcePath.replace(/\.[jt]sx?$/, ".js"),
+				);
 
-				// Convert "ui/Button.tsx" → "ui/Button.js"
-				const ext = extname(registryKey);
-				const outputFileName = registryKey.replace(ext, ".js");
-				const outputPath = join(outputIslandsDir, outputFileName);
+				const outputPath = join(outputIslandsDir, outputFilePath);
+				const publicPath = `/${islandsDir}/${outputFilePath}`;
 
 				try {
-					const compilationResult = await compileIsland({
+					// Compiler handles all path logic and returns public HTTP paths
+					const component = await compileIsland({
 						sourcePath,
 						outputPath,
+						publicPath,
 					});
 
-					/** @type {IslandComponent} */
-					const component = {
-						outputPath: `/${this.#sourceDir}/${outputFileName}`,
-						ssrCode: compilationResult?.ssrCode || null,
-					};
+					const existingIsland = this.#islands.get(component.name);
+					// Check for component name collision
+					if (existingIsland) {
+						const currentFilePath = relative(process.cwd(), sourcePath);
+						const existingFilePath = relative(
+							process.cwd(),
+							existingIsland.sourcePath,
+						);
 
-					// Add CSS path if component has styles
-					if (compilationResult?.cssOutputPath) {
-						const cssFileName = basename(compilationResult.cssOutputPath);
-						component.cssPath = `/${this.#sourceDir}/${cssFileName}`;
+						throw new Error(
+							`\n${styleText("red", "❌ Component name collision:")}\n\n` +
+								`Component name ${styleText("cyan", `"${component.name}"`)} is defined in multiple files:\n` +
+								`  ${styleText("yellow", "1.")} ${existingFilePath}\n` +
+								`  ${styleText("yellow", "2.")} ${currentFilePath}\n\n` +
+								`${styleText("bold", "Each island must have a unique component name.")}`,
+						);
 					}
 
-					componentsMap.set(registryKey, component);
+					this.#islands.set(component.name, component);
 					compiledIslands.push({ sourcePath });
 				} catch (e) {
 					const err = /** @type {NodeJS.ErrnoException} */ (e);
-					throw new Error(
-						messages.errors.islandBuildFailed(fileName, err.message),
-					);
+					throw new Error(err.message);
 				}
 			},
 		);
@@ -110,27 +142,6 @@ class IslandsRegistry {
 				console.info(`  ${styleText("cyan", relativePath)}`);
 			}
 		}
-
-		this.#islands = componentsMap;
-	}
-
-	/**
-	 * Derive registry key from island file path
-	 *
-	 * Uses path relative to islands/ directory to preserve structure.
-	 *
-	 * Examples:
-	 *   /path/to/islands/counter.tsx → "counter.tsx"
-	 *   /path/to/islands/ui/Button.tsx → "ui/Button.tsx"
-	 *
-	 * @param {string} absolutePath - Absolute path to island file
-	 * @returns {string} Registry key (relative path with extension)
-	 */
-	deriveRegistryKey(absolutePath) {
-		// Get path relative to islands directory
-		const pathAfterSourceDir = relative(this.#sourceDir, absolutePath);
-
-		return pathAfterSourceDir;
 	}
 
 	/**
@@ -142,140 +153,24 @@ class IslandsRegistry {
 	}
 
 	/**
-	 * Create a resolver for a specific page's imports
-	 * @param {Map<string, string>} importedIslands - Map of importPath -> importName
-	 * @returns {IslandResolver}
-	 */
-	createResolver(importedIslands) {
-		return new IslandResolver(importedIslands, this.#islands, this.#sourceDir);
-	}
-}
-
-/**
- * Resolver for a specific page context
- * Matches imported component names to detailed island metadata
- */
-export class IslandResolver {
-	/** @type {Map<string, string>} */
-	#importMap;
-
-	/** @type {IslandsMap} */
-	#registry;
-
-	/** @type string */
-	#sourceDir;
-
-	/** @type {Set<string>} */
-	#collectedCSS = new Set();
-
-	/**
-	 * @param {Map<string, string>} importMap - importPath -> importName
-	 * @param {string} sourceDir
-	 * @param {IslandsMap} registry
-	 */
-	constructor(importMap, registry, sourceDir) {
-		this.#importMap = importMap;
-		this.#registry = registry;
-		this.#sourceDir = sourceDir;
-	}
-
-	/**
-	 * Check if a component name matches an imported island
+	 * Check if a component name matches a registered island
+	 * Uses explicit component names from defineIsland() calls.
+	 *
 	 * @param {string} componentName - Component function name from VNode
 	 * @returns {boolean}
 	 */
 	isIsland(componentName) {
-		// Check if any imported island has this component name
-		for (const [, importedName] of this.#importMap) {
-			if (importedName === componentName) {
-				return true;
-			}
-		}
-		return false;
+		return this.#islands.has(componentName);
 	}
 
 	/**
 	 * Get island metadata from registry by component name
+	 *
 	 * @param {string} componentName - Component function name from VNode
-	 * @returns {IslandComponent | null}
+	 * @returns {IslandComponent | undefined}
 	 */
 	getIsland(componentName) {
-		// Find the import path that matches this component name
-		let matchingImportPath = null;
-		for (const [importPath, importedName] of this.#importMap) {
-			if (importedName === componentName) {
-				matchingImportPath = importPath;
-				break;
-			}
-		}
-
-		if (!matchingImportPath) return null;
-
-		// Derive registry key from import path
-		const registryKey = this.#deriveKeyFromImportPath(matchingImportPath);
-
-		const island = this.#registry.get(registryKey);
-
-		if (!island) {
-			throw new Error(
-				`Island registry mismatch: "${componentName}" from "${matchingImportPath}" ` +
-					`maps to key "${registryKey}" but no island found in registry.\n` +
-					`Available islands: ${Array.from(this.#registry.keys()).join(", ")}`,
-			);
-		}
-
-		if (island.cssPath) {
-			this.#collectedCSS.add(island.cssPath);
-		}
-
-		return island;
-	}
-
-	/**
-	 * Derive registry key from import path
-	 *
-	 * Extracts the relative path after the islands directory.
-	 * Uses the directory name from sourceDir (configurable, not hardcoded).
-	 *
-	 * Examples (assuming sourceDir is "islands" or ends with "/islands"):
-	 *   "../islands/counter.tsx" → "counter.tsx"
-	 *   "../../islands/ui/Button.tsx" → "ui/Button.tsx"
-	 *
-	 * @param {string} importPath - Import path from source code
-	 * @returns {string} Registry key
-	 */
-	#deriveKeyFromImportPath(importPath) {
-		// Escape special regex characters to prevent regex injection
-		// e.g., "my.islands" becomes "my\\.islands"
-		const escapedDirName = this.#sourceDir.replace(
-			/[.*+?^${}()|[\]\\]/g,
-			"\\$&",
-		);
-
-		// Build regex with named capture group using the escaped directory name
-		// Pattern: /dirName/path/to/file.tsx
-		const pattern = new RegExp(
-			`\\/(?<dirName>${escapedDirName})\\/(?<pathAfterDir>.+)$`,
-		);
-
-		const match = importPath.match(pattern);
-
-		if (!match || !match.groups) {
-			throw new Error(
-				`Invalid island import path: "${importPath}". ` +
-					`Island imports must include "/${this.#sourceDir}/" in the path.`,
-			);
-		}
-
-		return match.groups.pathAfterDir;
-	}
-
-	/**
-	 * Get all collected CSS files
-	 * @returns {string[]}
-	 */
-	getCollectedCSS() {
-		return Array.from(this.#collectedCSS);
+		return this.#islands.get(componentName);
 	}
 }
 

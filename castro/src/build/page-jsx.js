@@ -19,6 +19,7 @@
 
 import { dirname } from "node:path";
 import { renderToString } from "preact-render-to-string";
+import { islands } from "../islands/registry.js";
 import { wrapIslandsInJSX } from "../islands/wrapper-jsx.js";
 import { layouts } from "../layouts/registry.js";
 import { resolveLayout } from "../layouts/resolver.js";
@@ -62,21 +63,14 @@ export async function buildJSXPage(sourceFileName, options = {}) {
 		const contentVNode = pageModule.default();
 
 		// Wrap islands in JSX
-		const wrappedIsland = await wrapIslandsInJSX(sourceFilePath, contentVNode);
-
-		// Add island CSS to page assets
-		const islandCssAssets = wrappedIsland.cssFiles.map((href) => ({
-			tag: "link",
-			attrs: { rel: "stylesheet", href },
-		}));
-		pageCssAssets.push(...islandCssAssets);
+		const islandVNode = wrapIslandsInJSX(contentVNode);
 
 		let vnodeToRender;
 
 		// Support layout: false or layout: "none" for pages that render full HTML themselves.
 		// Useful for special pages like RSS feeds, sitemaps, or custom layouts.
 		if (meta.layout === false || meta.layout === "none") {
-			vnodeToRender = wrappedIsland.vnode;
+			vnodeToRender = islandVNode;
 		} else {
 			const layoutName = await resolveLayout(sourceFilePath, meta);
 
@@ -90,7 +84,7 @@ export async function buildJSXPage(sourceFileName, options = {}) {
 			layoutCssAssets = layouts.getCssAssets(layoutName);
 
 			const title = meta.title || sourceFileName.replace(/\.[jt]sx$/, "");
-			const contentHtml = renderToString(wrappedIsland.vnode);
+			const contentHtml = renderToString(islandVNode);
 
 			vnodeToRender = layoutFn({
 				title,
@@ -101,9 +95,17 @@ export async function buildJSXPage(sourceFileName, options = {}) {
 
 		const layoutHtml = renderToString(vnodeToRender);
 
+		const { cssPaths } = islands.untrackPageIslands();
+
+		// Add island CSS to page assets
+		const islandCssAssets = cssPaths.filter(Boolean).map((href) => ({
+			tag: "link",
+			attrs: { rel: "stylesheet", href },
+		}));
+
 		// All CSS injected via unified path in page-writer
 		await writeHtmlPage(layoutHtml, outputFilePath, {
-			pageCssAssets: [...layoutCssAssets, ...pageCssAssets],
+			pageCssAssets: [...layoutCssAssets, ...pageCssAssets, ...islandCssAssets],
 		});
 	});
 }

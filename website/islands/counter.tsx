@@ -1,3 +1,4 @@
+import { defineIsland } from "@vktrz/castro";
 import type { FunctionComponent } from "preact";
 import { useState } from "preact/hooks";
 import "./counter.css";
@@ -22,4 +23,4 @@ const Counter: FunctionComponent<CounterProps> = ({ initial = 0 }) => {
 	);
 };
 
-export default Counter;
+export default defineIsland(Counter);
