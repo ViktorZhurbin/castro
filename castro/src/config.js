@@ -65,7 +65,7 @@ import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join, parse, relative, resolve } from "node:path";
 
 /** Temp directory for compiled modules */
-export const TEMP_ROOT = join(process.cwd(), "node_modules/.castro-temp");
+const TEMP_ROOT = join(process.cwd(), "node_modules/.castro-temp");
 
 /** Clean up temp directory */
 export function cleanupTempDir() {

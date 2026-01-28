@@ -2,7 +2,7 @@
 
 *An educational framework for understanding island architecture*
 
-Castro is a working Static Site Generator that implements island architecture in ~1500 lines of well-commented, readable code. The communist theme makes it memorable. The architecture lessons are real.
+Castro is a working Static Site Generator that implements island architecture in under 1300 lines of well-commented, readable code. The communist theme makes it memorable. The architecture lessons are real.
 
 **Learn by reading code, not documentation.**
 
@@ -11,6 +11,10 @@ Castro is a working Static Site Generator that implements island architecture in
 Island architecture is how modern frameworks (Astro, Fresh, Qwik) achieve great performance. Instead of shipping JavaScript for your entire page, you selectively hydrate only the interactive components. The rest stays as static HTML.
 
 Castro shows you exactly how this works by implementing it from scratch.
+
+In essence, Castro splits the render tree **at build time** into:
+1. static HTML
+2. interactive islands (pre-rendered + hydrated on demand)
 
 ## What You'll Learn
 

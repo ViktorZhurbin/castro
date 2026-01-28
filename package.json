@@ -6,7 +6,7 @@
 		"dev": "pnpm --filter website dev",
 		"build": "pnpm --filter website build",
 		"format": "biome format --write",
-		"check": "pnpm --filter castro type-check",
+		"type-check": "pnpm --filter @vktrz/castro type-check",
 		"loc": "pnpx cloc castro/src/"
 	},
 	"devDependencies": {

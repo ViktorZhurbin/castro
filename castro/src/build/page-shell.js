@@ -12,7 +12,7 @@
 
 import { join } from "node:path";
 import { styleText } from "node:util";
-import { OUTPUT_DIR, PAGES_DIR, formatMs } from "../config.js";
+import { formatMs, OUTPUT_DIR, PAGES_DIR } from "../config.js";
 
 /**
  * Shared wrapper for page builders

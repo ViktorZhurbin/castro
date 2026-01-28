@@ -1,10 +1,12 @@
 # Castro Development Guide
 
+Read @PLAN.md, @README.md for more context.
+
 ## Build & Dev Commands
 - **Dev Server**: `pnpm dev` (starts website playground)
 - **Build Website**: `pnpm build`
 - **Lint/Format**: `pnpm format` (uses Biome)
-- **Type Check**: `pnpm --filter @vktrz/castro type-check`
+- **Type Check**: `pnpm type-check`
 - **Metrics**: `pnpm loc` (count core lines of code)
 
 ## Code Style & Patterns
@@ -19,3 +21,10 @@
 - **Monorepo**: `castro/` is the core engine; `website/` is the demo playground.
 - **Architecture**: Minimalist SSG with "islands" architecture using Web Components as hydration boundaries.
 - **Output**: `website/dist/` is ephemeral and cleaned automatically on build.
+
+## This project is comparable to:
+- **Fresh** (architecture)
+- **Marko** (compiler philosophy)
+- **Qwik** (tree analysis, though much heavier)
+- early **Astro** (pre-marketplace era)
+- **Eleventy** + is-land
