@@ -208,6 +208,35 @@ This is an educational project. PRs welcome if they:
 
 Joke PRs are fun but secondary to learning value.
 
+## Important Constraints
+
+### Unique Island Names
+
+**Island component names must be unique across your entire project.**
+
+Castro uses component function names for island detection. If you have two islands with the same name (e.g., `Counter` in `islands/ui/Counter.tsx` and `Counter` in `islands/forms/Counter.tsx`), the build will fail with a clear error:
+
+```
+❌ Component name collision:
+
+Component name "Counter" is defined in multiple files:
+  1. islands/ui/Counter.tsx
+  2. islands/forms/Counter.tsx
+
+Each island must have a unique component name.
+```
+
+**Why this matters:**
+- Castro matches components to islands by function name during rendering
+- Name collisions could cause the wrong island to hydrate
+- Unique names ensure deterministic island detection
+
+**Solution:**
+- Use descriptive, unique names: `FormCounter`, `UICounter`, `DashboardCounter`
+- Or organize with prefixes: `Admin_Counter`, `Public_Counter`
+
+This is a reasonable constraint that most projects naturally follow.
+
 ## Requirements
 
 - Node.js 24+
