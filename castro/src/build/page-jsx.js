@@ -41,6 +41,10 @@ export async function buildJSXPage(sourceFileName, options = {}) {
 	await buildPageShell(sourceFileName, /\.[jt]sx$/, options, async (ctx) => {
 		const { sourceFilePath, outputFilePath } = ctx;
 
+		// Clear page state at the start of each build to prevent CSS leakage
+		// from previous pages (especially important if previous build failed)
+		islands.clearPageState();
+
 		const allLayouts = layouts.getAll();
 
 		// Compile and import the JSX page (also extracts CSS)
@@ -95,7 +99,7 @@ export async function buildJSXPage(sourceFileName, options = {}) {
 
 		const layoutHtml = renderToString(vnodeToRender);
 
-		const { cssPaths } = islands.untrackPageIslands();
+		const { cssPaths } = islands.getPageAssets();
 
 		// Add island CSS to page assets
 		const islandCssAssets = cssPaths.filter(Boolean).map((href) => ({
