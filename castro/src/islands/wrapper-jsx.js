@@ -4,7 +4,7 @@
  * Wraps island components for client-side hydration.
  *
  * How island detection works:
- * 1. Islands are explicitly marked with defineIsland() in their source
+ * 1. Islands are detected at build time
  * 2. Component names are extracted and stored in the registry at build time
  * 3. Walk the rendered VNode tree looking for components
  * 4. Match component function names against registered island names

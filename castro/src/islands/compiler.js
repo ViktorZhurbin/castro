@@ -10,10 +10,11 @@
  * - Node.js needs unbundled code that can import packages
  */
 
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { basename, dirname } from "node:path";
 import { styleText } from "node:util";
 import * as esbuild from "esbuild";
+import { getModule } from "../config.js";
 import { PreactConfig } from "./preact-config.js";
 
 /**
@@ -30,20 +31,28 @@ import { PreactConfig } from "./preact-config.js";
  */
 export async function compileIsland({ sourcePath, outputPath, publicPath }) {
 	try {
-		// Read source to extract component name
-		const source = await readFile(sourcePath, "utf-8");
-		const componentName = extractComponentName(source);
+		// Compile SSR version first (runs at build time in Node.js)
+		const ssrCode = await compileIslandSSR({ sourcePath });
 
-		// Validate that island uses defineIsland
-		if (!componentName) {
+		if (!ssrCode) {
+			throw new Error(`Failed to compile SSR code for ${sourcePath}`);
+		}
+
+		// Use getModule to dynamically import the component
+		const module = await getModule(sourcePath, ssrCode, "ssr");
+
+		// Extract component name from the imported module
+		const componentName = module.default?.name;
+
+		// Validate that island has a default export with a name
+		if (!module.default || !componentName) {
 			const fileName = basename(sourcePath);
 			throw new Error(
-				`\n❌ Island "${fileName}" must use defineIsland().\n\n` +
+				`\n❌ Island "${fileName}" must have a default export.\n\n` +
 					`Example:\n` +
-					`  ${styleText("cyan", "import { defineIsland } from 'castro';")}\n\n` +
-					`  ${styleText("cyan", `export default defineIsland(function ${fileName.replace(/\.(tsx?|jsx?)$/, "")}(props) {`)}\n` +
+					`  ${styleText("cyan", `export default function MyComponent(props) {`)}\n` +
 					`  ${styleText("cyan", "  return <div>...</div>;")}\n` +
-					`  ${styleText("cyan", "});")}\n`,
+					`  ${styleText("cyan", "}")}\n`,
 			);
 		}
 
@@ -52,9 +61,6 @@ export async function compileIsland({ sourcePath, outputPath, publicPath }) {
 			sourcePath,
 			outputPath,
 		});
-
-		// Compile SSR version (runs at build time in Node.js)
-		const ssrCode = await compileIslandSSR({ sourcePath });
 
 		// Write files and construct public paths
 		let publicCssPath;
@@ -144,7 +150,7 @@ async function compileIslandClient({ sourcePath, outputPath }) {
  * - Used only to generate static HTML at build time
  *
  * @param {{ sourcePath: string }} params
- * @returns {Promise<string | undefined>} Compiled code or null if fails
+ * @returns {Promise<string | undefined>} Compiled code or undefined if compilation failed
  */
 async function compileIslandSSR({ sourcePath }) {
 	const config = PreactConfig;
@@ -192,56 +198,4 @@ async function compileIslandSSR({ sourcePath }) {
 			err.message,
 		);
 	}
-}
-
-/**
- * Extract component name from island source
- *
- * Looks for defineIsland() wrapper and extracts component name.
- * Supports multiple patterns:
- * - defineIsland(function Counter() { ... })
- * - defineIsland((props) => { ... }) with const Counter = ...
- * - defineIsland(Counter) where Counter is defined separately
- *
- * @param {string} source - Island source code
- * @returns {string | null} Component name or null
- */
-function extractComponentName(source) {
-	// Check if this island uses defineIsland
-	if (!source.includes("defineIsland")) {
-		return null;
-	}
-
-	// Match: defineIsland(function ComponentName
-	const namedFunctionMatch = source.match(
-		/defineIsland\s*\(\s*function\s+([A-Z]\w*)/,
-	);
-	if (namedFunctionMatch) {
-		return namedFunctionMatch[1];
-	}
-
-	// Match: const ComponentName = defineIsland(
-	const constMatch = source.match(/const\s+([A-Z]\w*)\s*=\s*defineIsland\s*\(/);
-	if (constMatch) {
-		return constMatch[1];
-	}
-
-	// Match: export default defineIsland(function ComponentName
-	const exportDefaultMatch = source.match(
-		/export\s+default\s+defineIsland\s*\(\s*function\s+([A-Z]\w*)/,
-	);
-	if (exportDefaultMatch) {
-		return exportDefaultMatch[1];
-	}
-
-	// Match: export default defineIsland(ComponentName)
-	// where ComponentName is a variable/const defined earlier
-	const exportDefaultVarMatch = source.match(
-		/export\s+default\s+defineIsland\s*\(\s*([A-Z]\w*)\s*\)/,
-	);
-	if (exportDefaultVarMatch) {
-		return exportDefaultVarMatch[1];
-	}
-
-	return null;
 }

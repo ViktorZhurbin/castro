@@ -1,8 +1,5 @@
 # Roadmap
 
-## Island detection
-
-Explore esbuild tagging plugin approach to remove the need for `defineIsland`
 
 ## Naming
 

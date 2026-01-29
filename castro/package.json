@@ -13,12 +13,6 @@
 	"bin": {
 		"castro": "./bin/castro"
 	},
-	"exports": {
-		".": {
-			"types": "./src/runtime.ts",
-			"default": "./src/runtime.ts"
-		}
-	},
 	"types": "./src/types.d.ts",
 	"files": [
 		"bin/",

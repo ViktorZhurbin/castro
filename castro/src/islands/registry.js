@@ -154,7 +154,6 @@ class IslandsRegistry {
 
 	/**
 	 * Check if a component name matches a registered island
-	 * Uses explicit component names from defineIsland() calls.
 	 *
 	 * @param {string} componentName - Component function name from VNode
 	 * @returns {boolean}
