@@ -11,7 +11,7 @@
  * Islands are wrapped during JSX page rendering (page-jsx.js), not in transform hook.
  */
 
-import { ISLANDS_DIR, OUTPUT_DIR } from "../config.js";
+import { ISLANDS_DIR, OUTPUT_DIR } from "../constants.js";
 import { PreactConfig } from "./preact-config.js";
 import { islands } from "./registry.js";
 

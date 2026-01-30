@@ -12,7 +12,8 @@
 
 import { cp, glob, mkdir, rm } from "node:fs/promises";
 import { join, relative } from "node:path";
-import { formatMs, OUTPUT_DIR, PAGES_DIR, PUBLIC_DIR } from "../config.js";
+import { OUTPUT_DIR, PAGES_DIR, PUBLIC_DIR } from "../constants.js";
+import { formatMs } from "../utils.js";
 import { defaultPlugins } from "../islands/plugins.js";
 import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages.js";

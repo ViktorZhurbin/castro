@@ -7,7 +7,7 @@
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { basename, join, relative } from "node:path";
-import { OUTPUT_DIR } from "../config.js";
+import { OUTPUT_DIR } from "../constants.js";
 
 /**
  * @import * as esbuild from 'esbuild'

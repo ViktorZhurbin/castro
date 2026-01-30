@@ -15,7 +15,7 @@ import { access } from "node:fs/promises";
 import { dirname, join, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { styleText } from "node:util";
-import { PAGES_DIR } from "../config.js";
+import { PAGES_DIR } from "../constants.js";
 
 /**
  * @import { PageMeta } from '../types.d.ts'

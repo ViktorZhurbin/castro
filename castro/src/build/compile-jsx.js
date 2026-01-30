@@ -12,7 +12,7 @@
  */
 
 import * as esbuild from "esbuild";
-import { createTempPath, getModule } from "../config.js";
+import { createTempPath, getModule } from "../cache.js";
 
 /**
  * Compile JSX/TSX to JavaScript and import the module

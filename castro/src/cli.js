@@ -11,7 +11,8 @@
  */
 
 import { rm } from "node:fs/promises";
-import { cleanupTempDir, OUTPUT_DIR } from "./config.js";
+import { cleanupTempDir } from "./cache.js";
+import { OUTPUT_DIR } from "./constants.js";
 import { messages } from "./messages.js";
 
 // Clean up old build artifacts at startup

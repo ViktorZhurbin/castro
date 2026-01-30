@@ -9,7 +9,8 @@
 
 import { join } from "node:path";
 import { styleText } from "node:util";
-import { formatMs, OUTPUT_DIR, PAGES_DIR } from "../config.js";
+import { OUTPUT_DIR, PAGES_DIR } from "../constants.js";
+import { formatMs } from "../utils.js";
 
 /**
  * Shared wrapper for page builders

@@ -28,7 +28,7 @@ import {
 	LAYOUTS_DIR,
 	OUTPUT_DIR,
 	PAGES_DIR,
-} from "../config.js";
+} from "../constants.js";
 import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages.js";
 

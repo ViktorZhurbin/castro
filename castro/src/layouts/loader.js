@@ -20,9 +20,10 @@ import { rmSync } from "node:fs";
 import { access, glob } from "node:fs/promises";
 import { basename, extname, join } from "node:path";
 import { styleText } from "node:util";
+import { resolveTempDir } from "../cache.js";
 import { compileJSX } from "../build/compile-jsx.js";
 import { writeCSSFiles } from "../build/write-css.js";
-import { LAYOUTS_DIR, OUTPUT_DIR, resolveTempDir } from "../config.js";
+import { LAYOUTS_DIR, OUTPUT_DIR } from "../constants.js";
 import { messages } from "../messages.js";
 
 /**
