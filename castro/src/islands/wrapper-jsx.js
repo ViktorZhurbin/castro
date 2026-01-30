@@ -1,185 +1,182 @@
 /**
  * JSX Island Wrapper
  *
- * Wraps island components for client-side hydration.
+ * Wraps island components for client-side hydration using Preact's options.vnode hook.
  *
  * How island detection works:
- * 1. Islands are detected at build time
- * 2. Component names are extracted and stored in the registry at build time
- * 3. Walk the rendered VNode tree looking for components
- * 4. Match component function names against registered island names
- * 5. Wrap matched islands in <castro-island> for client-side hydration
- *
- * No import parsing, no regex - just direct name comparison.
+ * 1. Islands are detected at build time and registered
+ * 2. During page render, we intercept VNode creation via options.vnode hook
+ * 3. When an island component is encountered, we replace it with a wrapper
+ * 4. The wrapper renders static HTML and wraps it in <castro-island> for hydration
  */
 
-import { h } from "preact";
+import { h, options } from "preact";
 import { renderToString } from "preact-render-to-string";
 import { islands } from "./registry.js";
 
 /**
- * @import { VNode } from 'preact'
- *
- * @typedef {"lenin:awake" | "comrade:visible" | "no:pasaran"} Directive
+ * @import { Directive } from '../types.d.ts'
  */
-
-/** @type {Directive[]} */
-const DIRECTIVES = ["lenin:awake", "comrade:visible", "no:pasaran"];
-/** @type {Directive} */
-const DEFAULT_DIRECTIVE = "comrade:visible";
 
 /**
- * Transform a page's VNode tree by wrapping island components
- *
- * Tracks CSS from islands used on this page and returns it.
- *
- * @param {VNode} contentVNode - Rendered VNode tree from page
- * @returns {VNode}
+ * Island wrapper that uses Preact's options.vnode hook to intercept
+ * and wrap island components during VNode creation.
  */
-export function wrapIslandsInJSX(contentVNode) {
-	const allIslands = islands.getAll();
+class IslandWrapper {
+	/** @type {Directive[]} */
+	static DIRECTIVES = ["lenin:awake", "comrade:visible", "no:pasaran"];
+	/** @type {Directive} */
+	static DEFAULT_DIRECTIVE = "comrade:visible";
 
-	if (!allIslands || allIslands.size === 0) {
-		return contentVNode;
+	/** Store original vnode hook to restore after rendering */
+	#originalHook = options.vnode;
+	/** Track whether the hook is currently installed */
+	#hookInstalled = false;
+	/** Track whether we're rendering static HTML (prevents infinite recursion) */
+	#renderingStatic = false;
+
+	/**
+	 * Install the island detection hook
+	 *
+	 * This hook intercepts every VNode as it's created during rendering.
+	 * When it finds an island component, it replaces the component with
+	 * a wrapper that renders static HTML + hydration metadata.
+	 */
+	install() {
+		// Prevent double-installation
+		if (this.#hookInstalled) return;
+		this.#hookInstalled = true;
+
+		// Install our island detection hook
+		options.vnode = (vnode) => {
+			// Skip wrapping if we're currently rendering static HTML
+			// (prevents infinite recursion when the wrapper renders the island)
+			if (this.#renderingStatic) {
+				if (this.#originalHook) this.#originalHook(vnode);
+				return;
+			}
+
+			// Check if this VNode is a component (function) and if it's a known island
+			if (typeof vnode.type !== "function") {
+				if (this.#originalHook) this.#originalHook(vnode);
+				return;
+			}
+
+			const componentName = vnode.type.name;
+
+			if (islands.isIsland(componentName)) {
+				// Capture the original component before we replace it
+				const OriginalComponent = vnode.type;
+
+				// Replace the component type with a wrapper HOC
+				// This wrapper will be called by Preact when rendering this VNode
+				vnode.type = (props) => {
+					const island = islands.getIsland(componentName);
+
+					if (!island) {
+						throw new Error(`Island "${componentName}" not found in registry`);
+					}
+
+					islands.trackIsland(componentName);
+
+					// Extract directives and clean props
+					const directive = this.#extractDirective(props);
+					const cleanProps = this.#stripDirectives(props);
+
+					// Render the original component to static HTML
+					/** @type {string} */
+					let staticHtml;
+
+					// Set flag to prevent the hook from wrapping this render
+					this.#renderingStatic = true;
+
+					try {
+						staticHtml = renderToString(h(OriginalComponent, cleanProps));
+					} catch (e) {
+						const err = /** @type {NodeJS.ErrnoException} */ (e);
+
+						throw new Error(
+							`Failed to render island "${componentName}": ${err.message}`,
+							{ cause: e },
+						);
+					} finally {
+						this.#renderingStatic = false;
+					}
+
+					// Handle no:pasaran - static only, no hydration wrapper
+					if (directive === "no:pasaran") {
+						return h("div", {
+							dangerouslySetInnerHTML: { __html: staticHtml },
+						});
+					}
+
+					// Return the custom element wrapper for client-side hydration
+					return h("castro-island", {
+						directive,
+						import: island.publicJsPath,
+						"data-props": JSON.stringify(cleanProps),
+						dangerouslySetInnerHTML: { __html: staticHtml },
+					});
+				};
+			}
+
+			// Chain the previous hook if it existed
+			if (this.#originalHook) this.#originalHook(vnode);
+		};
 	}
 
-	// Transform VNode tree, wrapping islands as we go
-	/** @type {VNode} */
-	const wrappedVNode = transformVNodeTree(contentVNode);
-
-	// Return transformed tree and collected CSS
-	return wrappedVNode;
-}
-
-/**
- * Wrap an island component for hydration
- *
- * @param {any} vnode - The VNode to wrap
- * @param {string} componentName - Component function name
- * @returns {VNode} Wrapped VNode
- */
-function wrapIslandComponent(vnode, componentName) {
-	const island = islands.getIsland(componentName);
-
-	if (!island) {
-		throw new Error(`Island "${componentName}" not found in registry`);
+	/**
+	 * Uninstall the island detection hook
+	 *
+	 * Restores the original vnode hook (if any) that was present
+	 * before we installed ours.
+	 */
+	uninstall() {
+		if (!this.#hookInstalled) return;
+		this.#hookInstalled = false;
+		options.vnode = this.#originalHook;
 	}
 
-	// Track assets for this island
-	islands.trackIsland(componentName);
+	/**
+	 * Extract and validate directive from props
+	 *
+	 * @param {Record<string, any> | undefined} props
+	 * @returns {Directive}
+	 */
+	#extractDirective(props) {
+		if (!props) return IslandWrapper.DEFAULT_DIRECTIVE;
 
-	const directive = extractDirective(vnode.props);
-	const cleanProps = stripDirectives(vnode.props);
-
-	// Render component to static HTML
-	const staticHtml = renderToString(h(vnode.type, cleanProps));
-
-	// Handle no:pasaran - static only, no hydration wrapper
-	if (directive === "no:pasaran") {
-		return h("div", { dangerouslySetInnerHTML: { __html: staticHtml } });
-	}
-
-	// Wrap in <castro-island> for client-side hydration
-	return h("castro-island", {
-		directive,
-		import: island.publicJsPath,
-		"data-props": JSON.stringify(cleanProps),
-		dangerouslySetInnerHTML: { __html: staticHtml },
-	});
-}
-
-/**
- * Recursively walk VNode tree and wrap island components
- *
- * @param {any} vnode - VNode, array, or primitive
- * @returns {any} Transformed vnode
- */
-function transformVNodeTree(vnode) {
-	// Base cases
-	if (isPrimitive(vnode)) return vnode;
-	if (Array.isArray(vnode)) {
-		return vnode.map((child) => transformVNodeTree(child));
-	}
-
-	const vnodeType = vnode.type;
-
-	// Handle native elements (div, span, etc.) and Fragments
-	if (typeof vnodeType !== "function") {
-		return transformChildren(vnode);
-	}
-
-	// Check if this is an island component
-	const componentName = vnodeType.name;
-	if (componentName && islands.isIsland(componentName)) {
-		return wrapIslandComponent(vnode, componentName);
-	}
-
-	// Regular component (non-island) - just transform children
-	return transformChildren(vnode);
-}
-
-/**
- * Check if value is a primitive (not an object or array)
- * @param {any} value
- * @returns {boolean}
- */
-function isPrimitive(value) {
-	return !value || typeof value !== "object";
-}
-
-/**
- * Transform a VNode's children
- * @param {any} vnode
- * @returns {VNode}
- */
-function transformChildren(vnode) {
-	if (!vnode.props?.children) return vnode;
-
-	const transformedChildren = transformVNodeTree(vnode.props.children);
-
-	return {
-		...vnode,
-		props: {
-			...vnode.props,
-			children: transformedChildren,
-		},
-	};
-}
-
-/**
- * Extract and validate directive from props
- *
- * @param {Record<string, any> | undefined} props
- * @returns {Directive}
- */
-function extractDirective(props) {
-	if (!props) return DEFAULT_DIRECTIVE;
-
-	const foundDirectives = DIRECTIVES.filter((d) => props[d] !== undefined);
-
-	if (foundDirectives.length > 1) {
-		throw new Error(
-			`Multiple directives on same component: ${foundDirectives.join(", ")}. Use only one.`,
+		const foundDirectives = IslandWrapper.DIRECTIVES.filter(
+			(d) => props[d] !== undefined,
 		);
+
+		if (foundDirectives.length > 1) {
+			throw new Error(
+				`Multiple directives on same component: ${foundDirectives.join(", ")}. Use only one.`,
+			);
+		}
+
+		return foundDirectives[0] || IslandWrapper.DEFAULT_DIRECTIVE;
 	}
 
-	return foundDirectives[0] || DEFAULT_DIRECTIVE;
-}
+	/**
+	 * Remove directive props before passing to component
+	 *
+	 * Directives are metadata for Castro, not component props.
+	 *
+	 * @param {Record<string, any> | undefined} props
+	 * @returns {Record<string, any>}
+	 */
+	#stripDirectives(props) {
+		if (!props) return {};
 
-/**
- * Remove directive props before passing to component
- *
- * Directives are metadata for Castro, not component props.
- *
- * @param {Record<string, any> | undefined} props
- * @returns {Record<string, any>}
- */
-function stripDirectives(props) {
-	if (!props) return {};
-
-	const clean = { ...props };
-	for (const directive of DIRECTIVES) {
-		delete clean[directive];
+		const clean = { ...props };
+		for (const directive of IslandWrapper.DIRECTIVES) {
+			delete clean[directive];
+		}
+		return clean;
 	}
-	return clean;
 }
+
+// Export singleton instance
+export const islandWrapper = new IslandWrapper();

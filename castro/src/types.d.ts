@@ -6,6 +6,8 @@
 
 import type { VNode } from "preact";
 
+export type Directive = "lenin:awake" | "comrade:visible" | "no:pasaran";
+
 export type Asset = {
 	tag: string;
 	attrs?: Record<string, string | boolean>;

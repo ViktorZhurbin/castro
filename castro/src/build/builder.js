@@ -8,10 +8,6 @@
  * 3. Copy public assets
  * 4. Run plugin build hooks
  * 5. Build all pages (markdown and JSX)
- *
- * Educational note: This is a "task runner" pattern - it orchestrates
- * multiple steps in the right order. Each step is simple, the
- * orchestrator handles the sequence.
  */
 
 import { cp, glob, mkdir, rm } from "node:fs/promises";

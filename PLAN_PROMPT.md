@@ -29,13 +29,14 @@ path/to/other.ts - [one-line purpose]
 ## 3. Non-Negotiable Rules
 
 Castro-specific constraints:
-• Preserve ALL existing JSDoc comments (update as needed)
-• Add JSDoc to any new functions (@param, @returns, @import)
-• Maintain ~50% comment density (educational code)
-• User-facing errors go through messages.js with styleText()
-• Include .js extensions on all imports (Node ESM)
-• Do NOT change exported function signatures, unless explicitly instructed
-• Do NOT add npm dependencies, unless explicitly instructed
+- Preserve ALL existing JSDoc comments (update as needed)
+- Add JSDoc to any new functions (@param, @returns, @import)
+- Maintain ~50% comment density (educational code)
+  - DO NOT add "Educational note" text, just explain things in clear way. Don't be too "educational"
+- User-facing errors go through messages.js with styleText()
+- Include .js extensions on all imports (Node ESM)
+- Do NOT change exported function signatures, unless explicitly instructed
+- Do NOT add npm dependencies, unless explicitly instructed
 
 ---
 

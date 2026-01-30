@@ -5,9 +5,6 @@
  * - Path resolution
  * - Timing/logging
  * - Error handling
- *
- * Educational note: This is the "template method" pattern.
- * The shell handles the boilerplate, you provide the specific logic.
  */
 
 import { join } from "node:path";

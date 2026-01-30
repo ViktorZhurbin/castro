@@ -7,7 +7,7 @@
 
 import { renderToString } from "preact-render-to-string";
 import { islands } from "../islands/registry.js";
-import { wrapIslandsInJSX } from "../islands/wrapper-jsx.js";
+import { islandWrapper } from "../islands/wrapper-jsx.js";
 import { layouts } from "../layouts/registry.js";
 import { resolveLayout } from "../layouts/resolver.js";
 import { messages } from "../messages.js";
@@ -22,7 +22,7 @@ import { writeHtmlPage } from "./page-writer.js";
  * Render a page VNode through the complete pipeline
  *
  * @param {{
- *   contentVNode: VNode,
+ *   createContentVNode: () => VNode,
  *   sourceFilePath: string,
  *   outputFilePath: string,
  *   sourceFileName: string,
@@ -31,7 +31,7 @@ import { writeHtmlPage } from "./page-writer.js";
  * }} params
  */
 export async function renderPageVNode({
-	contentVNode,
+	createContentVNode,
 	sourceFilePath,
 	outputFilePath,
 	sourceFileName,
@@ -41,52 +41,62 @@ export async function renderPageVNode({
 	// Clear page state for island CSS tracking
 	islands.clearPageState();
 
-	// Pass through island wrapping pipeline
-	const wrappedVNode = wrapIslandsInJSX(contentVNode);
+	// Install hook to intercept islands during VNode creation
+	// Hook remains active for both page content and layout rendering
+	islandWrapper.install();
 
-	// Support pages that render full HTML themselves (layout: false)
-	let vnodeToRender;
+	try {
+		// Create content VNode with hook active (wraps any islands in content)
+		const contentVNode = createContentVNode();
 
-	if (meta.layout === false || meta.layout === "none") {
-		vnodeToRender = wrappedVNode;
-	} else {
-		// Resolve and apply layout
-		const layoutName = await resolveLayout(sourceFilePath, meta);
-		const layoutFn = layouts.getAll().get(layoutName);
+		// Support pages that render full HTML themselves (layout: false)
+		let vnodeToRender;
 
-		if (!layoutFn) {
-			throw new Error(messages.errors.layoutNotFound(layoutName));
+		if (meta.layout === false || meta.layout === "none") {
+			vnodeToRender = contentVNode;
+		} else {
+			// Resolve and apply layout
+			const layoutName = await resolveLayout(sourceFilePath, meta);
+			const layoutFn = layouts.getAll().get(layoutName);
+
+			if (!layoutFn) {
+				throw new Error(messages.errors.layoutNotFound(layoutName));
+			}
+
+			// Render content to HTML string for layout
+			const contentHtml = renderToString(contentVNode);
+
+			// Get layout CSS assets
+			const layoutCssAssets = layouts.getCssAssets(layoutName);
+			pageCssAssets = [...layoutCssAssets, ...pageCssAssets];
+
+			// Apply layout
+			const title = meta.title || sourceFileName.replace(/\.(md|[jt]sx)$/, "");
+
+			// Layout VNode created with hook active (wraps any islands in layout)
+			vnodeToRender = layoutFn({
+				title,
+				content: contentHtml,
+				...meta,
+			});
 		}
 
-		// Render wrapped content to HTML string for layout
-		const contentHtml = renderToString(wrappedVNode);
+		// Render final page
+		const html = renderToString(vnodeToRender);
 
-		// Get layout CSS assets
-		const layoutCssAssets = layouts.getCssAssets(layoutName);
-		pageCssAssets = [...layoutCssAssets, ...pageCssAssets];
+		// Collect island CSS
+		const { cssPaths } = islands.getPageAssets();
+		const islandCssAssets = cssPaths.filter(Boolean).map((href) => ({
+			tag: "link",
+			attrs: { rel: "stylesheet", href },
+		}));
 
-		// Apply layout
-		const title = meta.title || sourceFileName.replace(/\.(md|[jt]sx)$/, "");
-
-		vnodeToRender = layoutFn({
-			title,
-			content: contentHtml,
-			...meta,
+		// Write HTML with all CSS assets
+		await writeHtmlPage(html, outputFilePath, {
+			pageCssAssets: [...pageCssAssets, ...islandCssAssets],
 		});
+	} finally {
+		// Always uninstall hook after page is complete
+		islandWrapper.uninstall();
 	}
-
-	// Render final page
-	const html = renderToString(vnodeToRender);
-
-	// Collect island CSS
-	const { cssPaths } = islands.getPageAssets();
-	const islandCssAssets = cssPaths.filter(Boolean).map((href) => ({
-		tag: "link",
-		attrs: { rel: "stylesheet", href },
-	}));
-
-	// Write HTML with all CSS assets
-	await writeHtmlPage(html, outputFilePath, {
-		pageCssAssets: [...pageCssAssets, ...islandCssAssets],
-	});
 }

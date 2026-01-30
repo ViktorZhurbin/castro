@@ -24,8 +24,6 @@ import { buildPageShell } from "./page-shell.js";
 import { renderPageVNode } from "./render-page-vnode.js";
 import { writeCSSFiles } from "./write-css.js";
 
-/** @import { Asset } from "../types.d.ts" */
-
 /**
  * Build a single JSX page to HTML
  *
@@ -50,11 +48,10 @@ export async function buildJSXPage(sourceFileName, options = {}) {
 		// Extract metadata (includes layout preference)
 		const meta = pageModule.meta || {};
 
-		const contentVNode = pageModule.default();
-
 		// Use shared rendering pipeline
+		// Pass the page component function so it can be called with the hook active
 		await renderPageVNode({
-			contentVNode,
+			createContentVNode: pageModule.default,
 			sourceFilePath,
 			outputFilePath,
 			sourceFileName,

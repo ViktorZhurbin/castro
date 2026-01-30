@@ -43,15 +43,13 @@ export async function buildMarkdownPage(sourceFileName, options = {}) {
 		// Convert markdown to HTML
 		const contentHtml = await marked(markdown);
 
-		// Create a VNode wrapper for the markdown content
-		// This enables the unified JSX pipeline (island wrapping, etc.)
-		const contentVNode = h("div", {
-			dangerouslySetInnerHTML: { __html: contentHtml },
-		});
-
 		// Use shared rendering pipeline
+		// Pass a function that creates the VNode wrapper for markdown content
 		await renderPageVNode({
-			contentVNode,
+			createContentVNode: () =>
+				h("div", {
+					dangerouslySetInnerHTML: { __html: contentHtml },
+				}),
 			sourceFilePath,
 			outputFilePath,
 			sourceFileName,

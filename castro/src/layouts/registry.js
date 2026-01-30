@@ -3,10 +3,6 @@
  *
  * Singleton that holds all loaded layout components.
  * Layouts are JSX functions that wrap page content.
- *
- * Educational note: A "registry" is a pattern for storing
- * and accessing shared resources. Here we store layout
- * functions so any page can use them.
  */
 
 import { loadLayouts } from "./loader.js";
