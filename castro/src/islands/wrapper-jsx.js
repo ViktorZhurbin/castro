@@ -54,7 +54,10 @@ class IslandWrapper {
 
 		// Compile the error fallback component on first use
 		if (!this.#ErrorComponent) {
-			const fallbackPath = join(import.meta.dirname, "error-fallback.tsx");
+			const fallbackPath = join(
+				import.meta.dirname,
+				"wrapper-error-fallback.tsx",
+			);
 			const { module } = await compileJSX(fallbackPath);
 			this.#ErrorComponent = module.default;
 		}
