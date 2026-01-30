@@ -1,25 +1,12 @@
 # Roadmap
 
-## 👨‍💻 Developer Experience
-
-### CLI
-
-- `npx castro create` CLI command to scaffold new projects
-
-### Better error/warning/log messages
-
-
-## Consider
-
-### Schema validation for meta
-
-meta export in `.tsx` files is untyped. Adding a simple schema validator would prevent "The manifesto is corrupted" errors when a user forgets a title.
-
-### Implement "getStaticPaths" (High Value):
+### Implement "getStaticPaths":
 
 If I want to generate a blog from an API, I currently have to write a script to generate `.md` files. Allowing a page to export `export async function getPaths() { ... }` (like Next.js `getStaticPaths`) would be a massive level-up.
 
 Steal the `getStaticPaths` concept from Next.js/Astro. Allow a single `.tsx` file to generate multiple `.html` pages based on data. This moves Castro from "Toy" to "CMS-capable."
+
+May involve some routing changes.
 
 ### Improve Error Boundaries:
 
@@ -31,3 +18,8 @@ In `wrapper-jsx.js`, wrap the island rendering in a `try/catch`. If it fails, re
 
 Maybe it already works, thanks to esbuild.
 
+### npx castro create
+
+- `npx castro create` CLI command to scaffold new projects
+
+### Better error/warning/log messages

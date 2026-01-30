@@ -13,10 +13,10 @@
 import { cp, glob, mkdir, rm } from "node:fs/promises";
 import { join, relative } from "node:path";
 import { OUTPUT_DIR, PAGES_DIR, PUBLIC_DIR } from "../constants.js";
-import { formatMs } from "../utils.js";
 import { defaultPlugins } from "../islands/plugins.js";
 import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages.js";
+import { formatMs } from "../utils/format.js";
 import { buildJSXPage } from "./page-jsx.js";
 import { buildMarkdownPage } from "./page-markdown.js";
 

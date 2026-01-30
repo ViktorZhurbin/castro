@@ -23,6 +23,7 @@ import { readFile } from "node:fs/promises";
 import matter from "gray-matter";
 import { marked } from "marked";
 import { h } from "preact";
+import { validateMeta } from "../utils/validateMeta.js";
 import { buildPageShell } from "./page-shell.js";
 import { renderPageVNode } from "./render-page-vnode.js";
 
@@ -40,6 +41,9 @@ export async function buildMarkdownPage(sourceFileName, options = {}) {
 		const sourceFileContent = await readFile(sourceFilePath, "utf-8");
 		const { data: meta, content: markdown } = matter(sourceFileContent);
 
+		// Type assertion: we know meta is valid PageMeta after validation
+		const validatedMeta = validateMeta(meta, sourceFileName);
+
 		// Convert markdown to HTML
 		const contentHtml = await marked(markdown);
 
@@ -53,7 +57,7 @@ export async function buildMarkdownPage(sourceFileName, options = {}) {
 			sourceFilePath,
 			outputFilePath,
 			sourceFileName,
-			meta,
+			meta: validatedMeta,
 		});
 	});
 }

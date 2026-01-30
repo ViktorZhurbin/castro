@@ -31,7 +31,7 @@ import { PAGES_DIR } from "../constants.js";
  * @param {PageMeta} [meta] - Page metadata/frontmatter
  * @returns {Promise<string>} Layout name
  */
-export async function resolveLayout(filePath, meta = {}) {
+export async function resolveLayout(filePath, meta) {
 	// 1. Frontmatter/meta has highest priority
 	if (meta?.layout) return meta.layout;
 

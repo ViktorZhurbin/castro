@@ -19,6 +19,7 @@
 
 import { dirname } from "node:path";
 import { messages } from "../messages.js";
+import { validateMeta } from "../utils/validateMeta.js";
 import { compileJSX } from "./compile-jsx.js";
 import { buildPageShell } from "./page-shell.js";
 import { renderPageVNode } from "./render-page-vnode.js";
@@ -48,6 +49,9 @@ export async function buildJSXPage(sourceFileName, options = {}) {
 		// Extract metadata (includes layout preference)
 		const meta = pageModule.meta || {};
 
+		// Validate metadata against schema
+		const validatedMeta = validateMeta(meta, sourceFileName);
+
 		// Use shared rendering pipeline
 		// Pass the page component function so it can be called with the hook active
 		await renderPageVNode({
@@ -55,7 +59,7 @@ export async function buildJSXPage(sourceFileName, options = {}) {
 			sourceFilePath,
 			outputFilePath,
 			sourceFileName,
-			meta,
+			meta: validatedMeta,
 			pageCssAssets,
 		});
 	});

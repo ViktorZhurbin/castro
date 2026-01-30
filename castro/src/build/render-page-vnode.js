@@ -14,7 +14,7 @@ import { writeHtmlPage } from "./page-writer.js";
 
 /**
  * @import { VNode } from "preact"
- * @import { Asset } from "../types.d.ts"
+ * @import { Asset, PageMeta } from "../types.d.ts"
  */
 
 /**
@@ -25,7 +25,7 @@ import { writeHtmlPage } from "./page-writer.js";
  *   sourceFilePath: string,
  *   outputFilePath: string,
  *   sourceFileName: string,
- *   meta: Record<string, any>,
+ *   meta: PageMeta,
  *   pageCssAssets?: Asset[]
  * }} params
  */
@@ -75,9 +75,9 @@ export async function renderPageVNode({
 
 			// Layout VNode created with hook active (wraps any islands in layout)
 			vnodeToRender = layoutFn({
-				title,
-				content: contentHtml,
 				...meta,
+				content: contentHtml,
+				title,
 			});
 		}
 

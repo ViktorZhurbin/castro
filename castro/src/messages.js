@@ -82,6 +82,16 @@ export const messages = {
 			`❌ The manifesto is corrupted!\n\n` +
 			`   Error: ${errorMessage}\n\n` +
 			`   Revise manifesto.js and eliminate errors.`,
+
+		invalidMeta: (
+			/** @type {string} */ fileName,
+			/** @type {string[]} */ issues,
+		) =>
+			`❌ The page 'meta' is incomplete.\n\n` +
+			`   Page: ${fileName}\n` +
+			`   Issues:\n` +
+			issues.map((i) => `   - ${i}`).join("\n") +
+			`\n\n   Correct the 'meta' export to satisfy the bureaucracy.`,
 	},
 
 	// Config

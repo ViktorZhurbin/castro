@@ -14,7 +14,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { basename, dirname } from "node:path";
 import { styleText } from "node:util";
 import * as esbuild from "esbuild";
-import { getModule } from "../cache.js";
+import { getModule } from "../utils/cache.js";
 import { PreactConfig } from "./preact-config.js";
 
 /**
