@@ -8,7 +8,7 @@ Castro is a working Static Site Generator that implements island architecture in
 
 ## What Is This?
 
-Island architecture is how modern frameworks (Astro, Fresh, Qwik) achieve great performance. Instead of shipping JavaScript for your entire page, you selectively hydrate only the interactive components. The rest stays as static HTML.
+Island architecture is how modern frameworks (Astro, Marko, Fresh, Qwik) achieve great performance. Instead of shipping JavaScript for your entire page, you selectively hydrate only the interactive components. The rest stays as static HTML.
 
 Castro shows you exactly how this works by implementing it from scratch.
 
