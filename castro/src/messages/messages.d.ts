@@ -11,7 +11,6 @@ export interface Messages {
 	// Dev server startup and runtime messages
 	devServer: {
 		ready: (url: string) => string;
-		watching: string;
 		serverError: (msg: string) => string;
 		watchError: (dir: string, msg: string) => string;
 	};

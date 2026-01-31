@@ -2,15 +2,16 @@
  * Satirical preset - Communist-themed messages
  * One joke maximum per error, prioritizes clarity
  *
- * @type {import('./messages.js').Messages}
+ * @type {import('./messages.d.ts').Messages}
  */
 export const satirical = {
 	// CLI startup
 	devServer: {
-		ready: (url) => `The revolution is live at ${url}`,
-		watching: "The State is watching for changes...",
-		serverError: (msg) => `🚨 The State has collapsed: ${msg}`,
-		watchError: (dir, msg) => `⚠️  The State cannot observe ${dir}: ${msg}`,
+		ready: (url) =>
+			`The revolution is live at ${url}\n` +
+			`The State is watching for changes...`,
+		serverError: (msg) => `Server has collapsed: ${msg}`,
+		watchError: (dir, msg) => `Could not watch ${dir}: ${msg}`,
 	},
 
 	build: {
@@ -18,18 +19,19 @@ export const satirical = {
 		success: (count, time) =>
 			`✓ Delivered ${count} pages to the people in ${time}`,
 		noFiles: "⚠️  No files found. The collective is empty.",
-		writingFile: (source, dest) => `📝 Distributing ${source} → ${dest}`,
-		fileSuccess: (file, time) => `✅ ${file} (${time})`,
-		fileFailure: (file, err) => `💥 Sabotage in ${file}: ${err}`,
-		islandFailed: (err) => `🏝️  Island construction failed: ${err}`,
-		ssrSkipped: (source, err) => `⏭️  Skipped SSR for ${source}: ${err}`,
-		ssrCompileFailed: (source) => `❌ SSR compilation failed for ${source}`,
-		noJsOutput: (source) => `❌ No JavaScript generated for ${source}`,
+		writingFile: (source, dest) => `Writing ${source} → ${dest}`,
+		fileSuccess: (file, time) => `✓ ${file} (${time})`,
+		fileFailure: (file, err) => `Sabotage detected in ${file}: ${err}`,
+		islandFailed: (err) => `Island build failed: ${err}`,
+		ssrSkipped: (source, err) =>
+			`SSR compilation skipped for ${source}: ${err}`,
+		ssrCompileFailed: (source) => `Failed to compile SSR code for ${source}`,
+		noJsOutput: (source) => `No JavaScript output generated for ${source}`,
 	},
 
 	// File operations
 	files: {
-		changed: (path) => `📝 Revised: ${path}`,
+		changed: (path) => `Revised: ${path}`,
 		compiled: (count) => `✓ Compiled ${count} island${count === 1 ? "" : "s"}:`,
 		layoutsLoaded: (names) => `✓ Loaded layouts: ${names}`,
 	},
@@ -41,24 +43,24 @@ export const satirical = {
 			`❌ Route conflict: Two pages claim the same route\n\n` +
 			`   · ${file1}\n` +
 			`   · ${file2}\n\n` +
-			`   The revolution cannot serve two masters - eliminate one.`,
+			`   The revolution cannot serve two masters.`,
 
 		// Missing layouts
 		layoutNotFound: (layoutName) =>
 			`❌ Layout '${layoutName}' not found in layouts/\n` +
-			`   Every page needs leadership - create the missing layout.`,
+			`   Create the missing layout file.`,
 
 		missingDefaultLayout: () =>
 			`❌ Required layout 'default.jsx' not found in layouts/\n` +
-			`   The default layout is mandatory. Create it immediately.`,
+			`   Create layouts/default.jsx to continue.`,
 
 		noLayoutsDir: (layoutsDir) =>
 			`❌ Layouts directory not found: ${layoutsDir}\n` +
-			`   Create it and add at least default.jsx - the revolution needs structure.`,
+			`   Create the directory and add at least default.jsx`,
 
 		islandNoExport: (fileName) =>
 			`⚠️  ${fileName} must export a default function.\n` +
-			`   The collective requires proper structure.`,
+			`   Island components require a default export.`,
 
 		// Page build errors
 		pageBuildFailed: (fileName, errorMessage) =>
@@ -68,37 +70,37 @@ export const satirical = {
 
 		jsxNoExport: (fileName) =>
 			`❌ JSX page ${fileName} must export a default function.\n` +
-			`   Components serve the collective, not themselves.`,
+			`   Pages require a default export.`,
 
 		// Config errors
 		configLoadFailed: (errorMessage) =>
-			`❌ The manifesto is corrupted!\n\n` +
+			`❌ Failed to load configuration\n\n` +
 			`   Error: ${errorMessage}\n\n` +
-			`   Revise manifesto.js and eliminate errors.`,
+			`   Check manifesto.js for syntax errors.`,
 
 		invalidMeta: (fileName, issues) =>
-			`❌ The page 'meta' is incomplete.\n\n` +
+			`❌ Invalid page metadata\n\n` +
 			`   Page: ${fileName}\n` +
 			`   Issues:\n` +
 			issues.map((i) => `   - ${i}`).join("\n") +
-			`\n\n   Correct the 'meta' export to satisfy the bureaucracy.`,
+			`\n\n   Check the page 'meta' export.`,
 		islandDefaultExportMissing: (fileName) =>
-			`❌ Island "${fileName}" must identify itself (default export).\n\n` +
+			`❌ Island "${fileName}" must have a default export.\n\n` +
 			`Example:\n` +
 			`  export default function MyComponent(props) {\n` +
 			`  return <div>...</div>;\n` +
 			`  }`,
 		islandNotFoundRegistry: (name) =>
-			`❌ Island "${name}" has vanished from the registry!`,
+			`❌ Island "${name}" not found in registry`,
 		islandRenderFailed: (name, err) =>
-			`❌ The people rejected island "${name}": ${err}`,
+			`❌ Failed to render island "${name}": ${err}`,
 		multipleDirectives: (directives) =>
-			`❌ Ideological conflict: Multiple directives on same component (${directives}). Decree only one.`,
+			`❌ Multiple directives on same component: ${directives}. Use only one.`,
 		noLayoutFiles: (dir) =>
-			`❌ No layout found in ${dir}. The state needs structure - add default.jsx.`,
-		configAccessFailed: (path) => `❌ The manifesto is inaccessible: ${path}`,
+			`❌ No layout files found in ${dir}\nCreate at least default.jsx`,
+		configAccessFailed: (path) => `❌ Error loading configuration at ${path}`,
 		cacheWriteFailed: (path, err) =>
-			`❌ Failed to archive cache at ${path}: ${err}`,
+			`❌ Failed to write cache file: ${path}\n${err}`,
 	},
 
 	// Config
@@ -115,6 +117,6 @@ export const satirical = {
 	},
 
 	purge: {
-		success: "🧹 Counter-revolutionary artifacts eliminated.",
+		success: "✓ Build directory cleaned.",
 	},
 };

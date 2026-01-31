@@ -9,12 +9,6 @@ Maybe it already works, thanks to esbuild.
 
 - `npx castro create` CLI command to scaffold new projects
 
-
-### Better error/warning/log messages
-
-Claude has some good ideas for it - check Castro.js chat
-
-
 ### Implement "getStaticPaths"?
 
 If I want to generate a blog from an API, I currently have to write a script to generate `.md` files. Allowing a page to export `export async function getPaths() { ... }` (like Next.js `getStaticPaths`) would be a massive level-up.

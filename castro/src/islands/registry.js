@@ -116,7 +116,7 @@ class IslandsRegistry {
 			);
 			for (const { sourcePath } of compiledIslands) {
 				const relativePath = relative(process.cwd(), sourcePath);
-				console.info(`  ${styleText("cyan", relativePath)}`);
+				console.info(`  · ${styleText("cyan", relativePath)}`);
 			}
 		}
 	}

@@ -2,14 +2,14 @@
  * Serious preset - Straightforward technical messages
  * No satire, just clear information
  *
- * @type {import('./messages.js').Messages}
+ * @type {import('./messages.d.ts').Messages}
  */
 
 export const serious = {
 	// CLI startup
 	devServer: {
-		ready: (url) => `Dev server running at ${url}`,
-		watching: "Watching for file changes...",
+		ready: (url) =>
+			`Dev server running at ${url}\nWatching for file changes...`,
 		serverError: (msg) => `Server error: ${msg}`,
 		watchError: (dir, msg) => `Could not watch ${dir}: ${msg}`,
 	},

@@ -43,10 +43,10 @@ export async function startDevServer() {
 	// Initial build
 	await buildAll();
 
+	console.info("");
 	console.info(
 		messages.devServer.ready(styleText("cyan", `http://localhost:${PORT}`)),
 	);
-	console.info(messages.devServer.watching);
 
 	// Track SSE connections for live reload
 	const connections = new Set();
