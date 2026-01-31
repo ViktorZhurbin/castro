@@ -7,7 +7,9 @@
 		"build": "pnpm --filter website build",
 		"format": "biome format --write",
 		"type-check": "pnpm --filter @vktrz/castro type-check",
-		"loc": "pnpx cloc castro/src/"
+		"check": "pnpm format && pnpm type-check",
+		"loc": "pnpx cloc castro/src/ --exclude-dir=messages",
+		"loc-files": "pnpm loc --by-file"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.11"
