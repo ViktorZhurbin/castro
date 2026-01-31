@@ -12,6 +12,7 @@
  */
 
 import * as esbuild from "esbuild";
+import { messages } from "../messages/index.js";
 import { createTempPath, getModule } from "../utils/cache.js";
 
 /**
@@ -47,7 +48,7 @@ export async function compileJSX(sourcePath) {
 	const cssFiles = result.outputFiles.filter((f) => f.path.endsWith(".css"));
 
 	if (!jsFile) {
-		throw new Error(`No JavaScript output generated for ${sourcePath}`);
+		throw new Error(messages.build.noJsOutput(sourcePath));
 	}
 
 	return {

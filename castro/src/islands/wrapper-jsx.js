@@ -14,6 +14,7 @@ import { join } from "node:path";
 import { h, options } from "preact";
 import { renderToString } from "preact-render-to-string";
 import { compileJSX } from "../build/compile-jsx.js";
+import { messages } from "../messages/index.js";
 import { islands } from "./registry.js";
 
 /**
@@ -89,7 +90,9 @@ class IslandWrapper {
 					const island = islands.getIsland(componentName);
 
 					if (!island) {
-						throw new Error(`Island "${componentName}" not found in registry`);
+						throw new Error(
+							messages.errors.islandNotFoundRegistry(componentName),
+						);
 					}
 
 					// Track CSS for this island into the provided context
@@ -115,7 +118,7 @@ class IslandWrapper {
 
 						// Log the error for developer visibility, but don't crash the build
 						console.error(
-							`\n❌ Failed to render island "${componentName}": ${err.message}`,
+							messages.errors.islandRenderFailed(componentName, err.message),
 						);
 
 						// Render the compiled error fallback component
@@ -177,7 +180,7 @@ class IslandWrapper {
 
 		if (foundDirectives.length > 1) {
 			throw new Error(
-				`Multiple directives on same component: ${foundDirectives.join(", ")}. Use only one.`,
+				messages.errors.multipleDirectives(foundDirectives.join(", ")),
 			);
 		}
 

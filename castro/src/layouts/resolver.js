@@ -14,8 +14,8 @@
 import { access } from "node:fs/promises";
 import { dirname, join, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
-import { styleText } from "node:util";
 import { PAGES_DIR } from "../constants.js";
+import { messages } from "../messages/index.js";
 
 /**
  * @import { PageMeta } from '../types.d.ts'
@@ -85,9 +85,7 @@ async function findCastroData(filePath) {
 			const err = /** @type {NodeJS.ErrnoException} */ (e);
 
 			if (err.code !== "ENOENT") {
-				console.error(
-					styleText("red", `Error loading configuration at ${castroPath}`),
-				);
+				console.error(messages.errors.configAccessFailed(castroPath));
 				throw err;
 			}
 		}

@@ -14,6 +14,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { basename, dirname, extname } from "node:path";
 import { styleText } from "node:util";
 import * as esbuild from "esbuild";
+import { messages } from "../messages/index.js";
 import { getModule } from "../utils/cache.js";
 import { PreactConfig } from "./preact-config.js";
 
@@ -36,7 +37,7 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
 		const ssrCode = await compileIslandSSR({ sourcePath });
 
 		if (!ssrCode) {
-			throw new Error(`Failed to compile SSR code for ${sourcePath}`);
+			throw new Error(messages.build.ssrCompileFailed(sourcePath));
 		}
 
 		// Use getModule to dynamically import the component
@@ -48,13 +49,7 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
 		// Validate that island has a default export with a name
 		if (!module.default || !componentName) {
 			const fileName = basename(sourcePath);
-			throw new Error(
-				`\n❌ Island "${fileName}" must have a default export.\n\n` +
-					`Example:\n` +
-					`  ${styleText("cyan", `export default function MyComponent(props) {`)}\n` +
-					`  ${styleText("cyan", "  return <div>...</div>;")}\n` +
-					`  ${styleText("cyan", "}")}\n`,
-			);
+			throw new Error(messages.errors.islandDefaultExportMissing(fileName));
 		}
 
 		// Compile client version (runs in browser)
@@ -72,7 +67,7 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
 		);
 
 		if (!jsFile) {
-			throw new Error(`No JS output found for ${sourcePath}`);
+			throw new Error(messages.build.noJsOutput(sourcePath));
 		}
 
 		// Construct public paths using the generated filenames
@@ -107,7 +102,7 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
 			name: componentName,
 		};
 	} catch (err) {
-		console.info(styleText("red", "Island build failed: "), err);
+		console.info(styleText("red", messages.build.islandFailed(err)));
 		throw err;
 	}
 }
@@ -220,8 +215,7 @@ async function compileIslandSSR({ sourcePath }) {
 		const err = /** @type {NodeJS.ErrnoException} */ (e);
 
 		console.warn(
-			styleText("yellow", `SSR compilation skipped for ${sourcePath}:`),
-			err.message,
+			styleText("yellow", messages.build.ssrSkipped(sourcePath, err.message)),
 		);
 	}
 }

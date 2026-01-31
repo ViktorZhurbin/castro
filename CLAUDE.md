@@ -14,6 +14,7 @@ Read @PLAN.md, @README.md for more context.
 - **Formatting**: Strictly follow Biome defaults (tabs, double quotes) via `pnpm format`.
 - **Documentation**: Use JSDoc for all types and function intent. Use .d.ts files only for reusable types.
 - **Errors**: Prefer loud startup failures (native errors) over defensive programming. Use `styleText` from `node:util` for colored terminal logs.
+- **Messages**: All user-facing strings (errors, warnings, logs) must be defined in `src/messages/` and typed via `src/messages/messages.d.ts`. Import and use the centralized `messages` object instead of inline strings. Both `serious.js` (technical tone) and `communist.js` (satirical tone) presets must be kept in sync.
 - **Dependencies**: Prioritize built-in Node.js APIs over external packages to keep the footprint small.
 
 ## Project Structure & Context

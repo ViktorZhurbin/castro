@@ -93,9 +93,7 @@ export async function loadLayouts() {
 
 	// Validate
 	if (layouts.size === 0) {
-		throw new Error(
-			`No layout files found in ${LAYOUTS_DIR}\nCreate at least default.jsx`,
-		);
+		throw new Error(messages.errors.noLayoutFiles(LAYOUTS_DIR));
 	}
 
 	const layoutNames = Array.from(layouts.keys()).join(", ");

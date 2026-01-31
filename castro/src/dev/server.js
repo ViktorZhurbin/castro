@@ -40,8 +40,6 @@ const PORT = 3000;
 export async function startDevServer() {
 	process.env.NODE_ENV = "development";
 
-	console.info(messages.devServer.starting);
-
 	// Initial build
 	await buildAll();
 
@@ -84,7 +82,7 @@ export async function startDevServer() {
 		.listen(PORT);
 
 	server.server?.on("error", (err) => {
-		console.error("Server error:", err.message);
+		console.error(messages.devServer.serverError(err.message));
 		process.exit(1);
 	});
 
@@ -149,7 +147,7 @@ export async function startDevServer() {
 				const err = /** @type {NodeJS.ErrnoException} */ (e);
 
 				if (err.code !== "ENOENT") {
-					console.warn(`Could not watch ${dir}:`, err.message);
+					console.warn(messages.devServer.watchError(dir, err.message));
 				}
 			}
 		})();

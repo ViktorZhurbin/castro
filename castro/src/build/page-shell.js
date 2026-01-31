@@ -10,6 +10,7 @@
 import { join } from "node:path";
 import { styleText } from "node:util";
 import { OUTPUT_DIR, PAGES_DIR } from "../constants.js";
+import { messages } from "../messages/index.js";
 import { formatMs } from "../utils/format.js";
 
 /**
@@ -36,7 +37,10 @@ export async function buildPageShell(
 	try {
 		if (logOnStart) {
 			console.info(
-				`Writing ${styleText("cyan", sourceFileName)} → ${styleText("gray", outputFileName)}`,
+				messages.build.writingFile(
+					styleText("cyan", sourceFileName),
+					styleText("gray", outputFileName),
+				),
 			);
 		}
 
@@ -49,16 +53,17 @@ export async function buildPageShell(
 		if (logOnSuccess) {
 			const buildTime = formatMs(performance.now() - startTime);
 			console.info(
-				styleText("green", `✓ ${outputFileName}`) +
-					styleText("gray", ` (${buildTime})`),
+				styleText(
+					"green",
+					messages.build.fileSuccess(outputFileName, buildTime),
+				),
 			);
 		}
 	} catch (e) {
 		const err = /** @type {NodeJS.ErrnoException} */ (e);
 
 		console.error(
-			styleText("red", `✗ Failed to build ${sourceFileName}:`),
-			err.message,
+			styleText("red", messages.build.fileFailure(sourceFileName, err.message)),
 		);
 		throw err;
 	}

@@ -1,43 +1,51 @@
 /**
  * Serious preset - Straightforward technical messages
  * No satire, just clear information
+ *
+ * @type {import('./messages.js').Messages}
  */
 
 export const serious = {
 	// CLI startup
 	devServer: {
-		starting: "Starting dev server...",
-		ready: (/** @type {string} */ url) => `Dev server running at ${url}`,
+		ready: (url) => `Dev server running at ${url}`,
 		watching: "Watching for file changes...",
+		serverError: (msg) => `Server error: ${msg}`,
+		watchError: (dir, msg) => `Could not watch ${dir}: ${msg}`,
 	},
 
 	build: {
 		starting: "Building site...",
-		success: (/** @type {string} */ count, /** @type {string} */ time) =>
-			`✓ Build complete: ${count} pages in ${time}`,
+		success: (count, time) => `✓ Build complete: ${count} pages in ${time}`,
 		noFiles: "⚠️  No files found to build.",
+		writingFile: (source, dest) => `Writing ${source} → ${dest}`,
+		fileSuccess: (file, time) => `✓ ${file} (${time})`,
+		fileFailure: (file, err) => `✗ Failed to build ${file}: ${err}`,
+		islandFailed: (err) => `Island build failed: ${err}`,
+		ssrSkipped: (source, err) =>
+			`SSR compilation skipped for ${source}: ${err}`,
+		ssrCompileFailed: (source) => `Failed to compile SSR code for ${source}`,
+		noJsOutput: (source) => `No JavaScript output generated for ${source}`,
 	},
 
 	// File operations
 	files: {
-		changed: (/** @type {string} */ path) => `Changed: ${path}`,
-		compiled: (/** @type {number} */ count) =>
-			`✓ Compiled ${count} island${count === 1 ? "" : "s"}:`,
-		layoutsLoaded: (/** @type {string} */ names) =>
-			`✓ Loaded layouts: ${names}`,
+		changed: (path) => `Changed: ${path}`,
+		compiled: (count) => `✓ Compiled ${count} island${count === 1 ? "" : "s"}:`,
+		layoutsLoaded: (names) => `✓ Loaded layouts: ${names}`,
 	},
 
 	// Errors
 	errors: {
 		// Route conflicts
-		routeConflict: (/** @type {string} */ file1, /** @type {string} */ file2) =>
+		routeConflict: (file1, file2) =>
 			`❌ Route conflict: Multiple pages map to the same URL\n\n` +
 			`   · ${file1}\n` +
 			`   · ${file2}\n\n` +
 			`   Remove or rename one of these files.`,
 
 		// Missing layouts
-		layoutNotFound: (/** @type {string} */ layoutName) =>
+		layoutNotFound: (layoutName) =>
 			`❌ Layout '${layoutName}' not found in layouts/ directory.\n` +
 			`   Create the missing layout file.`,
 
@@ -45,42 +53,53 @@ export const serious = {
 			`❌ Required layout 'default.jsx' not found in layouts/ directory.\n` +
 			`   Create layouts/default.jsx to continue.`,
 
-		noLayoutsDir: (/** @type {string} */ layoutsDir) =>
+		noLayoutsDir: (layoutsDir) =>
 			`❌ Layouts directory not found: ${layoutsDir}\n` +
 			`   Create the directory and add at least default.jsx`,
 
-		islandNoExport: (/** @type {string} */ fileName) =>
+		islandNoExport: (fileName) =>
 			`⚠️  ${fileName} must export a default function.\n` +
 			`   Island components require a default export.`,
 
 		// Page build errors
-		pageBuildFailed: (
-			/** @type {string} */ fileName,
-			/** @type {string} */ errorMessage,
-		) =>
+		pageBuildFailed: (fileName, errorMessage) =>
 			`❌ Failed to build page\n\n` +
 			`   Page: ${fileName}\n` +
 			`   Error: ${errorMessage}`,
 
-		jsxNoExport: (/** @type {string} */ fileName) =>
+		jsxNoExport: (fileName) =>
 			`❌ JSX page ${fileName} must export a default function.\n` +
 			`   Pages require a default export.`,
 
 		// Config errors
-		configLoadFailed: (/** @type {string} */ errorMessage) =>
+		configLoadFailed: (errorMessage) =>
 			`❌ Failed to load configuration\n\n` +
 			`   Error: ${errorMessage}\n\n` +
 			`   Check manifesto.js for syntax errors.`,
 
-		invalidMeta: (
-			/** @type {string} */ fileName,
-			/** @type {string[]} */ issues,
-		) =>
+		invalidMeta: (fileName, issues) =>
 			`❌ The page 'meta' is incomplete.\n\n` +
 			`   Page: ${fileName}\n` +
 			`   Issues:\n` +
 			issues.map((i) => `   - ${i}`).join("\n") +
 			`\n\n   Check the page 'meta' export.`,
+		islandDefaultExportMissing: (fileName) =>
+			`❌ Island "${fileName}" must have a default export.\n\n` +
+			`Example:\n` +
+			`  export default function MyComponent(props) {\n` +
+			`  return <div>...</div>;\n` +
+			`  }`,
+		islandNotFoundRegistry: (name) =>
+			`❌ Island "${name}" not found in registry`,
+		islandRenderFailed: (name, err) =>
+			`❌ Failed to render island "${name}": ${err}`,
+		multipleDirectives: (directives) =>
+			`❌ Multiple directives on same component: ${directives}. Use only one.`,
+		noLayoutFiles: (dir) =>
+			`❌ No layout files found in ${dir}\nCreate at least default.jsx`,
+		configAccessFailed: (path) => `❌ Error loading configuration at ${path}`,
+		cacheWriteFailed: (path, err) =>
+			`❌ Failed to write cache file: ${path}\n${err}`,
 	},
 
 	// Config
@@ -91,7 +110,7 @@ export const serious = {
 
 	// Commands
 	commands: {
-		unknown: (/** @type {string} */ cmd) =>
+		unknown: (cmd) =>
 			`❌ Unknown command: ${cmd}\n   Available commands: dev, build`,
 		usage: "Usage: castro [dev|build]",
 	},

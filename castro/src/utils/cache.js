@@ -15,6 +15,7 @@
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join, parse, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { messages } from "../messages/index.js";
 
 // ============================================================================
 // Cache Root Directory
@@ -113,7 +114,8 @@ function writeTempFile(sourcePath, content, subpath = "") {
 	try {
 		writeFileSync(fullPath, content);
 	} catch (err) {
-		console.error(`Failed to write cache file: ${fullPath}`, err);
+		const error = /** @type {Error} */ (err);
+		console.error(messages.errors.cacheWriteFailed(fullPath, error.message));
 		throw err;
 	}
 
