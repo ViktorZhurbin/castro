@@ -11,6 +11,7 @@ import { access, glob, mkdir } from "node:fs/promises";
 import { dirname, join, relative } from "node:path";
 import { styleText } from "node:util";
 import { messages } from "../messages/index.js";
+import { getIslandId } from "../utils/ids.js";
 import { compileIsland } from "./compiler.js";
 
 /**
@@ -85,30 +86,14 @@ class IslandsRegistry {
 						publicDir,
 					});
 
-					const existingIsland = this.#islands.get(component.name);
-					// Check for component name collision
-					if (existingIsland) {
-						const currentFilePath = relative(process.cwd(), sourcePath);
-						const existingFilePath = relative(
-							process.cwd(),
-							existingIsland.sourcePath,
-						);
+					const id = getIslandId(sourcePath);
 
-						throw new Error(
-							`\n${styleText("red", "❌ Component name collision:")}\n\n` +
-								`Component name ${styleText("cyan", `"${component.name}"`)} is defined in multiple files:\n` +
-								`  ${styleText("yellow", "1.")} ${existingFilePath}\n` +
-								`  ${styleText("yellow", "2.")} ${currentFilePath}\n\n` +
-								`${styleText("bold", "Each island must have a unique component name.")}`,
-						);
-					}
-
-					this.#islands.set(component.name, component);
+					this.#islands.set(id, component);
 
 					// Store CSS content in manifest for later injection
-					// Even if empty, we track it to avoid repeated lookups
+					// Map ID -> CSS string for later lookup during rendering
 					if (component.cssContent) {
-						this.#cssManifest.set(component.name, component.cssContent);
+						this.#cssManifest.set(id, component.cssContent);
 					}
 
 					compiledIslands.push({ sourcePath });
@@ -140,23 +125,23 @@ class IslandsRegistry {
 	}
 
 	/**
-	 * Check if a component name matches a registered island
+	 * Check if an island is registered by ID
 	 *
-	 * @param {string} componentName - Component function name from VNode
+	 * @param {string} id - The island's source path ID (e.g., "src/islands/Counter.tsx")
 	 * @returns {boolean}
 	 */
-	isIsland(componentName) {
-		return this.#islands.has(componentName);
+	isIsland(id) {
+		return this.#islands.has(id);
 	}
 
 	/**
-	 * Get island metadata from registry by component name
+	 * Get island metadata from registry by ID
 	 *
-	 * @param {string} componentName - Component function name from VNode
+	 * @param {string} id - The island's source path ID (e.g., "src/islands/Counter.tsx")
 	 * @returns {IslandComponent | undefined}
 	 */
-	getIsland(componentName) {
-		return this.#islands.get(componentName);
+	getIsland(id) {
+		return this.#islands.get(id);
 	}
 
 	/**

@@ -14,11 +14,13 @@
 import * as esbuild from "esbuild";
 import { messages } from "../messages/index.js";
 import { createTempPath, getModule } from "../utils/cache.js";
+import { islandTaggingPlugin } from "./esbuild/plugin-island-tagging.js";
 
 /**
  * Compile JSX/TSX to JavaScript and import the module
  *
  * Also extracts any imported CSS files for injection.
+ * Uses the island-tagging plugin to inject component IDs.
  *
  * @param {string} sourcePath - Path to JSX/TSX file
  * @returns {Promise<{ module: any, cssFiles: esbuild.OutputFile[] }>}
@@ -41,6 +43,7 @@ export async function compileJSX(sourcePath) {
 		loader: {
 			".css": "css", // Extract CSS into separate files for injection
 		},
+		plugins: [islandTaggingPlugin], // Inject island IDs during import
 	});
 
 	// Separate JS and CSS output files

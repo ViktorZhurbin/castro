@@ -77,25 +77,27 @@ class IslandWrapper {
 				return;
 			}
 
-			const componentName = vnode.type.name;
+			// Check for the injected island ID (set by the tagging plugin in compile-jsx.js)
+			// ID format: "src/islands/Counter.tsx"
+			// @ts-expect-error: islandId is a custom property added by Castro
+			const islandId = vnode.type.islandId;
 
-			if (islands.isIsland(componentName)) {
+			if (islandId && islands.isIsland(islandId)) {
 				// Capture the original component before we replace it
 				const OriginalComponent = vnode.type;
 
 				// Replace the component type with a wrapper HOC
 				// This wrapper will be called by Preact when rendering this VNode
 				vnode.type = (props) => {
-					const island = islands.getIsland(componentName);
+					const island = islands.getIsland(islandId);
 
 					if (!island) {
-						throw new Error(
-							messages.errors.islandNotFoundRegistry(componentName),
-						);
+						throw new Error(messages.errors.islandNotFoundRegistry(islandId));
 					}
 
 					// Track this island's usage for CSS manifest lookup
-					usedIslands.add(componentName);
+					// Store the ID so we can look up CSS in the manifest
+					usedIslands.add(islandId);
 
 					// Extract directives and clean props
 					const { directive, cleanProps } = this.#processProps(props);
@@ -114,12 +116,12 @@ class IslandWrapper {
 
 						// Log the error for developer visibility, but don't crash the build
 						console.error(
-							messages.errors.islandRenderFailed(componentName, err.message),
+							messages.errors.islandRenderFailed(islandId, err.message),
 						);
 
 						// Render the compiled error fallback component
 						return h(this.#ErrorComponent, {
-							componentName,
+							islandId,
 							error: err,
 						});
 					} finally {
