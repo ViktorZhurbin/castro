@@ -52,7 +52,3 @@ export type LayoutComponent = (props: {
 }) => VNode;
 
 export type LayoutsMap = Map<string, LayoutComponent>;
-
-export type CastroConfig = {
-	plugins?: CastroPlugin[];
-};

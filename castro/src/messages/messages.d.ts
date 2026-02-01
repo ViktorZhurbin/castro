@@ -45,21 +45,13 @@ export interface Messages {
 		islandNoExport: (file: string) => string;
 		pageBuildFailed: (file: string, err: string) => string;
 		jsxNoExport: (file: string) => string;
-		configLoadFailed: (err: string) => string;
 		invalidMeta: (file: string, issues: string[]) => string;
 		islandDefaultExportMissing: (fileName: string) => string;
 		islandNotFoundRegistry: (name: string) => string;
 		islandRenderFailed: (name: string, err: string) => string;
 		multipleDirectives: (directives: string) => string;
 		noLayoutFiles: (dir: string) => string;
-		configAccessFailed: (path: string) => string;
 		cacheWriteFailed: (path: string, err: string) => string;
-	};
-
-	// Configuration messages
-	config: {
-		changed: string;
-		restarting: string;
 	};
 
 	// CLI command messages

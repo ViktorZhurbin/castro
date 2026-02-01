@@ -23,7 +23,6 @@ import { buildAll } from "../build/builder.js";
 import { buildJSXPage } from "../build/page-jsx.js";
 import { buildMarkdownPage } from "../build/page-markdown.js";
 import {
-	CONFIG_FILE,
 	ISLANDS_DIR,
 	LAYOUTS_DIR,
 	OUTPUT_DIR,
@@ -85,20 +84,6 @@ export async function startDevServer() {
 		console.error(messages.devServer.serverError(err.message));
 		process.exit(1);
 	});
-
-	// Watch config file - restart on change
-	(async () => {
-		try {
-			const watcher = watch(CONFIG_FILE);
-			for await (const _event of watcher) {
-				console.info(styleText("yellow", messages.config.changed));
-				server.server?.close();
-				process.exit(0);
-			}
-		} catch {
-			// Config file doesn't exist, that's fine
-		}
-	})();
 
 	// Watch pages directory
 	(async () => {

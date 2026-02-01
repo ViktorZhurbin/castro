@@ -22,7 +22,6 @@ Castro is a satirical educational Static Site Generator that teaches island arch
 ### Communist Wrapper (Satire Layer)
 - CLI with themed output ("Consulting Central Committee...")
 - Error messages from "The Ministry of Errors"
-- Config file: `manifesto.js`
 - Hydration directives: `no:pasaran`, `lenin:awake`, `comrade:visible`
 - Marketing copy with communist puns
 

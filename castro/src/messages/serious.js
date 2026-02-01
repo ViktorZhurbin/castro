@@ -71,12 +71,6 @@ export const serious = {
 			`❌ JSX page ${fileName} must export a default function.\n` +
 			`   Pages require a default export.`,
 
-		// Config errors
-		configLoadFailed: (errorMessage) =>
-			`❌ Failed to load configuration\n\n` +
-			`   Error: ${errorMessage}\n\n` +
-			`   Check manifesto.js for syntax errors.`,
-
 		invalidMeta: (fileName, issues) =>
 			`❌ The page 'meta' is incomplete.\n\n` +
 			`   Page: ${fileName}\n` +
@@ -97,15 +91,8 @@ export const serious = {
 			`❌ Multiple directives on same component: ${directives}. Use only one.`,
 		noLayoutFiles: (dir) =>
 			`❌ No layout files found in ${dir}\nCreate at least default.jsx`,
-		configAccessFailed: (path) => `❌ Error loading configuration at ${path}`,
 		cacheWriteFailed: (path, err) =>
 			`❌ Failed to write cache file: ${path}\n${err}`,
-	},
-
-	// Config
-	config: {
-		changed: "\n⚙️  Configuration changed. Restarting...",
-		restarting: "Restarting...",
 	},
 
 	// Commands

@@ -22,6 +22,3 @@ export const PAGES_DIR = "pages";
 
 /** Island components directory */
 export const ISLANDS_DIR = "islands";
-
-/** User config file name */
-export const CONFIG_FILE = "manifesto.js";

@@ -39,7 +39,6 @@ npm install @vktrz/castro preact
 **Project structure:**
 ```
 my-site/
-├── manifesto.js       # Optional config
 ├── pages/             # Your content (.md, .jsx, .tsx)
 │   └── index.md
 ├── layouts/           # Page layouts (.jsx, .tsx)
