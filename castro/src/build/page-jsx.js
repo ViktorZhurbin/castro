@@ -56,7 +56,6 @@ export async function buildJSXPage(sourceFileName, options = {}) {
 		// Pass the page component function so it can be called with the hook active
 		await renderPageVNode({
 			createContentVNode: pageModule.default,
-			sourceFilePath,
 			outputFilePath,
 			sourceFileName,
 			meta: validatedMeta,

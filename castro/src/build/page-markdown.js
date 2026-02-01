@@ -54,7 +54,6 @@ export async function buildMarkdownPage(sourceFileName, options = {}) {
 				h("div", {
 					dangerouslySetInnerHTML: { __html: contentHtml },
 				}),
-			sourceFilePath,
 			outputFilePath,
 			sourceFileName,
 			meta: validatedMeta,

@@ -8,7 +8,6 @@
 import { renderToString } from "preact-render-to-string";
 import { islandWrapper } from "../islands/wrapper-jsx.js";
 import { layouts } from "../layouts/registry.js";
-import { resolveLayout } from "../layouts/resolver.js";
 import { messages } from "../messages/index.js";
 import { writeHtmlPage } from "./page-writer.js";
 
@@ -22,7 +21,6 @@ import { writeHtmlPage } from "./page-writer.js";
  *
  * @param {{
  *   createContentVNode: () => VNode,
- *   sourceFilePath: string,
  *   outputFilePath: string,
  *   sourceFileName: string,
  *   meta: PageMeta,
@@ -32,7 +30,6 @@ import { writeHtmlPage } from "./page-writer.js";
 export async function renderPageVNode({
 	// Passing the factory function ensures the hook is active exactly when the VNodes are created
 	createContentVNode,
-	sourceFilePath,
 	outputFilePath,
 	sourceFileName,
 	meta,
@@ -55,10 +52,17 @@ export async function renderPageVNode({
 		if (meta.layout === false || meta.layout === "none") {
 			vnodeToRender = contentVNode;
 		} else {
-			// Resolve and apply layout
-			const layoutName = await resolveLayout(sourceFilePath, meta);
+			// Resolve layout from frontmatter/meta
+			// We prioritize explicit configuration over magic.
+			// 1. If meta.layout is set to a string, use it.
+			// 2. Otherwise, fall back to "default".
+			const layoutName =
+				typeof meta.layout === "string" ? meta.layout : "default";
+
+			// Get the layout component from the registry
 			const layoutFn = layouts.getAll().get(layoutName);
 
+			// Validate that the requested layout actually exists
 			if (!layoutFn) {
 				throw new Error(messages.errors.layoutNotFound(layoutName));
 			}
