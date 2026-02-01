@@ -37,21 +37,20 @@ class IslandWrapper {
 	#hookInstalled = false;
 	/** Track whether we're rendering static HTML (prevents infinite recursion) */
 	#renderingStatic = false;
-	/** @type {Set<string> | null} Set to collect used island CSS paths during render */
-	#trackedCss = null;
 	/** @type {any} Cached compiled error fallback component */
 	#ErrorComponent = null;
 
 	/**
 	 * Install the island detection hook
-	 *
-	 * @param {Set<string>} [trackedCss] - Set to collect used island CSS paths
+	 * @returns {Promise<Set<string>>}
 	 */
-	async install(trackedCss) {
+	async install() {
+		/** @type {Set<string>} */
+		const usedIslands = new Set();
+
 		// Prevent double-installation
-		if (this.#hookInstalled) return;
+		if (this.#hookInstalled) return usedIslands;
 		this.#hookInstalled = true;
-		this.#trackedCss = trackedCss || null;
 
 		// Compile the error fallback component on first use
 		if (!this.#ErrorComponent) {
@@ -95,14 +94,11 @@ class IslandWrapper {
 						);
 					}
 
-					// Track CSS for this island into the provided context
-					if (this.#trackedCss && island.publicCssPath) {
-						this.#trackedCss.add(island.publicCssPath);
-					}
+					// Track this island's usage for CSS manifest lookup
+					usedIslands.add(componentName);
 
 					// Extract directives and clean props
-					const directive = this.#extractDirective(props);
-					const cleanProps = this.#stripDirectives(props);
+					const { directive, cleanProps } = this.#processProps(props);
 
 					// Render the original component to static HTML
 					/** @type {string} */
@@ -150,6 +146,8 @@ class IslandWrapper {
 			// Chain the previous hook if it existed
 			if (this.#originalHook) this.#originalHook(vnode);
 		};
+
+		return usedIslands;
 	}
 
 	/**
@@ -161,7 +159,6 @@ class IslandWrapper {
 	uninstall() {
 		if (!this.#hookInstalled) return;
 		this.#hookInstalled = false;
-		this.#trackedCss = null;
 		options.vnode = this.#originalHook;
 	}
 
@@ -169,14 +166,10 @@ class IslandWrapper {
 	 * Extract and validate directive from props
 	 *
 	 * @param {Record<string, any> | undefined} props
-	 * @returns {Directive}
+	 * @returns {{ directive: Directive, cleanProps: Record<string, any> }}
 	 */
-	#extractDirective(props) {
-		if (!props) return IslandWrapper.DEFAULT_DIRECTIVE;
-
-		const foundDirectives = IslandWrapper.DIRECTIVES.filter(
-			(d) => props[d] !== undefined,
-		);
+	#processProps(props = {}) {
+		const foundDirectives = IslandWrapper.DIRECTIVES.filter((d) => d in props);
 
 		if (foundDirectives.length > 1) {
 			throw new Error(
@@ -184,25 +177,16 @@ class IslandWrapper {
 			);
 		}
 
-		return foundDirectives[0] || IslandWrapper.DEFAULT_DIRECTIVE;
-	}
-
-	/**
-	 * Remove directive props before passing to component
-	 *
-	 * Directives are metadata for Castro, not component props.
-	 *
-	 * @param {Record<string, any> | undefined} props
-	 * @returns {Record<string, any>}
-	 */
-	#stripDirectives(props) {
-		if (!props) return {};
-
-		const clean = { ...props };
-		for (const directive of IslandWrapper.DIRECTIVES) {
-			delete clean[directive];
+		// 2. Create clean props (shallow copy) and remove directive
+		const cleanProps = { ...props };
+		if (foundDirectives.length > 0) {
+			delete cleanProps[foundDirectives[0]];
 		}
-		return clean;
+
+		return {
+			cleanProps,
+			directive: foundDirectives[0] ?? IslandWrapper.DEFAULT_DIRECTIVE,
+		};
 	}
 }
 

@@ -23,6 +23,8 @@ import { compileIsland } from "./compiler.js";
 class IslandsRegistry {
 	/** @type {IslandsMap} */
 	#islands = new Map();
+	/** @type {Map<string, string>} CSS content for each island (name -> CSS string) */
+	#cssManifest = new Map();
 
 	/**
 	 * Load (or reload) all islands from disk
@@ -30,8 +32,9 @@ class IslandsRegistry {
 	 * @returns {Promise<void>}
 	 */
 	async load({ islandsDir, outputDir }) {
-		// Clear existing islands (for reload support)
+		// Clear existing islands and manifest (for reload support)
 		this.#islands.clear();
+		this.#cssManifest.clear();
 
 		try {
 			// Check if islands directory exists
@@ -101,6 +104,13 @@ class IslandsRegistry {
 					}
 
 					this.#islands.set(component.name, component);
+
+					// Store CSS content in manifest for later injection
+					// Even if empty, we track it to avoid repeated lookups
+					if (component.cssContent) {
+						this.#cssManifest.set(component.name, component.cssContent);
+					}
+
 					compiledIslands.push({ sourcePath });
 				} catch (e) {
 					const err = /** @type {NodeJS.ErrnoException} */ (e);
@@ -147,6 +157,15 @@ class IslandsRegistry {
 	 */
 	getIsland(componentName) {
 		return this.#islands.get(componentName);
+	}
+
+	/**
+	 * Get the CSS manifest mapping island names to CSS content
+	 *
+	 * @returns {Map<string, string>} Island name -> CSS content
+	 */
+	getCssManifest() {
+		return this.#cssManifest;
 	}
 }
 

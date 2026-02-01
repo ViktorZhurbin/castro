@@ -24,7 +24,7 @@ import { writeHtmlPage } from "./page-writer.js";
  *   outputFilePath: string,
  *   sourceFileName: string,
  *   meta: PageMeta,
- *   pageCssAssets?: Asset[]
+ *   pageCssAssets?: Asset[],
  * }} params
  */
 export async function renderPageVNode({
@@ -35,12 +35,11 @@ export async function renderPageVNode({
 	meta,
 	pageCssAssets = [],
 }) {
-	// Track island CSS used during this specific render
-	const usedIslandCss = new Set();
-
 	// Install hook to intercept islands during VNode creation
 	// Hook remains active for both page content and layout rendering
-	await islandWrapper.install(usedIslandCss);
+	const usedIslands = await islandWrapper.install();
+
+	const pageAndLayoutCssAssets = [...pageCssAssets];
 
 	try {
 		// Create content VNode with hook active (wraps any islands in content)
@@ -53,9 +52,6 @@ export async function renderPageVNode({
 			vnodeToRender = contentVNode;
 		} else {
 			// Resolve layout from frontmatter/meta
-			// We prioritize explicit configuration over magic.
-			// 1. If meta.layout is set to a string, use it.
-			// 2. Otherwise, fall back to "default".
 			const layoutName =
 				typeof meta.layout === "string" ? meta.layout : "default";
 
@@ -72,7 +68,7 @@ export async function renderPageVNode({
 
 			// Get layout CSS assets
 			const layoutCssAssets = layouts.getCssAssets(layoutName);
-			pageCssAssets = [...layoutCssAssets, ...pageCssAssets];
+			pageAndLayoutCssAssets.push(...layoutCssAssets);
 
 			// Apply layout
 			const title = meta.title || sourceFileName.replace(/\.(md|[jt]sx)$/, "");
@@ -88,15 +84,11 @@ export async function renderPageVNode({
 		// Render final page
 		const html = renderToString(vnodeToRender);
 
-		// Collect island CSS from tracking set
-		const islandCssAssets = Array.from(usedIslandCss).map((href) => ({
-			tag: "link",
-			attrs: { rel: "stylesheet", href },
-		}));
-
 		// Write HTML with all CSS assets
+		// Pass tracking data so the writer can build the final CSS injection
 		await writeHtmlPage(html, outputFilePath, {
-			pageCssAssets: [...pageCssAssets, ...islandCssAssets],
+			usedIslands,
+			pageCssAssets: pageAndLayoutCssAssets,
 		});
 	} finally {
 		// Always uninstall hook after page is complete

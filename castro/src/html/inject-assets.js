@@ -15,6 +15,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { defaultPlugins } from "../islands/plugins.js";
+import { islands } from "../islands/registry.js";
 
 /**
  * @import { Asset, ImportsMap } from '../types.d.ts'
@@ -74,23 +75,53 @@ export async function collectAssets() {
 /**
  * Inject assets and import maps into HTML
  *
+ * Combines page CSS, island CSS, and static assets into the final HTML.
+ *
  * @param {string} html - HTML to inject into
- * @param {{ assets?: Asset[], mergedImportMap?: ImportsMap }} options
+ * @param {{
+ *   assets?: Asset[],
+ *   mergedImportMap?: ImportsMap,
+ *   usedIslands?: Set<string>,
+ * }} options
  * @returns {string} HTML with injected assets
  */
-export function injectAssets(html, { assets = [], mergedImportMap = {} }) {
+export function injectAssets(
+	html,
+	{ assets = [], mergedImportMap = {}, usedIslands },
+) {
 	let output = html;
+
+	const cssManifest = islands.getCssManifest();
+
+	// Build combined CSS: page CSS + used island CSS
+	const cssParts = [];
+
+	// 2. Add island CSS based on what was used
+	if (usedIslands?.size && cssManifest.size) {
+		for (const islandName of usedIslands) {
+			const css = cssManifest.get(islandName);
+			if (css) {
+				cssParts.push(css);
+			}
+		}
+	}
+
+	// Create style tag only if there's CSS to inject
+	const styleTag =
+		cssParts.length > 0 ? `<style>${cssParts.join("\n")}</style>` : "";
 
 	// Generate HTML strings
 	const importMapHtml = generateImportMapHtml(mergedImportMap);
 	const assetsHtml = generateAssetsHtml(assets);
 
 	// Inject into HTML
-	if (importMapHtml || assetsHtml) {
+	if (importMapHtml || assetsHtml || styleTag) {
 		const headCloseIndex = output.indexOf("</head>");
 		const bodyCloseIndex = output.indexOf("</body>");
 
-		const injectionHtml = [importMapHtml, assetsHtml].filter(Boolean).join("");
+		const injectionHtml = [styleTag, importMapHtml, assetsHtml]
+			.filter(Boolean)
+			.join("");
 
 		if (headCloseIndex !== -1) {
 			output =

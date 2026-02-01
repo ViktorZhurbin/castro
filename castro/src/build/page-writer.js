@@ -26,10 +26,13 @@ import { defaultPlugins } from "../islands/plugins.js";
  *
  * @param {string} html - HTML content to process
  * @param {string} outputPath - Absolute path to output file
- * @param {{ pageCssAssets?: Asset[] }} [options] - Optional page CSS assets
+ * @param {{
+ *   pageCssAssets?: Asset[],
+ *   usedIslands?: Set<string>,
+ * }} [options]
  */
 export async function writeHtmlPage(html, outputPath, options = {}) {
-	const { pageCssAssets = [] } = options;
+	const { pageCssAssets = [], usedIslands = new Set() } = options;
 
 	// 1. Collect static assets from plugins (scripts, runtime CSS)
 	const { assets: staticAssets, mergedImportMap } = await collectAssets();
@@ -55,6 +58,7 @@ export async function writeHtmlPage(html, outputPath, options = {}) {
 	const finalHtml = injectAssets(processedHtml, {
 		assets: allAssets,
 		mergedImportMap,
+		usedIslands,
 	});
 
 	// 4. Write to disk

@@ -34,6 +34,7 @@ export type IslandComponent = {
 	sourcePath: string;
 	publicJsPath: string;
 	publicCssPath?: string;
+	cssContent?: string;
 	ssrCode?: string;
 };
 

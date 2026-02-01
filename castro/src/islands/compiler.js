@@ -78,7 +78,9 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
 		);
 
 		let publicCssPath;
+		let cssContent = "";
 		if (cssFile) {
+			cssContent = cssFile?.text;
 			publicCssPath = `${publicDir}/${basename(cssFile.path)}`.replaceAll(
 				"\\",
 				"/",
@@ -99,6 +101,7 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
 			sourcePath,
 			publicJsPath,
 			publicCssPath,
+			cssContent,
 			name: componentName,
 		};
 	} catch (err) {
