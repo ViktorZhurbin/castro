@@ -56,7 +56,7 @@ export async function renderPageVNode({
 				typeof meta.layout === "string" ? meta.layout : "default";
 
 			// Get the layout component from the registry
-			const layoutFn = layouts.getAll().get(layoutName);
+			const layoutFn = layouts.getLayout(layoutName);
 
 			// Validate that the requested layout actually exists
 			if (!layoutFn) {

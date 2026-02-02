@@ -44,7 +44,7 @@ class LayoutsRegistry {
 	 * @param {string} name - Layout name (filename without extension)
 	 * @returns {LayoutComponent | undefined}
 	 */
-	get(name) {
+	getLayout(name) {
 		return this.#layouts.get(name);
 	}
 
