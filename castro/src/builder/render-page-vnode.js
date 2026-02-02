@@ -5,6 +5,7 @@
  * Handles island wrapping, layout application, CSS collection, and writing.
  */
 
+import { basename } from "node:path";
 import { renderToString } from "preact-render-to-string";
 import { islandWrapper } from "../islands/wrapper-jsx.js";
 import { layouts } from "../layouts/registry.js";
@@ -22,7 +23,7 @@ import { writeHtmlPage } from "./page-writer.js";
  * @param {{
  *   createContentVNode: () => VNode,
  *   outputFilePath: string,
- *   sourceFileName: string,
+ *   sourceFilePath: string,
  *   meta: PageMeta,
  *   pageCssAssets?: Asset[],
  * }} params
@@ -31,7 +32,7 @@ export async function renderPageVNode({
 	// Passing the factory function ensures the hook is active exactly when the VNodes are created
 	createContentVNode,
 	outputFilePath,
-	sourceFileName,
+	sourceFilePath,
 	meta,
 	pageCssAssets = [],
 }) {
@@ -71,7 +72,8 @@ export async function renderPageVNode({
 			pageAndLayoutCssAssets.push(...layoutCssAssets);
 
 			// Apply layout
-			const title = meta.title || sourceFileName.replace(/\.(md|[jt]sx)$/, "");
+			const title =
+				meta.title || basename(sourceFilePath).replace(/\.(md|[jt]sx)$/, "");
 
 			// Layout VNode created with hook active (wraps any islands in layout)
 			vnodeToRender = layoutFn({

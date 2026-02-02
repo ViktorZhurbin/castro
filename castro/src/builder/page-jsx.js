@@ -21,45 +21,40 @@ import { dirname } from "node:path";
 import { messages } from "../messages/index.js";
 import { validateMeta } from "../utils/validateMeta.js";
 import { compileJSX } from "./compile-jsx.js";
-import { buildPageShell } from "./page-shell.js";
 import { renderPageVNode } from "./render-page-vnode.js";
 import { writeCSSFiles } from "./write-css.js";
 
 /**
  * Build a single JSX page to HTML
  *
- * @param {string} sourceFileName - Relative path from pages/
- * @param {{ logOnSuccess?: boolean, logOnStart?: boolean }} [options]
+ * @param {string} sourceFilePath
+ * @param {string} outputFilePath
  */
-export async function buildJSXPage(sourceFileName, options = {}) {
-	await buildPageShell(sourceFileName, /\.[jt]sx$/, options, async (ctx) => {
-		const { sourceFilePath, outputFilePath } = ctx;
+export async function buildJSXPage(sourceFilePath, outputFilePath) {
+	// Compile and import the JSX page (also extracts CSS)
+	const { module: pageModule, cssFiles } = await compileJSX(sourceFilePath);
 
-		// Compile and import the JSX page (also extracts CSS)
-		const { module: pageModule, cssFiles } = await compileJSX(sourceFilePath);
+	if (!pageModule.default || typeof pageModule.default !== "function") {
+		throw new Error(messages.errors.jsxNoExport(sourceFilePath));
+	}
 
-		if (!pageModule.default || typeof pageModule.default !== "function") {
-			throw new Error(messages.errors.jsxNoExport(sourceFileName));
-		}
+	// Write CSS files to output directory and collect assets
+	const outputDir = dirname(outputFilePath);
+	const pageCssAssets = await writeCSSFiles(cssFiles, outputDir);
 
-		// Write CSS files to output directory and collect assets
-		const outputDir = dirname(outputFilePath);
-		const pageCssAssets = await writeCSSFiles(cssFiles, outputDir);
+	// Extract metadata (includes layout preference)
+	const meta = pageModule.meta || {};
 
-		// Extract metadata (includes layout preference)
-		const meta = pageModule.meta || {};
+	// Validate metadata against schema
+	const validatedMeta = validateMeta(meta, sourceFilePath);
 
-		// Validate metadata against schema
-		const validatedMeta = validateMeta(meta, sourceFileName);
-
-		// Use shared rendering pipeline
-		// Pass the page component function so it can be called with the hook active
-		await renderPageVNode({
-			createContentVNode: pageModule.default,
-			outputFilePath,
-			sourceFileName,
-			meta: validatedMeta,
-			pageCssAssets,
-		});
+	// Use shared rendering pipeline
+	// Pass the page component function so it can be called with the hook active
+	await renderPageVNode({
+		createContentVNode: pageModule.default,
+		outputFilePath,
+		sourceFilePath,
+		meta: validatedMeta,
+		pageCssAssets,
 	});
 }

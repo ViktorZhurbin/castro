@@ -44,7 +44,7 @@ export interface Messages {
 		noLayoutsDir: (dir: string) => string;
 		islandNoExport: (file: string) => string;
 		pageBuildFailed: (file: string, err: string) => string;
-		jsxNoExport: (file: string) => string;
+		jsxNoExport: (filePath: string) => string;
 		invalidMeta: (file: string, issues: string[]) => string;
 		islandDefaultExportMissing: (fileName: string) => string;
 		islandNotFoundRegistry: (name: string) => string;

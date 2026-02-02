@@ -12,13 +12,13 @@
 
 import { cp, glob, mkdir, rm } from "node:fs/promises";
 import { join, relative } from "node:path";
+import { styleText } from "node:util";
 import { OUTPUT_DIR, PAGES_DIR, PUBLIC_DIR } from "../constants.js";
 import { defaultPlugins } from "../islands/plugins.js";
 import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
 import { formatMs } from "../utils/format.js";
-import { buildJSXPage } from "./page-jsx.js";
-import { buildMarkdownPage } from "./page-markdown.js";
+import { buildPage } from "./page-base.js";
 
 /**
  * Build all pages to HTML
@@ -70,21 +70,21 @@ export async function buildAll(options = {}) {
 		await Array.fromAsync(
 			glob(join(PAGES_DIR, "**/*.{md,jsx,tsx}")),
 			(filePath) => {
-				const relativePath = relative(PAGES_DIR, filePath);
-				const htmlPath = relativePath.replace(/\.(md|[jt]sx)$/, ".html");
+				const sourcePath = relative(PAGES_DIR, filePath);
+				const outputPath = sourcePath.replace(/\.(md|[jt]sx)$/, ".html");
 
 				// Detect route conflicts (two files producing same output)
-				if (outputMap.has(htmlPath)) {
-					const existingFile = outputMap.get(htmlPath);
+				if (outputMap.has(outputPath)) {
+					const existingFile = outputMap.get(outputPath);
 					const errorMessage = messages.errors.routeConflict(
 						`${PAGES_DIR}/${existingFile}`,
-						`${PAGES_DIR}/${relativePath}`,
+						`${PAGES_DIR}/${sourcePath}`,
 					);
 
 					throw new Error(errorMessage);
 				}
 
-				outputMap.set(htmlPath, relativePath);
+				outputMap.set(outputPath, sourcePath);
 			},
 		);
 	} catch (e) {
@@ -96,12 +96,17 @@ export async function buildAll(options = {}) {
 		throw err;
 	}
 
-	for (const relativePath of outputMap.values()) {
-		if (relativePath.endsWith(".md")) {
-			await buildMarkdownPage(relativePath, { logOnStart: verbose });
-		} else {
-			await buildJSXPage(relativePath, { logOnStart: verbose });
+	for (const [outputPath, sourcePath] of outputMap.entries()) {
+		if (verbose) {
+			console.info(
+				messages.build.writingFile(
+					styleText("cyan", sourcePath),
+					styleText("gray", outputPath),
+				),
+			);
 		}
+
+		await buildPage(sourcePath);
 	}
 
 	if (outputMap.size === 0) {

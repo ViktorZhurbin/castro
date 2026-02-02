@@ -24,39 +24,34 @@ import matter from "gray-matter";
 import { marked } from "marked";
 import { h } from "preact";
 import { validateMeta } from "../utils/validateMeta.js";
-import { buildPageShell } from "./page-shell.js";
 import { renderPageVNode } from "./render-page-vnode.js";
 
 /**
  * Build a single markdown file to HTML
  *
- * @param {string} sourceFileName - Relative path from pages/
- * @param {{ logOnSuccess?: boolean, logOnStart?: boolean }} [options]
+ * @param {string} sourceFilePath
+ * @param {string} outputFilePath
  */
-export async function buildMarkdownPage(sourceFileName, options = {}) {
-	await buildPageShell(sourceFileName, ".md", options, async (ctx) => {
-		const { sourceFilePath, outputFilePath } = ctx;
+export async function buildMarkdownPage(sourceFilePath, outputFilePath) {
+	// Read and parse markdown with frontmatter
+	const sourceFileContent = await readFile(sourceFilePath, "utf-8");
+	const { data: meta, content: markdown } = matter(sourceFileContent);
 
-		// Read and parse markdown with frontmatter
-		const sourceFileContent = await readFile(sourceFilePath, "utf-8");
-		const { data: meta, content: markdown } = matter(sourceFileContent);
+	// Type assertion: we know meta is valid PageMeta after validation
+	const validatedMeta = validateMeta(meta, sourceFilePath);
 
-		// Type assertion: we know meta is valid PageMeta after validation
-		const validatedMeta = validateMeta(meta, sourceFileName);
+	// Convert markdown to HTML
+	const contentHtml = await marked(markdown);
 
-		// Convert markdown to HTML
-		const contentHtml = await marked(markdown);
-
-		// Use shared rendering pipeline
-		// Pass a function that creates the VNode wrapper for markdown content
-		await renderPageVNode({
-			createContentVNode: () =>
-				h("div", {
-					dangerouslySetInnerHTML: { __html: contentHtml },
-				}),
-			outputFilePath,
-			sourceFileName,
-			meta: validatedMeta,
-		});
+	// Use shared rendering pipeline
+	// Pass a function that creates the VNode wrapper for markdown content
+	await renderPageVNode({
+		createContentVNode: () =>
+			h("div", {
+				dangerouslySetInnerHTML: { __html: contentHtml },
+			}),
+		outputFilePath,
+		sourceFilePath,
+		meta: validatedMeta,
 	});
 }

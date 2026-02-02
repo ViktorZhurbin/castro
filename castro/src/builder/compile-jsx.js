@@ -28,7 +28,7 @@ import { islandTaggingPlugin } from "./esbuild/plugin-island-tagging.js";
 export async function compileJSX(sourcePath) {
 	const outputPath = createTempPath(sourcePath);
 
-	// Build configuration for pages/layouts (Node.js SSR at build time)
+	// Build configuration (Node.js SSR at build time)
 	const result = await esbuild.build({
 		entryPoints: [sourcePath],
 		write: false, // Keep output in memory for immediate execution

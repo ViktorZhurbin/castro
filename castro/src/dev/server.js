@@ -20,8 +20,7 @@ import { styleText } from "node:util";
 import polka from "polka";
 import sirv from "sirv";
 import { buildAll } from "../builder/builder.js";
-import { buildJSXPage } from "../builder/page-jsx.js";
-import { buildMarkdownPage } from "../builder/page-markdown.js";
+import { buildPage } from "../builder/page-base.js";
 import {
 	ISLANDS_DIR,
 	LAYOUTS_DIR,
@@ -90,21 +89,12 @@ export async function startDevServer() {
 		const watcher = watch(PAGES_DIR, { recursive: true });
 
 		for await (const event of watcher) {
-			if (event.filename) {
-				const filePath = join(PAGES_DIR, event.filename);
-				logFileChanged(filePath);
-			}
+			if (!event.filename) continue;
 
-			// Rebuild specific file type
-			if (event.filename?.endsWith(".md")) {
-				await buildMarkdownPage(event.filename, { logOnSuccess: true });
-			} else if (event.filename?.match(/\.[jt]sx$/)) {
-				await buildJSXPage(event.filename, { logOnSuccess: true });
-			} else if (event.filename?.endsWith("castro.js")) {
-				// Full rebuild when castro.js changes
-				await buildAll({ verbose: true });
-			}
+			const filePath = join(PAGES_DIR, event.filename);
 
+			logFileChanged(filePath);
+			await buildPage(event.filename);
 			notifyReload();
 		}
 	})();

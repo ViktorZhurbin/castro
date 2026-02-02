@@ -68,8 +68,8 @@ export const satirical = {
 			`   Page: ${fileName}\n` +
 			`   Error: ${errorMessage}`,
 
-		jsxNoExport: (fileName) =>
-			`❌ JSX page ${fileName} must export a default function.\n` +
+		jsxNoExport: (filePath) =>
+			`❌ ${filePath} must export a default function.\n` +
 			`   Pages require a default export.`,
 
 		invalidMeta: (fileName, issues) =>
