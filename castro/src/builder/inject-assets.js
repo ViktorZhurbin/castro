@@ -18,7 +18,7 @@ import { defaultPlugins } from "../islands/plugins.js";
 import { islands } from "../islands/registry.js";
 
 /**
- * @import { Asset, ImportsMap } from '../types.d.ts'
+ * @import { Asset, ImportsMap } from '../types.js'
  */
 
 /**  @type {string | null} */

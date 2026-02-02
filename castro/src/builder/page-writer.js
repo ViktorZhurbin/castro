@@ -14,8 +14,8 @@
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
-import { collectAssets, injectAssets } from "../html/inject-assets.js";
 import { defaultPlugins } from "../islands/plugins.js";
+import { collectAssets, injectAssets } from "./inject-assets.js";
 
 /**
  * @import { Asset } from "../types.d.ts";
