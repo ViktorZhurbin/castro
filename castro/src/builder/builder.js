@@ -62,12 +62,9 @@ export async function buildAll(options = {}) {
 	// We scan all .md, .jsx, and .tsx files in pages/ and check if any
 	// would produce the same .html output path (e.g., foo.md and foo.jsx
 	// both want to become foo.html). This prevents silent overwrites.
-	/** @type {string[]} */
-	const mdFilePaths = [];
-	/** @type {string[]} */
-	const jsxFilePaths = [];
 
-	const outputMap = new Map(); // htmlPath → sourceFile (for conflict detection)
+	/** @type {Map<string, string>} */
+	const outputMap = new Map(); // htmlPath → sourceFile
 
 	try {
 		await Array.fromAsync(
@@ -88,13 +85,6 @@ export async function buildAll(options = {}) {
 				}
 
 				outputMap.set(htmlPath, relativePath);
-
-				// Categorize by type
-				if (relativePath.endsWith(".md")) {
-					mdFilePaths.push(relativePath);
-				} else {
-					jsxFilePaths.push(relativePath);
-				}
 			},
 		);
 	} catch (e) {
@@ -106,24 +96,19 @@ export async function buildAll(options = {}) {
 		throw err;
 	}
 
-	// Build all pages
-	let resultsCount = 0;
-
-	for (const relativePath of mdFilePaths) {
-		await buildMarkdownPage(relativePath, { logOnStart: verbose });
-		resultsCount++;
+	for (const relativePath of outputMap.values()) {
+		if (relativePath.endsWith(".md")) {
+			await buildMarkdownPage(relativePath, { logOnStart: verbose });
+		} else {
+			await buildJSXPage(relativePath, { logOnStart: verbose });
+		}
 	}
 
-	for (const relativePath of jsxFilePaths) {
-		await buildJSXPage(relativePath, { logOnStart: verbose });
-		resultsCount++;
-	}
-
-	if (resultsCount === 0) {
+	if (outputMap.size === 0) {
 		console.warn(messages.build.noFiles);
 		return;
 	}
 
 	const buildTime = formatMs(performance.now() - startTime);
-	console.info(messages.build.success(`${resultsCount}`, buildTime));
+	console.info(messages.build.success(`${outputMap.size}`, buildTime));
 }
