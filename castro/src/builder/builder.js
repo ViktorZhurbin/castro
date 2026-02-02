@@ -15,8 +15,8 @@ import { join, relative } from "node:path";
 import { styleText } from "node:util";
 import { OUTPUT_DIR, PAGES_DIR, PUBLIC_DIR } from "../constants.js";
 import { defaultPlugins } from "../islands/plugins.js";
-import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
+import { layouts } from "../registry/layouts.js";
 import { formatMs } from "../utils/format.js";
 import { buildPage } from "./page-base.js";
 
@@ -50,7 +50,7 @@ export async function buildAll(options = {}) {
 	// Run plugin onBuild hooks (for file copying, etc.)
 	for (const plugin of defaultPlugins) {
 		if (plugin.onBuild) {
-			await plugin.onBuild({ outputDir: OUTPUT_DIR, contentDir: PAGES_DIR });
+			await plugin.onBuild();
 		}
 	}
 

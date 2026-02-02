@@ -11,9 +11,9 @@
  * Islands are wrapped during JSX page rendering (page-jsx.js), not in transform hook.
  */
 
-import { ISLANDS_DIR, OUTPUT_DIR } from "../constants.js";
+import { ISLANDS_DIR } from "../constants.js";
+import { islands } from "../registry/islands.js";
 import { PreactConfig } from "./preact-config.js";
-import { islands } from "./registry.js";
 
 /**
  * @import { CastroPlugin } from '../types.d.ts'
@@ -37,8 +37,8 @@ export function preactIslands(options = {}) {
 		/**
 		 * Build hook: discover, compile, and load islands into registry
 		 */
-		async onBuild({ outputDir = OUTPUT_DIR }) {
-			await islands.load({ islandsDir, outputDir });
+		async onBuild() {
+			await islands.load();
 		},
 
 		/**

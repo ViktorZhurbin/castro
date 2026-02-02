@@ -27,7 +27,7 @@ import { messages } from "../messages/index.js";
 import { resolveTempDir } from "../utils/cache.js";
 
 /**
- * @import { LayoutsMap, AssetsMap } from '../types.d.ts'
+ * @import { LayoutsMap, AssetsMap } from '../types.js'
  */
 
 /**

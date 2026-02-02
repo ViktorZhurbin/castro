@@ -15,7 +15,7 @@ import { h, options } from "preact";
 import { renderToString } from "preact-render-to-string";
 import { compileJSX } from "../builder/compile-jsx.js";
 import { messages } from "../messages/index.js";
-import { islands } from "./registry.js";
+import { islands } from "../registry/islands.js";
 
 /**
  * @import { Directive } from '../types.d.ts'

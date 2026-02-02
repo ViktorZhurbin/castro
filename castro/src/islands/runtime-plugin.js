@@ -11,6 +11,7 @@
 
 import { copyFile, mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
+import { OUTPUT_DIR } from "../constants.js";
 
 /**
  * @import { CastroPlugin } from '../types.d.ts'
@@ -33,13 +34,13 @@ export function castroIslandRuntime() {
 			];
 		},
 
-		async onBuild({ outputDir }) {
-			await mkdir(dirname(outputDir), { recursive: true });
+		async onBuild() {
+			await mkdir(dirname(OUTPUT_DIR), { recursive: true });
 
 			// Copy runtime file to dist
 			await copyFile(
 				join(import.meta.dirname, "./hydration.js"),
-				join(outputDir, "castro-island.js"),
+				join(OUTPUT_DIR, "castro-island.js"),
 			);
 		},
 	};

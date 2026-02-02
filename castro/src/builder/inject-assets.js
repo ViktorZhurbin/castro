@@ -15,7 +15,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { defaultPlugins } from "../islands/plugins.js";
-import { islands } from "../islands/registry.js";
+import { islands } from "../registry/islands.js";
 
 /**
  * @import { Asset, ImportsMap } from '../types.js'

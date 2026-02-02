@@ -8,8 +8,8 @@
 import { basename } from "node:path";
 import { renderToString } from "preact-render-to-string";
 import { islandWrapper } from "../islands/wrapper-jsx.js";
-import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
+import { layouts } from "../registry/layouts.js";
 import { writeHtmlPage } from "./page-writer.js";
 
 /**

@@ -23,7 +23,7 @@ export type CastroPlugin = {
 	watchDirs?: string[];
 	getAssets?: () => Asset[];
 	getImportMap?: () => ImportsMap | null;
-	onBuild?: (ctx: { outputDir: string; contentDir: string }) => Promise<void>;
+	onBuild?: () => Promise<void>;
 	transform?: (ctx: {
 		content: string;
 	}) => Promise<{ html: string; assets: Asset[] }>;

@@ -5,10 +5,10 @@
  * Layouts are JSX functions that wrap page content.
  */
 
-import { loadLayouts } from "./loader.js";
+import { loadLayouts } from "./loadLayouts.js";
 
 /**
- * @import { LayoutComponent, Asset, LayoutsMap, AssetsMap } from '../types.d.ts'
+ * @import { LayoutComponent, Asset, LayoutsMap, AssetsMap } from '../types.js'
  */
 
 /**
@@ -23,25 +23,21 @@ class LayoutsRegistry {
 
 	/**
 	 * Load (or reload) all layouts from disk
+	 *
 	 * @returns {Promise<void>}
 	 */
 	async load() {
 		const { layouts, cssAssets } = await loadLayouts();
+
 		this.#layouts = layouts;
 		this.#layoutCssAssets = cssAssets;
 	}
 
 	/**
-	 * Get all layouts
-	 * @returns {LayoutsMap}
-	 */
-	getAll() {
-		return this.#layouts;
-	}
-
-	/**
 	 * Get a specific layout by name
+	 *
 	 * @param {string} name - Layout name (filename without extension)
+	 *
 	 * @returns {LayoutComponent | undefined}
 	 */
 	getLayout(name) {
@@ -50,7 +46,9 @@ class LayoutsRegistry {
 
 	/**
 	 * Get CSS assets for a specific layout
+	 *
 	 * @param {string} name - Layout name (filename without extension)
+	 *
 	 * @returns {Asset[]}
 	 */
 	getCssAssets(name) {

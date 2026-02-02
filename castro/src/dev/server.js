@@ -27,8 +27,8 @@ import {
 	OUTPUT_DIR,
 	PAGES_DIR,
 } from "../constants.js";
-import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
+import { layouts } from "../registry/layouts.js";
 
 const PORT = 3000;
 
