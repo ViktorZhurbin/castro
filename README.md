@@ -187,7 +187,7 @@ You can use it for small websites, personal blogs, etc. For larger projects with
 The code is the documentation. Start reading from:
 
 - `castro/src/cli.js` - Entry point
-- `castro/src/build/builder.js` - Build orchestration
+- `castro/src/builder/builder.js` - Build orchestration
 - `castro/src/islands/` - Island architecture implementation
 - `castro/src/dev/server.js` - Development server
 

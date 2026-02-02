@@ -19,9 +19,9 @@ import { join } from "node:path";
 import { styleText } from "node:util";
 import polka from "polka";
 import sirv from "sirv";
-import { buildAll } from "../build/builder.js";
-import { buildJSXPage } from "../build/page-jsx.js";
-import { buildMarkdownPage } from "../build/page-markdown.js";
+import { buildAll } from "../builder/builder.js";
+import { buildJSXPage } from "../builder/page-jsx.js";
+import { buildMarkdownPage } from "../builder/page-markdown.js";
 import {
 	ISLANDS_DIR,
 	LAYOUTS_DIR,

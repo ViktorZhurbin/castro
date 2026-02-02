@@ -13,7 +13,7 @@
 import { join } from "node:path";
 import { h, options } from "preact";
 import { renderToString } from "preact-render-to-string";
-import { compileJSX } from "../build/compile-jsx.js";
+import { compileJSX } from "../builder/compile-jsx.js";
 import { messages } from "../messages/index.js";
 import { islands } from "./registry.js";
 
