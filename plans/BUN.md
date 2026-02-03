@@ -15,6 +15,7 @@ You still should write to disk, but you should stop viewing it as a "disappointm
 Architectural Verdict: The complexity of avoiding the disk write is higher than the cost of doing it. Embrace the .cache folder. It is not a hack; it is a build artifact.
 2. Dependency Reduction: The "Massive Clean-up"
 This is where the argument for Bun becomes undeniable. With Bun v1.3.8, you can potentially remove 5 major dependencies.
+
 | Current Stack (Node) | Bun Equivalent | Action |
 |---|---|---|
 | esbuild | Bun.build | Remove. Bun's bundler API is now stable enough for this. |
@@ -22,6 +23,7 @@ This is where the argument for Bun becomes undeniable. With Bun v1.3.8, you can 
 | gray-matter | Bun.file().text() + Bun.YAML | Remove. You can split the frontmatter string manually (simple regex) and use the native Bun.YAML.parse() introduced recently. |
 | polka | Bun.serve | Remove. |
 | sirv | Bun.serve (static) | Remove. |
+
 The Dev Server (Bun.serve):
 Your previous blocker was MIME types and static assets. That is solved. You do not need Hono or Elysia for this anymore. Bun.serve combined with Bun.file automatically handles MIME types.
 Here is your entire dev server in Bun:
