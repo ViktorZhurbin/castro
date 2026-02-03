@@ -1,20 +1,18 @@
 /**
- * Shared Page Rendering Pipeline
- *
  * Unified rendering logic for both JSX and Markdown pages.
  * Handles island wrapping, layout application, CSS collection, and writing.
  */
 
 import { basename } from "node:path";
 import { renderToString } from "preact-render-to-string";
-import { islandWrapper } from "../islands/wrapper-jsx.js";
+import { islandWrapper } from "../islands/wrapper.js";
+import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
-import { layouts } from "../registry/layouts.js";
-import { writeHtmlPage } from "./page-writer.js";
+import { writeHtmlPage } from "./write-html-page.js";
 
 /**
  * @import { VNode } from "preact"
- * @import { Asset, PageMeta } from "../types.d.ts"
+ * @import { Asset, PageMeta } from "../types.js"
  */
 
 /**
@@ -24,16 +22,16 @@ import { writeHtmlPage } from "./page-writer.js";
  *   createContentVNode: () => VNode,
  *   outputFilePath: string,
  *   sourceFilePath: string,
- *   meta: PageMeta,
+ *   pageMeta: PageMeta,
  *   pageCssAssets?: Asset[],
  * }} params
  */
-export async function renderPageVNode({
+export async function renderPage({
 	// Passing the factory function ensures the hook is active exactly when the VNodes are created
 	createContentVNode,
 	outputFilePath,
 	sourceFilePath,
-	meta,
+	pageMeta,
 	pageCssAssets = [],
 }) {
 	// Install hook to intercept islands during VNode creation
@@ -49,18 +47,18 @@ export async function renderPageVNode({
 		// Support pages that render full HTML themselves (layout: false)
 		let vnodeToRender;
 
-		if (meta.layout === false || meta.layout === "none") {
+		if (pageMeta.layout === false || pageMeta.layout === "none") {
 			vnodeToRender = contentVNode;
 		} else {
 			// Resolve layout from frontmatter/meta
 			const layoutName =
-				typeof meta.layout === "string" ? meta.layout : "default";
+				typeof pageMeta.layout === "string" ? pageMeta.layout : "default";
 
 			// Get the layout component from the registry
-			const layoutFn = layouts.getLayout(layoutName);
+			const layoutComponent = layouts.getLayout(layoutName);
 
 			// Validate that the requested layout actually exists
-			if (!layoutFn) {
+			if (!layoutComponent) {
 				throw new Error(messages.errors.layoutNotFound(layoutName));
 			}
 
@@ -68,16 +66,17 @@ export async function renderPageVNode({
 			const contentHtml = renderToString(contentVNode);
 
 			// Get layout CSS assets
-			const layoutCssAssets = layouts.getCssAssets(layoutName);
+			const layoutCssAssets = layouts.getCssAssets(layoutName) ?? [];
 			pageAndLayoutCssAssets.push(...layoutCssAssets);
 
 			// Apply layout
 			const title =
-				meta.title || basename(sourceFilePath).replace(/\.(md|[jt]sx)$/, "");
+				pageMeta.title ||
+				basename(sourceFilePath).replace(/\.(md|[jt]sx)$/, "");
 
 			// Layout VNode created with hook active (wraps any islands in layout)
-			vnodeToRender = layoutFn({
-				...meta,
+			vnodeToRender = layoutComponent({
+				...pageMeta,
 				content: contentHtml,
 				title,
 			});

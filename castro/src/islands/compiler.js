@@ -16,7 +16,7 @@ import { styleText } from "node:util";
 import * as esbuild from "esbuild";
 import { messages } from "../messages/index.js";
 import { getModule } from "../utils/cache.js";
-import { PreactConfig } from "./preact-config.js";
+import { FrameworkConfig } from "./framework-config.js";
 
 /**
  * @import { IslandComponent } from "../types.d.ts"
@@ -121,7 +121,7 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
  * @returns {Promise<esbuild.BuildResult>}
  */
 async function compileIslandClient({ sourcePath, outputDir }) {
-	const config = PreactConfig;
+	const config = FrameworkConfig.preact;
 	// Get clean name (e.g. "counter" from "counter.tsx")
 	const componentName = basename(sourcePath, extname(sourcePath));
 
@@ -130,7 +130,7 @@ async function compileIslandClient({ sourcePath, outputDir }) {
 		import Component from './${basename(sourcePath)}';
 
 		export default async (container, props = {}) => {
-			${PreactConfig.hydrateFnString}
+			${config.hydrateFnString}
 		}
 	`.trim();
 
@@ -177,7 +177,7 @@ async function compileIslandClient({ sourcePath, outputDir }) {
  * @returns {Promise<string | undefined>} Compiled code or undefined if compilation failed
  */
 async function compileIslandSSR({ sourcePath }) {
-	const config = PreactConfig;
+	const config = FrameworkConfig.preact;
 	const buildConfig = config.getBuildConfig();
 
 	try {

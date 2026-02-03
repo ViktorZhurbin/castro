@@ -19,16 +19,16 @@ import { join } from "node:path";
 import { styleText } from "node:util";
 import polka from "polka";
 import sirv from "sirv";
-import { buildAll } from "../builder/builder.js";
-import { buildPage } from "../builder/page-base.js";
+import { buildAll } from "../builder/build-all.js";
+import { buildPage } from "../builder/build-page.js";
 import {
 	ISLANDS_DIR,
 	LAYOUTS_DIR,
 	OUTPUT_DIR,
 	PAGES_DIR,
 } from "../constants.js";
+import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
-import { layouts } from "../registry/layouts.js";
 
 const PORT = 3000;
 

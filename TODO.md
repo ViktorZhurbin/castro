@@ -1,30 +1,5 @@
 # Roadmap
 
-## Restructure 
-
-```sh
-src/
-├── cli.js
-├── constants.js
-├── build/                 # Was "builder" - The Build Lifecycle
-│   ├── index.js           # (was builder.js) The orchestrator
-│   ├── pages.js           # MERGED: page-base, page-jsx, page-markdown
-│   ├── renderer.js        # (was render-page-vnode.js)
-│   ├── writer.js          # MERGED: page-writer, inject-assets, write-css
-│   └── compiler.js        # MERGED: compile-jsx + island-tagging-plugin
-├── islands/               # Domain: Interactive Components
-│   ├── registry.js        # MERGED: islands.js + loadIslands.js
-│   ├── compiler.js        # (Specific to island compilation)
-│   ├── plugins.js         # MERGED: plugins.js + preact-plugin + runtime-plugin
-│   ├── hydration.js       # (Client-side code)
-│   └── wrapper.js         # (Runtime interception)
-├── layouts/               # Domain: Layouts
-│   └── registry.js        # MERGED: layouts.js + loadLayouts.js
-├── dev/
-├── messages/
-└── utils/
-```
-
 ## Support CSS modules
 
 Maybe it already works, thanks to esbuild.

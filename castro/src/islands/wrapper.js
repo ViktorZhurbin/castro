@@ -15,10 +15,10 @@ import { h, options } from "preact";
 import { renderToString } from "preact-render-to-string";
 import { compileJSX } from "../builder/compile-jsx.js";
 import { messages } from "../messages/index.js";
-import { islands } from "../registry/islands.js";
+import { islands } from "./registry.js";
 
 /**
- * @import { Directive } from '../types.d.ts'
+ * @import { Directive } from '../types.js'
  */
 
 /**
@@ -56,7 +56,7 @@ class IslandWrapper {
 		if (!this.#ErrorComponent) {
 			const fallbackPath = join(
 				import.meta.dirname,
-				"wrapper-error-fallback.tsx",
+				"wrapper-error-boundary.tsx",
 			);
 			const { module } = await compileJSX(fallbackPath);
 			this.#ErrorComponent = module.default;

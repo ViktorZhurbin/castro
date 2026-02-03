@@ -15,10 +15,10 @@ import { join, relative } from "node:path";
 import { styleText } from "node:util";
 import { OUTPUT_DIR, PAGES_DIR, PUBLIC_DIR } from "../constants.js";
 import { defaultPlugins } from "../islands/plugins.js";
+import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
-import { layouts } from "../registry/layouts.js";
 import { formatMs } from "../utils/format.js";
-import { buildPage } from "./page-base.js";
+import { buildPage } from "./build-page.js";
 
 /**
  * Build all pages to HTML

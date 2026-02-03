@@ -4,8 +4,6 @@
  * Castro Type Definitions
  */
 
-import type { VNode } from "preact";
-
 export type Directive = "lenin:awake" | "comrade:visible" | "no:pasaran";
 
 export type Asset = {
@@ -13,8 +11,6 @@ export type Asset = {
 	attrs?: Record<string, string | boolean>;
 	content?: string;
 };
-
-export type AssetsMap = Map<string, Asset[]>;
 
 export type ImportsMap = Record<string, string>;
 
@@ -38,18 +34,8 @@ export type IslandComponent = {
 	ssrCode?: string;
 };
 
-export type IslandsMap = Map<string, IslandComponent>;
-
 export type PageMeta = {
 	layout?: string | "none" | false;
 	title?: string;
 	[key: string]: unknown;
 };
-
-export type LayoutComponent = (props: {
-	title: string;
-	content: string;
-	[key: string]: unknown;
-}) => VNode;
-
-export type LayoutsMap = Map<string, LayoutComponent>;

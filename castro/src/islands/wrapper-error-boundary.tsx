@@ -5,7 +5,7 @@
  * islands rendering errors without crashing the build.
  */
 
-export default function ErrorFallback(props: {
+export default function ErrorBoundary(props: {
 	componentName: string;
 	error: Error;
 }) {
