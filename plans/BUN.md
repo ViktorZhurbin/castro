@@ -14,7 +14,7 @@ You still should write to disk, but you should stop viewing it as a "disappointm
  * Why writing to .cache is better: It gives you a stable URL for the module graph. It allows source maps to work automatically. It lets users inspect the "compiled" output when debugging.
  * The Bun difference: Bun's file I/O (Bun.write) is significantly faster than Node's fs.writeFile. The "boilerplate" of writing to a temp file in Bun is literally one line:
 ```js
-   await Bun.write(tempPath, compiledCode);
+await Bun.write(tempPath, compiledCode);
 ```
 
    This feels less like "boilerplate" and more like a standard build step.
@@ -44,11 +44,11 @@ serve({
   port: 3000,
   fetch(req) {
     const url = new URL(req.url);
-    
+
     // 1. Serve static files (MIME types are automatic!)
     let filePath = `./dist${url.pathname}`;
     if (url.pathname.endsWith("/")) filePath += "index.html";
-    
+
     const asset = file(filePath);
     if (asset.size > 0) return new Response(asset);
 
@@ -87,3 +87,104 @@ The reduction from ~7 production dependencies down to 2 (preact, preact-render-t
  * Drop the server framework: Use raw Bun.serve + Bun.file. It is extremely concise now.
  * Drop the parser libs: Use Bun.markdown and Bun.YAML.
  * Marketing: Rebrand Castro slightly as "The Modern Educational SSG" — running on the bleeding edge to show how simple web dev can be.
+
+## High Level Plan
+
+This transition plan prioritizes changes based on **Architectural Simplification** (reducing lines of code & dependencies) and **Performance/DX** (leveraging native APIs).
+
+### Phase 1: The "Server Killer" (Highest ROI)
+
+**Goal:** Delete `polka`, `sirv`, and manual `node:fs` watchers.
+**Why:** This yields the most immediate code reduction and simplifies the dev environment. `Bun.serve` handles static files, MIME types, and SSE natively.
+
+1. **Refactor `src/dev/server.js**`:
+* Replace `polka` routing with `Bun.serve({ fetch(req) { ... } })`.
+* Replace `sirv` with `Bun.file(path)` checks. If a file exists in `dist/`, return `new Response(file)`.
+* Rewrite the SSE (Server-Sent Events) logic. In Bun, you return a `Response` with a `ReadableStream` or use the `server.publish` API (though simple streams work best for this specific case).
+
+
+2. **Refactor `src/dev/live-reload.js**`:
+* (Optional) The client-side code likely stays the same, but the server-side handling in `server.js` becomes much cleaner.
+
+
+
+**Files affected:** `src/dev/server.js`, `package.json` (remove `polka`, `sirv`).
+
+---
+
+### Phase 2: The "Build Engine" Swap (High ROI / High Effort)
+
+**Goal:** Replace `esbuild` with `Bun.build`.
+**Why:** `esbuild` is your heaviest dependency. Bun uses the same API style (Go-based, fast) but is built-in. This unifies your compilation pipeline.
+
+1. **Port `src/builder/compile-jsx.js**`:
+* Switch `esbuild.build()` to `Bun.build()`.
+* **The Island Plugin:** Port `islandTaggingPlugin` to a Bun plugin. The API is nearly identical (`build.onLoad`, `build.onResolve`), but you'll use Bun's namespace handling.
+* **CSS Extraction:** `Bun.build` handles CSS imports differently. You might need to verify if it splits CSS into separate files automatically (like esbuild's `loader: { '.css': 'css' }`) or if you need to configure the naming pattern.
+
+
+2. **Port `src/islands/compiler.js**`:
+* This file compiles islands twice (SSR and Client). `Bun.build` supports `target: "browser"` and `target: "bun"` (for Node/SSR compatibility).
+* **Stubbing CSS:** You currently use a `css-stub` plugin for SSR. You will need to port this simple plugin to Bun to ignore CSS during the SSR build.
+
+
+
+**Files affected:** `src/builder/compile-jsx.js`, `src/islands/compiler.js`, `src/builder/esbuild/plugin-island-tagging.js`, `package.json` (remove `esbuild`).
+
+---
+
+### Phase 3: Content & IO (Medium ROI)
+
+**Goal:** Remove `marked`, `gray-matter` and `node:fs`.
+**Why:** Native APIs are faster and cleaner to read (educational value).
+
+1. **Native Markdown in `src/builder/build-page.js**`:
+* Replace `marked(markdown)` with `Bun.file(path).text()` followed by the native markdown parsing (if available in your target Bun version, e.g., via `Bun.Transpiler` or specific new APIs).
+* *Note:* If Bun's markdown parser is strictly for transpilation (not MD-to-HTML), you might actually keep `marked` for now. Verify this specific feature in Bun 1.3.8+.
+
+
+2. **Native YAML for Frontmatter**:
+* Replace `gray-matter`.
+* Read file: `await Bun.file(path).text()`.
+* Split frontmatter manually (simple regex `^---\n([\s\S]+?)\n---`) and parse with `Bun.YAML.parse()`.
+
+
+3. **Universal File I/O**:
+* Replace `writeFile` with `Bun.write()`.
+* Replace `mkdir` usage (Bun often handles recursive writes automatically, or you can keep `node:fs` for directory management as it's harmless).
+* Apply this to `src/builder/write-css.js`, `src/builder/write-html-page.js`, and `src/utils/cache.js`.
+
+
+
+**Files affected:** `src/builder/build-page.js`, `src/utils/*`, `package.json` (remove `marked`, `gray-matter`).
+
+---
+
+### Phase 4: Cleanup & Entry (Low ROI)
+
+**Goal:** Polish the codebase.
+
+1. **CLI Entry (`src/cli.js` / `bin/castro`)**:
+* Change shebang to `#!/usr/bin/env bun`.
+* Remove `process.env.NODE_ENV` checks if Bun handles them differently (it mostly respects them).
+
+
+2. **Types**:
+* Switch `@types/node` to `bun-types` in `tsconfig.json`.
+* Remove imports like `node:path` where Bun globals (`path` isn't global, but some utils are) or simpler alternatives exist. (Actually, keeping `node:path` is fine in Bun and good for compatibility).
+
+
+
+### Summary of Dependency Reduction
+
+| Dependency | Status | Replacement |
+| --- | --- | --- |
+| `esbuild` | ❌ Remove | `Bun.build` |
+| `polka` | ❌ Remove | `Bun.serve` |
+| `sirv` | ❌ Remove | `Bun.file` (in `serve`) |
+| `gray-matter` | ❌ Remove | `Bun.YAML` + Regex |
+| `marked` | ⚠️ Check | Native Bun Markdown (if HTML output supported) |
+| `preact` | ✅ Keep | (Runtime framework) |
+| `preact-render-to-string` | ✅ Keep | (SSR framework) |
+
+**Total Dependencies:** ~7 → **2** (`preact` + `preact-render-to-string`).

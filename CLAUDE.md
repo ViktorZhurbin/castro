@@ -1,6 +1,6 @@
 # Castro Development Guide
 
-Read @PLAN.md, @README.md for more context.
+Read @ABOUT.md, @README.md for more context.
 
 ## Build & Dev Commands
 - **Dev Server**: `pnpm dev` (starts website playground)
