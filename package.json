@@ -6,8 +6,8 @@
 		"dev": "pnpm --filter website dev",
 		"build": "pnpm --filter website build",
 		"format": "biome format --write",
-		"type-check": "pnpm --filter @vktrz/castro type-check",
-		"check": "pnpm format && pnpm type-check",
+		"check:castro": "pnpm --filter @vktrz/castro check",
+		"check": "pnpm format && pnpm check:castro",
 		"loc": "pnpx cloc castro/src/ --exclude-dir=messages",
 		"loc-files": "pnpm loc --by-file"
 	},

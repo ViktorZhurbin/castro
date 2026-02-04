@@ -22,7 +22,7 @@ import { messages } from "../messages/index.js";
 // ============================================================================
 
 /** Cache directory for compiled modules (persistent, not cleaned on exit) */
-export const CACHE_ROOT = join(process.cwd(), "node_modules/.cache/castro");
+const CACHE_ROOT = join(process.cwd(), "node_modules/.cache/castro");
 
 // ============================================================================
 // Lifecycle Management

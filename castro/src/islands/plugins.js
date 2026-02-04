@@ -19,7 +19,7 @@ export const defaultPlugins = [castroIslandRuntime(), preactIslands()];
  * @returns {CastroPlugin}
  */
 
-export function preactIslands() {
+function preactIslands() {
 	return {
 		name: "islands-preact",
 
@@ -49,7 +49,7 @@ export function preactIslands() {
  * @returns {CastroPlugin}
  */
 
-export function castroIslandRuntime() {
+function castroIslandRuntime() {
 	return {
 		name: "castro-island-runtime",
 
