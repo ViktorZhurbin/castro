@@ -2,14 +2,19 @@
 	"name": "castro-monorepo",
 	"version": "1.0.0",
 	"private": true,
+	"workspaces": [
+		"castro",
+		"website"
+	],
 	"scripts": {
-		"dev": "pnpm --filter website dev",
-		"build": "pnpm --filter website build",
+		"dev": "bun --filter website dev",
+		"build": "bun --filter website build",
 		"format": "biome format --write",
-		"check:castro": "pnpm --filter @vktrz/castro check",
-		"check": "pnpm format && pnpm check:castro",
-		"loc": "pnpx cloc castro/src/ --exclude-dir=messages",
-		"loc-files": "pnpm loc --by-file"
+		"type-check": "bun --workspaces type-check",
+		"check:castro": "bun run --filter @vktrz/castro knip",
+		"check": "bun format && bun type-check && bun check:castro",
+		"loc": "bunx cloc castro/src/ --exclude-dir=messages",
+		"loc-files": "bun run loc --by-file"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.11"

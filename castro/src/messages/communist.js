@@ -84,6 +84,9 @@ export const satirical = {
 			`  export default function MyComponent(props) {\n` +
 			`  return <div>...</div>;\n` +
 			`  }`,
+		islandAnonymousExport: (fileName) =>
+			`⚠️  Island "${fileName}" has an anonymous default export and won't hydrate.\n` +
+			`   The Party requires a name: export default function MyComponent() { ... }`,
 		islandNotFoundRegistry: (name) =>
 			`❌ Island "${name}" not found in registry`,
 		islandRenderFailed: (name, err) =>

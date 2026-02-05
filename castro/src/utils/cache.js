@@ -9,12 +9,11 @@
  * - Cache survives process exit for debugging and inspection
  * - Fresh cache on startup ensures consistent builds
  * - File-based (not memory) enables proper module resolution for bare imports
- * - Uses file:// URLs so Node.js can resolve preact, preact/hooks, etc.
+ * - Uses file:// URLs so Bun can resolve preact, preact/hooks, etc.
  */
 
-import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, rmSync } from "node:fs";
 import { join, parse, relative, resolve } from "node:path";
-import { pathToFileURL } from "node:url";
 import { messages } from "../messages/index.js";
 
 // ============================================================================
@@ -69,7 +68,7 @@ export function resolveTempDir(subpath) {
  * @param {string} [subpath] - Optional subdirectory (e.g., "ssr" for SSR builds)
  * @returns {string}
  */
-export function createTempPath(sourcePath, subpath = "") {
+function createTempPath(sourcePath, subpath = "") {
 	const parsed = parse(sourcePath);
 	const targetDir = resolveTempDir(join(parsed.dir, subpath));
 	const fullPath = join(targetDir, `${parsed.base}.js`);
@@ -95,7 +94,7 @@ export function createTempPath(sourcePath, subpath = "") {
  * @returns {Promise<any>} The imported module
  */
 export async function getModule(sourcePath, content, subpath) {
-	const fileUrl = writeTempFile(sourcePath, content, subpath);
+	const fileUrl = await writeTempFile(sourcePath, content, subpath);
 	const module = await import(fileUrl);
 
 	return module;
@@ -106,21 +105,20 @@ export async function getModule(sourcePath, content, subpath) {
  * @param {string} sourcePath
  * @param {string} content
  * @param {string} [subpath]
- * @returns {string}
+ * @returns {Promise<string>}
  */
-function writeTempFile(sourcePath, content, subpath = "") {
+async function writeTempFile(sourcePath, content, subpath = "") {
 	const fullPath = createTempPath(sourcePath, subpath);
 
 	try {
-		writeFileSync(fullPath, content);
+		await Bun.write(fullPath, content);
 	} catch (err) {
 		const error = /** @type {Error} */ (err);
 		console.error(messages.errors.cacheWriteFailed(fullPath, error.message));
 		throw err;
 	}
 
-	// pathToFileURL is essential for Windows support in ESM imports
-	const pathUrl = pathToFileURL(fullPath).href;
+	const pathUrl = Bun.pathToFileURL(fullPath).href;
 
 	// Cache-busting ensures fresh imports
 	return `${pathUrl}?t=${Date.now()}`;

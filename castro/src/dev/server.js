@@ -13,12 +13,9 @@
  * 4. Browser receives event and reloads the page
  */
 
-import { readFileSync } from "node:fs";
 import { watch } from "node:fs/promises";
 import { join } from "node:path";
 import { styleText } from "node:util";
-import polka from "polka";
-import sirv from "sirv";
 import { buildAll } from "../builder/build-all.js";
 import { buildPage } from "../builder/build-page.js";
 import {
@@ -36,53 +33,126 @@ const PORT = 3000;
  * Start the development server
  */
 export async function startDevServer() {
-	process.env.NODE_ENV = "development";
-
 	// Initial build
 	await buildAll();
 
-	console.info("");
-	console.info(
-		messages.devServer.ready(styleText("cyan", `http://localhost:${PORT}`)),
-	);
+	// Track SSE controllers for live reload
+	/** @type {Set<ReadableStreamDefaultController>} */
+	const controllers = new Set();
 
-	// Track SSE connections for live reload
-	const connections = new Set();
+	// Ctrl+C
+	process.on("SIGINT", () => process.exit(0));
+	// kill command
+	process.on("SIGTERM", () => process.exit(0));
 
-	const server = polka()
-		// SSE endpoint for live reload
-		// Client opens EventSource("/events") and we keep the connection alive.
-		// When files change, we write to all connections to trigger reload.
-		.get("/events", (req, res) => {
-			res.writeHead(200, {
-				"Content-Type": "text/event-stream",
-				"Cache-Control": "no-cache",
-			});
-			connections.add(res);
-			req.on("close", () => connections.delete(res));
-		})
-		// Serve static files from dist
-		.use(sirv(OUTPUT_DIR, { dev: true }))
-		// !FIXME: this causes SSE "Not Found" error
-		// 404 fallback - serve 404.html for missing pages
-		.use((req, res) => {
-			// Only serve 404.html for HTML requests (navigation, not assets)
-			const acceptsHtml = req.headers.accept?.includes("text/html");
-			if (acceptsHtml) {
-				res.writeHead(404, { "Content-Type": "text/html" });
-				res.end(readFileSync(join(OUTPUT_DIR, "404.html")));
-			} else {
-				// For missing assets, just send a plain 404
-				res.writeHead(404);
-				res.end("Not Found");
-			}
-		})
-		.listen(PORT);
+	try {
+		Bun.serve({
+			port: PORT,
+			development: true,
+			idleTimeout: 0, // SSE connections must stay open indefinitely
+			reusePort: false, // Fail loudly if another process is using this port (only works on Linux, unfortunately)
+			async fetch(req) {
+				const url = new URL(req.url);
 
-	server.server?.on("error", (err) => {
+				// SSE endpoint for live reload
+				if (url.pathname === "/events") {
+					/** @type {ReadableStreamDefaultController} */
+					let sseController;
+
+					const stream = new ReadableStream({
+						start(controller) {
+							sseController = controller;
+							controllers.add(controller);
+						},
+						cancel() {
+							controllers.delete(sseController);
+						},
+					});
+
+					return new Response(stream, {
+						headers: {
+							"Content-Type": "text/event-stream",
+							"Cache-Control": "no-cache",
+						},
+					});
+				}
+
+				/**
+				 * Static file serving with clean URLs
+				 *
+				 * We resolve paths similar to support Clean URLs:
+				 *	- /about      -> dist/about.html
+				 *	- /blog       -> dist/blog/index.html
+				 *	- /style.css  -> dist/style.css
+				 */
+
+				const basePath = join(OUTPUT_DIR, url.pathname);
+
+				/** @type {string[]} */
+				let candidates = [];
+
+				if (url.pathname.endsWith("/")) {
+					// Trailing slash (e.g. /blog/) implies an explicit directory request.
+					// We strictly only look for the index file.
+					candidates = [join(basePath, "index.html")];
+				} else {
+					// Clean URL Strategy:
+					// 1. Exact match: Priorities assets (.css, .js) and files with extensions.
+					// 2. HTML suffix: Handles /about -> about.html.
+					// 3. Index fallback: Handles /blog -> blog/index.html (if user omitted slash).
+					candidates = [
+						basePath,
+						`${basePath}.html`,
+						join(basePath, "index.html"),
+					];
+				}
+
+				// Check candidates in order and serve the first one that exists
+				for (const path of candidates) {
+					const file = Bun.file(path);
+
+					if (await file.exists()) {
+						return new Response(file);
+					}
+				}
+
+				// 404 fallback - serve 404.html for HTML requests (navigation, not assets)
+				const acceptsHtml = req.headers.get("accept")?.includes("text/html");
+
+				if (acceptsHtml) {
+					const notFoundFile = Bun.file(join(OUTPUT_DIR, "404.html"));
+
+					if (await notFoundFile.exists()) {
+						return new Response(notFoundFile, {
+							status: 404,
+							headers: { "Content-Type": "text/html" },
+						});
+					}
+				}
+
+				// simple fallback if 404 page doesn't exist
+				return new Response("Not Found", { status: 404 });
+			},
+			error(err) {
+				console.error(messages.devServer.serverError(err.message));
+				return new Response("Internal Server Error", { status: 500 });
+			},
+		});
+
+		console.info(
+			`\n${messages.devServer.ready(styleText("cyan", `http://localhost:${PORT}`))}`,
+		);
+	} catch (e) {
+		const err = /** @type {Bun.ErrorLike} */ (e);
+
 		console.error(messages.devServer.serverError(err.message));
-		process.exit(1);
-	});
+
+		// Let the process exit naturally after flushing stderr.
+		// process.exit(1) would force immediate termination, risking
+		// the error message above being truncated.
+		process.exitCode = 1;
+		return;
+	}
 
 	// Watch pages directory
 	(async () => {
@@ -99,7 +169,7 @@ export async function startDevServer() {
 		}
 	})();
 
-	// Watch layouts directory
+	// Watch layouts and islands directories
 	const watchDirs = [LAYOUTS_DIR, ISLANDS_DIR];
 
 	for (const dir of watchDirs) {
@@ -119,7 +189,7 @@ export async function startDevServer() {
 					}
 				}
 			} catch (e) {
-				const err = /** @type {NodeJS.ErrnoException} */ (e);
+				const err = /** @type {Bun.ErrorLike} */ (e);
 
 				if (err.code !== "ENOENT") {
 					console.warn(messages.devServer.watchError(dir, err.message));
@@ -132,12 +202,16 @@ export async function startDevServer() {
 		console.info(styleText("gray", messages.files.changed(filePath)));
 	}
 
+	/** @type {TextEncoder} */
+	const encoder = new TextEncoder();
+
 	function notifyReload() {
-		for (const res of connections) {
+		const data = encoder.encode("data: reload\n\n");
+		for (const controller of controllers) {
 			try {
-				res.write(`data: reload\n\n`);
+				controller.enqueue(data);
 			} catch {
-				connections.delete(res);
+				controllers.delete(controller);
 			}
 		}
 	}

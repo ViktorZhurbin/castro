@@ -1,5 +1,4 @@
-import { copyFile, mkdir } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { ISLANDS_DIR, OUTPUT_DIR } from "../constants.js";
 import { FrameworkConfig } from "./framework-config.js";
 import { islands } from "./registry.js";
@@ -63,13 +62,11 @@ function castroIslandRuntime() {
 		},
 
 		async onBuild() {
-			await mkdir(dirname(OUTPUT_DIR), { recursive: true });
+			// Copy runtime file to dist (Bun.write auto-creates directories)
+			const source = Bun.file(join(import.meta.dir, "./hydration.js"));
+			const destPath = join(OUTPUT_DIR, "castro-island.js");
 
-			// Copy runtime file to dist
-			await copyFile(
-				join(import.meta.dirname, "./hydration.js"),
-				join(OUTPUT_DIR, "castro-island.js"),
-			);
+			await Bun.write(destPath, source);
 		},
 	};
 }

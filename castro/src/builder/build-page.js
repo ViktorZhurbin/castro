@@ -1,8 +1,5 @@
-import { readFile } from "node:fs/promises";
 import { dirname, extname, join } from "node:path";
 import { styleText } from "node:util";
-import matter from "gray-matter";
-import { marked } from "marked";
 import { h } from "preact";
 import { OUTPUT_DIR, PAGES_DIR } from "../constants.js";
 import { messages } from "../messages/index.js";
@@ -28,7 +25,7 @@ export async function buildPage(relativeSourcePath) {
 			await buildJSXPage(sourceFilePath, outputFilePath);
 		}
 	} catch (e) {
-		const err = /** @type {NodeJS.ErrnoException} */ (e);
+		const err = /** @type {Bun.ErrorLike} */ (e);
 
 		console.error(
 			styleText("red", messages.build.fileFailure(sourceFilePath, err.message)),
@@ -82,14 +79,14 @@ async function buildJSXPage(sourceFilePath, outputFilePath) {
 
 async function buildMarkdownPage(sourceFilePath, outputFilePath) {
 	// Read and parse markdown with frontmatter
-	const sourceFileContent = await readFile(sourceFilePath, "utf-8");
-	const { data: meta, content: markdown } = matter(sourceFileContent);
+	const sourceFileContent = await Bun.file(sourceFilePath).text();
+	const { meta, markdown } = parseFrontmatter(sourceFileContent);
 
 	// Type assertion: we know meta is valid PageMeta after validation
 	const validatedMeta = validateMeta(meta, sourceFilePath);
 
 	// Convert markdown to HTML
-	const contentHtml = await marked(markdown);
+	const contentHtml = Bun.markdown.html(markdown);
 
 	// Use shared rendering pipeline
 	// Pass a function that creates the VNode wrapper for markdown content
@@ -102,4 +99,52 @@ async function buildMarkdownPage(sourceFilePath, outputFilePath) {
 		sourceFilePath,
 		pageMeta: validatedMeta,
 	});
+}
+
+/**
+ * Parse YAML frontmatter from a markdown file
+ *
+ * Extracts the YAML block between --- delimiters and returns
+ * the parsed data and remaining markdown content.
+ *
+ * @param {string} fileContent - Raw file content with optional frontmatter
+ * @returns {{ meta: Record<string, unknown>, markdown: string }}
+ */
+function parseFrontmatter(fileContent) {
+	/**
+	 * Regex based on "vfile-matter": https://github.com/vfile/vfile-matter/blob/main/lib/index.js#L37
+	 * ^---               - Start of file + opening delimiter.
+	 * (?:\r?\n|\r)       - Line break (LF, CRLF, or CR).
+	 * (?<yaml>[\s\S]*?)  - Named group "yaml": non-greedy match of content.
+	 * (?:\r?\n|\r)?      - Optional line break before closing (handles empty blocks).
+	 * ---                - Closing delimiter.
+	 * (?:\r?\n|\r|$)     - Line break OR end of file (prevents partial matches).
+	 */
+	const regex =
+		/^---(?:\r?\n|\r)(?<yaml>[\s\S]*?)(?:\r?\n|\r)?---(?:\r?\n|\r|$)/;
+
+	const match = regex.exec(fileContent);
+
+	if (!match?.groups) {
+		return { meta: {}, markdown: fileContent };
+	}
+
+	try {
+		// match[0] is the whole block (---yaml---)
+		const yamlBlock = match.groups.yaml.trim();
+		const markdown = fileContent.slice(match[0].length);
+
+		// Using Bun's native high-performance YAML parser
+		const parsed = yamlBlock ? Bun.YAML.parse(yamlBlock) : {};
+
+		const meta = /** @type {Record<string, unknown>} */ (
+			typeof parsed === "object" && parsed !== null ? parsed : {}
+		);
+
+		return { meta, markdown };
+	} catch (e) {
+		const err = /** @type {Bun.ErrorLike} */ (e);
+
+		throw new Error(`Failed to parse YAML frontmatter: ${err.message}`);
+	}
 }
