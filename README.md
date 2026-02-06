@@ -24,7 +24,7 @@ Reading through Castro's codebase, you'll understand:
 - **SSR/SSG** - Build-time vs runtime rendering strategies
 - **Progressive Enhancement** - Static HTML first, JavaScript on demand
 - **Web Components** - Using custom elements as hydration boundaries
-- **Build Tools** - How esbuild compilation pipelines work
+- **Build Tools** - How Bun's bundler compilation pipelines work
 - **Dev Servers** - File watching, live reload via SSE
 - **Plugin Systems** - Extensible architecture patterns
 
@@ -33,7 +33,7 @@ The code is extensively commented to explain not just *what* it does, but *why* 
 ## Quick Start
 
 ```bash
-npm install @vktrz/castro preact
+bun add @vktrz/castro preact
 ```
 
 **Project structure:**
@@ -123,7 +123,7 @@ export default function Counter({ initialCount = 0 }) {
 <Counter initialCount={5} />
 ```
 
-Run `npm run dev` and visit `http://localhost:3000`.
+Run `bun run dev` and visit `http://localhost:3000`.
 
 ## The Revolutionary Directives
 
@@ -206,7 +206,7 @@ Joke PRs are fun but secondary to learning value.
 
 ## Requirements
 
-- Node.js 24+
+- Bun 1.3.8+
 - Preact 10+ (peer dependency)
 
 ## License

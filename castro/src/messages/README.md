@@ -63,7 +63,7 @@ errors: {
 
 Run a build and read the output:
 ```bash
-pnpm build
+bun run build
 ```
 
 Ask yourself:

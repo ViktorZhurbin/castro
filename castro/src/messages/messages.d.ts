@@ -5,8 +5,6 @@
  * Both presets must implement this interface exactly.
  */
 
-type ErrorType = NodeJS.ErrnoException | Error | unknown;
-
 export interface Messages {
 	// Dev server startup and runtime messages
 	devServer: {
@@ -23,7 +21,7 @@ export interface Messages {
 		writingFile: (source: string, dest: string) => string;
 		fileSuccess: (file: string, time: string) => string;
 		fileFailure: (file: string, err: string) => string;
-		islandFailed: (err: ErrorType) => string;
+		islandFailed: (err: unknown) => string;
 		ssrSkipped: (source: string, err: string) => string;
 		ssrCompileFailed: (source: string) => string;
 		noJsOutput: (source: string) => string;
@@ -47,6 +45,7 @@ export interface Messages {
 		jsxNoExport: (filePath: string) => string;
 		invalidMeta: (file: string, issues: string[]) => string;
 		islandDefaultExportMissing: (fileName: string) => string;
+		islandAnonymousExport: (file: string) => string;
 		islandNotFoundRegistry: (name: string) => string;
 		islandRenderFailed: (name: string, err: string) => string;
 		multipleDirectives: (directives: string) => string;

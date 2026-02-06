@@ -10,8 +10,7 @@
  * 5. Build all pages (markdown and JSX)
  */
 
-import { cp, glob, mkdir, rm } from "node:fs/promises";
-import { join, relative } from "node:path";
+import { cp, mkdir, rm } from "node:fs/promises";
 import { styleText } from "node:util";
 import { OUTPUT_DIR, PAGES_DIR, PUBLIC_DIR } from "../constants.js";
 import { defaultPlugins } from "../islands/plugins.js";
@@ -39,7 +38,7 @@ export async function buildAll(options = {}) {
 	try {
 		await cp(PUBLIC_DIR, OUTPUT_DIR, { recursive: true });
 	} catch (e) {
-		const err = /** @type {NodeJS.ErrnoException} */ (e);
+		const err = /** @type {Bun.ErrorLike} */ (e);
 
 		// Silently skip if public directory doesn't exist
 		if (err.code !== "ENOENT") {
@@ -66,29 +65,27 @@ export async function buildAll(options = {}) {
 	/** @type {Map<string, string>} */
 	const outputMap = new Map(); // htmlPath → sourceFile
 
+	const pageGlob = new Bun.Glob("**/*.{md,jsx,tsx}");
+
 	try {
-		await Array.fromAsync(
-			glob(join(PAGES_DIR, "**/*.{md,jsx,tsx}")),
-			(filePath) => {
-				const sourcePath = relative(PAGES_DIR, filePath);
-				const outputPath = sourcePath.replace(/\.(md|[jt]sx)$/, ".html");
+		for await (const sourcePath of pageGlob.scan(PAGES_DIR)) {
+			const outputPath = sourcePath.replace(/\.(md|[jt]sx)$/, ".html");
 
-				// Detect route conflicts (two files producing same output)
-				if (outputMap.has(outputPath)) {
-					const existingFile = outputMap.get(outputPath);
-					const errorMessage = messages.errors.routeConflict(
-						`${PAGES_DIR}/${existingFile}`,
-						`${PAGES_DIR}/${sourcePath}`,
-					);
+			// Detect route conflicts (two files producing same output)
+			if (outputMap.has(outputPath)) {
+				const existingFile = outputMap.get(outputPath);
+				const errorMessage = messages.errors.routeConflict(
+					`${PAGES_DIR}/${existingFile}`,
+					`${PAGES_DIR}/${sourcePath}`,
+				);
 
-					throw new Error(errorMessage);
-				}
+				throw new Error(errorMessage);
+			}
 
-				outputMap.set(outputPath, sourcePath);
-			},
-		);
+			outputMap.set(outputPath, sourcePath);
+		}
 	} catch (e) {
-		const err = /** @type {NodeJS.ErrnoException} */ (e);
+		const err = /** @type {Bun.ErrorLike} */ (e);
 
 		if (err.code === "ENOENT") {
 			return;

@@ -16,7 +16,7 @@
  */
 
 import { rmSync } from "node:fs";
-import { access, glob } from "node:fs/promises";
+import { access } from "node:fs/promises";
 import { basename, extname, join } from "node:path";
 import { styleText } from "node:util";
 import { compileJSX } from "../builder/compile-jsx.js";
@@ -79,7 +79,7 @@ class LayoutsRegistry {
 		try {
 			await access(LAYOUTS_DIR);
 		} catch (e) {
-			const err = /** @type {NodeJS.ErrnoException} */ (e);
+			const err = /** @type {Bun.ErrorLike} */ (e);
 
 			if (err.code === "ENOENT") {
 				throw new Error(messages.errors.noLayoutsDir(LAYOUTS_DIR));
@@ -95,41 +95,39 @@ class LayoutsRegistry {
 		rmSync(tempDirPath, { recursive: true, force: true });
 
 		// Process layouts
-		await Array.fromAsync(
-			glob(join(LAYOUTS_DIR, "**/*.{jsx,tsx}")),
-			async (sourceFilePath) => {
-				const fileName = basename(sourceFilePath);
+		const layoutGlob = new Bun.Glob("**/*.{jsx,tsx}");
 
-				/** @type {LayoutId} */
-				const layoutId = basename(fileName, extname(fileName));
+		for await (const relativePath of layoutGlob.scan(LAYOUTS_DIR)) {
+			const sourceFilePath = join(LAYOUTS_DIR, relativePath);
+			const fileName = basename(sourceFilePath);
 
-				try {
-					// Compile and extract CSS
-					const { module: layoutModule, cssFiles } =
-						await compileJSX(sourceFilePath);
+			/** @type {LayoutId} */
+			const layoutId = basename(fileName, extname(fileName));
 
-					if (!layoutModule.default) {
-						throw new Error(messages.errors.islandNoExport(fileName));
-					}
+			try {
+				// Compile and extract CSS
+				const { module: layoutModule, cssFiles } =
+					await compileJSX(sourceFilePath);
 
-					this.#layouts.set(layoutId, layoutModule.default);
-
-					// Write layout CSS to dist/layouts/
-					const layoutsDir = join(OUTPUT_DIR, LAYOUTS_DIR);
-					const layoutCssAssets = await writeCSSFiles(cssFiles, layoutsDir);
-
-					if (layoutCssAssets.length > 0) {
-						this.#cssAssets.set(layoutId, layoutCssAssets);
-					}
-				} catch (e) {
-					const err = /** @type {NodeJS.ErrnoException} */ (e);
-
-					throw new Error(
-						messages.errors.pageBuildFailed(fileName, err.message),
-					);
+				if (!layoutModule.default) {
+					throw new Error(messages.errors.islandNoExport(fileName));
 				}
-			},
-		);
+
+				this.#layouts.set(layoutId, layoutModule.default);
+
+				// Write layout CSS to dist/layouts/
+				const layoutsDir = join(OUTPUT_DIR, LAYOUTS_DIR);
+				const layoutCssAssets = await writeCSSFiles(cssFiles, layoutsDir);
+
+				if (layoutCssAssets.length > 0) {
+					this.#cssAssets.set(layoutId, layoutCssAssets);
+				}
+			} catch (e) {
+				const err = /** @type {Bun.ErrorLike} */ (e);
+
+				throw new Error(messages.errors.pageBuildFailed(fileName, err.message));
+			}
+		}
 
 		// Validate
 		if (this.#layouts.size === 0) {

@@ -1,7 +1,7 @@
 /**
  * @typedef {{
  *   framework: "preact";
- *   getBuildConfig: (ssr?: boolean) => esbuild.BuildOptions;
+ *   getBuildConfig: () => Partial<Bun.BuildConfig>;
  *   importMap: ImportsMap;
  *   hydrateFnString: string;
  *   renderSSR: (Component: preact.ComponentType, props: Record<string, unknown>) => Promise<string>;
@@ -12,7 +12,7 @@
  * Framework-specific settings for island compilation.
  *
  * To support a framework, we need to configure:
- * 1. How to compile components (esbuild JSX settings)
+ * 1. How to compile components (Bun.build JSX settings)
  * 2. How to hydrate on the client (framework-specific code)
  * 3. How to render on the server (SSR function)
  * 4. Where to load the framework from (import map CDN URLs)
@@ -20,7 +20,6 @@
 
 /**
  * @import * as preact from "preact"
- * @import * as esbuild from "esbuild"
  * @import { ImportsMap } from "../types.js"
  */
 
@@ -32,12 +31,12 @@ export const FrameworkConfig = {
 		framework: "preact",
 
 		/**
-		 * esbuild configuration for compiling Preact components
+		 * Preact-specific configuration for compiling components with Bun.build
 		 * Uses automatic JSX transform (no need to import h)
+		 * @return {Partial<Bun.BuildConfig>}
 		 */
 		getBuildConfig: () => ({
-			jsx: "automatic",
-			jsxImportSource: "preact",
+			jsx: { runtime: "automatic", importSource: "preact" },
 			external: ["preact", "preact/hooks", "preact/jsx-runtime"],
 		}),
 

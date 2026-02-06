@@ -7,13 +7,11 @@
  *
  * We compile twice because the environments differ:
  * - Browser needs bundled code with import map externals
- * - Node.js needs unbundled code that can import packages
+ * - Bun needs unbundled code that can import packages
  */
 
-import { mkdir, writeFile } from "node:fs/promises";
-import { basename, dirname, extname } from "node:path";
+import { basename, dirname, extname, resolve } from "node:path";
 import { styleText } from "node:util";
-import * as esbuild from "esbuild";
 import { messages } from "../messages/index.js";
 import { getModule } from "../utils/cache.js";
 import { FrameworkConfig } from "./framework-config.js";
@@ -33,7 +31,7 @@ import { FrameworkConfig } from "./framework-config.js";
  */
 export async function compileIsland({ sourcePath, outputDir, publicDir }) {
 	try {
-		// Compile SSR version first (runs at build time in Node.js)
+		// Compile SSR version first (runs at build time in Bun)
 		const ssrCode = await compileIslandSSR({ sourcePath });
 
 		if (!ssrCode) {
@@ -53,18 +51,14 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
 		}
 
 		// Compile client version (runs in browser)
-		const clientBuildResult = await compileIslandClient({
+		const clientResult = await compileIslandClient({
 			sourcePath,
 			outputDir,
 		});
 
 		// Find the actual generated files (with hashes)
-		const jsFile = clientBuildResult.outputFiles?.find((f) =>
-			f.path.endsWith(".js"),
-		);
-		const cssFile = clientBuildResult.outputFiles?.find((f) =>
-			f.path.endsWith(".css"),
-		);
+		const jsFile = clientResult.outputs.find((f) => f.path.endsWith(".js"));
+		const cssFile = clientResult.outputs.find((f) => f.path.endsWith(".css"));
 
 		if (!jsFile) {
 			throw new Error(messages.build.noJsOutput(sourcePath));
@@ -80,20 +74,11 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
 		let publicCssPath;
 		let cssContent = "";
 		if (cssFile) {
-			cssContent = cssFile?.text;
+			cssContent = await cssFile.text();
 			publicCssPath = `${publicDir}/${basename(cssFile.path)}`.replaceAll(
 				"\\",
 				"/",
 			);
-		}
-
-		// Write files to disk
-		if (clientBuildResult.outputFiles) {
-			await mkdir(outputDir, { recursive: true });
-
-			for (const file of clientBuildResult.outputFiles) {
-				await writeFile(file.path, file.text);
-			}
 		}
 
 		return {
@@ -118,7 +103,7 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
  * Outputs files with content hashes for cache busting.
  *
  * @param {{ sourcePath: string, outputDir: string }} params
- * @returns {Promise<esbuild.BuildResult>}
+ * @returns {Promise<Bun.BuildOutput>}
  */
 async function compileIslandClient({ sourcePath, outputDir }) {
 	const config = FrameworkConfig.preact;
@@ -136,40 +121,46 @@ async function compileIslandClient({ sourcePath, outputDir }) {
 
 	const buildConfig = config.getBuildConfig();
 
+	// Virtual entry path must be absolute and in same directory as the island source
+	// so relative imports resolve correctly (Bun.build files requires absolute paths)
+	const virtualEntryPath = resolve(
+		dirname(sourcePath),
+		`${componentName}.virtual.js`,
+	);
+
 	// Build configuration for island client bundle (browser execution)
-	const result = await esbuild.build({
-		stdin: {
-			contents: virtualEntry,
-			resolveDir: dirname(sourcePath),
-			loader: "js",
-			// Give the virtual entry a distinct name to prevent collision
-			// with the imported source file (e.g. "counter.virtual.js" vs "counter.tsx")
-			sourcefile: `${componentName}.virtual.js`,
-		},
-		outdir: outputDir,
-		// Explicitly set the output filename pattern to match the component name
-		// This bypasses the [name] placeholder which would use "counter.virtual"
-		entryNames: `${componentName}-[hash]`,
-		bundle: true, // Bundle all dependencies into single browser-ready file
+	const result = await Bun.build({
+		entrypoints: [virtualEntryPath],
+		// Virtual file system: maps the virtual entry path to its contents
+		files: { [virtualEntryPath]: virtualEntry },
+		outdir: outputDir, // Bun auto-writes to disk when outdir is set
+		naming: { entry: `${componentName}-[hash].[ext]` },
 		format: "esm", // Output ES modules (modern browsers support)
-		target: "es2020", // Browser target (supports modern JS features)
-		write: false, // Keep output in memory for processing
-		metafile: true, // Enable metafile for build analysis (required with hashing)
+		target: "browser", // Browser target (supports modern JS features)
+		define: {
+			// makes sure we use production jsx transform
+			"process.env.NODE_ENV": JSON.stringify("production"),
+		},
 		loader: {
 			".css": "css", // Extract CSS into separate files for <link> injection
 		},
-		...buildConfig, // Framework-specific settings (JSX config, etc.)
+		...buildConfig, // Framework-specific settings (JSX config, externals)
 	});
+
+	if (!result.success) {
+		const errors = result.logs.map((log) => log.message).join("\n");
+		throw new Error(`Client bundle failed for ${sourcePath}:\n${errors}`);
+	}
 
 	return result;
 }
 
 /**
- * Compile island for server-side rendering (Node.js execution)
+ * Compile island for server-side rendering (Bun execution)
  *
  * SSR compilation differs from client:
- * - Target is Node.js, not browser
- * - CSS imports are stubbed out (Node can't import CSS files)
+ * - Target is Bun, not browser
+ * - CSS imports are stubbed out (SSR doesn't need CSS files)
  * - Result is kept in memory, not written to disk
  * - Used only to generate static HTML at build time
  *
@@ -183,9 +174,9 @@ async function compileIslandSSR({ sourcePath }) {
 	try {
 		// CSS stub plugin - intercepts CSS imports and returns empty module.
 		// Components often import CSS (e.g., import "./counter.css"), which
-		// works in browsers but breaks in Node.js. During SSR we only need
+		// works in browsers but breaks during SSR. During SSR we only need
 		// the HTML output, so we stub out CSS imports.
-		/** @type {esbuild.Plugin} */
+		/** @type {Bun.BunPlugin} */
 		const cssStubPlugin = {
 			name: "css-stub",
 			setup(build) {
@@ -201,21 +192,28 @@ async function compileIslandSSR({ sourcePath }) {
 			},
 		};
 
-		// Build configuration for island SSR (Node.js execution at build time)
-		const result = await esbuild.build({
-			entryPoints: [sourcePath],
-			bundle: true, // Bundle component and dependencies for execution
+		// Build configuration for island SSR (Bun execution at build time)
+		const result = await Bun.build({
+			entrypoints: [sourcePath],
 			format: "esm", // Output ES modules
-			platform: "node", // Node.js platform (enables Node-specific optimizations)
-			target: "node22", // Node.js target (this code runs at build time for SSR)
-			write: false, // Keep output in memory for immediate execution
-			...buildConfig, // Framework-specific settings (JSX config, etc.)
-			plugins: [...(buildConfig.plugins ?? []), cssStubPlugin], // Stub CSS imports
+			target: "bun", // Bun target (this code runs at build time for SSR)
+			define: {
+				// makes sure we use production jsx transform
+				"process.env.NODE_ENV": JSON.stringify("production"),
+			},
+			...buildConfig, // Framework-specific settings (JSX config, externals)
+			plugins: [cssStubPlugin], // Stub CSS imports
 		});
 
-		return result.outputFiles?.[0].text || "";
+		if (!result.success) {
+			const errors = result.logs.map((log) => log.message).join("\n");
+			throw new Error(`SSR bundle failed for ${sourcePath}:\n${errors}`);
+		}
+
+		const output = result.outputs[0];
+		return output ? await output.text() : "";
 	} catch (e) {
-		const err = /** @type {NodeJS.ErrnoException} */ (e);
+		const err = /** @type {Bun.ErrorLike} */ (e);
 
 		console.warn(
 			styleText("yellow", messages.build.ssrSkipped(sourcePath, err.message)),

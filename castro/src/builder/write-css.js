@@ -1,23 +1,21 @@
 /**
  * CSS Writing Utility
  *
- * Shared function for writing CSS files extracted by esbuild.
+ * Shared function for writing CSS files extracted by Bun.build().
  * Used by both pages and layouts.
  */
 
-import { mkdir, writeFile } from "node:fs/promises";
 import { basename, join, relative } from "node:path";
 import { OUTPUT_DIR } from "../constants.js";
 
 /**
- * @import * as esbuild from 'esbuild'
  * @import { Asset } from '../types.d.ts'
  */
 
 /**
  * Write CSS files to a specified directory
  *
- * @param {esbuild.OutputFile[]} cssFiles - CSS output from esbuild
+ * @param {Bun.BuildArtifact[]} cssFiles - CSS output from Bun.build()
  * @param {string} outputDir - Directory to write CSS files to
  * @returns {Promise<Asset[]>} CSS assets for injection
  */
@@ -26,11 +24,8 @@ export async function writeCSSFiles(cssFiles, outputDir) {
 
 	const cssAssets = [];
 
-	// Ensure output directory exists
-	await mkdir(outputDir, { recursive: true });
-
 	for (const cssFile of cssFiles) {
-		// esbuild outputs files like "component.tsx.css" or "page.jsx.css"
+		// Bun outputs files like "component.tsx.css" or "page.jsx.css"
 		// Strip the source extension to get clean names like "page.css"
 		const originalName = basename(cssFile.path);
 		const cssFileName = originalName.replace(/\.(jsx|tsx|js|ts)\.css$/, ".css");
@@ -38,7 +33,8 @@ export async function writeCSSFiles(cssFiles, outputDir) {
 		const cssOutputPath = join(outputDir, cssFileName);
 
 		// Write CSS to disk
-		await writeFile(cssOutputPath, cssFile.text);
+		const cssText = await cssFile.text();
+		await Bun.write(cssOutputPath, cssText);
 
 		// Calculate public path (relative to output root)
 		const cssPublicPath = `/${relative(OUTPUT_DIR, cssOutputPath)}`;

@@ -8,7 +8,7 @@
  * 3. Resolution (Mapping imports to islands during page rendering)
  */
 
-import { access, glob, mkdir } from "node:fs/promises";
+import { access, mkdir } from "node:fs/promises";
 import { dirname, join, relative } from "node:path";
 import { styleText } from "node:util";
 import { ISLANDS_DIR, OUTPUT_DIR } from "../constants.js";
@@ -71,7 +71,7 @@ class IslandsRegistry {
 			// Check if islands directory exists
 			await access(ISLANDS_DIR);
 		} catch (e) {
-			const err = /** @type {NodeJS.ErrnoException} */ (e);
+			const err = /** @type {Bun.ErrorLike} */ (e);
 
 			if (err.code === "ENOENT") {
 				console.warn(
@@ -87,43 +87,44 @@ class IslandsRegistry {
 		const outputIslandsDir = join(OUTPUT_DIR, ISLANDS_DIR);
 		await mkdir(outputIslandsDir, { recursive: true });
 
-		await Array.fromAsync(
-			glob(join(ISLANDS_DIR, "**/*.{jsx,tsx}")),
-			async (sourcePath) => {
-				// Calculate output directory structure preserving nesting
-				const relativeDir = dirname(relative(ISLANDS_DIR, sourcePath));
+		const islandGlob = new Bun.Glob("**/*.{jsx,tsx}");
 
-				const outputDir = join(outputIslandsDir, relativeDir);
+		for await (const relativePath of islandGlob.scan(ISLANDS_DIR)) {
+			const sourcePath = join(ISLANDS_DIR, relativePath);
 
-				// Public URL base: /islands/ui
-				const publicDir = `/${join(ISLANDS_DIR, relativeDir)}`.replaceAll(
-					"\\",
-					"/",
-				);
+			// Calculate output directory structure preserving nesting
+			const relativeDir = dirname(relativePath);
 
-				try {
-					// Compiler handles hashing and returns specific hashed filenames
-					const component = await compileIsland({
-						sourcePath,
-						outputDir,
-						publicDir,
-					});
+			const outputDir = join(outputIslandsDir, relativeDir);
 
-					const islandId = getIslandId(sourcePath);
+			// Public URL base: /islands/ui
+			const publicDir = `/${join(ISLANDS_DIR, relativeDir)}`.replaceAll(
+				"\\",
+				"/",
+			);
 
-					this.#islands.set(islandId, component);
+			try {
+				// Compiler handles hashing and returns specific hashed filenames
+				const component = await compileIsland({
+					sourcePath,
+					outputDir,
+					publicDir,
+				});
 
-					// Map ID -> CSS string for later lookup during rendering
-					if (component.cssContent) {
-						this.#cssManifest.set(islandId, component.cssContent);
-					}
-				} catch (e) {
-					const err = /** @type {NodeJS.ErrnoException} */ (e);
+				const islandId = getIslandId(sourcePath);
 
-					throw new Error(err.message);
+				this.#islands.set(islandId, component);
+
+				// Map ID -> CSS string for later lookup during rendering
+				if (component.cssContent) {
+					this.#cssManifest.set(islandId, component.cssContent);
 				}
-			},
-		);
+			} catch (e) {
+				const err = /** @type {Bun.ErrorLike} */ (e);
+
+				throw new Error(err.message);
+			}
+		}
 
 		// Log compiled islands
 		if (this.#islands.size > 0) {

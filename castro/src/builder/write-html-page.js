@@ -8,8 +8,7 @@
  * 4. Output: Write to disk
  */
 
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { defaultPlugins } from "../islands/plugins.js";
 import { islands } from "../islands/registry.js";
 
@@ -39,9 +38,8 @@ export async function writeHtmlPage(rawHtml, outputPath, options = {}) {
 		assets: [...context.assets, ...transformAssets],
 	});
 
-	// 4. Output Phase
-	await mkdir(dirname(outputPath), { recursive: true });
-	await writeFile(outputPath, finalHtml);
+	// 4. Output Phase (Bun.write auto-creates parent directories)
+	await Bun.write(outputPath, finalHtml);
 }
 
 // ============================================================================
@@ -89,10 +87,9 @@ let _liveReloadCache = null;
 
 async function getLiveReloadAsset() {
 	if (!_liveReloadCache) {
-		_liveReloadCache = await readFile(
-			join(import.meta.dirname, "../dev/live-reload.js"),
-			"utf-8",
-		);
+		_liveReloadCache = await Bun.file(
+			join(import.meta.dir, "../dev/live-reload.js"),
+		).text();
 	}
 	return {
 		tag: "script",
