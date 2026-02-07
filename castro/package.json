@@ -14,6 +14,16 @@
 		"castro": "./bin/castro"
 	},
 	"types": "./src/types.d.ts",
+	"exports": {
+		".": {
+			"types": "./src/types.d.ts",
+			"default": "./bin/castro"
+		},
+		"./config": {
+			"types": "./src/config.d.ts",
+			"default": "./src/config.js"
+		}
+	},
 	"files": [
 		"bin/",
 		"src/"
