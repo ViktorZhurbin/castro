@@ -18,6 +18,7 @@ import { join } from "node:path";
 import { styleText } from "node:util";
 import { buildAll } from "../builder/build-all.js";
 import { buildPage } from "../builder/build-page.js";
+import { config, loadConfig } from "../config.js";
 import {
 	ISLANDS_DIR,
 	LAYOUTS_DIR,
@@ -25,9 +26,9 @@ import {
 	PAGES_DIR,
 } from "../constants.js";
 import { layouts } from "../layouts/registry.js";
-import { messages } from "../messages/index.js";
+import { messages, reloadMessages } from "../messages/index.js";
 
-const PORT = 3000;
+const CONFIG_FILE = "castro.config.js";
 
 /**
  * Start the development server
@@ -47,7 +48,7 @@ export async function startDevServer() {
 
 	try {
 		Bun.serve({
-			port: PORT,
+			port: config.port,
 			development: true,
 			idleTimeout: 0, // SSE connections must stay open indefinitely
 			reusePort: false, // Fail loudly if another process is using this port (only works on Linux, unfortunately)
@@ -140,7 +141,7 @@ export async function startDevServer() {
 		});
 
 		console.info(
-			`\n${messages.devServer.ready(styleText("cyan", `http://localhost:${PORT}`))}`,
+			`\n${messages.devServer.ready(styleText("cyan", `http://localhost:${config.port}`))}`,
 		);
 	} catch (e) {
 		const err = /** @type {Bun.ErrorLike} */ (e);
@@ -197,6 +198,39 @@ export async function startDevServer() {
 			}
 		})();
 	}
+
+	// Watch config file for changes
+	(async () => {
+		try {
+			const watcher = watch(process.cwd(), { recursive: false });
+			for await (const event of watcher) {
+				if (event.filename !== CONFIG_FILE) continue;
+
+				logFileChanged(CONFIG_FILE);
+
+				const previousPort = config.port;
+				await loadConfig();
+				reloadMessages();
+
+				if (config.port !== previousPort) {
+					console.info(
+						styleText(
+							"yellow",
+							`Port changed to ${config.port}. Restart the dev server for this to take effect.`,
+						),
+					);
+				}
+
+				await buildAll();
+				notifyReload();
+			}
+		} catch (e) {
+			const err = /** @type {Bun.ErrorLike} */ (e);
+			if (err.code !== "ENOENT") {
+				console.warn(messages.devServer.watchError(CONFIG_FILE, err.message));
+			}
+		}
+	})();
 
 	function logFileChanged(/** @type {string} */ filePath) {
 		console.info(styleText("gray", messages.files.changed(filePath)));

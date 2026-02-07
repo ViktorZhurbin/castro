@@ -11,6 +11,7 @@
  */
 
 import { rm } from "node:fs/promises";
+import "./config.js";
 import { OUTPUT_DIR } from "./constants.js";
 import { messages } from "./messages/index.js";
 import { cleanupTempDir } from "./utils/cache.js";
