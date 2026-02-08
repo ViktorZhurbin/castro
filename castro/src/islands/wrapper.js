@@ -12,9 +12,10 @@
 
 import { join } from "node:path";
 import { h, options } from "preact";
-import { renderToString } from "preact-render-to-string";
+import { FRAMEWORK } from "../constants.js";
 import { compileJSX } from "../builder/compile-jsx.js";
 import { messages } from "../messages/index.js";
+import { FrameworkConfig } from "./framework-config.js";
 import { islands } from "./registry.js";
 
 /**
@@ -51,6 +52,10 @@ class IslandWrapper {
 		// Prevent double-installation
 		if (this.#hookInstalled) return usedIslands;
 		this.#hookInstalled = true;
+
+		// Load framework dependencies synchronously for SSR rendering
+		// This must happen before install() returns so renderSSR() works
+		await this.#loadFrameworkDependencies();
 
 		// Compile the error fallback component on first use
 		if (!this.#ErrorComponent) {
@@ -107,7 +112,9 @@ class IslandWrapper {
 					this.#renderingStatic = true;
 
 					try {
-						staticHtml = renderToString(h(OriginalComponent, cleanProps));
+						// Use the active framework's SSR renderer (synchronous)
+						const config = FrameworkConfig[FRAMEWORK];
+						staticHtml = config.renderSSR(OriginalComponent, cleanProps);
 					} catch (e) {
 						const err = /** @type {Error} */ (e);
 
@@ -147,6 +154,42 @@ class IslandWrapper {
 		};
 
 		return usedIslands;
+	}
+
+	/**
+	 * Load framework dependencies into globalThis for synchronous SSR rendering
+	 *
+	 * Different frameworks need different dependencies loaded.
+	 * This happens once during install(), so SSR rendering can be synchronous.
+	 *
+	 * @returns {Promise<void>}
+	 */
+	async #loadFrameworkDependencies() {
+		const config = FrameworkConfig[FRAMEWORK];
+		if (!config) {
+			throw new Error(
+				`Unknown framework: ${FRAMEWORK}. Check constants.js FRAMEWORK setting.`,
+			);
+		}
+
+		// Load framework-specific dependencies based on active framework
+		if (FRAMEWORK === "preact") {
+			// Preact: load h and renderToString
+			const preact = await import("preact");
+			const renderToString = await import("preact-render-to-string");
+
+			// @ts-ignore - augment globalThis with framework dependencies
+			globalThis.__preactH = preact;
+			// @ts-ignore - augment globalThis with framework dependencies
+			globalThis.__preactRenderToString = renderToString;
+		} else if (FRAMEWORK === "solid") {
+			// Solid: load renderToString
+			// @ts-ignore - optional dependency
+			const solidRenderToString = await import("solid-js/web");
+
+			// @ts-ignore - augment globalThis with framework dependencies
+			globalThis.__solidRenderToString = solidRenderToString;
+		}
 	}
 
 	/**

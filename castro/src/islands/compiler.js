@@ -12,6 +12,7 @@
 
 import { basename, dirname, extname, resolve } from "node:path";
 import { styleText } from "node:util";
+import { FRAMEWORK } from "../constants.js";
 import { messages } from "../messages/index.js";
 import { getModule } from "../utils/cache.js";
 import { FrameworkConfig } from "./framework-config.js";
@@ -102,24 +103,37 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
  * The mounting function handles hydration when called.
  * Outputs files with content hashes for cache busting.
  *
+ * Uses the active framework's build configuration for JSX handling,
+ * loaders, and plugins (e.g., Babel for Solid.js).
+ *
  * @param {{ sourcePath: string, outputDir: string }} params
  * @returns {Promise<Bun.BuildOutput>}
  */
 async function compileIslandClient({ sourcePath, outputDir }) {
-	const config = FrameworkConfig.preact;
+	const config = FrameworkConfig[FRAMEWORK];
+	if (!config) {
+		throw new Error(
+			`Unknown framework: ${FRAMEWORK}. Check constants.js FRAMEWORK setting.`,
+		);
+	}
 	// Get clean name (e.g. "counter" from "counter.tsx")
 	const componentName = basename(sourcePath, extname(sourcePath));
 
 	// Create entry point that imports component and exports mounting function
+	// The mounting function receives the container element and props from the
+	// <castro-island> custom element, and performs framework-specific hydration
 	const virtualEntry = `
 		import Component from './${basename(sourcePath)}';
 
 		export default async (container, props = {}) => {
-			${config.hydrateFnString}
+			${config.hydrateFnBody}
 		}
 	`.trim();
 
+	// Get framework-specific build config (may be async for Solid Babel plugin)
 	const buildConfig = config.getBuildConfig();
+	const resolvedBuildConfig =
+		buildConfig instanceof Promise ? await buildConfig : buildConfig;
 
 	// Virtual entry path must be absolute and in same directory as the island source
 	// so relative imports resolve correctly (Bun.build files requires absolute paths)
@@ -144,7 +158,7 @@ async function compileIslandClient({ sourcePath, outputDir }) {
 		loader: {
 			".css": "css", // Extract CSS into separate files for <link> injection
 		},
-		...buildConfig, // Framework-specific settings (JSX config, externals)
+		...resolvedBuildConfig, // Framework-specific settings (JSX config, plugins, externals)
 	});
 
 	if (!result.success) {
@@ -164,12 +178,23 @@ async function compileIslandClient({ sourcePath, outputDir }) {
  * - Result is kept in memory, not written to disk
  * - Used only to generate static HTML at build time
  *
+ * Uses framework-specific config with SSR=true flag for Babel transforms.
+ *
  * @param {{ sourcePath: string }} params
  * @returns {Promise<string | undefined>} Compiled code or undefined if compilation failed
  */
 async function compileIslandSSR({ sourcePath }) {
-	const config = FrameworkConfig.preact;
+	const config = FrameworkConfig[FRAMEWORK];
+	if (!config) {
+		throw new Error(
+			`Unknown framework: ${FRAMEWORK}. Check constants.js FRAMEWORK setting.`,
+		);
+	}
+
+	// Get framework-specific build config (may be async for Solid Babel plugin)
 	const buildConfig = config.getBuildConfig();
+	const resolvedBuildConfig =
+		buildConfig instanceof Promise ? await buildConfig : buildConfig;
 
 	try {
 		// CSS stub plugin - intercepts CSS imports and returns empty module.
@@ -201,8 +226,11 @@ async function compileIslandSSR({ sourcePath }) {
 				// makes sure we use production jsx transform
 				"process.env.NODE_ENV": JSON.stringify("production"),
 			},
-			...buildConfig, // Framework-specific settings (JSX config, externals)
-			plugins: [cssStubPlugin], // Stub CSS imports
+			...resolvedBuildConfig, // Framework-specific settings (JSX config, plugins, externals)
+			plugins: [
+				...(resolvedBuildConfig.plugins || []), // Include framework plugins (e.g., Babel for Solid)
+				cssStubPlugin, // Stub CSS imports
+			],
 		});
 
 		if (!result.success) {

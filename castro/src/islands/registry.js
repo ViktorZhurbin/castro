@@ -8,12 +8,13 @@
  * 3. Resolution (Mapping imports to islands during page rendering)
  */
 
-import { access, mkdir } from "node:fs/promises";
+import { access, mkdir, readFile } from "node:fs/promises";
 import { dirname, join, relative } from "node:path";
 import { styleText } from "node:util";
-import { ISLANDS_DIR, OUTPUT_DIR } from "../constants.js";
+import { FRAMEWORK, ISLANDS_DIR, OUTPUT_DIR } from "../constants.js";
 import { messages } from "../messages/index.js";
 import { getIslandId } from "../utils/ids.js";
+import { FrameworkConfig } from "./framework-config.js";
 import { compileIsland } from "./compiler.js";
 
 /**
@@ -62,10 +63,21 @@ class IslandsRegistry {
 
 	/**
 	 * Load (or reload) all islands from disk
+	 *
+	 * Validates that the active framework is configured correctly
+	 * before attempting to compile islands.
 	 */
 	async load() {
 		this.#islands.clear();
 		this.#cssManifest.clear();
+
+		// Validate framework configuration is available
+		const config = FrameworkConfig[FRAMEWORK];
+		if (!config) {
+			throw new Error(
+				`Unknown framework: ${FRAMEWORK}. Check constants.js FRAMEWORK setting. Available: ${Object.keys(FrameworkConfig).join(", ")}`,
+			);
+		}
 
 		try {
 			// Check if islands directory exists

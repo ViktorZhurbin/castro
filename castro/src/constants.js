@@ -22,3 +22,13 @@ export const PAGES_DIR = "pages";
 
 /** Island components directory */
 export const ISLANDS_DIR = "islands";
+
+/**
+ * Active Framework
+ *
+ * Determines which framework is used for Islands (interactive components).
+ * Currently supported: "preact"
+ *
+ * @todo Move to castro.config.js in the future for user configuration
+ */
+export const FRAMEWORK = "preact";

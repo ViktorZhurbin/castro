@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { ISLANDS_DIR, OUTPUT_DIR } from "../constants.js";
+import { FRAMEWORK, ISLANDS_DIR, OUTPUT_DIR } from "../constants.js";
 import { FrameworkConfig } from "./framework-config.js";
 import { islands } from "./registry.js";
 
@@ -11,16 +11,16 @@ import { islands } from "./registry.js";
  * Default plugins - the minimal set needed for islands to work
  * @type {CastroPlugin[]}
  */
-export const defaultPlugins = [castroIslandRuntime(), preactIslands()];
+export const defaultPlugins = [castroIslandRuntime(), frameworkIslands()];
 
 /**
- * Plugin that discovers and compiles Preact island components
+ * Plugin that discovers and compiles island components for the active framework
  * @returns {CastroPlugin}
  */
 
-function preactIslands() {
+function frameworkIslands() {
 	return {
-		name: "islands-preact",
+		name: `islands-${FRAMEWORK}`,
 
 		// Watch islands directory for changes in dev mode
 		watchDirs: [ISLANDS_DIR],
@@ -33,12 +33,14 @@ function preactIslands() {
 		},
 
 		/**
-		 * Return import map (CDN URLs) for Preact runtime
+		 * Return import map (CDN URLs) for the active framework runtime
 		 */
 		getImportMap() {
 			if (islands.getAll().size === 0) return null;
 
-			return FrameworkConfig.preact.importMap;
+			// Get the active framework's import map
+			const config = FrameworkConfig[FRAMEWORK];
+			return config?.importMap ?? null;
 		},
 	};
 }
@@ -62,7 +64,9 @@ function castroIslandRuntime() {
 		},
 
 		async onBuild() {
-			// Copy runtime file to dist (Bun.write auto-creates directories)
+			// Copy hydration.js runtime file to dist
+			// The file is framework-agnostic because framework-specific hydration
+			// is baked into each island's mounting function during compilation
 			const source = Bun.file(join(import.meta.dir, "./hydration.js"));
 			const destPath = join(OUTPUT_DIR, "castro-island.js");
 
