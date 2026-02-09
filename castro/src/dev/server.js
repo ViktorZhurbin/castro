@@ -18,6 +18,7 @@ import { join } from "node:path";
 import { styleText } from "node:util";
 import { buildAll } from "../builder/build-all.js";
 import { buildPage } from "../builder/build-page.js";
+import { config } from "../config.js";
 import {
 	ISLANDS_DIR,
 	LAYOUTS_DIR,
@@ -26,8 +27,6 @@ import {
 } from "../constants.js";
 import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
-
-const PORT = 3000;
 
 /**
  * Start the development server
@@ -47,7 +46,7 @@ export async function startDevServer() {
 
 	try {
 		Bun.serve({
-			port: PORT,
+			port: config.port,
 			development: true,
 			idleTimeout: 0, // SSE connections must stay open indefinitely
 			reusePort: false, // Fail loudly if another process is using this port (only works on Linux, unfortunately)
@@ -140,7 +139,7 @@ export async function startDevServer() {
 		});
 
 		console.info(
-			`\n${messages.devServer.ready(styleText("cyan", `http://localhost:${PORT}`))}`,
+			`\n${messages.devServer.ready(styleText("cyan", `http://localhost:${config.port}`))}`,
 		);
 	} catch (e) {
 		const err = /** @type {Bun.ErrorLike} */ (e);
