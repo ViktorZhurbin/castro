@@ -1,62 +1,87 @@
-import { basename, extname } from "node:path";
-import { styleText } from "node:util";
+import { dirname, isAbsolute, resolve } from "node:path";
+import { getAdapter, initAdapter } from "../islands/adapter.js";
 import { messages } from "../messages/index.js";
 import { getModule } from "../utils/cache.js";
 import { getIslandId } from "../utils/ids.js";
 
 /**
- * Bun.build plugin to tag island components with their source path ID.
+ * Absolute path to Castro's src/ directory.
+ * Used in marker plugin to generate imports that point to live singleton modules.
+ */
+const CASTRO_SRC_DIR = resolve(
+	dirname(import.meta.url.replace("file://", "")),
+	"..",
+);
+
+/** Absolute path to marker.js — used by islandMarkerPlugin in generated code */
+const MARKER_PATH = resolve(CASTRO_SRC_DIR, "islands/marker.js");
+
+/**
+ * Bun.build plugin that handles module resolution for page compilation.
  *
- * Intercepts island file loading and appends `.islandId` to the default export.
- *
- * We read the island source, find the default export name, and
- * append `Name.islandId = "..."` directly to the source code.
+ * Two responsibilities:
+ * 1. Externalizes imports to Castro's own src/ directory. These are generated
+ *    by islandMarkerPlugin and must resolve to the LIVE singleton modules
+ *    (same instances as the build process), not bundled copies.
+ * 2. Externalizes all bare-specifier imports (npm packages like "preact").
+ *    This replaces `packages: "external"` in the build config because that
+ *    option takes priority over plugins and would prevent us from handling
+ *    Castro internal imports.
  *
  * @type {Bun.BunPlugin}
  */
-const islandTaggingPlugin = {
-	name: "island-tagging",
+const resolveImportsPlugin = {
+	name: "resolve-imports",
 	setup(build) {
-		build.onLoad({ filter: /\/islands\/.*\.[jt]sx$/ }, async (args) => {
-			const source = await Bun.file(args.path).text();
-			const islandId = getIslandId(args.path);
-
-			/**
-			 * Regex to extract the identifier name from a default export.
-			 * Handles identifiers, functions, async functions, and classes.
-			 *
-			 * export\s+default\s+          - "export default" followed by whitespace.
-			 * (?:                          - Start of non-capturing group for optional keywords.
-			 * (?:async\s+)?                	- Optional "async" keyword.
-			 * function\s+                  - "function" keyword + whitespace.
-			 * |                            - OR
-			 * class\s+                     - "class" keyword + whitespace.
-			 * )?                            	- Group is optional (handles "export default Name").
-			 * (?<componentName>\w+)          - Named group "name": the actual identifier.
-			 */
-			const regex =
-				/export\s+default\s+(?:(?:async\s+)?function\s+|class\s+)?(?<componentName>\w+)/;
-
-			const match = source.match(regex);
-			const componentName = match?.groups?.componentName;
-
-			if (!componentName) {
-				console.warn(
-					styleText(
-						"yellow",
-						messages.errors.islandAnonymousExport(basename(args.path)),
-					),
-				);
-				// Returning undefined lets Bun load the file as-is (no hydration)
-				return undefined;
+		// Externalize Castro internal imports (absolute paths to src/).
+		// The islandMarkerPlugin generates these as absolute paths so Bun
+		// preserves them as-is in the output (Bun keeps the original specifier
+		// for external imports, so we must use the final path directly).
+		build.onResolve({ filter: /.*/ }, (args) => {
+			if (args.path.startsWith(CASTRO_SRC_DIR)) {
+				return { path: args.path, external: true };
 			}
 
-			const loader = extname(args.path) === ".tsx" ? "tsx" : "jsx";
+			// Externalize bare specifiers (npm packages)
+			// Bare specifiers don't start with . or /
+			if (!args.path.startsWith(".") && !args.path.startsWith("/")) {
+				return { path: args.path, external: true };
+			}
 
+			// Let Bun handle relative imports normally (bundle them)
+			return undefined;
+		});
+	},
+};
+
+/**
+ * Bun.build plugin that replaces .island.tsx imports with marker components.
+ *
+ * When a page imports a .island.tsx file, instead of loading the real component
+ * source (which may use a different framework's JSX), we return a lightweight
+ * marker component. The marker handles SSR and hydration wrapping at render time.
+ *
+ * This is the build-time equivalent of the old options.vnode runtime hook,
+ * but framework-agnostic: the page never sees the real island source.
+ *
+ * @type {Bun.BunPlugin}
+ */
+const islandMarkerPlugin = {
+	name: "island-marker",
+	setup(build) {
+		build.onLoad({ filter: /\.island\.[jt]sx$/ }, async (args) => {
+			const islandId = getIslandId(args.path);
+
+			// Use absolute path to marker.js so Bun preserves it exactly in
+			// the output. The resolveImportsPlugin externalizes paths under
+			// CASTRO_SRC_DIR, ensuring the compiled page imports the live
+			// singleton module rather than a bundled copy.
 			return {
-				// Append semicolon to be safe against ASI issues
-				contents: `${source};\n${componentName}.islandId = "${islandId}";`,
-				loader,
+				contents: `
+					import { createMarker } from "${MARKER_PATH}";
+					export default createMarker("${islandId}");
+				`,
+				loader: "js",
 			};
 		});
 	},
@@ -66,26 +91,41 @@ const islandTaggingPlugin = {
  * Compile JSX/TSX to JavaScript and import the module
  *
  * Also extracts any imported CSS files for injection.
- * Uses the island-tagging plugin to inject component IDs.
+ * Uses the island marker plugin to replace .island.tsx imports with
+ * marker components that handle SSR and hydration wrapping.
  *
  * @param {string} sourcePath - Path to JSX/TSX file
  */
 export async function compileJSX(sourcePath) {
+	// Ensure adapter is initialized (idempotent)
+	await initAdapter();
+
+	const adapter = getAdapter();
+	const { jsx } = adapter.getBuildConfig();
+
+	// Bun.build with onResolve plugins requires absolute entrypoint paths.
+	// Relative paths silently produce zero outputs when plugins are active.
+	const absolutePath = isAbsolute(sourcePath)
+		? sourcePath
+		: resolve(sourcePath);
+
 	// Build configuration (Bun SSR at build time)
+	// Note: we do NOT use packages: "external" here because it takes priority
+	// over plugins and would swallow our Castro internal imports before
+	// resolveImportsPlugin can handle them. Instead, resolveImportsPlugin
+	// externalizes all bare specifiers (npm packages) for us.
 	const result = await Bun.build({
-		entrypoints: [sourcePath],
-		target: "bun", // Bun target (this code runs at build time, not in browser)
-		packages: "external", // Don't bundle node_modules (keep as imports for Bun)
-		format: "esm", // Output ES modules
-		jsx: { runtime: "automatic", importSource: "preact" },
+		entrypoints: [absolutePath],
+		target: "bun",
+		format: "esm",
+		jsx,
 		loader: {
-			".css": "css", // Extract CSS into separate files for injection
+			".css": "css",
 		},
 		define: {
-			// makes sure we use production mode for SSG
 			"process.env.NODE_ENV": JSON.stringify("production"),
 		},
-		plugins: [islandTaggingPlugin], // Inject island IDs during import
+		plugins: [resolveImportsPlugin, islandMarkerPlugin],
 	});
 
 	if (!result.success) {

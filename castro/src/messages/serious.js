@@ -96,6 +96,8 @@ export const serious = {
 			`❌ No layout files found in ${dir}\nCreate at least default.jsx`,
 		cacheWriteFailed: (path, err) =>
 			`❌ Failed to write cache file: ${path}\n${err}`,
+		unsupportedFramework: (name) =>
+			`❌ Unsupported framework: "${name}". Check the FRAMEWORK constant in constants.js.`,
 	},
 
 	// Commands

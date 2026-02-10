@@ -1,7 +1,10 @@
 /**
- * Castro Type Declarations
+ * Castro JSX Type Declarations
  *
- * Declares island hydration directives as valid props on all Preact components.
+ * Declares island hydration directives as valid props on components.
+ * Currently augments the Preact module since pages use Preact's JSX.
+ * When adding a new framework adapter, add a parallel module augmentation
+ * for that framework's JSX namespace.
  */
 
 declare module "preact" {

@@ -1,6 +1,6 @@
 import type { FunctionComponent } from "preact";
 import { useState } from "preact/hooks";
-import "./counter.css";
+import "./counter.island.css";
 
 interface CounterProps {
 	initial?: number;

@@ -20,5 +20,12 @@ export const LAYOUTS_DIR = "layouts";
 /** Source pages (markdown and JSX) */
 export const PAGES_DIR = "pages";
 
-/** Island components directory */
-export const ISLANDS_DIR = "islands";
+/** Output subdirectory for compiled island client bundles (inside dist/) */
+export const ISLANDS_OUTPUT_DIR = "islands";
+
+/**
+ * Active framework for island components.
+ * Determines which adapter is used for compilation, SSR, and hydration.
+ * @type {"preact"}
+ */
+export const FRAMEWORK = "preact";

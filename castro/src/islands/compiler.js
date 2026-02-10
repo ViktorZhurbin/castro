@@ -14,7 +14,7 @@ import { basename, dirname, extname, resolve } from "node:path";
 import { styleText } from "node:util";
 import { messages } from "../messages/index.js";
 import { getModule } from "../utils/cache.js";
-import { FrameworkConfig } from "./framework-config.js";
+import { getAdapter } from "./adapter.js";
 
 /**
  * @import { IslandComponent } from "../types.d.ts"
@@ -38,14 +38,14 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
 			throw new Error(messages.build.ssrCompileFailed(sourcePath));
 		}
 
-		// Use getModule to dynamically import the component
-		const module = await getModule(sourcePath, ssrCode, "ssr");
+		// Use getModule to dynamically import the component for SSR
+		const ssrModule = await getModule(sourcePath, ssrCode, "ssr");
 
 		// Extract component name from the imported module
-		const componentName = module.default?.name;
+		const componentName = ssrModule.default?.name;
 
 		// Validate that island has a default export with a name
-		if (!module.default || !componentName) {
+		if (!ssrModule.default || !componentName) {
 			const fileName = basename(sourcePath);
 			throw new Error(messages.errors.islandDefaultExportMissing(fileName));
 		}
@@ -83,6 +83,7 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
 
 		return {
 			ssrCode,
+			ssrModule,
 			sourcePath,
 			publicJsPath,
 			publicCssPath,
@@ -106,7 +107,7 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
  * @returns {Promise<Bun.BuildOutput>}
  */
 async function compileIslandClient({ sourcePath, outputDir }) {
-	const config = FrameworkConfig.preact;
+	const config = getAdapter();
 	// Get clean name (e.g. "counter" from "counter.tsx")
 	const componentName = basename(sourcePath, extname(sourcePath));
 
@@ -168,7 +169,7 @@ async function compileIslandClient({ sourcePath, outputDir }) {
  * @returns {Promise<string | undefined>} Compiled code or undefined if compilation failed
  */
 async function compileIslandSSR({ sourcePath }) {
-	const config = FrameworkConfig.preact;
+	const config = getAdapter();
 	const buildConfig = config.getBuildConfig();
 
 	try {
@@ -201,8 +202,8 @@ async function compileIslandSSR({ sourcePath }) {
 				// makes sure we use production jsx transform
 				"process.env.NODE_ENV": JSON.stringify("production"),
 			},
-			...buildConfig, // Framework-specific settings (JSX config, externals)
-			plugins: [cssStubPlugin], // Stub CSS imports
+			...buildConfig,
+			plugins: [...(buildConfig.plugins || []), cssStubPlugin],
 		});
 
 		if (!result.success) {

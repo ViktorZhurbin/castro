@@ -19,12 +19,7 @@ import { styleText } from "node:util";
 import { buildAll } from "../builder/build-all.js";
 import { buildPage } from "../builder/build-page.js";
 import { config } from "../config.js";
-import {
-	ISLANDS_DIR,
-	LAYOUTS_DIR,
-	OUTPUT_DIR,
-	PAGES_DIR,
-} from "../constants.js";
+import { LAYOUTS_DIR, OUTPUT_DIR, PAGES_DIR } from "../constants.js";
 import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
 
@@ -154,6 +149,7 @@ export async function startDevServer() {
 	}
 
 	// Watch pages directory
+	// Island files (.island.tsx) trigger full rebuilds since they affect the registry
 	(async () => {
 		const watcher = watch(PAGES_DIR, { recursive: true });
 
@@ -161,35 +157,55 @@ export async function startDevServer() {
 			if (!event.filename) continue;
 
 			const filePath = join(PAGES_DIR, event.filename);
-
 			logFileChanged(filePath);
-			await buildPage(event.filename);
+
+			if (event.filename.includes(".island.")) {
+				await buildAll();
+			} else {
+				await buildPage(event.filename);
+			}
 			notifyReload();
 		}
 	})();
 
-	// Watch layouts and islands directories
-	const watchDirs = [LAYOUTS_DIR, ISLANDS_DIR];
+	// Watch layouts directory for changes
+	(async () => {
+		try {
+			const watcher = watch(LAYOUTS_DIR, { recursive: true });
+			for await (const event of watcher) {
+				if (event.filename) {
+					logFileChanged(`${LAYOUTS_DIR}/${event.filename}`);
+					await layouts.load();
+					await buildAll();
+					notifyReload();
+				}
+			}
+		} catch (e) {
+			const err = /** @type {Bun.ErrorLike} */ (e);
+			if (err.code !== "ENOENT") {
+				console.warn(messages.devServer.watchError(LAYOUTS_DIR, err.message));
+			}
+		}
+	})();
 
-	for (const dir of watchDirs) {
+	// Watch for .island.tsx files outside pages/
+	// Common locations: components/ or any user-defined directories
+	const islandWatchDirs = ["components"];
+
+	for (const dir of islandWatchDirs) {
 		(async () => {
 			try {
 				const watcher = watch(dir, { recursive: true });
 				for await (const event of watcher) {
-					if (event.filename) {
+					if (event.filename?.includes(".island.")) {
 						logFileChanged(`${dir}/${event.filename}`);
-
-						if (dir === LAYOUTS_DIR) {
-							await layouts.load();
-						}
-
 						await buildAll();
 						notifyReload();
 					}
 				}
 			} catch (e) {
 				const err = /** @type {Bun.ErrorLike} */ (e);
-
+				// Silently ignore missing directories
 				if (err.code !== "ENOENT") {
 					console.warn(messages.devServer.watchError(dir, err.message));
 				}

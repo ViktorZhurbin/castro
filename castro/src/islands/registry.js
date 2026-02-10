@@ -8,12 +8,13 @@
  * 3. Resolution (Mapping imports to islands during page rendering)
  */
 
-import { access, mkdir } from "node:fs/promises";
-import { dirname, join, relative } from "node:path";
+import { mkdir } from "node:fs/promises";
+import { join, relative } from "node:path";
 import { styleText } from "node:util";
-import { ISLANDS_DIR, OUTPUT_DIR } from "../constants.js";
+import { ISLANDS_OUTPUT_DIR, OUTPUT_DIR } from "../constants.js";
 import { messages } from "../messages/index.js";
 import { getIslandId } from "../utils/ids.js";
+import { initAdapter } from "./adapter.js";
 import { compileIsland } from "./compiler.js";
 
 /**
@@ -61,50 +62,44 @@ class IslandsRegistry {
 	}
 
 	/**
-	 * Load (or reload) all islands from disk
+	 * Load (or reload) all islands from disk.
+	 *
+	 * Scans the project for .island.{jsx,tsx} files (the naming convention
+	 * that identifies interactive components). Islands can live anywhere
+	 * in the project — not just an islands/ directory.
 	 */
 	async load() {
 		this.#islands.clear();
 		this.#cssManifest.clear();
 
-		try {
-			// Check if islands directory exists
-			await access(ISLANDS_DIR);
-		} catch (e) {
-			const err = /** @type {Bun.ErrorLike} */ (e);
+		// Adapter must be ready before we compile islands
+		await initAdapter();
 
-			if (err.code === "ENOENT") {
-				console.warn(
-					styleText("red", `Islands directory not found:`),
-					styleText("magenta", ISLANDS_DIR),
-				);
-			}
-
-			throw err;
-		}
-
-		// Prepare output directory
-		const outputIslandsDir = join(OUTPUT_DIR, ISLANDS_DIR);
+		// Output directory for compiled island client bundles
+		const outputIslandsDir = join(OUTPUT_DIR, ISLANDS_OUTPUT_DIR);
 		await mkdir(outputIslandsDir, { recursive: true });
 
-		const islandGlob = new Bun.Glob("**/*.{jsx,tsx}");
+		// Scan the entire project for .island.{jsx,tsx} files
+		const islandGlob = new Bun.Glob("**/*.island.{jsx,tsx}");
 
-		for await (const relativePath of islandGlob.scan(ISLANDS_DIR)) {
-			const sourcePath = join(ISLANDS_DIR, relativePath);
+		for await (const relativePath of islandGlob.scan(".")) {
+			// Skip build artifacts and dependencies
+			if (
+				relativePath.startsWith("node_modules/") ||
+				relativePath.startsWith("dist/") ||
+				relativePath.startsWith(".")
+			) {
+				continue;
+			}
 
-			// Calculate output directory structure preserving nesting
-			const relativeDir = dirname(relativePath);
+			const sourcePath = relativePath;
 
-			const outputDir = join(outputIslandsDir, relativeDir);
-
-			// Public URL base: /islands/ui
-			const publicDir = `/${join(ISLANDS_DIR, relativeDir)}`.replaceAll(
-				"\\",
-				"/",
-			);
+			// All compiled islands go into a flat output directory
+			// (avoids deep nesting in dist/)
+			const outputDir = outputIslandsDir;
+			const publicDir = `/${ISLANDS_OUTPUT_DIR}`;
 
 			try {
-				// Compiler handles hashing and returns specific hashed filenames
 				const component = await compileIsland({
 					sourcePath,
 					outputDir,
@@ -112,16 +107,13 @@ class IslandsRegistry {
 				});
 
 				const islandId = getIslandId(sourcePath);
-
 				this.#islands.set(islandId, component);
 
-				// Map ID -> CSS string for later lookup during rendering
 				if (component.cssContent) {
 					this.#cssManifest.set(islandId, component.cssContent);
 				}
 			} catch (e) {
 				const err = /** @type {Bun.ErrorLike} */ (e);
-
 				throw new Error(err.message);
 			}
 		}
@@ -134,7 +126,6 @@ class IslandsRegistry {
 
 			for (const component of this.#islands.values()) {
 				const relativePath = relative(process.cwd(), component.sourcePath);
-
 				console.info(`  · ${styleText("cyan", relativePath)}`);
 			}
 		}

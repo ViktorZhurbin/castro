@@ -51,6 +51,7 @@ export interface Messages {
 		multipleDirectives: (directives: string) => string;
 		noLayoutFiles: (dir: string) => string;
 		cacheWriteFailed: (path: string, err: string) => string;
+		unsupportedFramework: (name: string) => string;
 	};
 
 	// CLI command messages

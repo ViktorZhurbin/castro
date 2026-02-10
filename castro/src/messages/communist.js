@@ -97,6 +97,8 @@ export const satirical = {
 			`❌ No layout files found in ${dir}\nCreate at least default.jsx`,
 		cacheWriteFailed: (path, err) =>
 			`❌ Failed to write cache file: ${path}\n${err}`,
+		unsupportedFramework: (name) =>
+			`❌ Framework "${name}" is not recognized by the Party. Only approved frameworks may serve the people.`,
 	},
 
 	// Commands

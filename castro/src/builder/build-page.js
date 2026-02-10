@@ -1,7 +1,7 @@
 import { dirname, extname, join } from "node:path";
 import { styleText } from "node:util";
-import { h } from "preact";
 import { OUTPUT_DIR, PAGES_DIR } from "../constants.js";
+import { getAdapter } from "../islands/adapter.js";
 import { messages } from "../messages/index.js";
 import { validateMeta } from "../utils/validateMeta.js";
 import { compileJSX } from "./compile-jsx.js";
@@ -91,10 +91,10 @@ async function buildMarkdownPage(sourceFilePath, outputFilePath) {
 	// Use shared rendering pipeline
 	// Pass a function that creates the VNode wrapper for markdown content
 	await renderPage({
-		createContentVNode: () =>
-			h("div", {
-				dangerouslySetInnerHTML: { __html: contentHtml },
-			}),
+		createContentVNode: () => {
+			const adapter = getAdapter();
+			return adapter.createElement("div", adapter.rawHtmlProp(contentHtml));
+		},
 		outputFilePath,
 		sourceFilePath,
 		pageMeta: validatedMeta,

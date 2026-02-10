@@ -1,8 +1,8 @@
 import "./index.css";
 import type { PageMeta } from "@vktrz/castro";
+import Counter from "../components/counter.island.tsx";
 import { StarIcon } from "../components/icons/StarIcon.tsx";
 import { LinkButton } from "../components/LinkButton.tsx";
-import Counter from "../islands/counter.tsx";
 
 export const meta: PageMeta = { title: "Castro - The People's Framework" };
 

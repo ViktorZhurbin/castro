@@ -1,6 +1,6 @@
 import { join } from "node:path";
-import { ISLANDS_DIR, OUTPUT_DIR } from "../constants.js";
-import { FrameworkConfig } from "./framework-config.js";
+import { OUTPUT_DIR } from "../constants.js";
+import { getAdapter } from "./adapter.js";
 import { islands } from "./registry.js";
 
 /**
@@ -11,19 +11,16 @@ import { islands } from "./registry.js";
  * Default plugins - the minimal set needed for islands to work
  * @type {CastroPlugin[]}
  */
-export const defaultPlugins = [castroIslandRuntime(), preactIslands()];
+export const defaultPlugins = [castroIslandRuntime(), frameworkIslands()];
 
 /**
- * Plugin that discovers and compiles Preact island components
+ * Plugin that discovers and compiles island components.
+ * Framework-agnostic — uses the configured adapter.
  * @returns {CastroPlugin}
  */
-
-function preactIslands() {
+function frameworkIslands() {
 	return {
-		name: "islands-preact",
-
-		// Watch islands directory for changes in dev mode
-		watchDirs: [ISLANDS_DIR],
+		name: "islands-framework",
 
 		/**
 		 * Build hook: discover, compile, and load islands into registry
@@ -33,12 +30,11 @@ function preactIslands() {
 		},
 
 		/**
-		 * Return import map (CDN URLs) for Preact runtime
+		 * Return import map (CDN URLs) for the active framework runtime
 		 */
 		getImportMap() {
 			if (islands.getAll().size === 0) return null;
-
-			return FrameworkConfig.preact.importMap;
+			return getAdapter().importMap;
 		},
 	};
 }
