@@ -8,10 +8,14 @@
  * 3. Resolution (Mapping imports to islands during page rendering)
  */
 
-import { access, mkdir } from "node:fs/promises";
+import { mkdir } from "node:fs/promises";
 import { dirname, join, relative } from "node:path";
 import { styleText } from "node:util";
-import { ISLANDS_DIR, OUTPUT_DIR } from "../constants.js";
+import {
+	COMPONENTS_DIR,
+	ISLANDS_OUTPUT_DIR,
+	OUTPUT_DIR,
+} from "../constants.js";
 import { messages } from "../messages/index.js";
 import { getIslandId } from "../utils/ids.js";
 import { compileIsland } from "./compiler.js";
@@ -67,30 +71,14 @@ class IslandsRegistry {
 		this.#islands.clear();
 		this.#cssManifest.clear();
 
-		try {
-			// Check if islands directory exists
-			await access(ISLANDS_DIR);
-		} catch (e) {
-			const err = /** @type {Bun.ErrorLike} */ (e);
-
-			if (err.code === "ENOENT") {
-				console.warn(
-					styleText("red", `Islands directory not found:`),
-					styleText("magenta", ISLANDS_DIR),
-				);
-			}
-
-			throw err;
-		}
-
 		// Prepare output directory
-		const outputIslandsDir = join(OUTPUT_DIR, ISLANDS_DIR);
+		const outputIslandsDir = join(OUTPUT_DIR, ISLANDS_OUTPUT_DIR);
 		await mkdir(outputIslandsDir, { recursive: true });
 
-		const islandGlob = new Bun.Glob("**/*.{jsx,tsx}");
+		const islandGlob = new Bun.Glob("**/*.island.{jsx,tsx}");
 
-		for await (const relativePath of islandGlob.scan(ISLANDS_DIR)) {
-			const sourcePath = join(ISLANDS_DIR, relativePath);
+		for await (const relativePath of islandGlob.scan(COMPONENTS_DIR)) {
+			const sourcePath = join(COMPONENTS_DIR, relativePath);
 
 			// Calculate output directory structure preserving nesting
 			const relativeDir = dirname(relativePath);
@@ -98,7 +86,7 @@ class IslandsRegistry {
 			const outputDir = join(outputIslandsDir, relativeDir);
 
 			// Public URL base: /islands/ui
-			const publicDir = `/${join(ISLANDS_DIR, relativeDir)}`.replaceAll(
+			const publicDir = `/${join(ISLANDS_OUTPUT_DIR, relativeDir)}`.replaceAll(
 				"\\",
 				"/",
 			);

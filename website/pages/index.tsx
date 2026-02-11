@@ -2,7 +2,7 @@ import "./index.css";
 import type { PageMeta } from "@vktrz/castro";
 import { StarIcon } from "../components/icons/StarIcon.tsx";
 import { LinkButton } from "../components/LinkButton.tsx";
-import Counter from "../islands/counter.tsx";
+import MyCounter from "../components/MyCounter.island.tsx";
 
 export const meta: PageMeta = { title: "Castro - The People's Framework" };
 
@@ -65,7 +65,7 @@ export default function Home() {
 							Pure static HTML for maximum performance.
 						</p>
 						<div className="directive-demo">
-							<Counter initial={5} no:pasaran />
+							<MyCounter initial={5} no:pasaran />
 						</div>
 						<p className="directive-note">
 							↑ Try clicking. Nothing happens. Zero JS was sent to your browser.
@@ -84,7 +84,7 @@ export default function Home() {
 							interactivity from the start.
 						</p>
 						<div className="directive-demo">
-							<Counter initial={10} lenin:awake />
+							<MyCounter initial={10} lenin:awake />
 						</div>
 						<p className="directive-note">
 							↑ This counter is interactive immediately. JS loaded on page load.
@@ -103,7 +103,7 @@ export default function Home() {
 							IntersectionObserver. Default behavior.
 						</p>
 						<div className="directive-demo">
-							<Counter initial={15} comrade:visible />
+							<MyCounter initial={15} comrade:visible />
 						</div>
 						<p className="directive-note">
 							↑ JS loads when scrolled into view. Open DevTools Network tab to

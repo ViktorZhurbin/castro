@@ -20,7 +20,7 @@ import { buildAll } from "../builder/build-all.js";
 import { buildPage } from "../builder/build-page.js";
 import { config } from "../config.js";
 import {
-	ISLANDS_DIR,
+	COMPONENTS_DIR,
 	LAYOUTS_DIR,
 	OUTPUT_DIR,
 	PAGES_DIR,
@@ -168,8 +168,8 @@ export async function startDevServer() {
 		}
 	})();
 
-	// Watch layouts and islands directories
-	const watchDirs = [LAYOUTS_DIR, ISLANDS_DIR];
+	// Watch layouts and components directories
+	const watchDirs = [LAYOUTS_DIR, COMPONENTS_DIR];
 
 	for (const dir of watchDirs) {
 		(async () => {

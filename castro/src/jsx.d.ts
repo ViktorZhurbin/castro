@@ -13,7 +13,6 @@ declare module "preact" {
 			 *
 			 * @example
 			 * ```tsx
-			 * import Counter from "../islands/counter.tsx";
 			 * <Counter initial={5} lenin:awake />
 			 * ```
 			 */
@@ -28,7 +27,6 @@ declare module "preact" {
 			 *
 			 * @example
 			 * ```tsx
-			 * import Counter from "../islands/counter.tsx";
 			 * // Explicit:
 			 * <Counter initial={5} comrade:visible />
 			 * // Or implicit (same result):
@@ -45,7 +43,6 @@ declare module "preact" {
 			 *
 			 * @example
 			 * ```tsx
-			 * import Counter from "../islands/counter.tsx";
 			 * <Counter initial={5} no:pasaran />
 			 * ```
 			 */

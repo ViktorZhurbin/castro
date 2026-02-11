@@ -20,5 +20,8 @@ export const LAYOUTS_DIR = "layouts";
 /** Source pages (markdown and JSX) */
 export const PAGES_DIR = "pages";
 
-/** Island components directory */
-export const ISLANDS_DIR = "islands";
+/** Components directory */
+export const COMPONENTS_DIR = "components";
+
+/** Island output directory */
+export const ISLANDS_OUTPUT_DIR = "islands";

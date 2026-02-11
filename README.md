@@ -43,17 +43,14 @@ my-site/
 │   └── index.md
 ├── layouts/           # Page layouts (.jsx, .tsx)
 │   └── default.jsx
-├── components/        # Static reusable components (.jsx, .tsx)
-│   └── Button.jsx
-└── islands/           # Interactive components (.jsx, .tsx)
-    └── counter.tsx
+└── components/        # Components (.jsx, .tsx)
+    └── Button.jsx
+    └── Button.island.jsx
 ```
 
 **Component types:**
-- `components/` - Static UI components, server-side only, no JS shipped to client
-- `islands/` - Interactive components that ship JavaScript to the browser
-- Use `components/` for headers, footers, buttons, cards, etc.
-- Use `islands/` only when you need client-side interactivity
+- By default, all `.{jsx,tsx}` files are static UI components, server-side only, no JS shipped to client
+- Use `.island` suffix for when you need client-side interactivity, eg: `ComponentName.island.{jsx,tsx}`
 
 **Add scripts to package.json:**
 ```json
@@ -108,7 +105,7 @@ export default function Home() {
 }
 ```
 
-**Add an island** (`islands/counter.tsx`):
+**Add an island** (`counter.island.tsx`):
 ```tsx
 import { useState } from "preact/hooks";
 

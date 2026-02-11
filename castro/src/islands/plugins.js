@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { ISLANDS_DIR, OUTPUT_DIR } from "../constants.js";
+import { OUTPUT_DIR } from "../constants.js";
 import { FrameworkConfig } from "./framework-config.js";
 import { islands } from "./registry.js";
 
@@ -23,7 +23,7 @@ function preactIslands() {
 		name: "islands-preact",
 
 		// Watch islands directory for changes in dev mode
-		watchDirs: [ISLANDS_DIR],
+		watchDirs: [],
 
 		/**
 		 * Build hook: discover, compile, and load islands into registry

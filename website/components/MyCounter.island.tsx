@@ -1,12 +1,12 @@
 import type { FunctionComponent } from "preact";
 import { useState } from "preact/hooks";
-import "./counter.css";
+import "./MyCounter.island.css";
 
 interface CounterProps {
 	initial?: number;
 }
 
-const Counter: FunctionComponent<CounterProps> = ({ initial = 0 }) => {
+const MyCounter: FunctionComponent<CounterProps> = ({ initial = 0 }) => {
 	const [count, setCount] = useState<number>(initial);
 
 	return (
@@ -22,4 +22,4 @@ const Counter: FunctionComponent<CounterProps> = ({ initial = 0 }) => {
 	);
 };
 
-export default Counter;
+export default MyCounter;

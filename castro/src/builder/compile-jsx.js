@@ -17,7 +17,7 @@ import { getIslandId } from "../utils/ids.js";
 const islandTaggingPlugin = {
 	name: "island-tagging",
 	setup(build) {
-		build.onLoad({ filter: /\/islands\/.*\.[jt]sx$/ }, async (args) => {
+		build.onLoad({ filter: /\.island\.[jt]sx$/ }, async (args) => {
 			const source = await Bun.file(args.path).text();
 			const islandId = getIslandId(args.path);
 
