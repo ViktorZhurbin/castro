@@ -60,7 +60,7 @@ async function buildJSXPage(sourceFilePath, outputFilePath) {
 	const validatedMeta = validateMeta(meta, sourceFilePath);
 
 	// Use shared rendering pipeline
-	// Pass the page component function so it can be called with the hook active
+	// Pass the page component function to be called to get a VNode
 	await renderPage({
 		createContentVNode: pageModule.default,
 		outputFilePath,
@@ -89,7 +89,6 @@ async function buildMarkdownPage(sourceFilePath, outputFilePath) {
 	const contentHtml = Bun.markdown.html(markdown);
 
 	// Use shared rendering pipeline
-	// Pass a function that creates the VNode wrapper for markdown content
 	await renderPage({
 		createContentVNode: () =>
 			h("div", {

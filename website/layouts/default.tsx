@@ -1,12 +1,13 @@
+import type { VNode } from "preact";
 import { Footer } from "../components/Footer.tsx";
 
 interface Props {
 	title: string;
-	content: string;
+	children: VNode;
 }
 
 const DefaultLayout = (props: Props) => {
-	const { title, content } = props;
+	const { title, children } = props;
 
 	return (
 		<html lang="en">
@@ -27,9 +28,11 @@ const DefaultLayout = (props: Props) => {
 				<link rel="stylesheet" href="/global.css" />
 			</head>
 			<body>
-				<main dangerouslySetInnerHTML={{ __html: content }} />
+				<main>
+					{children}
 
-				<Footer />
+					<Footer />
+				</main>
 			</body>
 		</html>
 	);

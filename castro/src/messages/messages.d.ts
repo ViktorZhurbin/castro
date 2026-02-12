@@ -44,13 +44,13 @@ export interface Messages {
 		pageBuildFailed: (file: string, err: string) => string;
 		jsxNoExport: (filePath: string) => string;
 		invalidMeta: (file: string, issues: string[]) => string;
-		islandDefaultExportMissing: (fileName: string) => string;
-		islandAnonymousExport: (file: string) => string;
 		islandNotFoundRegistry: (name: string) => string;
 		islandRenderFailed: (name: string, err: string) => string;
+		ssrErrorTitle: string;
 		multipleDirectives: (directives: string) => string;
 		noLayoutFiles: (dir: string) => string;
 		cacheWriteFailed: (path: string, err: string) => string;
+		frameworkUnsupported: (name: string) => string;
 	};
 
 	// CLI command messages

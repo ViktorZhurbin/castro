@@ -4,13 +4,13 @@
  * Loads optional castro.config.js from the project root.
  * Missing file = all defaults. No validation — bad values fail loudly.
  *
- * @typedef {{ port?: number, messages?: "satirical" | "serious" }} CastroConfig
+ * @typedef {{ port?: number, messages?: "satirical" | "serious", framework?: "preact" }} CastroConfig
  */
 
 import { join } from "node:path";
 
 /** @type {Required<CastroConfig>} */
-const defaults = { port: 3000, messages: "satirical" };
+const defaults = { port: 3000, messages: "satirical", framework: "preact" };
 
 /** @type {CastroConfig} */
 let userConfig = {};

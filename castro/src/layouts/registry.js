@@ -5,14 +5,6 @@
  * Layouts are JSX components that wrap page content. They typically
  * define the HTML shell (<html>, <head>, <body>) and common elements
  * like headers, footers, and navigation.
- *
- * Example layout:
- *   export default ({ title, content }) => (
- *     <html>
- *       <head><title>{title}</title></head>
- *       <body dangerouslySetInnerHTML={{ __html: content }} />
- *     </html>
- *   );
  */
 
 import { rmSync } from "node:fs";
@@ -31,7 +23,7 @@ import { resolveTempDir } from "../utils/cache.js";
  *
  * @typedef {(props: {
  * 		title: string;
- * 		content: string;
+ * 		children: VNode;
  * 		[key: string]: unknown;
  *	}) => VNode} LayoutComponent
  *

@@ -13,8 +13,7 @@
 import { basename, dirname, extname, resolve } from "node:path";
 import { styleText } from "node:util";
 import { messages } from "../messages/index.js";
-import { getModule } from "../utils/cache.js";
-import { FrameworkConfig } from "./framework-config.js";
+import { frameworkConfig } from "./framework-config.js";
 
 /**
  * @import { IslandComponent } from "../types.d.ts"
@@ -38,18 +37,6 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
 			throw new Error(messages.build.ssrCompileFailed(sourcePath));
 		}
 
-		// Use getModule to dynamically import the component
-		const module = await getModule(sourcePath, ssrCode, "ssr");
-
-		// Extract component name from the imported module
-		const componentName = module.default?.name;
-
-		// Validate that island has a default export with a name
-		if (!module.default || !componentName) {
-			const fileName = basename(sourcePath);
-			throw new Error(messages.errors.islandDefaultExportMissing(fileName));
-		}
-
 		// Compile client version (runs in browser)
 		const clientResult = await compileIslandClient({
 			sourcePath,
@@ -71,23 +58,13 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
 			"/",
 		);
 
-		let publicCssPath;
-		let cssContent = "";
-		if (cssFile) {
-			cssContent = await cssFile.text();
-			publicCssPath = `${publicDir}/${basename(cssFile.path)}`.replaceAll(
-				"\\",
-				"/",
-			);
-		}
+		const cssContent = cssFile ? await cssFile.text() : "";
 
 		return {
 			ssrCode,
 			sourcePath,
 			publicJsPath,
-			publicCssPath,
 			cssContent,
-			name: componentName,
 		};
 	} catch (err) {
 		console.info(styleText("red", messages.build.islandFailed(err)));
@@ -106,7 +83,6 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
  * @returns {Promise<Bun.BuildOutput>}
  */
 async function compileIslandClient({ sourcePath, outputDir }) {
-	const config = FrameworkConfig.preact;
 	// Get clean name (e.g. "counter" from "counter.tsx")
 	const componentName = basename(sourcePath, extname(sourcePath));
 
@@ -115,11 +91,11 @@ async function compileIslandClient({ sourcePath, outputDir }) {
 		import Component from './${basename(sourcePath)}';
 
 		export default async (container, props = {}) => {
-			${config.hydrateFnString}
+			${frameworkConfig.hydrateFnString}
 		}
 	`.trim();
 
-	const buildConfig = config.getBuildConfig();
+	const buildConfig = frameworkConfig.getBuildConfig();
 
 	// Virtual entry path must be absolute and in same directory as the island source
 	// so relative imports resolve correctly (Bun.build files requires absolute paths)
@@ -168,8 +144,7 @@ async function compileIslandClient({ sourcePath, outputDir }) {
  * @returns {Promise<string | undefined>} Compiled code or undefined if compilation failed
  */
 async function compileIslandSSR({ sourcePath }) {
-	const config = FrameworkConfig.preact;
-	const buildConfig = config.getBuildConfig();
+	const buildConfig = frameworkConfig.getBuildConfig();
 
 	try {
 		// CSS stub plugin - intercepts CSS imports and returns empty module.

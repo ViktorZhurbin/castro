@@ -4,7 +4,6 @@
 	"ignore": [
 		"src/dev/live-reload.js",
 		"src/islands/hydration.js",
-		"src/islands/wrapper-error-boundary.tsx",
-		"src/messages/serious.js"
+		"src/islands/marker.js"
 	]
 }

@@ -1,22 +1,22 @@
 /**
  * Unified rendering logic for both JSX and Markdown pages.
- * Handles island wrapping, layout application, CSS collection, and writing.
+ * Handles layout application, CSS collection, and writing.
  */
 
 import { basename } from "node:path";
 import { renderToString } from "preact-render-to-string";
-import { islandWrapper } from "../islands/wrapper.js";
+import { getUsedIslands, resetUsedIslands } from "../islands/marker.js";
 import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
 import { writeHtmlPage } from "./write-html-page.js";
 
 /**
- * @import { VNode } from "preact"
  * @import { Asset, PageMeta } from "../types.js"
+ * @import { VNode } from "preact"
  */
 
 /**
- * Render a page VNode through the complete pipeline
+ * Render a page through the complete pipeline
  *
  * @param {{
  *   createContentVNode: () => VNode,
@@ -27,21 +27,19 @@ import { writeHtmlPage } from "./write-html-page.js";
  * }} params
  */
 export async function renderPage({
-	// Passing the factory function ensures the hook is active exactly when the VNodes are created
 	createContentVNode,
 	outputFilePath,
 	sourceFilePath,
 	pageMeta,
 	pageCssAssets = [],
 }) {
-	// Install hook to intercept islands during VNode creation
-	// Hook remains active for both page content and layout rendering
-	const usedIslands = await islandWrapper.install();
-
 	const pageAndLayoutCssAssets = [...pageCssAssets];
 
+	// Reset island usage tracking for this page
+	resetUsedIslands();
+
 	try {
-		// Create content VNode with hook active (wraps any islands in content)
+		// Get page content as a VNode
 		const contentVNode = createContentVNode();
 
 		// Support pages that render full HTML themselves (layout: false)
@@ -62,9 +60,6 @@ export async function renderPage({
 				throw new Error(messages.errors.layoutNotFound(layoutName));
 			}
 
-			// Render content to HTML string for layout
-			const contentHtml = renderToString(contentVNode);
-
 			// Get layout CSS assets
 			const layoutCssAssets = layouts.getCssAssets(layoutName) ?? [];
 			pageAndLayoutCssAssets.push(...layoutCssAssets);
@@ -74,25 +69,30 @@ export async function renderPage({
 				pageMeta.title ||
 				basename(sourceFilePath).replace(/\.(md|[jt]sx)$/, "");
 
-			// Layout VNode created with hook active (wraps any islands in layout)
+			// Layouts are Preact components
+			// Pass contentVNode as children for the layout to use
 			vnodeToRender = layoutComponent({
 				...pageMeta,
-				content: contentHtml,
 				title,
+				children: contentVNode,
 			});
 		}
 
-		// Render final page
-		const html = renderToString(vnodeToRender);
+		// Render VNode tree to HTML string
+		const finalHtml = renderToString(vnodeToRender);
 
 		// Write HTML with all CSS assets
-		// Pass tracking data so the writer can build the final CSS injection
-		await writeHtmlPage(html, outputFilePath, {
-			usedIslands,
+		await writeHtmlPage(finalHtml, outputFilePath, {
+			usedIslands: getUsedIslands(),
 			pageCssAssets: pageAndLayoutCssAssets,
 		});
-	} finally {
-		// Always uninstall hook after page is complete
-		islandWrapper.uninstall();
+	} catch (e) {
+		// Attach source context to the error.
+		if (e instanceof Error) {
+			e.message = `${sourceFilePath}: ${e.message}`;
+		}
+
+		// Let the outer build-page.js error boundary handle message formatting.
+		throw e;
 	}
 }
