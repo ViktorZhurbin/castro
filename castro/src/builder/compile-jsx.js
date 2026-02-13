@@ -1,63 +1,88 @@
-import { basename, extname } from "node:path";
-import { styleText } from "node:util";
+import { dirname, resolve } from "node:path";
 import { messages } from "../messages/index.js";
 import { getModule } from "../utils/cache.js";
 import { getIslandId } from "../utils/ids.js";
 
+// Absolute path to Castro internals for the generated code imports
+const CASTRO_SRC = resolve(dirname(import.meta.path), "..");
+
 /**
- * Bun.build plugin to tag island components with their source path ID.
+ * Generates the source code for a Marker Component.
  *
- * Intercepts island file loading and appends `.islandId` to the default export.
+ * @param {string} islandId - The unique ID (e.g., "src/islands/Counter.tsx")
+ * @returns {string} JavaScript code that exports a marker component function
+ */
+function generateMarkerCode(islandId) {
+	// Import the real marker implementation from marker.js
+	// This keeps the logic in a real file that can be linted, debugged, and type-checked
+	const MARKER_PATH = resolve(CASTRO_SRC, "islands/marker.js");
+
+	// JSON.stringify ensures proper escaping of special chars in islandId
+	return `
+    import { renderMarker } from "${MARKER_PATH}";
+    export default (props) => renderMarker(${JSON.stringify(islandId)}, props);
+  `.trim();
+}
+
+/**
+ * Plugin to replace .island.tsx imports with the Marker Code above
+ * @type {Bun.BunPlugin}
+ */
+const islandMarkerPlugin = {
+	name: "island-marker",
+	setup(build) {
+		build.onLoad({ filter: /\.island\.[jt]sx$/ }, (args) => {
+			const islandId = getIslandId(args.path);
+
+			const code = generateMarkerCode(islandId);
+
+			return {
+				contents: code,
+				loader: "js",
+			};
+		});
+	},
+};
+
+/**
+ * Plugin to control module resolution during page compilation.
  *
- * We read the island source, find the default export name, and
- * append `Name.islandId = "..."` directly to the source code.
+ * When Bun.build compiles a page, it encounters imports from three sources.
+ * This plugin classifies each import and decides whether to bundle it or
+ * leave it as an external reference (resolved at runtime by Bun):
+ *
+ * 1. Castro internals (marker.js, registry.js, framework-config.js)
+ *    → External. Must share the same singleton instances as the build process.
+ *    If bundled, each page would get its own copy of the registry, breaking
+ *    island usage tracking and CSS injection.
+ *
+ * 2. Bare specifiers ("preact", "preact/hooks", etc.)
+ *    → External. Node module imports resolved by Bun at runtime, not bundled.
+ *
+ * 3. Relative imports ("./components/Button.jsx", "../Footer.tsx")
+ *    → Bundled. User components that should be inlined into the page.
  *
  * @type {Bun.BunPlugin}
  */
-const islandTaggingPlugin = {
-	name: "island-tagging",
+const resolveImportsPlugin = {
+	name: "resolve-imports",
+
 	setup(build) {
-		build.onLoad({ filter: /\.island\.[jt]sx$/ }, async (args) => {
-			const source = await Bun.file(args.path).text();
-			const islandId = getIslandId(args.path);
-
-			/**
-			 * Regex to extract the identifier name from a default export.
-			 * Handles identifiers, functions, async functions, and classes.
-			 *
-			 * export\s+default\s+          - "export default" followed by whitespace.
-			 * (?:                          - Start of non-capturing group for optional keywords.
-			 * (?:async\s+)?                	- Optional "async" keyword.
-			 * function\s+                  - "function" keyword + whitespace.
-			 * |                            - OR
-			 * class\s+                     - "class" keyword + whitespace.
-			 * )?                            	- Group is optional (handles "export default Name").
-			 * (?<componentName>\w+)          - Named group "name": the actual identifier.
-			 */
-			const regex =
-				/export\s+default\s+(?:(?:async\s+)?function\s+|class\s+)?(?<componentName>\w+)/;
-
-			const match = source.match(regex);
-			const componentName = match?.groups?.componentName;
-
-			if (!componentName) {
-				console.warn(
-					styleText(
-						"yellow",
-						messages.errors.islandAnonymousExport(basename(args.path)),
-					),
-				);
-				// Returning undefined lets Bun load the file as-is (no hydration)
-				return undefined;
+		// The filter (/.*/) intercepts ALL module resolution requests.
+		// We return early for externals; anything else falls through to
+		// Bun's default bundling behavior.
+		build.onResolve({ filter: /.*/ }, (args) => {
+			// Castro internals → external (singleton sharing)
+			if (args.path.startsWith(CASTRO_SRC)) {
+				return { path: args.path, external: true };
 			}
 
-			const loader = extname(args.path) === ".tsx" ? "tsx" : "jsx";
+			// Bare specifiers (no "." or "/" prefix) → external (node_modules)
+			if (!args.path.startsWith(".") && !args.path.startsWith("/")) {
+				return { path: args.path, external: true };
+			}
 
-			return {
-				// Append semicolon to be safe against ASI issues
-				contents: `${source};\n${componentName}.islandId = "${islandId}";`,
-				loader,
-			};
+			// Relative/absolute imports → no return → bundled by Bun
 		});
 	},
 };
@@ -66,26 +91,32 @@ const islandTaggingPlugin = {
  * Compile JSX/TSX to JavaScript and import the module
  *
  * Also extracts any imported CSS files for injection.
- * Uses the island-tagging plugin to inject component IDs.
+ * Uses the island-marker plugin to replace island imports with marker components.
  *
  * @param {string} sourcePath - Path to JSX/TSX file
  */
 export async function compileJSX(sourcePath) {
-	// Build configuration (Bun SSR at build time)
+	// Build configuration
+	// Bun.build requires absolute entrypoints when using onResolve plugins
+	const absoluteSourcePath = resolve(sourcePath);
+
 	const result = await Bun.build({
-		entrypoints: [sourcePath],
-		target: "bun", // Bun target (this code runs at build time, not in browser)
-		packages: "external", // Don't bundle node_modules (keep as imports for Bun)
-		format: "esm", // Output ES modules
+		entrypoints: [absoluteSourcePath],
+		target: "bun",
+		format: "esm",
+		// Pages and layouts compile to Preact VNodes (not HTML strings directly).
+		// The final renderToString() call in render-page.js converts the complete
+		// VNode tree to HTML in one pass. This is a build-time convenience —
+		// Preact is NOT shipped to the browser for static pages.
 		jsx: { runtime: "automatic", importSource: "preact" },
 		loader: {
-			".css": "css", // Extract CSS into separate files for injection
+			".css": "css",
 		},
 		define: {
 			// makes sure we use production mode for SSG
 			"process.env.NODE_ENV": JSON.stringify("production"),
 		},
-		plugins: [islandTaggingPlugin], // Inject island IDs during import
+		plugins: [resolveImportsPlugin, islandMarkerPlugin],
 	});
 
 	if (!result.success) {
@@ -104,6 +135,6 @@ export async function compileJSX(sourcePath) {
 
 	return {
 		module: await getModule(sourcePath, jsText),
-		cssFiles, // For file writing
+		cssFiles,
 	};
 }

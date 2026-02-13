@@ -1,6 +1,6 @@
 import { join } from "node:path";
 import { OUTPUT_DIR } from "../constants.js";
-import { FrameworkConfig } from "./framework-config.js";
+import { frameworkConfig } from "./framework-config.js";
 import { islands } from "./registry.js";
 
 /**
@@ -38,7 +38,7 @@ function preactIslands() {
 		getImportMap() {
 			if (islands.getAll().size === 0) return null;
 
-			return FrameworkConfig.preact.importMap;
+			return frameworkConfig.importMap;
 		},
 	};
 }

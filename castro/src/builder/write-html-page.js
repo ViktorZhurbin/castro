@@ -15,7 +15,7 @@ import { islands } from "../islands/registry.js";
 /**
  * @import { Asset, ImportsMap } from '../types.js'
  *
- * @typedef {{ pageCssAssets?: Asset[]; usedIslands?: Set<string>; }} Options
+ * @typedef {{ pageCssAssets?: Asset[]; usedIslands: Set<string>; }} Options
  */
 
 /**
@@ -23,9 +23,9 @@ import { islands } from "../islands/registry.js";
  *
  * @param {string} rawHtml
  * @param {string} outputPath
- * @param {Options} [options]
+ * @param {Options} options
  */
-export async function writeHtmlPage(rawHtml, outputPath, options = {}) {
+export async function writeHtmlPage(rawHtml, outputPath, options) {
 	// 1. Resolution Phase: Gather all assets from all sources
 	const context = await resolvePageContext(options);
 
@@ -64,7 +64,7 @@ async function resolvePageContext({ usedIslands, pageCssAssets = [] }) {
 
 	// B. Resolve Island CSS (Registry Lookup)
 	const cssManifest = islands.getCssManifest();
-	if (usedIslands?.size && cssManifest.size) {
+	if (usedIslands.size && cssManifest.size) {
 		for (const id of usedIslands) {
 			const css = cssManifest.get(id);
 			if (css) assets.push({ tag: "style", content: css });

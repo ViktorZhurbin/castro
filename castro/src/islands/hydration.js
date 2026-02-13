@@ -65,8 +65,8 @@ class CastroIsland extends HTMLElement {
 						resolve();
 					}
 				},
-				// rootMargin extends the viewport boundary: start loading 100px
-				// before element enters viewport. Feels faster to the user.
+				// rootMargin extends the viewport boundary:
+				// start loading 100px before element enters viewport.
 				{ rootMargin: "100px" },
 			);
 			observer.observe(this);

@@ -17,6 +17,7 @@ import {
 	OUTPUT_DIR,
 } from "../constants.js";
 import { messages } from "../messages/index.js";
+import { getModule } from "../utils/cache.js";
 import { getIslandId } from "../utils/ids.js";
 import { compileIsland } from "./compiler.js";
 
@@ -42,6 +43,14 @@ class IslandsRegistry {
 	 */
 	#cssManifest = new Map();
 
+	/**
+	 * Pre-loaded SSR modules for synchronous access during rendering.
+	 * renderToString() traverses the VNode tree synchronously, so
+	 * renderMarker() cannot await — modules must be loaded ahead of time.
+	 * @type {Map<IslandId, { default: import("preact").ComponentType<Record<string, unknown>> }>}
+	 */
+	#ssrModules = new Map();
+
 	getAll() {
 		return this.#islands;
 	}
@@ -60,6 +69,13 @@ class IslandsRegistry {
 		return this.#islands.get(id);
 	}
 
+	/**
+	 * @param {IslandId} id
+	 */
+	getSSRModule(id) {
+		return this.#ssrModules.get(id);
+	}
+
 	getCssManifest() {
 		return this.#cssManifest;
 	}
@@ -70,6 +86,7 @@ class IslandsRegistry {
 	async load() {
 		this.#islands.clear();
 		this.#cssManifest.clear();
+		this.#ssrModules.clear();
 
 		// Prepare output directory
 		const outputIslandsDir = join(OUTPUT_DIR, ISLANDS_OUTPUT_DIR);
@@ -102,6 +119,12 @@ class IslandsRegistry {
 				const islandId = getIslandId(sourcePath);
 
 				this.#islands.set(islandId, component);
+
+				// Pre-load the SSR module into memory.
+				// renderToString() calls renderMarker() synchronously during
+				// VNode traversal — there is no opportunity to await.
+				const ssrModule = await getModule(sourcePath, component.ssrCode, "ssr");
+				this.#ssrModules.set(islandId, ssrModule);
 
 				// Map ID -> CSS string for later lookup during rendering
 				if (component.cssContent) {

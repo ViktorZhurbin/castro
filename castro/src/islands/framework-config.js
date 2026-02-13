@@ -1,10 +1,18 @@
+import { h } from "preact";
+import { render } from "preact-render-to-string";
+import { config } from "../config.js";
+import { messages } from "../messages/index.js";
+
 /**
+ * @import * as preact from "preact"
+ * @import { ImportsMap } from "../types.js"
+ *
  * @typedef {{
  *   framework: "preact";
  *   getBuildConfig: () => Partial<Bun.BuildConfig>;
  *   importMap: ImportsMap;
  *   hydrateFnString: string;
- *   renderSSR: (Component: preact.ComponentType, props: Record<string, unknown>) => Promise<string>;
+ *   renderSSR: (Component: preact.ComponentType<any>, props: Record<string, unknown>) => string;
  * }} ConfigItem
  */
 
@@ -19,14 +27,9 @@
  */
 
 /**
- * @import * as preact from "preact"
- * @import { ImportsMap } from "../types.js"
- */
-
-/**
  * @type {Record<"preact", ConfigItem>}
  */
-export const FrameworkConfig = {
+const FrameworkConfig = {
 	preact: {
 		framework: "preact",
 
@@ -76,11 +79,12 @@ export const FrameworkConfig = {
 		 * Server-side rendering function
 		 * Runs at build time to generate static HTML
 		 */
-		renderSSR: async (Component, props) => {
-			const { h } = await import("preact");
-			const { render } = await import("preact-render-to-string");
-
-			return render(h(Component, props));
-		},
+		renderSSR: (Component, props) => render(h(Component, props)),
 	},
 };
+
+export const frameworkConfig = FrameworkConfig[config.framework];
+
+if (!frameworkConfig) {
+	throw new Error(messages.errors.frameworkUnsupported(config.framework));
+}

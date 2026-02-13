@@ -26,12 +26,10 @@ export type CastroPlugin = {
 };
 
 export type IslandComponent = {
-	name: string;
 	sourcePath: string;
 	publicJsPath: string;
-	publicCssPath?: string;
 	cssContent?: string;
-	ssrCode?: string;
+	ssrCode: string;
 };
 
 export type PageMeta = {

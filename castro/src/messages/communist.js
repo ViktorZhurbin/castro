@@ -78,25 +78,20 @@ export const satirical = {
 			`   Issues:\n` +
 			issues.map((i) => `   - ${i}`).join("\n") +
 			`\n\n   Check the page 'meta' export.`,
-		islandDefaultExportMissing: (fileName) =>
-			`❌ Island "${fileName}" must have a default export.\n\n` +
-			`Example:\n` +
-			`  export default function MyComponent(props) {\n` +
-			`  return <div>...</div>;\n` +
-			`  }`,
-		islandAnonymousExport: (fileName) =>
-			`⚠️  Island "${fileName}" has an anonymous default export and won't hydrate.\n` +
-			`   The Party requires a name: export default function MyComponent() { ... }`,
 		islandNotFoundRegistry: (name) =>
 			`❌ Island "${name}" not found in registry`,
 		islandRenderFailed: (name, err) =>
 			`❌ Failed to render island "${name}": ${err}`,
+		ssrErrorTitle: "⚠️ Counter-revolutionary logic detected",
 		multipleDirectives: (directives) =>
 			`❌ Multiple directives on same component: ${directives}. Use only one.`,
 		noLayoutFiles: (dir) =>
 			`❌ No layout files found in ${dir}\nCreate at least default.jsx`,
 		cacheWriteFailed: (path, err) =>
 			`❌ Failed to write cache file: ${path}\n${err}`,
+		frameworkUnsupported: (name) =>
+			`❌ Framework "${name}" is not recognized by the Party.\n` +
+			`   Approved frameworks: preact`,
 	},
 
 	// Commands
