@@ -30,15 +30,16 @@ constants.js            Shared path constants
 builder/
   build-all.js          Full site build orchestration
   build-page.js         Single page build (JSX or Markdown)
-  compile-jsx.js        Bun.build pipeline + island marker plugin
+  compile-jsx.js        Bun.build pipeline for pages and layouts
   render-page.js        VNode → HTML via renderToString
   write-html-page.js    HTML assembly (assets, CSS injection, import maps)
   write-css.js          CSS file extraction
 
 islands/
+  build-plugins.js      Bun.build plugins for compile-time island interception
   compiler.js           Island SSR + client compilation
   registry.js           Singleton island store + SSR module preloading
-  marker.js             Build-time island renderer (replaces old vnode hook)
+  marker.js             Build-time island renderer
   framework-config.js   Framework-specific config (currently Preact only)
   plugins.js            Castro plugin definitions (island runtime, import maps)
   hydration.js          Client-side <castro-island> custom element
