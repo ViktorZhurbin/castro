@@ -91,12 +91,6 @@ That's an extraordinary amount of ground covered in ~1,100 lines. For comparison
 
 **The `write-html-page.js` pipeline (210 lines) is the longest file and the hardest to follow.** It does four things — resolution, transformation, injection, and output — but the `injectAssets` function is doing string manipulation that's not particularly educational. The `indexOf("</head>")` approach works, but a reader learns more from understanding *why* assets need to go in `<head>` than from seeing string slicing. A comment about "why `</head>` and not `</body>`" (render-blocking CSS needs to be in head; scripts can go in either) would help.
 
-**The cache system is infrastructure, not architecture.** `cache.js` is 125 lines of file path manipulation and module loading. It's necessary, but it's plumbing. The educational insight is in the *why* (explained well in the header comment), not in the *how* (path joining and file writing). This is the one area where the code-as-documentation principle doesn't fully work — someone reads through 70 lines of path resolution and cache busting and doesn't learn much about SSGs or island architecture.
-
-**The relationship between `marker.js` and `compile-jsx.js` could use a "how to read this" guide.** The key insight — that `islandMarkerPlugin` replaces island imports with marker functions that execute during `renderToString` — spans two files and requires understanding Bun's build plugin system. A reader who doesn't know what `build.onLoad` does will be lost. A comment at the top of `compile-jsx.js` saying "if you're new to Bun build plugins, start by reading [link]" would be valuable.
-
-**There's no tutorial page.** The website links to `/tutorial` and `/manifesto`, neither of which exist. The blog post references features that don't exist (data cascade). The documentation site is Castro's own website, which is a good idea (dogfooding), but it currently shows more of the *satire* than the *education*. The landing page demonstrates the three directives beautifully — that's excellent — but doesn't guide someone through reading the source code.
-
 ---
 
 ## Part 3: Comparison with Other Frameworks
