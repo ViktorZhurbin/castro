@@ -90,7 +90,6 @@ export function renderMarker(islandId, props = {}) {
 
 	// Handle no:pasaran - static only, no hydration wrapper
 	if (directive === "no:pasaran") {
-		// Use display:contents to avoid layout shifts while keeping a wrapper
 		return h("div", {
 			dangerouslySetInnerHTML: { __html: ssrHtml },
 		});
