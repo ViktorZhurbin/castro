@@ -17,9 +17,9 @@ export type ImportsMap = Record<string, string>;
 export type CastroPlugin = {
 	name: string;
 	watchDirs?: string[];
-	getAssets?: () => Asset[];
+	getPageAssets?: (params?: { hasIslands?: boolean }) => Asset[];
 	getImportMap?: () => ImportsMap | null;
-	onBuild?: () => Promise<void>;
+	onPageBuild?: () => Promise<void>;
 	transform?: (ctx: {
 		content: string;
 	}) => Promise<{ html: string; assets: Asset[] }>;

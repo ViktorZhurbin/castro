@@ -28,7 +28,7 @@ function preactIslands() {
 		/**
 		 * Build hook: discover, compile, and load islands into registry
 		 */
-		async onBuild() {
+		async onPageBuild() {
 			await islands.load();
 		},
 
@@ -52,16 +52,20 @@ function castroIslandRuntime() {
 	return {
 		name: "castro-island-runtime",
 
-		getAssets() {
-			return [
-				{
-					tag: "script",
-					attrs: { type: "module", src: "/castro-island.js" },
-				},
-			];
+		getPageAssets(params = {}) {
+			if (params.hasIslands) {
+				return [
+					{
+						tag: "script",
+						attrs: { type: "module", src: "/castro-island.js" },
+					},
+				];
+			}
+
+			return [];
 		},
 
-		async onBuild() {
+		async onPageBuild() {
 			// Copy runtime file to dist (Bun.write auto-creates directories)
 			const source = Bun.file(join(import.meta.dir, "./hydration.js"));
 			const destPath = join(OUTPUT_DIR, "castro-island.js");

@@ -58,8 +58,15 @@ async function resolvePageContext({ usedIslands, pageCssAssets = [] }) {
 
 	// A. Resolve Plugin Assets & Import Maps
 	for (const plugin of defaultPlugins) {
-		if (plugin.getImportMap) Object.assign(importMap, plugin.getImportMap());
-		if (plugin.getAssets) assets.push(...plugin.getAssets());
+		if (plugin.getImportMap) {
+			Object.assign(importMap, plugin.getImportMap());
+		}
+
+		if (plugin.getPageAssets) {
+			const hasIslands = usedIslands.size > 0;
+
+			assets.push(...plugin.getPageAssets({ hasIslands }));
+		}
 	}
 
 	// B. Resolve Island CSS (Registry Lookup)

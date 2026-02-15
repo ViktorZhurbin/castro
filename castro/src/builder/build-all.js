@@ -48,8 +48,8 @@ export async function buildAll(options = {}) {
 
 	// Run plugin onBuild hooks (for file copying, etc.)
 	for (const plugin of defaultPlugins) {
-		if (plugin.onBuild) {
-			await plugin.onBuild();
+		if (plugin.onPageBuild) {
+			await plugin.onPageBuild();
 		}
 	}
 
