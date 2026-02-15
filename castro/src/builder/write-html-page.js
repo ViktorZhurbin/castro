@@ -47,19 +47,20 @@ async function resolvePageContext({ usedIslands, pageCssAssets = [] }) {
 	const importMap = {};
 	const assets = [...pageCssAssets];
 
+	// Plugin assets: island runtime script, import maps for CDN modules
 	for (const plugin of defaultPlugins) {
 		if (plugin.getImportMap) {
 			Object.assign(importMap, plugin.getImportMap());
 		}
 
 		if (plugin.getPageAssets) {
-			const hasIslands = usedIslands.size > 0;
-
-			assets.push(...plugin.getPageAssets({ hasIslands }));
+			assets.push(
+				...plugin.getPageAssets({ hasIslands: usedIslands.size > 0 }),
+			);
 		}
 	}
 
-	// Inject CSS only for islands actually used on this page
+	// Island CSS: only for islands actually rendered on this page
 	const cssManifest = islands.getCssManifest();
 	if (usedIslands.size && cssManifest.size) {
 		for (const id of usedIslands) {
@@ -68,6 +69,7 @@ async function resolvePageContext({ usedIslands, pageCssAssets = [] }) {
 		}
 	}
 
+	// Dev-only: live reload SSE client
 	if (process.env.NODE_ENV !== "production") {
 		assets.push(await getLiveReloadAsset());
 	}
@@ -132,18 +134,15 @@ function injectAssets(html, { assets, importMap }) {
 
 	if (tags.length === 0) return output;
 
-	// Try </head> first, fall back to </body>
-	const headEndIndex = output.indexOf("</head>");
-	const bodyEndIndex = output.indexOf("</body>");
-
+	// Inject before </head> so CSS is render-blocking (prevents flash of
+	// unstyled content). Fall back to </body> for layouts without a <head>.
 	const injection = tags.join("\n");
+	const headEnd = output.indexOf("</head>");
+	const bodyEnd = output.indexOf("</body>");
+	const insertAt = headEnd !== -1 ? headEnd : bodyEnd;
 
-	if (headEndIndex !== -1) {
-		output =
-			output.slice(0, headEndIndex) + injection + output.slice(headEndIndex);
-	} else if (bodyEndIndex !== -1) {
-		output =
-			output.slice(0, bodyEndIndex) + injection + output.slice(bodyEndIndex);
+	if (insertAt !== -1) {
+		output = output.slice(0, insertAt) + injection + output.slice(insertAt);
 	}
 
 	if (!output.trimStart().toLowerCase().startsWith("<!doctype")) {
@@ -171,10 +170,6 @@ function generateImportMap(map) {
  * @returns {string}
  */
 function generateAssetTag(asset) {
-	if (typeof asset === "string") {
-		return asset;
-	}
-
 	switch (asset.tag) {
 		case "link": {
 			const attrs = attrsToString(asset.attrs);
