@@ -58,7 +58,7 @@ export function renderMarker(islandId, props = {}) {
 	// Lookup island in registry
 	const island = islands.getIsland(islandId);
 
-	if (!island) {
+	if (!island?.ssrModule) {
 		throw new Error(messages.errors.islandNotFoundRegistry(islandId));
 	}
 
@@ -71,14 +71,7 @@ export function renderMarker(islandId, props = {}) {
 	let ssrHtml = "";
 
 	try {
-		// SSR module was pre-loaded by registry.load()
-		const ssrModule = islands.getSSRModule(islandId);
-
-		if (!ssrModule) {
-			throw new Error(messages.errors.islandNotFoundRegistry(islandId));
-		}
-
-		ssrHtml = frameworkConfig.renderSSR(ssrModule.default, cleanProps);
+		ssrHtml = frameworkConfig.renderSSR(island.ssrModule.default, cleanProps);
 	} catch (e) {
 		const err = /** @type {Bun.ErrorLike} */ (e);
 

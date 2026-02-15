@@ -30,6 +30,8 @@ export type IslandComponent = {
 	publicJsPath: string;
 	cssContent?: string;
 	ssrCode: string;
+	// biome-ignore lint/complexity/noBannedTypes: framework-agnostic callable
+	ssrModule?: { default: Function };
 };
 
 export type PageMeta = {

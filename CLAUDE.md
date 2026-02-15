@@ -124,7 +124,7 @@ Key rules from `src/messages/README.md`:
 
 - **Layouts receive `children` (VNode)**, not a pre-rendered `content` HTML string. The entire tree renders in a single `renderToString()` pass.
 - **`frameworkConfig` singleton** resolved at startup from `config.framework`. Fails loud if unsupported.
-- **`IslandComponent` type** has no `ssrModule` field. SSR modules are stored in a separate `#ssrModules` Map on the registry (typed as `{ default: Function }` for framework agnosticism).
+- **`IslandComponent.ssrModule`** typed as `{ default: Function }` (framework-agnostic). Pre-loaded by the registry, accessed synchronously by `renderMarker()`.
 - **`renderSSR` accepts `Function`**, not `ComponentType`. Each framework config casts internally.
 - **Island CSS** tracked per-page via `usedIslands` Set in `marker.js`, not on the registry singleton.
 
