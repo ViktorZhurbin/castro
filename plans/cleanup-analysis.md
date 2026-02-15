@@ -1,9 +1,4 @@
 # Castro Framework Analysis
-## A Staff-Level Architectural Review
-
-*Post-merge state of `html-string-approach` into `main` (commit `a0faea0`)*
-
----
 
 ## Part 1: The Architecture as It Stands
 
@@ -75,94 +70,6 @@ This is architecturally sound. The boundary between "page compilation" and "isla
 **The `FrameworkConfig` pattern in `framework-config.js` is well-designed for education.** It collects all five things you need to know about a framework integration in one object: how to compile, how to hydrate, how to SSR, what to put in the import map, and what JSX settings to use. Someone wanting to understand "what would it take to add Solid support?" can look at one object and see the complete surface area.
 
 **The plugin system (`CastroPlugin` type) is minimal but complete.** Five hooks: `onBuild`, `getAssets`, `getImportMap`, `transform`, `watchDirs`. No plugin lifecycle management, no dependency resolution between plugins. This is appropriate for the project's scope.
-
-### What's Still Rough
-
-**1. Live reload is silently broken in dev mode.**
-
-`cli.js` sets `NODE_ENV = "production"` for the `build` command but never sets `NODE_ENV = "development"` for the `dev` command. The dev server calls `buildAll()` without setting the environment. Meanwhile, `write-html-page.js` line 75 checks:
-
-```js
-if (process.env.NODE_ENV === "development") {
-    assets.push(await getLiveReloadAsset());
-}
-```
-
-Unless the user's shell already has `NODE_ENV=development`, the live reload script never gets injected. The SSE endpoint in `server.js` works, the watcher works, but the browser never connects because the `<script>` tag isn't in the HTML.
-
-Fix: add `process.env.NODE_ENV = "development"` to the `dev` case in `cli.js`, or (better) invert the check to `if (process.env.NODE_ENV !== "production")`.
-
-**2. The error handling chain double-wraps messages.**
-
-`render-page.js` catches errors and prepends the source file path:
-```js
-e.message = `${sourceFilePath}: ${e.message}`;
-```
-
-Then `build-page.js` catches the re-thrown error and wraps it again:
-```js
-styleText("red", messages.build.fileFailure(sourceFilePath, err.message))
-```
-
-A build failure for `pages/index.tsx` will produce something like:
-```
-Sabotage detected in pages/index.tsx: pages/index.tsx: Cannot read property 'default' of undefined
-```
-
-The file path appears twice. `render-page.js` should either not modify the error, or `build-page.js` should not add the file path.
-
-**3. `no:pasaran` comment says "display:contents" but code doesn't set it.**
-
-```js
-// marker.js line 93
-// Use display:contents to avoid layout shifts while keeping a wrapper
-return h("div", {
-    dangerouslySetInnerHTML: { __html: ssrHtml },
-});
-```
-
-The comment is a leftover from a previous iteration. The `div` has no style at all. This is fine functionally (an unstyled `div` is harmless as a wrapper), but the comment is misleading.
-
-**4. Blog post references a data cascade feature that doesn't exist.**
-
-`website/pages/blog/index.md` says "The layout for this post was resolved via the `reef.js` file in the blog directory, demonstrating the 11ty-style data cascade." But there is no `reef.js` file anywhere in the project. This is vestigial content from the Reef era. A reader trying Castro would see this page and be confused.
-
-**5. `isIsland()` method on the registry is never called.**
-
-`IslandsRegistry.isIsland(id)` exists but nothing in the codebase uses it. It was probably used by the old `wrapper.js` to check if a VNode's component was registered. The marker approach doesn't need it because detection happens at compile time, not at render time. Dead code.
-
-**6. The `purge` command exists but isn't in the usage text.**
-
-```js
-// communist.js
-usage: "Usage: castro [dev|build]",
-```
-
-The CLI accepts `castro purge` but the help text only mentions `dev` and `build`.
-
-**7. `compileIslandSSR` returns `undefined` on failure instead of throwing.**
-
-```js
-// compiler.js line 156
-async function compileIslandSSR({ sourcePath }) {
-    // ...
-    try {
-        // ...
-    } catch (e) {
-        console.warn(styleText("yellow", messages.build.ssrSkipped(...)));
-        // implicit return undefined
-    }
-}
-```
-
-The caller checks for this:
-```js
-if (!ssrCode) {
-    throw new Error(messages.build.ssrCompileFailed(sourcePath));
-}
-```
-
-This means an SSR compilation failure produces *two* messages — a yellow warning from `compileIslandSSR` and then a thrown error from `compileIsland`. Either the function should throw directly (let the caller handle it), or it should return `undefined` silently and let the caller be the sole reporter. Currently it does both.
 
 ---
 
@@ -295,8 +202,6 @@ The comparison I'd make isn't to other SSG frameworks. It's to projects like **R
 
 If I were planning the next phase, in order of impact:
 
-1. **Fix the live reload bug.** It's likely broken right now for most users. One line fix.
-
 2. **Build the tutorial page.** The website links to `/tutorial` but it doesn't exist. A single page walking through "open `compile-jsx.js`, here's what happens when you import an island" would multiply the educational value of the codebase.
 
 3. **Add `client:idle` as a fourth directive** (`comrade:idle`?). It's 10 lines in `hydration.js` and demonstrates `requestIdleCallback`, which is a useful browser API to know about.
@@ -304,8 +209,6 @@ If I were planning the next phase, in order of impact:
 4. **Clean up the blog post content.** Remove the reef.js data cascade reference. Replace with content that actually demonstrates what Castro can do.
 
 5. **Add a `/internals` page** to the website that shows the build pipeline visually. Build it with Castro. This is the ultimate dogfooding — the framework's documentation site uses the framework to explain the framework.
-
-6. **Consider conditional loading of `castro-island.js`.** Only inject the custom element registration script on pages that actually have islands. The plugin system already knows this (via `usedIslands`) — it's a matter of checking `usedIslands.size > 0` before adding the script asset.
 
 ### The Question You Didn't Ask: Is This a Framework or a Textbook?
 
