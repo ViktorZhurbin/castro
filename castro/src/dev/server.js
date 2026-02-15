@@ -163,7 +163,17 @@ export async function startDevServer() {
 			const filePath = join(PAGES_DIR, event.filename);
 
 			logFileChanged(filePath);
-			await buildPage(event.filename);
+
+			try {
+				await buildPage(event.filename);
+			} catch (e) {
+				const err = /** @type {Bun.ErrorLike} */ (e);
+
+				console.error(styleText("red", err.message));
+			}
+
+			// Always notify — even on failure the browser should reload
+			// to show the last successful build or pick up partial changes
 			notifyReload();
 		}
 	})();
@@ -173,26 +183,39 @@ export async function startDevServer() {
 
 	for (const dir of watchDirs) {
 		(async () => {
+			/** @type {AsyncIterable<import("node:fs/promises").FileChangeInfo<string>>} */
+			let watcher;
+
 			try {
-				const watcher = watch(dir, { recursive: true });
-				for await (const event of watcher) {
-					if (event.filename) {
-						logFileChanged(`${dir}/${event.filename}`);
-
-						if (dir === LAYOUTS_DIR) {
-							await layouts.load();
-						}
-
-						await buildAll();
-						notifyReload();
-					}
-				}
+				watcher = watch(dir, { recursive: true });
 			} catch (e) {
 				const err = /** @type {Bun.ErrorLike} */ (e);
 
+				// ENOENT = directory doesn't exist yet, which is fine
 				if (err.code !== "ENOENT") {
 					console.warn(messages.devServer.watchError(dir, err.message));
 				}
+				return;
+			}
+
+			for await (const event of watcher) {
+				if (!event.filename) continue;
+
+				logFileChanged(`${dir}/${event.filename}`);
+
+				try {
+					if (dir === LAYOUTS_DIR) {
+						await layouts.load();
+					}
+
+					await buildAll();
+				} catch (e) {
+					const err = /** @type {Bun.ErrorLike} */ (e);
+
+					console.error(styleText("red", err.message));
+				}
+
+				notifyReload();
 			}
 		})();
 	}
