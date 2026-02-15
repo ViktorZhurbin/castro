@@ -38,61 +38,50 @@ export async function renderPage({
 	// Reset island usage tracking for this page
 	resetUsedIslands();
 
-	try {
-		// Get page content as a VNode
-		const contentVNode = createContentVNode();
+	// Get page content as a VNode
+	const contentVNode = createContentVNode();
 
-		// Support pages that render full HTML themselves (layout: false)
-		let vnodeToRender;
+	// Support pages that render full HTML themselves (layout: false)
+	let vnodeToRender;
 
-		if (pageMeta.layout === false || pageMeta.layout === "none") {
-			vnodeToRender = contentVNode;
-		} else {
-			// Resolve layout from frontmatter/meta
-			const layoutName =
-				typeof pageMeta.layout === "string" ? pageMeta.layout : "default";
+	if (pageMeta.layout === false || pageMeta.layout === "none") {
+		vnodeToRender = contentVNode;
+	} else {
+		// Resolve layout from frontmatter/meta
+		const layoutName =
+			typeof pageMeta.layout === "string" ? pageMeta.layout : "default";
 
-			// Get the layout component from the registry
-			const layoutComponent = layouts.getLayout(layoutName);
+		// Get the layout component from the registry
+		const layoutComponent = layouts.getLayout(layoutName);
 
-			// Validate that the requested layout actually exists
-			if (!layoutComponent) {
-				throw new Error(messages.errors.layoutNotFound(layoutName));
-			}
-
-			// Get layout CSS assets
-			const layoutCssAssets = layouts.getCssAssets(layoutName) ?? [];
-			pageAndLayoutCssAssets.push(...layoutCssAssets);
-
-			// Apply layout
-			const title =
-				pageMeta.title ||
-				basename(sourceFilePath).replace(/\.(md|[jt]sx)$/, "");
-
-			// Layouts are Preact components
-			// Pass contentVNode as children for the layout to use
-			vnodeToRender = layoutComponent({
-				...pageMeta,
-				title,
-				children: contentVNode,
-			});
+		// Validate that the requested layout actually exists
+		if (!layoutComponent) {
+			throw new Error(messages.errors.layoutNotFound(layoutName));
 		}
 
-		// Render VNode tree to HTML string
-		const finalHtml = renderToString(vnodeToRender);
+		// Get layout CSS assets
+		const layoutCssAssets = layouts.getCssAssets(layoutName) ?? [];
+		pageAndLayoutCssAssets.push(...layoutCssAssets);
 
-		// Write HTML with all CSS assets
-		await writeHtmlPage(finalHtml, outputFilePath, {
-			usedIslands: getUsedIslands(),
-			pageCssAssets: pageAndLayoutCssAssets,
+		// Apply layout
+		const title =
+			pageMeta.title || basename(sourceFilePath).replace(/\.(md|[jt]sx)$/, "");
+
+		// Layouts are Preact components
+		// Pass contentVNode as children for the layout to use
+		vnodeToRender = layoutComponent({
+			...pageMeta,
+			title,
+			children: contentVNode,
 		});
-	} catch (e) {
-		// Attach source context to the error.
-		if (e instanceof Error) {
-			e.message = `${sourceFilePath}: ${e.message}`;
-		}
-
-		// Let the outer build-page.js error boundary handle message formatting.
-		throw e;
 	}
+
+	// Render VNode tree to HTML string
+	const finalHtml = renderToString(vnodeToRender);
+
+	// Write HTML with all CSS assets
+	await writeHtmlPage(finalHtml, outputFilePath, {
+		usedIslands: getUsedIslands(),
+		pageCssAssets: pageAndLayoutCssAssets,
+	});
 }
