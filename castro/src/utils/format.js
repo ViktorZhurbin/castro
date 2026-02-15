@@ -1,11 +1,4 @@
 /**
- * Shared Utilities
- *
- * Generic helper functions used throughout the codebase.
- */
-
-/**
- * Format milliseconds for display
  * @param {number} ms
  * @returns {string}
  */

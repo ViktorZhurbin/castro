@@ -188,18 +188,11 @@ The code is the documentation. Start reading from:
 - `castro/src/islands/` - Island architecture implementation
 - `castro/src/dev/server.js` - Development server
 
-Every file has detailed comments explaining the implementation.
+Every file has comments explaining the implementation.
 
 ## Contributing
 
-This is an educational project. PRs welcome if they:
-
-- **Improve code clarity/comments** - Make it easier to learn from
-- **Fix bugs** - Keep it working correctly
-- **Enhance educational value** - Better examples, clearer explanations
-- **Add tutorial content** - Help others learn
-
-Joke PRs are fun but secondary to learning value.
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Requirements
 

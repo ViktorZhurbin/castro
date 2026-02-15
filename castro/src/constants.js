@@ -1,27 +1,13 @@
 /**
- * Static Configuration Constants
+ * Directory constants that define the project structure.
  *
- * Directory paths and file names that define the project structure.
- * These values never change and form the lowest-level dependency layer.
- *
- * This file has no dependencies on other modules, making it safe to import
- * from anywhere without risk of circular dependencies.
+ * No dependencies on other modules — safe to import from anywhere
+ * without risk of circular imports.
  */
 
-/** Output directory for built files */
 export const OUTPUT_DIR = "dist";
-
-/** Static assets that get copied as-is */
 export const PUBLIC_DIR = "public";
-
-/** Layout components directory */
 export const LAYOUTS_DIR = "layouts";
-
-/** Source pages (markdown and JSX) */
 export const PAGES_DIR = "pages";
-
-/** Components directory */
 export const COMPONENTS_DIR = "components";
-
-/** Island output directory */
 export const ISLANDS_OUTPUT_DIR = "islands";

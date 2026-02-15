@@ -1,11 +1,10 @@
 /**
  * Islands Registry
  *
- * Holds all loaded islands.
- * Handles:
- * 1. Discovery & Compilation (Build time)
- * 2. Storage (Registry of available islands)
- * 3. Resolution (Mapping imports to islands during page rendering)
+ * Singleton store for all compiled island components.
+ * At build time, discovers .island.{jsx,tsx} files, compiles each for
+ * both client (browser bundle) and server (SSR), and pre-loads SSR modules
+ * into memory so renderMarker() can access them synchronously.
  */
 
 import { mkdir } from "node:fs/promises";
@@ -27,17 +26,12 @@ import { compileIsland } from "./compiler.js";
  * @typedef {ReturnType<typeof getIslandId>} IslandId
  */
 
-/**
- * Singleton registry for islands
- */
 class IslandsRegistry {
-	/**
-	 * @type {Map<IslandId, IslandComponent>}
-	 */
+	/** @type {Map<IslandId, IslandComponent>} */
 	#islands = new Map();
 
 	/**
-	 * Map of island ID > CSS content string
+	 * Island ID → CSS content string, used for per-page CSS injection
 	 * @type {Map<IslandId, string>}
 	 */
 	#cssManifest = new Map();
@@ -46,9 +40,7 @@ class IslandsRegistry {
 		return this.#islands.size;
 	}
 
-	/**
-	 * @param {IslandId} id
-	 */
+	/** @param {IslandId} id */
 	getIsland(id) {
 		return this.#islands.get(id);
 	}
@@ -58,13 +50,12 @@ class IslandsRegistry {
 	}
 
 	/**
-	 * Load (or reload) all islands from disk
+	 * Discover, compile, and load all islands from disk.
 	 */
 	async load() {
 		this.#islands.clear();
 		this.#cssManifest.clear();
 
-		// Prepare output directory
 		const outputIslandsDir = join(OUTPUT_DIR, ISLANDS_OUTPUT_DIR);
 		await mkdir(outputIslandsDir, { recursive: true });
 
@@ -73,19 +64,15 @@ class IslandsRegistry {
 		for await (const relativePath of islandGlob.scan(COMPONENTS_DIR)) {
 			const sourcePath = join(COMPONENTS_DIR, relativePath);
 
-			// Calculate output directory structure preserving nesting
+			// Preserve directory nesting in output (e.g., ui/Button → islands/ui/Button)
 			const relativeDir = dirname(relativePath);
-
 			const outputDir = join(outputIslandsDir, relativeDir);
-
-			// Public URL base: /islands/ui
 			const publicDir = `/${join(ISLANDS_OUTPUT_DIR, relativeDir)}`.replaceAll(
 				"\\",
 				"/",
 			);
 
 			try {
-				// Compiler handles hashing and returns specific hashed filenames
 				const component = await compileIsland({
 					sourcePath,
 					outputDir,
@@ -94,9 +81,8 @@ class IslandsRegistry {
 
 				const islandId = getIslandId(sourcePath);
 
-				// Pre-load the SSR module into memory.
-				// renderToString() calls renderMarker() synchronously during
-				// VNode traversal — there is no opportunity to await.
+				// Pre-load SSR module so renderMarker() can access it synchronously
+				// during renderToString() traversal
 				component.ssrModule = await getModule(
 					sourcePath,
 					component.ssrCode,
@@ -105,7 +91,6 @@ class IslandsRegistry {
 
 				this.#islands.set(islandId, component);
 
-				// Map ID -> CSS string for later lookup during rendering
 				if (component.cssContent) {
 					this.#cssManifest.set(islandId, component.cssContent);
 				}
@@ -116,7 +101,6 @@ class IslandsRegistry {
 			}
 		}
 
-		// Log compiled islands
 		if (this.#islands.size > 0) {
 			console.info(
 				styleText("green", messages.files.compiled(this.#islands.size)),
@@ -131,5 +115,4 @@ class IslandsRegistry {
 	}
 }
 
-// Export singleton instance
 export const islands = new IslandsRegistry();

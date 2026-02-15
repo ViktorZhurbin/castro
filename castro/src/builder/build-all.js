@@ -1,13 +1,12 @@
 /**
- * Builder - Main Build Orchestrator
+ * Build Orchestrator
  *
- * This is the entry point for building your site.
- * It coordinates all the steps:
- * 1. Load layouts
- * 2. Clean and prepare output directory
- * 3. Copy public assets
- * 4. Run plugin build hooks
- * 5. Build all pages (markdown and JSX)
+ * Coordinates the full site build:
+ * 1. Clean and prepare output directory
+ * 2. Copy public/ assets
+ * 3. Run plugin build hooks (island compilation, runtime copying)
+ * 4. Load layouts
+ * 5. Scan pages, detect route conflicts, build each page
  */
 
 import { cp, mkdir, rm } from "node:fs/promises";
@@ -20,8 +19,6 @@ import { formatMs } from "../utils/format.js";
 import { buildPage } from "./build-page.js";
 
 /**
- * Build all pages to HTML
- *
  * @param {{ verbose?: boolean }} [options]
  */
 export async function buildAll(options = {}) {
@@ -30,40 +27,33 @@ export async function buildAll(options = {}) {
 
 	console.info(messages.build.starting);
 
-	// Clean up output directory and recreate it
 	await rm(OUTPUT_DIR, { recursive: true, force: true });
 	await mkdir(OUTPUT_DIR, { recursive: true });
 
-	// Copy public directory to output if it exists
 	try {
 		await cp(PUBLIC_DIR, OUTPUT_DIR, { recursive: true });
 	} catch (e) {
 		const err = /** @type {Bun.ErrorLike} */ (e);
 
-		// Silently skip if public directory doesn't exist
 		if (err.code !== "ENOENT") {
 			throw err;
 		}
 	}
 
-	// Run plugin onBuild hooks (for file copying, etc.)
 	for (const plugin of defaultPlugins) {
 		if (plugin.onPageBuild) {
 			await plugin.onPageBuild();
 		}
 	}
 
-	// Initialize layouts registry
 	await layouts.load();
 
-	// Collect all pages and detect route conflicts
-	//
-	// We scan all .md, .jsx, and .tsx files in pages/ and check if any
-	// would produce the same .html output path (e.g., foo.md and foo.jsx
-	// both want to become foo.html). This prevents silent overwrites.
+	// Scan all pages and detect route conflicts before building.
+	// Two source files (e.g., foo.md and foo.jsx) targeting the same
+	// output path would silently overwrite each other.
 
 	/** @type {Map<string, string>} */
-	const outputMap = new Map(); // htmlPath → sourceFile
+	const outputMap = new Map();
 
 	const pageGlob = new Bun.Glob("**/*.{md,jsx,tsx}");
 
@@ -71,7 +61,6 @@ export async function buildAll(options = {}) {
 		for await (const sourcePath of pageGlob.scan(PAGES_DIR)) {
 			const outputPath = sourcePath.replace(/\.(md|[jt]sx)$/, ".html");
 
-			// Detect route conflicts (two files producing same output)
 			if (outputMap.has(outputPath)) {
 				const existingFile = outputMap.get(outputPath);
 				const errorMessage = messages.errors.routeConflict(

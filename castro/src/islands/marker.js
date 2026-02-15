@@ -1,15 +1,15 @@
 /**
- * Island Marker Runtime
+ * Island Marker
  *
- * This code runs at BUILD TIME when a page renders an island component.
- * It handles SSR rendering and wrapping islands in the <castro-island> custom element.
+ * Called synchronously during renderToString() when the VNode tree hits
+ * an island component. The build-plugins replaced the real island import
+ * with a stub that calls renderMarker(), which:
  *
- * Architecture:
- * 1. Registry lookup - Find the island's compiled code and pre-loaded SSR module
- * 2. Usage tracking - Mark island as used for CSS injection
- * 3. Directive processing - Handle lenin:awake, comrade:visible, no:pasaran
- * 4. SSR execution - Run the island's SSR module synchronously
- * 5. Wrapper generation - Wrap in <castro-island> or return static HTML
+ * 1. Looks up the island's pre-loaded SSR module in the registry
+ * 2. Renders it to HTML (server-side)
+ * 3. Wraps it in a <castro-island> custom element for client hydration
+ *
+ * Also tracks which islands each page uses, so only their CSS gets injected.
  */
 
 import { h } from "preact";
@@ -23,23 +23,16 @@ import { islands } from "./registry.js";
  */
 
 /**
- * Tracks which islands are used during the current page render.
- * Helps make sure that only CSS for used islands gets included in the page
- * Reset before each page, populated by renderMarker()
+ * Islands used during the current page render.
+ * Reset before each page so only relevant CSS gets injected.
  * @type {Set<string>}
  */
 const usedIslands = new Set();
 
-/**
- * Reset tracking for a new page render.
- */
 export function resetUsedIslands() {
 	usedIslands.clear();
 }
 
-/**
- * Get the set of islands used during the current page render.
- */
 export function getUsedIslands() {
 	return usedIslands;
 }
@@ -47,15 +40,11 @@ export function getUsedIslands() {
 /**
  * Render an island marker component
  *
- * Called synchronously by renderToString() during VNode tree traversal.
- * SSR modules are pre-loaded by the registry so no async work is needed here.
- *
- * @param {string} islandId - Unique island identifier (e.g., "components/Counter.island.tsx")
+ * @param {string} islandId - e.g., "components/Counter.island.tsx"
  * @param {Record<string, any>} props - Component props including directives
  * @returns {VNode}
  */
 export function renderMarker(islandId, props = {}) {
-	// Lookup island in registry
 	const island = islands.getIsland(islandId);
 
 	if (!island?.ssrModule) {
@@ -64,10 +53,8 @@ export function renderMarker(islandId, props = {}) {
 
 	usedIslands.add(islandId);
 
-	// Extract directives and clean props
 	const { directive, cleanProps } = processProps(props);
 
-	// SSR Render
 	let ssrHtml = "";
 
 	try {
@@ -77,18 +64,16 @@ export function renderMarker(islandId, props = {}) {
 
 		console.error(messages.errors.islandRenderFailed(islandId, err.message));
 
-		// Render the styled error fallback instead of crashing the build
 		ssrHtml = frameworkConfig.renderSSR(SSRError, { islandId, error: err });
 	}
 
-	// Handle no:pasaran - static only, no hydration wrapper
+	// no:pasaran = static only, no hydration wrapper
 	if (directive === "no:pasaran") {
 		return h("div", {
 			dangerouslySetInnerHTML: { __html: ssrHtml },
 		});
 	}
 
-	// Return the custom element wrapper for client-side hydration
 	return h("castro-island", {
 		directive,
 		import: island.publicJsPath,
@@ -117,7 +102,6 @@ function processProps(props = {}) {
 		);
 	}
 
-	// Create clean props (shallow copy) and remove directive
 	const cleanProps = { ...props };
 
 	if (foundDirectives.length > 0) {
@@ -135,7 +119,6 @@ function processProps(props = {}) {
 // ============================================================================
 
 /**
- * Styles for the SSR error boundary component
  * @type {{ container: Partial<CSSStyleDeclaration>, detail: Partial<CSSStyleDeclaration>, pre: Partial<CSSStyleDeclaration> }}
  */
 const ERROR_STYLES = {
@@ -161,14 +144,11 @@ const ERROR_STYLES = {
 };
 
 /**
- * SSR error fallback component
- *
- * Renders a visible, themed error box when an island fails to SSR.
+ * Renders a visible error box when an island fails to SSR.
  * Keeps the build running while making the failure hard to miss.
  *
- * We use h() directly instead of JSX because this file runs as part of
- * Castro's build process, not through the page compilation pipeline.
- * marker.js is imported by compiled pages, so it must be plain JS.
+ * Uses h() directly because this file is imported by compiled pages
+ * as plain JS — it doesn't go through the JSX compilation pipeline.
  *
  * @param {{ islandId: string, error: Error }} props
  * @returns {VNode}

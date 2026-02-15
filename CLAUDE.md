@@ -108,6 +108,16 @@ File watchers rebuild on change. Page changes → single page rebuild. Layout/co
 - **No `createElement`** — use JSX or `h()` from preact.
 - **No non-null assertions** (e.g. `foo!.bar`) in TypeScript.
 
+## Comments
+
+This is an educational codebase — comments matter. But they should respect the reader.
+
+- **Module docblocks**: Explain the file's role in the architecture. Keep it to 3-8 lines.
+- **Inline comments**: Earn their place by answering "why?" or "why not the obvious way?". Delete comments that restate what the code says.
+- **JSDoc on functions**: Type signatures are required. Prose descriptions only when the name + types aren't enough.
+- **Never condescend**: The reader is a developer. No "Educational note:" or "Simply put:" prefixes. Explain the concept directly.
+- **Benchmark**: `compiler.js` and `hydration.js` are the standard for comment quality.
+
 ## Messages
 
 Use `styleText` from `node:util` for colored logs.

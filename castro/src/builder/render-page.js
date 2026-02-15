@@ -1,6 +1,12 @@
 /**
- * Unified rendering logic for both JSX and Markdown pages.
- * Handles layout application, CSS collection, and writing.
+ * Page Renderer
+ *
+ * Renders a page through the full pipeline: content VNode → layout wrapping →
+ * renderToString() → HTML file with injected assets.
+ *
+ * Both JSX and Markdown pages flow through this single function.
+ * The entire VNode tree (page + layout + any islands) renders in one
+ * renderToString() pass, which is why island SSR modules must be pre-loaded.
  */
 
 import { basename } from "node:path";
@@ -16,8 +22,6 @@ import { writeHtmlPage } from "./write-html-page.js";
  */
 
 /**
- * Render a page through the complete pipeline
- *
  * @param {{
  *   createContentVNode: () => VNode,
  *   outputFilePath: string,
@@ -35,40 +39,31 @@ export async function renderPage({
 }) {
 	const pageAndLayoutCssAssets = [...pageCssAssets];
 
-	// Reset island usage tracking for this page
 	resetUsedIslands();
 
-	// Get page content as a VNode
 	const contentVNode = createContentVNode();
 
-	// Support pages that render full HTML themselves (layout: false)
+	// Pages can opt out of layouts with `layout: false` or `layout: "none"`
 	let vnodeToRender;
 
 	if (pageMeta.layout === false || pageMeta.layout === "none") {
 		vnodeToRender = contentVNode;
 	} else {
-		// Resolve layout from frontmatter/meta
 		const layoutName =
 			typeof pageMeta.layout === "string" ? pageMeta.layout : "default";
 
-		// Get the layout component from the registry
 		const layoutComponent = layouts.getLayout(layoutName);
 
-		// Validate that the requested layout actually exists
 		if (!layoutComponent) {
 			throw new Error(messages.errors.layoutNotFound(layoutName));
 		}
 
-		// Get layout CSS assets
 		const layoutCssAssets = layouts.getCssAssets(layoutName) ?? [];
 		pageAndLayoutCssAssets.push(...layoutCssAssets);
 
-		// Apply layout
 		const title =
 			pageMeta.title || basename(sourceFilePath).replace(/\.(md|[jt]sx)$/, "");
 
-		// Layouts are Preact components
-		// Pass contentVNode as children for the layout to use
 		vnodeToRender = layoutComponent({
 			...pageMeta,
 			title,
@@ -76,10 +71,8 @@ export async function renderPage({
 		});
 	}
 
-	// Render VNode tree to HTML string
 	const finalHtml = renderToString(vnodeToRender);
 
-	// Write HTML with all CSS assets
 	await writeHtmlPage(finalHtml, outputFilePath, {
 		usedIslands: getUsedIslands(),
 		pageCssAssets: pageAndLayoutCssAssets,

@@ -1,11 +1,11 @@
 /**
  * HTML Page Writer
  *
- * Final step in page building. It orchestrates the pipeline:
- * 1. Resolution: Gather all assets (Static, Page-level, Island CSS, Imports)
- * 2. Transformation: Run plugin hooks on the HTML
- * 3. Injection: Insert all gathered assets into the HTML
- * 4. Output: Write to disk
+ * Final step in page building. Takes rendered HTML and:
+ * 1. Gathers assets (page CSS, island CSS, plugin assets, live reload)
+ * 2. Runs plugin transform hooks on the HTML
+ * 3. Injects all assets into <head> (or <body> fallback)
+ * 4. Writes the file to disk
  */
 
 import { join } from "node:path";
@@ -19,36 +19,27 @@ import { islands } from "../islands/registry.js";
  */
 
 /**
- * Process HTML and write to file
- *
  * @param {string} rawHtml
  * @param {string} outputPath
  * @param {Options} options
  */
 export async function writeHtmlPage(rawHtml, outputPath, options) {
-	// 1. Resolution Phase: Gather all assets from all sources
 	const context = await resolvePageContext(options);
-
-	// 2. Transform Phase: Allow plugins to modify HTML
 	const { html, assets: transformAssets } = await runTransforms(rawHtml);
 
-	// 3. Injection Phase: Combine all assets and inject into HTML
 	const finalHtml = injectAssets(html, {
 		importMap: context.importMap,
 		assets: [...context.assets, ...transformAssets],
 	});
 
-	// 4. Output Phase (Bun.write auto-creates parent directories)
 	await Bun.write(outputPath, finalHtml);
 }
 
 // ============================================================================
-// Phase 1: Resolution (Gathering Data)
+// Resolution — gather all assets needed for this page
 // ============================================================================
 
 /**
- * Resolves all initial assets required for the page.
- * This aggregates Page CSS, Island CSS, Plugin Assets, and Live Reload script.
  * @param {Options} options
  */
 async function resolvePageContext({ usedIslands, pageCssAssets = [] }) {
@@ -56,7 +47,6 @@ async function resolvePageContext({ usedIslands, pageCssAssets = [] }) {
 	const importMap = {};
 	const assets = [...pageCssAssets];
 
-	// A. Resolve Plugin Assets & Import Maps
 	for (const plugin of defaultPlugins) {
 		if (plugin.getImportMap) {
 			Object.assign(importMap, plugin.getImportMap());
@@ -69,7 +59,7 @@ async function resolvePageContext({ usedIslands, pageCssAssets = [] }) {
 		}
 	}
 
-	// B. Resolve Island CSS (Registry Lookup)
+	// Inject CSS only for islands actually used on this page
 	const cssManifest = islands.getCssManifest();
 	if (usedIslands.size && cssManifest.size) {
 		for (const id of usedIslands) {
@@ -78,7 +68,6 @@ async function resolvePageContext({ usedIslands, pageCssAssets = [] }) {
 		}
 	}
 
-	// C. Resolve Live Reload (Dev Mode only)
 	if (process.env.NODE_ENV !== "production") {
 		assets.push(await getLiveReloadAsset());
 	}
@@ -86,10 +75,7 @@ async function resolvePageContext({ usedIslands, pageCssAssets = [] }) {
 	return { assets, importMap };
 }
 
-/**
- * Cache for the live reload script content
- * @type {string | null}
- */
+/** @type {string | null} */
 let _liveReloadCache = null;
 
 async function getLiveReloadAsset() {
@@ -106,11 +92,10 @@ async function getLiveReloadAsset() {
 }
 
 // ============================================================================
-// Phase 2: Transformation (Modifying HTML)
+// Transformation — let plugins modify HTML
 // ============================================================================
 
 /**
- *
  * @param {string} html
  * @returns {Promise<{ html: string; assets: Asset[] }>}
  */
@@ -130,20 +115,16 @@ async function runTransforms(html) {
 }
 
 // ============================================================================
-// Phase 3: Injection (String Manipulation)
+// Injection — insert assets into the HTML string
 // ============================================================================
 
 /**
- * Pure function to inject assets into HTML string.
- * No side effects, no registry lookups.
- *
  * @param {string} html
  * @param {{ assets: Asset[]; importMap: ImportsMap }} options
  */
 function injectAssets(html, { assets, importMap }) {
 	let output = html;
 
-	// Generate tags
 	const tags = [
 		generateImportMap(importMap),
 		...assets.map(generateAssetTag),
@@ -151,7 +132,7 @@ function injectAssets(html, { assets, importMap }) {
 
 	if (tags.length === 0) return output;
 
-	// Injection strategy: Try </head>, fallback to </body>
+	// Try </head> first, fall back to </body>
 	const headEndIndex = output.indexOf("</head>");
 	const bodyEndIndex = output.indexOf("</body>");
 
@@ -165,7 +146,6 @@ function injectAssets(html, { assets, importMap }) {
 			output.slice(0, bodyEndIndex) + injection + output.slice(bodyEndIndex);
 	}
 
-	// Ensure DOCTYPE exists
 	if (!output.trimStart().toLowerCase().startsWith("<!doctype")) {
 		output = `<!DOCTYPE html>\n${output}`;
 	}
@@ -174,12 +154,12 @@ function injectAssets(html, { assets, importMap }) {
 }
 
 // ============================================================================
-// Utils: HTML Generation helpers
+// HTML tag generation helpers
 // ============================================================================
 
 /**
  * @param {ImportsMap} map
- * @returns {string} - <script type="importmap"></script>
+ * @returns {string}
  */
 function generateImportMap(map) {
 	if (!map || Object.keys(map).length === 0) return "";
@@ -188,7 +168,7 @@ function generateImportMap(map) {
 
 /**
  * @param {Asset} asset
- * @returns {string} - HTML tag: link/script/style
+ * @returns {string}
  */
 function generateAssetTag(asset) {
 	if (typeof asset === "string") {
@@ -198,17 +178,14 @@ function generateAssetTag(asset) {
 	switch (asset.tag) {
 		case "link": {
 			const attrs = attrsToString(asset.attrs);
-
 			return `<link ${attrs}>`;
 		}
 
-		case "style": {
+		case "style":
 			return `<style>${asset.content}</style>`;
-		}
 
 		case "script": {
 			const attrs = attrsToString(asset.attrs);
-
 			return `<script ${attrs}>${asset.content || ""}</script>`;
 		}
 
@@ -219,7 +196,7 @@ function generateAssetTag(asset) {
 
 /**
  * @param {Record<string, any>} attrs
- * @returns {string} - Attributes for an HTML tag (<script>, <link>)
+ * @returns {string}
  */
 function attrsToString(attrs = {}) {
 	return Object.entries(attrs)
