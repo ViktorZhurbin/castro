@@ -2,7 +2,7 @@
 
 *An educational framework for understanding island architecture*
 
-Castro is a working Static Site Generator that implements island architecture in under 1300 lines of well-commented, readable code. The communist theme makes it memorable. The architecture lessons are real.
+Castro is a working Static Site Generator that implements island architecture in ~1100 lines of well-commented, readable code. The communist theme makes it memorable. The architecture lessons are real.
 
 **Learn by reading code, not documentation.**
 
@@ -64,12 +64,12 @@ my-site/
 
 **Create a layout** (`layouts/default.jsx`):
 ```jsx
-export default ({ title, content }) => (
+export default ({ title, children }) => (
   <html>
     <head>
       <title>{title}</title>
     </head>
-    <body dangerouslySetInnerHTML={{ __html: content }} />
+    <body>{children}</body>
   </html>
 );
 ```
@@ -184,7 +184,7 @@ You can use it for small websites, personal blogs, etc. For larger projects with
 The code is the documentation. Start reading from:
 
 - `castro/src/cli.js` - Entry point
-- `castro/src/builder/builder.js` - Build orchestration
+- `castro/src/builder/build-all.js` - Build orchestration
 - `castro/src/islands/` - Island architecture implementation
 - `castro/src/dev/server.js` - Development server
 
