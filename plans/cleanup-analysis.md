@@ -87,10 +87,6 @@ That's an extraordinary amount of ground covered in ~1,100 lines. For comparison
 
 **The `FrameworkConfig` object is a pedagogical gem.** It answers the question "what does framework-specific mean in an SSG?" in 40 lines of code. Five properties, five concerns, one object. A reader who understands this object understands the interface between a framework and an SSG at a conceptual level. This is the kind of thing that transfers — after reading Castro's Preact config, you'd be able to look at how Astro integrates React or Solid and recognize the same patterns.
 
-### Where the Educational Value Could Be Stronger
-
-**The `write-html-page.js` pipeline (210 lines) is the longest file and the hardest to follow.** It does four things — resolution, transformation, injection, and output — but the `injectAssets` function is doing string manipulation that's not particularly educational. The `indexOf("</head>")` approach works, but a reader learns more from understanding *why* assets need to go in `<head>` than from seeing string slicing. A comment about "why `</head>` and not `</body>`" (render-blocking CSS needs to be in head; scripts can go in either) would help.
-
 ---
 
 ## Part 3: Comparison with Other Frameworks
@@ -146,24 +142,6 @@ That's an extraordinary amount of ground covered in ~1,100 lines. For comparison
 
 **The CSS pipeline (extract → manifest → inject) handles the hard case well.** Island CSS is extracted during island compilation, stored in the registry's CSS manifest, tracked per-page via `usedIslands`, and injected as inline `<style>` tags. Page and layout CSS are extracted by `Bun.build`'s CSS loader and written as separate files with `<link>` tags. The two paths are different because they solve different problems (island CSS is per-component and needs deduplication; page CSS is per-file and doesn't), and the code makes this distinction clear.
 
-### What's Still a "Clever Trick"
-
-**The `getModule()` / `writeTempFile()` pattern in `cache.js` is the one remaining piece of "magic."** The function writes JavaScript code to a file in `node_modules/.cache/castro/`, then immediately `import()`s it via a `file://` URL with a cache-busting timestamp. This works, and it's well-commented, but it's the one part of the pipeline where a reader might think "wait, we're writing code to disk and then importing it? Is that... normal?"
-
-The answer is: yes, this is how many build tools work internally (webpack's in-memory filesystem, Vite's module graph), but they usually hide it behind abstractions. Castro exposes it, which is educational. But it would benefit from a more prominent "here be dragons" comment explaining that this is the one piece of genuine build-tool plumbing in the codebase.
-
-**The `resolveImportsPlugin` with catch-all `filter: /.*/` is necessary but subtle.** Intercepting every single module resolution request to classify imports into three buckets (Castro internals, bare specifiers, relative imports) is correct, but a reader who doesn't understand Bun's plugin system will find this confusing. The comment is good, but the concept of "external means don't bundle, let Bun resolve at import time" is not self-evident.
-
-**Virtual entry points in `compileIslandClient`.** The client-side island compilation creates a virtual file (`counter.virtual.js`) that imports the real component and wraps it in a mounting function. This virtual file is never written to disk — it exists only in Bun's build configuration via the `files` option. This is a well-established pattern (Vite, Rollup, and esbuild all support virtual modules), but it requires knowing that build tools can operate on files that don't exist on the filesystem.
-
-### Architectural Gaps to Think About
-
-**No incremental builds.** Every `buildAll()` call clears `dist/` and rebuilds everything. For a site with 10 pages, this is fine. For 1,000 pages, it would be slow. 11ty and Astro both support incremental builds. This isn't a bug — it's a scope decision. But the rebuild-everything-on-change behavior in the dev server means that editing a component triggers a full site rebuild, which could become a DX issue as the website grows.
-
-**No streaming SSR.** `renderToString()` produces the entire HTML string in memory before writing to disk. Modern SSR frameworks (Next.js, SolidStart, Fresh) can stream HTML chunks to the browser as they render. This is beyond Castro's scope (it's a static site generator, not a server), but it's worth noting that the architecture doesn't prevent it — `renderToString` could be replaced with `renderToReadableStream` if someone wanted to experiment.
-
-**No content collections.** Astro's content collections provide typed access to markdown frontmatter across multiple files. Castro's frontmatter is validated per-file with a simple schema (`title: string, layout: string | boolean`). A `pages/blog/` directory with 50 posts has no way to generate an index page listing all posts. This would be a natural next feature and would teach about build-time data aggregation.
-
 ---
 
 ## Part 5: Fresh Perspective — Where Castro Could Go
@@ -192,17 +170,6 @@ This is a genuinely hard design constraint to satisfy. Most educational projects
 
 The comparison I'd make isn't to other SSG frameworks. It's to projects like **Redux** (a state management library that taught a generation of developers about unidirectional data flow by being simple enough to understand completely) or **Express** (an HTTP framework that taught a generation about middleware by being ~500 lines of readable code). Castro could serve the same role for island architecture — the framework people read to understand the concept, not the framework they use in production.
 
-### What I'd Prioritize Next
-
-If I were planning the next phase, in order of impact:
-
-2. **Build the tutorial page.** The website links to `/tutorial` but it doesn't exist. A single page walking through "open `compile-jsx.js`, here's what happens when you import an island" would multiply the educational value of the codebase.
-
-3. **Add `client:idle` as a fourth directive** (`comrade:idle`?). It's 10 lines in `hydration.js` and demonstrates `requestIdleCallback`, which is a useful browser API to know about.
-
-4. **Clean up the blog post content.** Remove the reef.js data cascade reference. Replace with content that actually demonstrates what Castro can do.
-
-5. **Add a `/internals` page** to the website that shows the build pipeline visually. Build it with Castro. This is the ultimate dogfooding — the framework's documentation site uses the framework to explain the framework.
 
 ### The Question You Didn't Ask: Is This a Framework or a Textbook?
 

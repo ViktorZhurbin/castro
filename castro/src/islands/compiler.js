@@ -78,10 +78,12 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
  * @param {{ sourcePath: string, outputDir: string }} params
  */
 async function compileIslandClient({ sourcePath, outputDir }) {
-	// Get clean name (e.g. "counter" from "counter.tsx")
 	const componentName = basename(sourcePath, extname(sourcePath));
 
-	// Create entry point that imports component and exports mounting function
+	// Virtual entry point: a generated module that imports the real component
+	// and wraps it in a mounting function for hydration. This file never exists
+	// on disk — Bun's `files` option lets us feed code strings directly into the
+	// bundler as if they were real files (same concept as Vite/Rollup virtual modules).
 	const virtualEntry = `
 		import Component from './${basename(sourcePath)}';
 
@@ -92,30 +94,27 @@ async function compileIslandClient({ sourcePath, outputDir }) {
 
 	const buildConfig = frameworkConfig.getBuildConfig();
 
-	// Virtual entry path must be absolute and in same directory as the island source
-	// so relative imports resolve correctly (Bun.build files requires absolute paths)
+	// Path must be absolute and in the same directory as the island source,
+	// so the relative import ('./${basename}') resolves to the real file
 	const virtualEntryPath = resolve(
 		dirname(sourcePath),
 		`${componentName}.virtual.js`,
 	);
 
-	// Build configuration for island client bundle (browser execution)
 	const result = await Bun.build({
 		entrypoints: [virtualEntryPath],
-		// Virtual file system: maps the virtual entry path to its contents
 		files: { [virtualEntryPath]: virtualEntry },
-		outdir: outputDir, // Bun auto-writes to disk when outdir is set
+		outdir: outputDir,
 		naming: { entry: `${componentName}-[hash].[ext]` },
-		format: "esm", // Output ES modules (modern browsers support)
-		target: "browser", // Browser target (supports modern JS features)
+		format: "esm",
+		target: "browser",
 		define: {
-			// makes sure we use production jsx transform
 			"process.env.NODE_ENV": JSON.stringify("production"),
 		},
 		loader: {
-			".css": "css", // Extract CSS into separate files for <link> injection
+			".css": "css",
 		},
-		...buildConfig, // Framework-specific settings (JSX config, externals)
+		...buildConfig,
 	});
 
 	if (!result.success) {
@@ -161,17 +160,15 @@ async function compileIslandSSR({ sourcePath }) {
 			},
 		};
 
-		// Build configuration for island SSR (Bun execution at build time)
 		const result = await Bun.build({
 			entrypoints: [sourcePath],
-			format: "esm", // Output ES modules
-			target: "bun", // Bun target (this code runs at build time for SSR)
+			format: "esm",
+			target: "bun",
 			define: {
-				// makes sure we use production jsx transform
 				"process.env.NODE_ENV": JSON.stringify("production"),
 			},
-			...buildConfig, // Framework-specific settings (JSX config, externals)
-			plugins: [cssStubPlugin], // Stub CSS imports
+			...buildConfig,
+			plugins: [cssStubPlugin],
 		});
 
 		if (!result.success) {

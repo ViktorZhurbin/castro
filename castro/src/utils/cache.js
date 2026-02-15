@@ -1,12 +1,22 @@
 /**
- * Cache Management
+ * Module Cache — write-to-disk-then-import pattern
  *
- * Compiled modules are cached in node_modules/.cache/castro/ as files
- * (not in memory) so Bun can resolve bare imports like preact and preact/hooks.
+ * This is the build-tool plumbing that makes everything else work.
+ * The pattern looks unusual but is standard in build tools (webpack,
+ * Vite, esbuild all do variants of this internally):
  *
- * Filenames include a content hash to bust Bun's module cache, which caches
- * by file path and ignores query strings. Without hashing, editing a file
- * and re-importing it returns stale code.
+ * 1. Bun.build() compiles a page/island to a JavaScript string
+ * 2. We write that string to a .js file in node_modules/.cache/castro/
+ * 3. We import() the file via a file:// URL
+ *
+ * Why not just eval() the code or use in-memory modules?
+ * - The compiled code contains bare imports (e.g., `import { h } from "preact"`)
+ * - These only resolve correctly from a real file on disk, where Node/Bun's
+ *   module resolution can walk up to node_modules/
+ * - A file:// URL ensures Bun treats it as a proper module with full resolution
+ *
+ * Cache busting: Bun's module loader caches by file path and ignores query
+ * strings. We use content-hashed filenames so changed code gets a new path.
  */
 
 import { mkdirSync, rmSync } from "node:fs";
@@ -58,11 +68,14 @@ function createTempPath(sourcePath, content, subpath = "") {
 }
 
 /**
- * Write compiled code to cache and import it as an ES module.
+ * Write compiled code to a cache file and import it as an ES module.
  *
- * @param {string} sourcePath - Original source path
+ * This is where the write-to-disk-then-import pattern happens:
+ * code string → .js file on disk → dynamic import() → live module.
+ *
+ * @param {string} sourcePath - Original source path (for cache directory structure)
  * @param {string} content - Compiled JavaScript code
- * @param {string} [subpath] - Optional subdirectory
+ * @param {string} [subpath] - Optional subdirectory (e.g., "ssr")
  * @returns {Promise<any>} The imported module
  */
 export async function getModule(sourcePath, content, subpath) {
@@ -78,5 +91,6 @@ export async function getModule(sourcePath, content, subpath) {
 		throw err;
 	}
 
+	// file:// URL ensures Bun's module resolver can find bare imports
 	return import(Bun.pathToFileURL(fullPath).href);
 }
