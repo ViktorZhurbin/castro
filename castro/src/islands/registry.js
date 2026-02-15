@@ -23,7 +23,6 @@ import { compileIsland } from "./compiler.js";
 
 /**
  * @import { IslandComponent } from '../types.js'
- * @import * as preact from 'preact'
  *
  * @typedef {ReturnType<typeof getIslandId>} IslandId
  */
@@ -45,9 +44,10 @@ class IslandsRegistry {
 
 	/**
 	 * Pre-loaded SSR modules for synchronous access during rendering.
+	 * WHY:
 	 * renderToString() traverses the VNode tree synchronously, so
 	 * renderMarker() cannot await — modules must be loaded ahead of time.
-	 * @type {Map<IslandId, { default: preact.ComponentType<Record<string, unknown>> }>}
+	 * @type {Map<IslandId, { default: Function }>}
 	 */
 	#ssrModules = new Map();
 

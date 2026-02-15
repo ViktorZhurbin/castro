@@ -20,7 +20,8 @@
 			"Bash(test:*)",
 			"WebFetch(domain:bun.com)",
 			"Bash(bun -e:*)",
-			"Bash(bun:*)"
+			"Bash(bun:*)",
+			"mcp__ide__getDiagnostics"
 		]
 	}
 }

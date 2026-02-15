@@ -12,7 +12,7 @@ import { messages } from "../messages/index.js";
  *   getBuildConfig: () => Partial<Bun.BuildConfig>;
  *   importMap: ImportsMap;
  *   hydrateFnString: string;
- *   renderSSR: (Component: preact.ComponentType<any>, props: Record<string, unknown>) => string;
+ *   renderSSR: (Component: Function, props: Record<string, unknown>) => string;
  * }} ConfigItem
  */
 
@@ -79,7 +79,8 @@ const FrameworkConfig = {
 		 * Server-side rendering function
 		 * Runs at build time to generate static HTML
 		 */
-		renderSSR: (Component, props) => render(h(Component, props)),
+		renderSSR: (Component, props) =>
+			render(h(/** @type {preact.ComponentType<any>} */ (Component), props)),
 	},
 };
 
