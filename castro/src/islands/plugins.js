@@ -36,7 +36,7 @@ function preactIslands() {
 		 * Return import map (CDN URLs) for Preact runtime
 		 */
 		getImportMap() {
-			if (islands.getAll().size === 0) return null;
+			if (islands.count() === 0) return null;
 
 			return frameworkConfig.importMap;
 		},

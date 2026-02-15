@@ -51,15 +51,8 @@ class IslandsRegistry {
 	 */
 	#ssrModules = new Map();
 
-	getAll() {
-		return this.#islands;
-	}
-
-	/**
-	 * @param {IslandId} id
-	 */
-	isIsland(id) {
-		return this.#islands.has(id);
+	count() {
+		return this.#islands.size;
 	}
 
 	/**
