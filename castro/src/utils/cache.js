@@ -61,17 +61,24 @@ export function resolveTempDir(subpath) {
 /**
  * Generates the cache file path for compiled code
  *
- * Mirrors the source file structure inside node_modules/.cache/castro/
- * For example: pages/blog/post.tsx → node_modules/.cache/castro/pages/blog/post.tsx.js
+ * Includes a content hash in the filename to bust Bun's module cache.
+ * Bun caches imported modules by file path (ignoring query strings),
+ * so overwriting the same file and re-importing it returns stale code.
+ * A content-based hash ensures a new path whenever the code changes.
+ *
+ * Example: pages/index.tsx → .cache/castro/pages/index.tsx.a1b2c3d4.js
  *
  * @param {string} sourcePath
+ * @param {string} content - Compiled code (used for hash)
  * @param {string} [subpath] - Optional subdirectory (e.g., "ssr" for SSR builds)
  * @returns {string}
  */
-function createTempPath(sourcePath, subpath = "") {
+function createTempPath(sourcePath, content, subpath = "") {
 	const parsed = parse(sourcePath);
+	const hash = Bun.hash(content).toString(36);
 	const targetDir = resolveTempDir(join(parsed.dir, subpath));
-	const fullPath = join(targetDir, `${parsed.base}.js`);
+
+	const fullPath = join(targetDir, `${parsed.base}.${hash}.js`);
 
 	return fullPath;
 }
@@ -108,18 +115,19 @@ export async function getModule(sourcePath, content, subpath) {
  * @returns {Promise<string>}
  */
 async function writeTempFile(sourcePath, content, subpath = "") {
-	const fullPath = createTempPath(sourcePath, subpath);
+	const fullPath = createTempPath(sourcePath, content, subpath);
 
 	try {
 		await Bun.write(fullPath, content);
 	} catch (err) {
 		const error = /** @type {Error} */ (err);
+
 		console.error(messages.errors.cacheWriteFailed(fullPath, error.message));
+
 		throw err;
 	}
 
-	const pathUrl = Bun.pathToFileURL(fullPath).href;
+	const fileUrl = Bun.pathToFileURL(fullPath);
 
-	// Cache-busting ensures fresh imports
-	return `${pathUrl}?t=${Date.now()}`;
+	return fileUrl.href;
 }
