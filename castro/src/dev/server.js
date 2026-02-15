@@ -79,7 +79,7 @@ export async function startDevServer() {
 				/**
 				 * Static file serving with clean URLs
 				 *
-				 * We resolve paths similar to support Clean URLs:
+				 * We resolve paths to support Clean URLs:
 				 *	- /about      -> dist/about.html
 				 *	- /blog       -> dist/blog/index.html
 				 *	- /style.css  -> dist/style.css

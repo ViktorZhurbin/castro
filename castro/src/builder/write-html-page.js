@@ -72,7 +72,7 @@ async function resolvePageContext({ usedIslands, pageCssAssets = [] }) {
 	}
 
 	// C. Resolve Live Reload (Dev Mode only)
-	if (process.env.NODE_ENV === "development") {
+	if (process.env.NODE_ENV !== "production") {
 		assets.push(await getLiveReloadAsset());
 	}
 
