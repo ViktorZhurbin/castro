@@ -21,7 +21,7 @@ import { messages } from "../messages/index.js";
 // ============================================================================
 
 /** Cache directory for compiled modules (persistent, not cleaned on exit) */
-const CACHE_ROOT = join(process.cwd(), "node_modules/.cache/castro");
+const CACHE_DIR = join(process.cwd(), "node_modules/.cache/castro");
 
 // ============================================================================
 // Lifecycle Management
@@ -33,9 +33,9 @@ const CACHE_ROOT = join(process.cwd(), "node_modules/.cache/castro");
  * Called once at the beginning of the process to ensure a fresh state.
  * Files persist after the process exits for inspection and debugging.
  */
-export function cleanupTempDir() {
+export function cleanupCacheDir() {
 	try {
-		rmSync(CACHE_ROOT, { recursive: true, force: true });
+		rmSync(CACHE_DIR, { recursive: true, force: true });
 	} catch {}
 }
 
@@ -51,7 +51,7 @@ export function cleanupTempDir() {
 export function resolveTempDir(subpath) {
 	const resolvedSubpath = resolve(process.cwd(), subpath);
 	const relativeSubpath = relative(process.cwd(), resolvedSubpath);
-	const dirPath = join(CACHE_ROOT, relativeSubpath);
+	const dirPath = join(CACHE_DIR, relativeSubpath);
 
 	mkdirSync(dirPath, { recursive: true });
 

@@ -10,10 +10,10 @@
  */
 
 import { messages } from "./messages/index.js";
-import { cleanupTempDir } from "./utils/cache.js";
+import { cleanupCacheDir } from "./utils/cache.js";
 
 // Clean up old build artifacts at startup
-cleanupTempDir();
+cleanupCacheDir();
 
 // Parse command
 const command = process.argv[2] || "dev";
