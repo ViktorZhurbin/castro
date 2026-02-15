@@ -22,9 +22,8 @@ export const serious = {
 		fileSuccess: (file, time) => `✓ ${file} (${time})`,
 		fileFailure: (file, err) => `✗ Failed to build ${file}: ${err}`,
 		islandFailed: (err) => `Island build failed: ${err}`,
-		ssrSkipped: (source, err) =>
-			`SSR compilation skipped for ${source}: ${err}`,
-		ssrCompileFailed: (source) => `Failed to compile SSR code for ${source}`,
+		ssrCompileFailed: (source, err) =>
+			`Failed to compile SSR code for ${source}: ${err}`,
 		noJsOutput: (source) => `No JavaScript output generated for ${source}`,
 	},
 

@@ -33,10 +33,6 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
 		// Compile SSR version first (runs at build time in Bun)
 		const ssrCode = await compileIslandSSR({ sourcePath });
 
-		if (!ssrCode) {
-			throw new Error(messages.build.ssrCompileFailed(sourcePath));
-		}
-
 		// Compile client version (runs in browser)
 		const clientResult = await compileIslandClient({
 			sourcePath,
@@ -80,7 +76,6 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
  * Outputs files with content hashes for cache busting.
  *
  * @param {{ sourcePath: string, outputDir: string }} params
- * @returns {Promise<Bun.BuildOutput>}
  */
 async function compileIslandClient({ sourcePath, outputDir }) {
 	// Get clean name (e.g. "counter" from "counter.tsx")
@@ -141,7 +136,6 @@ async function compileIslandClient({ sourcePath, outputDir }) {
  * - Used only to generate static HTML at build time
  *
  * @param {{ sourcePath: string }} params
- * @returns {Promise<string | undefined>} Compiled code or undefined if compilation failed
  */
 async function compileIslandSSR({ sourcePath }) {
 	const buildConfig = frameworkConfig.getBuildConfig();
@@ -190,8 +184,6 @@ async function compileIslandSSR({ sourcePath }) {
 	} catch (e) {
 		const err = /** @type {Bun.ErrorLike} */ (e);
 
-		console.warn(
-			styleText("yellow", messages.build.ssrSkipped(sourcePath, err.message)),
-		);
+		throw new Error(messages.build.ssrCompileFailed(sourcePath, err.message));
 	}
 }

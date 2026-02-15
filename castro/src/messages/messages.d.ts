@@ -22,8 +22,7 @@ export interface Messages {
 		fileSuccess: (file: string, time: string) => string;
 		fileFailure: (file: string, err: string) => string;
 		islandFailed: (err: unknown) => string;
-		ssrSkipped: (source: string, err: string) => string;
-		ssrCompileFailed: (source: string) => string;
+		ssrCompileFailed: (source: string, errMessage: string) => string;
 		noJsOutput: (source: string) => string;
 	};
 
