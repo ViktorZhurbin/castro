@@ -7,11 +7,8 @@
  * Commands:
  * - castro (or castro dev) - Start development server
  * - castro build - Build for production
- * - castro purge - Clean output directory
  */
 
-import { rm } from "node:fs/promises";
-import { OUTPUT_DIR } from "./constants.js";
 import { messages } from "./messages/index.js";
 import { cleanupTempDir } from "./utils/cache.js";
 
@@ -34,13 +31,6 @@ switch (command) {
 		process.env.NODE_ENV = "production";
 		const { buildAll } = await import("./builder/build-all.js");
 		await buildAll({ verbose: true });
-		break;
-	}
-
-	case "purge": {
-		// Clean output directory
-		await rm(OUTPUT_DIR, { recursive: true, force: true });
-		console.info(messages.purge.success);
 		break;
 	}
 

@@ -100,8 +100,4 @@ export const satirical = {
 			`❌ Unknown directive: ${cmd}\n   The Party recognizes only: dev, build`,
 		usage: "Usage: castro [dev|build]",
 	},
-
-	purge: {
-		success: "✓ Build directory cleaned.",
-	},
 };

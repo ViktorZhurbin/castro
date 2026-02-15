@@ -99,8 +99,4 @@ export const serious = {
 			`❌ Unknown command: ${cmd}\n   Available commands: dev, build`,
 		usage: "Usage: castro [dev|build]",
 	},
-
-	purge: {
-		success: "✓ Build directory cleaned.",
-	},
 };

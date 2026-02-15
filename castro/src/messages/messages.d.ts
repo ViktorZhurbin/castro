@@ -58,9 +58,4 @@ export interface Messages {
 		unknown: (cmd: string) => string;
 		usage: string;
 	};
-
-	// Cache management messages
-	purge: {
-		success: string;
-	};
 }
