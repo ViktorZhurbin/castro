@@ -145,8 +145,8 @@ function injectAssets(html, { assets, importMap }) {
 
 	// Generate tags
 	const tags = [
-		HTML.generateImportMap(importMap),
-		...assets.map(HTML.generateAssetTag),
+		generateImportMap(importMap),
+		...assets.map(generateAssetTag),
 	].filter(Boolean);
 
 	if (tags.length === 0) return output;
@@ -154,6 +154,7 @@ function injectAssets(html, { assets, importMap }) {
 	// Injection strategy: Try </head>, fallback to </body>
 	const headEndIndex = output.indexOf("</head>");
 	const bodyEndIndex = output.indexOf("</body>");
+
 	const injection = tags.join("\n");
 
 	if (headEndIndex !== -1) {
@@ -176,42 +177,53 @@ function injectAssets(html, { assets, importMap }) {
 // Utils: HTML Generation helpers
 // ============================================================================
 
-const HTML = {
-	/**
-	 * @param {ImportsMap} map
-	 * @returns {string}
-	 */
-	generateImportMap(map) {
-		if (!map || Object.keys(map).length === 0) return "";
-		return `<script type="importmap">${JSON.stringify({ imports: map }, null, 2)}</script>`;
-	},
+/**
+ * @param {ImportsMap} map
+ * @returns {string} - <script type="importmap"></script>
+ */
+function generateImportMap(map) {
+	if (!map || Object.keys(map).length === 0) return "";
+	return `<script type="importmap">${JSON.stringify({ imports: map }, null, 2)}</script>`;
+}
 
-	/**
-	 * @param {Asset} asset
-	 * @returns {string}
-	 */
-	generateAssetTag(asset) {
-		if (typeof asset === "string") return asset;
+/**
+ * @param {Asset} asset
+ * @returns {string} - HTML tag: link/script/style
+ */
+function generateAssetTag(asset) {
+	if (typeof asset === "string") {
+		return asset;
+	}
 
-		// Handle inline content (style/script) vs external references
-		const attrs = HTML.attrsToString(asset.attrs);
+	switch (asset.tag) {
+		case "link": {
+			const attrs = attrsToString(asset.attrs);
 
-		if (asset.tag === "link") return `<link ${attrs}>`;
-		if (asset.tag === "style") return `<style>${asset.content}</style>`;
-		if (asset.tag === "script") {
+			return `<link ${attrs}>`;
+		}
+
+		case "style": {
+			return `<style>${asset.content}</style>`;
+		}
+
+		case "script": {
+			const attrs = attrsToString(asset.attrs);
+
 			return `<script ${attrs}>${asset.content || ""}</script>`;
 		}
-		return "";
-	},
 
-	/**
-	 * @param {Record<string, any>} attrs
-	 * @returns {string}
-	 */
-	attrsToString(attrs = {}) {
-		return Object.entries(attrs)
-			.filter(([_, v]) => v !== false && v !== null && v !== undefined)
-			.map(([k, v]) => (v === true ? k : `${k}="${v}"`))
-			.join(" ");
-	},
-};
+		default:
+			return "";
+	}
+}
+
+/**
+ * @param {Record<string, any>} attrs
+ * @returns {string} - Attributes for an HTML tag (<script>, <link>)
+ */
+function attrsToString(attrs = {}) {
+	return Object.entries(attrs)
+		.filter(([_, v]) => v !== false && v !== null && v !== undefined)
+		.map(([k, v]) => (v === true ? k : `${k}="${v}"`))
+		.join(" ");
+}
