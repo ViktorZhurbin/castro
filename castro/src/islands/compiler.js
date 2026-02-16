@@ -136,7 +136,8 @@ async function compileIslandClient({ sourcePath, outputDir }) {
  *
  * SSR compilation differs from client:
  * - Target is Bun, not browser
- * - CSS imports are stubbed out (SSR doesn't need CSS files)
+ * - Regular CSS imports are stubbed (SSR doesn't need them)
+ * - CSS module imports (.module.css) are kept so class name mappings work during SSR
  * - Result is kept in memory, not written to disk
  * - Used only to generate static HTML at build time
  *
@@ -146,15 +147,15 @@ async function compileIslandSSR({ sourcePath }) {
 	const buildConfig = frameworkConfig.getBuildConfig();
 
 	try {
-		// CSS stub plugin - intercepts CSS imports and returns empty module.
-		// Components often import CSS (e.g., import "./counter.css"), which
-		// works in browsers but breaks during SSR. During SSR we only need
-		// the HTML output, so we stub out CSS imports.
+		// Stub regular CSS imports — they're side-effectful (no exports needed)
+		// and would fail in Bun's SSR environment. CSS module imports (.module.css)
+		// are left alone so Bun compiles them normally, providing the class name
+		// mapping that components need during SSR.
 		/** @type {Bun.BunPlugin} */
 		const cssStubPlugin = {
 			name: "css-stub",
 			setup(build) {
-				build.onResolve({ filter: /\.css$/ }, () => ({
+				build.onResolve({ filter: /(?<!\.module)\.css$/ }, () => ({
 					path: "css-stub",
 					namespace: "css-stub",
 				}));

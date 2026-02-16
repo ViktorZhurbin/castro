@@ -149,7 +149,7 @@ Key rules from `src/messages/README.md`:
 - Static pages (no islands)
 - All three directives (`comrade:visible`, `lenin:awake`, `no:pasaran`)
 - Component composition (islands in static components, static components in islands, islands in layouts)
-- CSS modules in static components and islands (extraction works; islands get scoped names but no SSR class due to CSS stub)
+- CSS modules in static components and islands
 
 The test structure (pages, components, islands, layouts) mirrors a real site and serves as a reference for expected patterns.
 

@@ -158,9 +158,12 @@ for (const site of siteDirs) {
 			expect(html).toContain('href="/cssmodules.css"');
 		});
 
-		test("CSS modules in islands extract CSS with scoped names", async () => {
+		test("CSS modules in islands get scoped class in SSR and CSS", async () => {
 			const html = await readHtml(distDir, "cssmodules.html");
+			// Scoped class in extracted CSS
 			expect(html).toMatch(/\.clicker_[^\s{]+/);
+			// Same scoped class in SSR-rendered markup (not just after hydration)
+			expect(html).toMatch(/class="clicker_[^"]+"/);
 		});
 
 		// ------ Markdown page ------
