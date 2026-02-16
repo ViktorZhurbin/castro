@@ -22,9 +22,6 @@ function preactIslands() {
 	return {
 		name: "islands-preact",
 
-		// Watch islands directory for changes in dev mode
-		watchDirs: [],
-
 		/**
 		 * Build hook: discover, compile, and load islands into registry
 		 */

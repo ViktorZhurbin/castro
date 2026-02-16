@@ -3,9 +3,8 @@
  *
  * Final step in page building. Takes rendered HTML and:
  * 1. Gathers assets (page CSS, island CSS, plugin assets, live reload)
- * 2. Runs plugin transform hooks on the HTML
- * 3. Injects all assets into <head> (or <body> fallback)
- * 4. Writes the file to disk
+ * 2. Injects all assets into <head> (or <body> fallback)
+ * 3. Writes the file to disk
  */
 
 import { join } from "node:path";
@@ -25,11 +24,10 @@ import { islands } from "../islands/registry.js";
  */
 export async function writeHtmlPage(rawHtml, outputPath, options) {
 	const context = await resolvePageContext(options);
-	const { html, assets: transformAssets } = await runTransforms(rawHtml);
 
-	const finalHtml = injectAssets(html, {
+	const finalHtml = injectAssets(rawHtml, {
 		importMap: context.importMap,
-		assets: [...context.assets, ...transformAssets],
+		assets: context.assets,
 	});
 
 	await Bun.write(outputPath, finalHtml);
@@ -91,29 +89,6 @@ async function getLiveReloadAsset() {
 		attrs: { type: "module" },
 		content: _liveReloadCache,
 	};
-}
-
-// ============================================================================
-// Transformation — let plugins modify HTML
-// ============================================================================
-
-/**
- * @param {string} html
- * @returns {Promise<{ html: string; assets: Asset[] }>}
- */
-async function runTransforms(html) {
-	let currentHtml = html;
-	const assets = [];
-
-	for (const plugin of defaultPlugins) {
-		if (plugin.transform) {
-			const result = await plugin.transform({ content: currentHtml });
-			currentHtml = result.html;
-			if (result.assets) assets.push(...result.assets);
-		}
-	}
-
-	return { html: currentHtml, assets };
 }
 
 // ============================================================================
