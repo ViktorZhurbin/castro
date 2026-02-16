@@ -4,7 +4,8 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"build": "castro build"
+		"build": "castro build",
+		"test": "bun test"
 	},
 	"dependencies": {
 		"@vktrz/castro": "workspace:*",

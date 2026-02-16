@@ -145,6 +145,24 @@ for (const site of siteDirs) {
 			expect(html).toContain("<h1>Layout Island Test</h1>");
 		});
 
+		// ------ CSS modules ------
+
+		test("CSS modules in static components get scoped class names", async () => {
+			const html = await readHtml(distDir, "cssmodules.html");
+			expect(html).toMatch(/class="card_[^"]+"/);
+			expect(html).toContain("Hello from card");
+		});
+
+		test("CSS modules in static components extract CSS to file", async () => {
+			const html = await readHtml(distDir, "cssmodules.html");
+			expect(html).toContain('href="/cssmodules.css"');
+		});
+
+		test("CSS modules in islands extract CSS with scoped names", async () => {
+			const html = await readHtml(distDir, "cssmodules.html");
+			expect(html).toMatch(/\.clicker_[^\s{]+/);
+		});
+
 		// ------ Markdown page ------
 
 		test("markdown page renders to HTML", async () => {

@@ -12,8 +12,8 @@ Comparable to:
 bun run dev          # dev server with live reload (website playground)
 bun run build        # production build (website playground)
 bun format           # Biome formatter (tabs, double quotes)
-bun type-check       # tsc across all workspaces
-bun check            # format + type-check + knip (run before committing)
+bun check            # format + core checks + site tests (run before committing)
+bun test:sites       # build and verify test sites only
 bun loc              # LOC count (core only, excludes messages/)
 ```
 
@@ -21,6 +21,7 @@ bun loc              # LOC count (core only, excludes messages/)
 
 - `castro/` — core SSG engine (the npm package `@vktrz/castro`)
 - `website/` — demo playground that consumes castro
+- `test-sites/` — minimal test sites (one per framework) that exercise build pipeline
 
 ### Core Module Structure (`castro/src/`)
 
@@ -142,12 +143,23 @@ Key rules from `src/messages/README.md`:
 - **Island CSS** tracked per-page via `pageState` in `marker.js`, not on the registry singleton. `pageState.needsHydration` controls whether the runtime script is included (pages with only `no:pasaran` islands ship zero client JS).
 - **Island imports must use relative paths**, not tsconfig `paths` aliases. `Bun.build`'s `packages: "external"` treats `@`-prefixed imports as scoped npm packages and externalizes them before path alias resolution runs, so the `islandMarkerPlugin` never intercepts them.
 
+## Testing
+
+`test-sites/preact/` is a minimal Preact test site that exercises the build pipeline. Run with `bun test:sites`. Tests verify:
+- Static pages (no islands)
+- All three directives (`comrade:visible`, `lenin:awake`, `no:pasaran`)
+- Component composition (islands in static components, static components in islands, islands in layouts)
+- CSS modules in static components and islands (extraction works; islands get scoped names but no SSR class due to CSS stub)
+
+The test structure (pages, components, islands, layouts) mirrors a real site and serves as a reference for expected patterns.
+
 ## What NOT to Change
 
 - Code must stay educational and well-commented — every file should explain "why"
 - Keep core LOC under ~1500 (currently ~1100)
 - Satire belongs in messages/docs/CLI output only, never in the code logic itself
-- `website/dist/` is ephemeral, cleaned on every build
+- `website/dist/` and `test-sites/*/dist/` are ephemeral, cleaned on every build
+- Island imports must use relative paths, not tsconfig aliases (documented in `compile-jsx.js`)
 
 ## Maintaining This File
 
