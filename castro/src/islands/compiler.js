@@ -8,6 +8,12 @@
  * We compile twice because the environments differ:
  * - Browser needs bundled code with import map externals
  * - Bun needs unbundled code that can import packages
+ *
+ * Neither compilation uses islandMarkerPlugin, which means islands cannot
+ * nest other islands. If Island A imports Island B, B renders as a plain
+ * component inside A — no <castro-island> wrapper, no independent hydration.
+ * This is intentional and shared by most island frameworks (Fresh, Astro):
+ * islands are leaf nodes in the component tree, not composable containers.
  */
 
 import { basename, dirname, extname, resolve } from "node:path";
