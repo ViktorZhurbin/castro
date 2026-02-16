@@ -6,6 +6,9 @@ Castro is a working Static Site Generator that implements island architecture in
 
 **Learn by reading code, not documentation.**
 
+> [!NOTE]
+> Castro requires Bun 1.3.8+ to be installed on your env - [instructions](https://bun.com/docs/installation)
+
 ## What Is This?
 
 Island architecture is how modern frameworks (Astro, Marko, Fresh, Qwik) achieve great performance. Instead of shipping JavaScript for your entire page, you selectively hydrate only the interactive components. The rest stays as static HTML.

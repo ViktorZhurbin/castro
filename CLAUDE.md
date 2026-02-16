@@ -2,7 +2,9 @@
 
 Educational Static Site Generator (~1100 LOC) teaching island architecture. Communist satire wraps serious, well-commented code. Preact for rendering, Bun for everything else.
 
-Comparable to: Fresh (architecture), Marko (compiler philosophy), early Astro (pre-marketplace era), Eleventy + is-land.
+Comparable to:
+- Fresh, Marko (though way less advanced), early Astro (pre-marketplace era), Eleventy + is-land.
+- Also, to smaller peers: Capri, Mastro, Iles, Enhance.
 
 ## Commands
 
