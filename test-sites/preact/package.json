@@ -1,0 +1,13 @@
+{
+	"name": "test-site-preact",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "castro build"
+	},
+	"dependencies": {
+		"@vktrz/castro": "workspace:*",
+		"preact": "^10"
+	}
+}

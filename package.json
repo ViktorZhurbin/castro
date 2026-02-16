@@ -4,7 +4,8 @@
 	"private": true,
 	"workspaces": [
 		"castro",
-		"website"
+		"website",
+		"test-sites/*"
 	],
 	"scripts": {
 		"dev": "bun --filter website dev",
@@ -12,7 +13,8 @@
 		"format": "biome format --write",
 		"type-check": "bun --workspaces type-check",
 		"check:castro": "bun run --filter @vktrz/castro knip",
-		"check": "bun format && bun type-check && bun check:castro",
+		"check": "bun format && bun type-check && bun check:castro && bun test",
+		"test:sites": "bun test",
 		"loc": "bunx cloc castro/src/ --exclude-dir=messages",
 		"loc-files": "bun run loc --by-file"
 	},
