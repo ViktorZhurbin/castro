@@ -123,6 +123,28 @@ for (const site of siteDirs) {
 			expect(html).toContain("font-weight: bold");
 		});
 
+		// ------ Component composition ------
+
+		test("island inside static component gets wrapper", async () => {
+			const html = await readHtml(distDir, "compound.html");
+			expect(html).toContain("<castro-island");
+			expect(html).toContain("Count:");
+			expect(html).toContain("<h2>Nested Island</h2>");
+		});
+
+		test("static component inside island renders", async () => {
+			const html = await readHtml(distDir, "multi.html");
+			expect(html).toContain('<span class="label">');
+		});
+
+		test("island in layout renders with wrapper", async () => {
+			const html = await readHtml(distDir, "layout-island.html");
+			expect(html).toContain("<castro-island");
+			expect(html).toContain('directive="lenin:awake"');
+			expect(html).toContain("Count:");
+			expect(html).toContain("<h1>Layout Island Test</h1>");
+		});
+
 		// ------ Markdown page ------
 
 		test("markdown page renders to HTML", async () => {
