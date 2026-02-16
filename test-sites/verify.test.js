@@ -103,9 +103,10 @@ for (const site of siteDirs) {
 			expect(html).not.toContain("<castro-island");
 		});
 
-		test("no:pasaran has no island JS bundle in markup", async () => {
+		test("no:pasaran ships no client JS", async () => {
 			const html = await readHtml(distDir, "nopasaran.html");
 			expect(html).not.toContain('import="/');
+			expect(html).not.toContain("castro-island.js");
 		});
 
 		// ------ Multiple islands ------

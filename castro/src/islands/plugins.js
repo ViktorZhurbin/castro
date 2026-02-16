@@ -50,7 +50,7 @@ function castroIslandRuntime() {
 		name: "castro-island-runtime",
 
 		getPageAssets(params = {}) {
-			if (params.hasIslands) {
+			if (params.needsHydration) {
 				return [
 					{
 						tag: "script",

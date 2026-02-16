@@ -14,7 +14,7 @@ import { islands } from "../islands/registry.js";
 /**
  * @import { Asset, ImportsMap } from '../types.js'
  *
- * @typedef {{ pageCssAssets?: Asset[]; usedIslands: Set<string>; }} Options
+ * @typedef {{ pageCssAssets?: Asset[]; usedIslands: Set<string>; needsHydration: boolean; }} Options
  */
 
 /**
@@ -40,21 +40,25 @@ export async function writeHtmlPage(rawHtml, outputPath, options) {
 /**
  * @param {Options} options
  */
-async function resolvePageContext({ usedIslands, pageCssAssets = [] }) {
+async function resolvePageContext({
+	usedIslands,
+	needsHydration,
+	pageCssAssets = [],
+}) {
 	/** @type {ImportsMap} */
 	const importMap = {};
 	const assets = [...pageCssAssets];
 
-	// Plugin assets: island runtime script, import maps for CDN modules
+	// Plugin assets: island runtime script, import maps for CDN modules.
+	// Only included when at least one island needs client-side hydration
+	// (no:pasaran-only pages skip the runtime entirely).
 	for (const plugin of defaultPlugins) {
 		if (plugin.getImportMap) {
 			Object.assign(importMap, plugin.getImportMap());
 		}
 
 		if (plugin.getPageAssets) {
-			assets.push(
-				...plugin.getPageAssets({ hasIslands: usedIslands.size > 0 }),
-			);
+			assets.push(...plugin.getPageAssets({ needsHydration }));
 		}
 	}
 

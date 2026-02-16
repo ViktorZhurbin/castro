@@ -11,7 +11,7 @@
 
 import { basename } from "node:path";
 import { renderToString } from "preact-render-to-string";
-import { getUsedIslands, resetUsedIslands } from "../islands/marker.js";
+import { pageState } from "../islands/marker.js";
 import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
 import { writeHtmlPage } from "./write-html-page.js";
@@ -39,7 +39,7 @@ export async function renderPage({
 }) {
 	const pageAndLayoutCssAssets = [...pageCssAssets];
 
-	resetUsedIslands();
+	pageState.reset();
 
 	const contentVNode = createContentVNode();
 
@@ -74,7 +74,8 @@ export async function renderPage({
 	const finalHtml = renderToString(vnodeToRender);
 
 	await writeHtmlPage(finalHtml, outputFilePath, {
-		usedIslands: getUsedIslands(),
+		usedIslands: pageState.usedIslands,
+		needsHydration: pageState.needsHydration,
 		pageCssAssets: pageAndLayoutCssAssets,
 	});
 }

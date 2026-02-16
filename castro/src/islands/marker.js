@@ -23,19 +23,20 @@ import { islands } from "./registry.js";
  */
 
 /**
- * Islands used during the current page render.
- * Reset before each page so only relevant CSS gets injected.
- * @type {Set<string>}
+ * Per-page island tracking. Reset before each page render.
+ * - usedIslands: all rendered islands (determines CSS injection)
+ * - needsHydration: true if at least one island isn't no:pasaran (determines runtime script)
  */
-const usedIslands = new Set();
+export const pageState = {
+	/** @type {Set<string>} */
+	usedIslands: new Set(),
+	needsHydration: false,
 
-export function resetUsedIslands() {
-	usedIslands.clear();
-}
-
-export function getUsedIslands() {
-	return usedIslands;
-}
+	reset() {
+		this.usedIslands.clear();
+		this.needsHydration = false;
+	},
+};
 
 /**
  * Render an island marker component
@@ -51,9 +52,12 @@ export function renderMarker(islandId, props = {}) {
 		throw new Error(messages.errors.islandNotFoundRegistry(islandId));
 	}
 
-	usedIslands.add(islandId);
-
 	const { directive, cleanProps } = processProps(props);
+
+	pageState.usedIslands.add(islandId);
+	if (directive !== "no:pasaran") {
+		pageState.needsHydration = true;
+	}
 
 	let ssrHtml = "";
 
