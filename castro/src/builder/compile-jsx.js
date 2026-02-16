@@ -22,6 +22,10 @@ export async function compileJSX(sourcePath) {
 	const result = await Bun.build({
 		entrypoints: [absoluteSourcePath],
 		target: "bun",
+		// Externalizes all bare package imports (node_modules).
+		// Side effect: tsconfig `paths` aliases like @components/* get treated as
+		// scoped npm packages and externalized before resolution, so island imports
+		// must use relative paths for islandMarkerPlugin to intercept them.
 		packages: "external",
 		format: "esm",
 		// Pages and layouts compile to Preact VNodes (not HTML strings directly).

@@ -139,7 +139,8 @@ Key rules from `src/messages/README.md`:
 - **`frameworkConfig` singleton** resolved at startup from `config.framework`. Fails loud if unsupported.
 - **`IslandComponent.ssrModule`** typed as `{ default: Function }` (framework-agnostic). Pre-loaded by the registry, accessed synchronously by `renderMarker()`.
 - **`renderSSR` accepts `Function`**, not `ComponentType`. Each framework config casts internally.
-- **Island CSS** tracked per-page via `usedIslands` Set in `marker.js`, not on the registry singleton.
+- **Island CSS** tracked per-page via `pageState` in `marker.js`, not on the registry singleton. `pageState.needsHydration` controls whether the runtime script is included (pages with only `no:pasaran` islands ship zero client JS).
+- **Island imports must use relative paths**, not tsconfig `paths` aliases. `Bun.build`'s `packages: "external"` treats `@`-prefixed imports as scoped npm packages and externalizes them before path alias resolution runs, so the `islandMarkerPlugin` never intercepts them.
 
 ## What NOT to Change
 
