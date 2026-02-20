@@ -1,0 +1,83 @@
+/* ─── Tutorial Landing Hero ─── */
+
+.tutorial-hero {
+	background: var(--red-primary);
+	color: var(--cream);
+	padding: 3rem 2rem;
+	margin: -3rem -2rem 3rem;
+	text-align: center;
+}
+
+.tutorial-hero h1 {
+	font-family: "Bebas Neue", sans-serif;
+	font-size: 3.5rem;
+	margin: 0 0 0.5rem;
+	color: var(--cream);
+}
+
+.tutorial-hero-subtitle {
+	font-family: "PT Sans", sans-serif;
+	font-size: 1.15rem;
+	color: rgba(245, 230, 211, 0.85);
+	max-width: 500px;
+	margin: 0 auto;
+	line-height: 1.6;
+}
+
+/* ─── Chapter Grid ─── */
+
+.chapter-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 1.5rem;
+}
+
+.chapter-card {
+	display: block;
+	padding: 1.5rem;
+	border: 2px solid var(--black);
+	box-shadow: 4px 4px 0 var(--black);
+	background: white;
+	text-decoration: none;
+	transition:
+		transform 0.2s ease,
+		box-shadow 0.2s ease;
+}
+
+.chapter-card:hover {
+	transform: translateY(-4px);
+	box-shadow: 6px 6px 0 var(--black);
+}
+
+.chapter-card-number {
+	font-family: "Bebas Neue", sans-serif;
+	font-size: 2.5rem;
+	color: var(--red-primary);
+	line-height: 1;
+}
+
+.chapter-card-title {
+	font-family: "Bebas Neue", sans-serif;
+	font-size: 1.4rem;
+	color: var(--black);
+	margin: 0.3rem 0 0.5rem;
+}
+
+.chapter-card-desc {
+	font-family: "PT Sans", sans-serif;
+	font-size: 0.95rem;
+	color: var(--gray);
+	line-height: 1.5;
+	margin: 0;
+}
+
+@media (max-width: 768px) {
+	.tutorial-hero {
+		margin: -2rem -1rem 2rem;
+		padding: 2rem 1rem;
+	}
+
+	.tutorial-hero h1 {
+		font-size: 2.5rem;
+	}
+}

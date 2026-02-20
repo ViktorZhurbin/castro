@@ -1,0 +1,239 @@
+/* ─── Tutorial Layout: Two-Column Grid ─── */
+
+.tutorial-layout {
+	display: grid;
+	grid-template-columns: 280px 1fr;
+	max-width: 1100px;
+	margin: 0 auto;
+	min-height: 100vh;
+}
+
+.tutorial-content {
+	padding: 3rem 2rem;
+	max-width: 760px;
+}
+
+@media (max-width: 768px) {
+	.tutorial-layout {
+		grid-template-columns: 1fr;
+	}
+
+	.tutorial-content {
+		padding: 2rem 1rem;
+	}
+}
+
+/* ─── Chapter Header ─── */
+
+.chapter-header {
+	margin-bottom: 3rem;
+	padding-bottom: 2rem;
+	border-bottom: 3px solid var(--black);
+}
+
+.chapter-number {
+	font-family: "Bebas Neue", sans-serif;
+	font-size: 1rem;
+	color: var(--red-primary);
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+}
+
+.chapter-header h1 {
+	font-family: "Bebas Neue", sans-serif;
+	font-size: 2.8rem;
+	color: var(--black);
+	line-height: 1;
+	margin: 0.3rem 0 0.8rem;
+}
+
+.chapter-subtitle {
+	font-family: "PT Sans", sans-serif;
+	font-size: 1.1rem;
+	color: var(--gray);
+	margin: 0;
+}
+
+/* ─── Prose ─── */
+
+.tutorial-content h2 {
+	font-family: "Bebas Neue", sans-serif;
+	font-size: 1.8rem;
+	color: var(--black);
+	margin: 2.5rem 0 1rem;
+	padding-bottom: 0.5rem;
+	border-bottom: 2px solid var(--gold);
+}
+
+.tutorial-content h3 {
+	font-family: "Bebas Neue", sans-serif;
+	font-size: 1.3rem;
+	color: var(--red-dark);
+	margin: 2rem 0 0.8rem;
+}
+
+.tutorial-content p {
+	font-family: "PT Sans", sans-serif;
+	font-size: 1.05rem;
+	line-height: 1.7;
+	color: var(--black);
+	margin: 0 0 1.2rem;
+}
+
+.tutorial-content ul,
+.tutorial-content ol {
+	font-family: "PT Sans", sans-serif;
+	font-size: 1.05rem;
+	line-height: 1.7;
+	color: var(--black);
+	margin: 0 0 1.2rem;
+	padding-left: 1.5rem;
+}
+
+.tutorial-content li {
+	margin-bottom: 0.4rem;
+}
+
+/* ─── Inline Code ─── */
+
+.tutorial-content code {
+	font-family: "Courier New", Courier, monospace;
+	font-size: 0.9em;
+	background: rgba(212, 175, 55, 0.15);
+	padding: 0.15em 0.4em;
+	border-radius: 3px;
+}
+
+/* ─── Diagrams (styled <pre> blocks) ─── */
+
+.diagram {
+	background: var(--black);
+	color: var(--cream);
+	font-family: "Courier New", Courier, monospace;
+	font-size: 0.85rem;
+	line-height: 1.6;
+	padding: 1.5rem;
+	border-left: 4px solid var(--gold);
+	margin: 1.5rem 0 2rem;
+	overflow-x: auto;
+	white-space: pre;
+}
+
+.diagram .hl {
+	color: var(--gold);
+	font-weight: 700;
+}
+
+.diagram .hl-red {
+	color: var(--red-bright);
+	font-weight: 700;
+}
+
+.diagram .dim {
+	color: #888;
+}
+
+/* ─── Code Snippets ─── */
+
+.code-block {
+	background: var(--black);
+	color: var(--cream);
+	font-family: "Courier New", Courier, monospace;
+	font-size: 0.85rem;
+	line-height: 1.6;
+	padding: 1.2rem 1.5rem;
+	margin: 1.2rem 0 1.5rem;
+	overflow-x: auto;
+	border-radius: 2px;
+}
+
+.code-block code {
+	background: none;
+	padding: 0;
+	font-size: inherit;
+}
+
+/* ─── Source References ─── */
+
+.source-ref {
+	font-family: "PT Sans", sans-serif;
+	font-size: 0.85rem;
+	font-style: italic;
+	color: var(--gray);
+	margin: -0.5rem 0 2rem;
+}
+
+.source-ref code {
+	font-style: normal;
+}
+
+/* ─── Flow Charts (CSS-based) ─── */
+
+.flow-chart {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0;
+	margin: 1.5rem 0 2rem;
+}
+
+.flow-box {
+	border: 2px solid var(--black);
+	padding: 0.8rem 1.5rem;
+	font-family: "PT Sans", sans-serif;
+	font-size: 0.95rem;
+	text-align: center;
+	background: white;
+	min-width: 200px;
+}
+
+.flow-box.emphasis {
+	border-color: var(--red-primary);
+	border-width: 3px;
+	font-weight: 700;
+}
+
+.flow-box.gold {
+	border-color: var(--gold);
+	background: rgba(212, 175, 55, 0.08);
+}
+
+.flow-arrow {
+	font-size: 1.2rem;
+	line-height: 1;
+	color: var(--black);
+}
+
+/* ─── Two-Lane Diagram ─── */
+
+.two-lanes {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 2rem;
+	margin: 1.5rem 0 2rem;
+}
+
+.lane {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0;
+}
+
+.lane-title {
+	font-family: "Bebas Neue", sans-serif;
+	font-size: 1.1rem;
+	color: var(--red-primary);
+	text-align: center;
+	margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+	.two-lanes {
+		grid-template-columns: 1fr;
+	}
+
+	.diagram {
+		font-size: 0.75rem;
+	}
+}

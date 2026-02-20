@@ -1,0 +1,61 @@
+.tutorial-sidebar {
+	position: sticky;
+	top: 2rem;
+	padding: 2rem 1rem;
+}
+
+.sidebar-title {
+	font-family: "Bebas Neue", sans-serif;
+	font-size: 1.4rem;
+	color: var(--gold);
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	margin-bottom: 1rem;
+	padding-left: 1rem;
+}
+
+.sidebar-chapters {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.sidebar-chapter {
+	border-left: 3px solid transparent;
+	transition: border-color 0.2s ease;
+}
+
+.sidebar-chapter a {
+	display: block;
+	padding: 0.6rem 1rem;
+	color: var(--gray);
+	text-decoration: none;
+	font-family: "PT Sans", sans-serif;
+	font-size: 0.95rem;
+	transition: color 0.2s ease;
+}
+
+.sidebar-chapter a:hover {
+	color: var(--red-primary);
+}
+
+.sidebar-chapter.active {
+	border-left-color: var(--gold);
+}
+
+.sidebar-chapter.active a {
+	color: var(--black);
+	font-weight: 700;
+}
+
+.sidebar-chapter-number {
+	color: var(--red-primary);
+	font-weight: 700;
+	margin-right: 0.4rem;
+}
+
+@media (max-width: 768px) {
+	.tutorial-sidebar {
+		display: none;
+	}
+}

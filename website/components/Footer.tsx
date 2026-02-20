@@ -13,6 +13,7 @@ export const Footer: FunctionComponent = () => {
 				Seize the Means of Rendering.
 			</div>
 			<div className="footer-links">
+				<a href="/tutorial">Tutorial</a>
 				<a href="/about">About</a>
 				<a
 					href="https://github.com/vktrz/castro"

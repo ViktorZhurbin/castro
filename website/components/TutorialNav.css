@@ -1,0 +1,57 @@
+.tutorial-nav {
+	display: flex;
+	justify-content: space-between;
+	gap: 1.5rem;
+	margin-top: 4rem;
+	padding-top: 2rem;
+	border-top: 3px solid var(--black);
+}
+
+.tutorial-nav-link {
+	display: flex;
+	flex-direction: column;
+	gap: 0.3rem;
+	padding: 1.2rem 1.5rem;
+	text-decoration: none;
+	border: 2px solid var(--black);
+	box-shadow: 4px 4px 0 var(--black);
+	background: white;
+	transition:
+		transform 0.2s ease,
+		box-shadow 0.2s ease;
+	min-width: 0;
+}
+
+.tutorial-nav-link:hover {
+	transform: translateY(-2px);
+	box-shadow: 6px 6px 0 var(--black);
+}
+
+.tutorial-nav-link.next {
+	text-align: right;
+	margin-left: auto;
+}
+
+.tutorial-nav-label {
+	font-family: "PT Sans", sans-serif;
+	font-size: 0.8rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: var(--gray);
+}
+
+.tutorial-nav-title {
+	font-family: "Bebas Neue", sans-serif;
+	font-size: 1.3rem;
+	color: var(--red-primary);
+}
+
+@media (max-width: 768px) {
+	.tutorial-nav {
+		flex-direction: column;
+	}
+
+	.tutorial-nav-link.next {
+		text-align: left;
+	}
+}
