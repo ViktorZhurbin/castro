@@ -14,7 +14,7 @@
  */
 
 import { watch } from "node:fs/promises";
-import { join } from "node:path";
+import { extname, join } from "node:path";
 import { styleText } from "node:util";
 import { buildAll } from "../builder/build-all.js";
 import { buildPage } from "../builder/build-page.js";
@@ -153,12 +153,17 @@ export async function startDevServer() {
 		return;
 	}
 
+	// Extensions that trigger rebuilds — ignores editor temp files (.tmp, .swp, ~)
+	const PAGE_EXTENSIONS = new Set([".md", ".jsx", ".tsx"]);
+	const SOURCE_EXTENSIONS = new Set([".tsx", ".ts", ".jsx", ".js", ".css"]);
+
 	// Watch pages directory
 	(async () => {
 		const watcher = watch(PAGES_DIR, { recursive: true });
 
 		for await (const event of watcher) {
 			if (!event.filename) continue;
+			if (!PAGE_EXTENSIONS.has(extname(event.filename))) continue;
 
 			const filePath = join(PAGES_DIR, event.filename);
 
@@ -169,7 +174,9 @@ export async function startDevServer() {
 			} catch (e) {
 				const err = /** @type {Bun.ErrorLike} */ (e);
 
-				console.error(styleText("red", err.message));
+				console.error(
+					styleText("red", messages.build.fileFailure(filePath, err.message)),
+				);
 			}
 
 			// Always notify — even on failure the browser should reload
@@ -200,6 +207,7 @@ export async function startDevServer() {
 
 			for await (const event of watcher) {
 				if (!event.filename) continue;
+				if (!SOURCE_EXTENSIONS.has(extname(event.filename))) continue;
 
 				logFileChanged(`${dir}/${event.filename}`);
 
