@@ -8,51 +8,56 @@ export const meta: PageMeta = { title: "Castro - The People's Framework" };
 export default function Home() {
 	return (
 		<>
-			{/* Hero */}
-			<div className="hero min-h-screen bg-neutral text-neutral-content">
+			{/* Hero — full-bleed dark with constructivist rays */}
+			<div className="hero min-h-[calc(100vh-3rem)] bg-neutral text-neutral-content castro-rays">
 				<div className="hero-content text-center">
-					<div className="max-w-2xl">
-						<div className="w-20 h-20 mx-auto mb-8 text-primary">
+					<div className="max-w-3xl">
+						<div className="w-32 h-32 mx-auto mb-10 text-primary drop-shadow-lg">
 							<StarIcon />
 						</div>
-						<h1 className="text-7xl font-bold uppercase text-primary">
-							Castro
+						<h1 className="font-display text-8xl md:text-9xl tracking-wider text-primary drop-shadow-md">
+							CASTRO
 						</h1>
-						<h2 className="text-4xl font-bold uppercase mb-4">
-							The People's Framework
-						</h2>
-						<p className="text-lg font-bold mb-2">
+						<p className="font-display text-3xl md:text-5xl tracking-wide mt-2 mb-6">
+							THE PEOPLE'S FRAMEWORK
+						</p>
+						<div className="divider divider-primary max-w-xs mx-auto" />
+						<p className="text-lg font-bold mb-1 text-neutral-content">
 							The Educational Island Architecture Framework
-							<br />
+						</p>
+						<p className="text-lg font-bold mb-6 text-neutral-content/70">
 							(That Happens to Be Communist)
 						</p>
-						<p className="italic mb-8 opacity-80">
+						<p className="italic text-sm mb-10 text-neutral-content/60">
 							"The satire is optional. The knowledge is real."
 						</p>
 						<div className="flex flex-wrap gap-4 justify-center">
-							<a href="/manifesto" className="btn btn-primary btn-lg uppercase">
-								Read the Manifesto
+							<a
+								href="/manifesto"
+								className="btn btn-primary btn-lg font-display text-xl tracking-wider"
+							>
+								READ THE MANIFESTO
 							</a>
 							<a
 								href="https://github.com/vktrz/castro"
 								target="_blank"
 								rel="noopener"
-								className="btn btn-outline btn-lg uppercase"
+								className="btn btn-outline border-primary text-primary hover:bg-primary hover:text-primary-content btn-lg font-display text-xl tracking-wider"
 							>
-								View Source Code
+								VIEW SOURCE
 							</a>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			{/* Directives */}
-			<section className="py-24 px-8 bg-base-200">
+			{/* Directives — cream background, three strong cards */}
+			<section className="py-24 px-6 bg-base-100">
 				<div className="text-center mb-16">
-					<h2 className="text-4xl font-bold uppercase mb-2 text-neutral">
-						The Revolutionary Directives
+					<h2 className="font-display text-5xl md:text-6xl tracking-wide text-secondary">
+						THE REVOLUTIONARY DIRECTIVES
 					</h2>
-					<div className="divider divider-primary max-w-xs mx-auto" />
+					<div className="divider divider-secondary max-w-xs mx-auto" />
 					<p className="max-w-xl mx-auto text-base-content/70">
 						Learn how modern SSGs work by reading ~1500 lines of well-commented
 						code. Three hydration strategies. Zero configuration.
@@ -61,7 +66,7 @@ export default function Home() {
 
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
 					<DirectiveCard
-						name="no:pasaran"
+						name="NO:PASARAN"
 						slogan='"They shall not pass (to the client)"'
 						description="Component renders at build time. No JavaScript shipped to client. Pure static HTML for maximum performance."
 						note="Try clicking. Nothing happens. Zero JS was sent to your browser."
@@ -71,35 +76,35 @@ export default function Home() {
 					</DirectiveCard>
 
 					<DirectiveCard
-						name="lenin:awake"
+						name="LENIN:AWAKE"
 						slogan='"The leader is always ready"'
 						description="Component becomes interactive immediately on page load. Full interactivity from the start."
 						note="This counter is interactive immediately. JS loaded on page load."
-						color="primary"
+						color="secondary"
 					>
 						<MyCounter initial={10} lenin:awake />
 					</DirectiveCard>
 
 					<DirectiveCard
-						name="comrade:visible"
+						name="COMRADE:VISIBLE"
 						slogan='"Only work when the people are watching"'
 						description="Component hydrates when scrolled into viewport. Lazy loading with IntersectionObserver. Default behavior."
 						note="JS loads when scrolled into view. Open DevTools Network tab to verify."
-						color="accent"
+						color="primary"
 					>
 						<MyCounter initial={15} comrade:visible />
 					</DirectiveCard>
 				</div>
 			</section>
 
-			{/* How It Works */}
-			<section className="py-24 px-8 bg-neutral text-neutral-content">
+			{/* How It Works — dark section with steps */}
+			<section className="py-24 px-6 bg-neutral text-neutral-content castro-rays">
 				<div className="text-center mb-16">
-					<h2 className="text-4xl font-bold uppercase mb-2 text-primary">
-						How The Revolution Works
+					<h2 className="font-display text-5xl md:text-6xl tracking-wide text-primary">
+						HOW THE REVOLUTION WORKS
 					</h2>
 					<div className="divider divider-primary max-w-xs mx-auto" />
-					<p className="max-w-xl mx-auto opacity-80">
+					<p className="max-w-xl mx-auto text-neutral-content/70">
 						Island architecture explained. No magic, just smart progressive
 						enhancement.
 					</p>
@@ -107,9 +112,11 @@ export default function Home() {
 
 				<ul className="steps steps-vertical max-w-3xl mx-auto">
 					<li className="step step-primary" data-content="1">
-						<div className="text-left">
-							<h3 className="text-xl font-bold text-primary">Build Time</h3>
-							<p className="opacity-80">
+						<div className="text-left py-4">
+							<h3 className="font-display text-2xl tracking-wide text-primary">
+								BUILD TIME
+							</h3>
+							<p className="text-neutral-content/70 mt-1">
 								Castro compiles your pages and renders all islands to static
 								HTML. Every component gets server-side rendered, creating
 								instant visual content.
@@ -117,36 +124,44 @@ export default function Home() {
 						</div>
 					</li>
 					<li className="step step-primary" data-content="2">
-						<div className="text-left">
-							<h3 className="text-xl font-bold text-primary">
-								Browser Receives HTML
+						<div className="text-left py-4">
+							<h3 className="font-display text-2xl tracking-wide text-primary">
+								BROWSER RECEIVES HTML
 							</h3>
-							<p className="opacity-80">
+							<p className="text-neutral-content/70 mt-1">
 								Pure HTML arrives first. Your page is visible immediately. No
 								waiting for JavaScript bundles. Islands are wrapped in{" "}
-								<code>{"<castro-island>"}</code> custom elements.
+								<code className="bg-neutral-content/10 px-1">
+									{"<castro-island>"}
+								</code>{" "}
+								custom elements.
 							</p>
 						</div>
 					</li>
 					<li className="step step-primary" data-content="3">
-						<div className="text-left">
-							<h3 className="text-xl font-bold text-primary">
-								Selective Hydration
+						<div className="text-left py-4">
+							<h3 className="font-display text-2xl tracking-wide text-primary">
+								SELECTIVE HYDRATION
 							</h3>
-							<p className="opacity-80">
+							<p className="text-neutral-content/70 mt-1">
 								JavaScript loads based on your directive.{" "}
-								<code>no:pasaran</code> stays static. <code>lenin:awake</code>{" "}
-								hydrates immediately. <code>comrade:visible</code> waits for
-								viewport intersection.
+								<code className="bg-neutral-content/10 px-1">no:pasaran</code>{" "}
+								stays static.{" "}
+								<code className="bg-neutral-content/10 px-1">lenin:awake</code>{" "}
+								hydrates immediately.{" "}
+								<code className="bg-neutral-content/10 px-1">
+									comrade:visible
+								</code>{" "}
+								waits for viewport intersection.
 							</p>
 						</div>
 					</li>
 					<li className="step step-primary" data-content="4">
-						<div className="text-left">
-							<h3 className="text-xl font-bold text-primary">
-								Interactive Islands
+						<div className="text-left py-4">
+							<h3 className="font-display text-2xl tracking-wide text-primary">
+								INTERACTIVE ISLANDS
 							</h3>
-							<p className="opacity-80">
+							<p className="text-neutral-content/70 mt-1">
 								Components become interactive exactly when needed. Fast initial
 								load, progressive enhancement, minimal JavaScript. This is
 								island architecture.

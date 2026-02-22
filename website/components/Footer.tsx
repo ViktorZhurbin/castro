@@ -1,16 +1,15 @@
-import type { FunctionComponent } from "preact";
-
 /**
  * Castro website footer with slogan and links.
  */
-export const Footer: FunctionComponent = () => {
+export const Footer = () => {
 	return (
-		<footer className="footer footer-center bg-neutral text-neutral-content p-10">
+		<footer className="footer footer-center bg-accent text-accent-content p-10">
 			<div>
-				<p className="text-2xl font-bold text-primary tracking-wide">
-					Workers of the Web, Unite!
-					<br />
-					Seize the Means of Rendering.
+				<p className="font-display text-3xl tracking-wide text-primary">
+					WORKERS OF THE WEB, UNITE!
+				</p>
+				<p className="font-display text-xl tracking-wide text-primary/80">
+					SEIZE THE MEANS OF RENDERING.
 				</p>
 			</div>
 			<nav className="flex gap-8">
@@ -26,7 +25,7 @@ export const Footer: FunctionComponent = () => {
 					GitHub
 				</a>
 			</nav>
-			<p className="opacity-60 text-sm">
+			<p className="text-accent-content/70 text-sm">
 				Built with Castro | The People's Framework
 			</p>
 		</footer>
