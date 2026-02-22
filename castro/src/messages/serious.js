@@ -24,6 +24,7 @@ export const serious = {
 		islandFailed: (err) => `Island build failed: ${err}`,
 		ssrCompileFailed: (source, err) =>
 			`Failed to compile SSR code for ${source}: ${err}`,
+		bundleFailed: (errors) => `Build failed\n${errors}`,
 		noJsOutput: (source) => `No JavaScript output generated for ${source}`,
 	},
 

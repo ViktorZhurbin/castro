@@ -1,5 +1,4 @@
 import { dirname, extname, join } from "node:path";
-import { styleText } from "node:util";
 import { h } from "preact";
 import { OUTPUT_DIR, PAGES_DIR } from "../constants.js";
 import { messages } from "../messages/index.js";
@@ -18,19 +17,10 @@ export async function buildPage(relativeSourcePath) {
 	const outputFilePath = join(OUTPUT_DIR, relativeOutputPath);
 	const sourceFilePath = join(PAGES_DIR, relativeSourcePath);
 
-	try {
-		if (sourceExt === ".md") {
-			await buildMarkdownPage(sourceFilePath, outputFilePath);
-		} else {
-			await buildJSXPage(sourceFilePath, outputFilePath);
-		}
-	} catch (e) {
-		const err = /** @type {Bun.ErrorLike} */ (e);
-
-		console.error(
-			styleText("red", messages.build.fileFailure(sourceFilePath, err.message)),
-		);
-		throw err;
+	if (sourceExt === ".md") {
+		await buildMarkdownPage(sourceFilePath, outputFilePath);
+	} else {
+		await buildJSXPage(sourceFilePath, outputFilePath);
 	}
 }
 

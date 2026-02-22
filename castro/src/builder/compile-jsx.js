@@ -45,7 +45,7 @@ export async function compileJSX(sourcePath) {
 
 	if (!result.success) {
 		const errors = result.logs.map((log) => log.message).join("\n");
-		throw new Error(`Bundle failed for ${sourcePath}:\n${errors}`);
+		throw new Error(messages.build.bundleFailed(errors));
 	}
 
 	const jsFile = result.outputs.find((f) => f.path.endsWith(".js"));

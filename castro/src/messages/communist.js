@@ -25,6 +25,7 @@ export const satirical = {
 		islandFailed: (err) => `Island build failed: ${err}`,
 		ssrCompileFailed: (source, err) =>
 			`Failed to compile SSR code for ${source}: ${err}`,
+		bundleFailed: (errors) => `Production halted\n${errors}`,
 		noJsOutput: (source) => `No JavaScript output generated for ${source}`,
 	},
 

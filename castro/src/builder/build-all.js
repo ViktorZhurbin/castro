@@ -92,7 +92,17 @@ export async function buildAll(options = {}) {
 			);
 		}
 
-		await buildPage(sourcePath);
+		try {
+			await buildPage(sourcePath);
+		} catch (e) {
+			const err = /** @type {Bun.ErrorLike} */ (e);
+			const sourceFilePath = `${PAGES_DIR}/${sourcePath}`;
+
+			console.error(
+				styleText("red", messages.build.fileFailure(sourceFilePath, err.message)),
+			);
+			throw err;
+		}
 	}
 
 	if (outputMap.size === 0) {
