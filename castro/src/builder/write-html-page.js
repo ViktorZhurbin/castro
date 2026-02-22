@@ -8,7 +8,7 @@
  */
 
 import { join } from "node:path";
-import { defaultPlugins } from "../islands/plugins.js";
+import { allPlugins } from "../islands/plugins.js";
 import { islands } from "../islands/registry.js";
 
 /**
@@ -52,7 +52,7 @@ async function resolvePageContext({
 	// Plugin assets: island runtime script, import maps for CDN modules.
 	// Only included when at least one island needs client-side hydration
 	// (no:pasaran-only pages skip the runtime entirely).
-	for (const plugin of defaultPlugins) {
+	for (const plugin of allPlugins) {
 		if (plugin.getImportMap) {
 			Object.assign(importMap, plugin.getImportMap());
 		}

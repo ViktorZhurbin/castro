@@ -20,6 +20,7 @@ bun loc              # LOC count (core only, excludes messages/)
 ## Monorepo Layout
 
 - `castro/` — core SSG engine (the npm package `@vktrz/castro`)
+- `plugins/tailwind/` — Tailwind CSS plugin (`@vktrz/castro-tailwind`)
 - `website/` — demo playground that consumes castro
 - `test-sites/` — minimal test sites (one per framework) that exercise build pipeline
 
@@ -44,7 +45,7 @@ islands/
   registry.js           Singleton island store + SSR module preloading
   marker.js             Build-time island renderer
   framework-config.js   Framework-specific config (currently Preact only)
-  plugins.js            Castro plugin definitions (island runtime, import maps)
+  plugins.js            Plugin registry (internal + user plugins from config)
   hydration.js          Client-side <castro-island> custom element
 
 layouts/
@@ -96,9 +97,17 @@ Old approach used `options.vnode` hook (runtime monkey-patch). Current approach:
 
 `marker.js` maintains a module-level `usedIslands` Set (reset per page render). Only CSS for islands actually rendered on a page gets injected. The `<castro-island>` runtime script is also only included on pages that use islands.
 
+### User Plugins
+
+`castro.config.js` accepts a `plugins` array of `CastroPlugin` objects. User plugins are merged with internal plugins (island runtime, Preact islands) and participate in the same build lifecycle:
+- `onPageBuild()` — runs before pages are built (and on every page save in dev for user plugins)
+- `getPageAssets()` — injects `<link>`/`<style>`/`<script>` tags into every page
+- `getImportMap()` — adds entries to the browser import map
+- `watchPaths` — files to watch in dev mode; changes trigger `onPageBuild()` + reload
+
 ### Dev Server
 
-File watchers rebuild on change. Page changes → single page rebuild. Layout/component changes → full rebuild. All watchers have per-iteration error handling so a build failure doesn't kill the watcher.
+File watchers rebuild on change. Page changes → single page rebuild + user plugin rebuild. Layout/component changes → full rebuild (all plugins). Plugin `watchPaths` get their own watchers. All watchers have per-iteration error handling so a build failure doesn't kill the watcher.
 
 **Cache busting:** Bun's module loader caches by file path and ignores query strings. We use content-hashed filenames (`post.tsx.a1b2c3d4.js`) so changed code gets a new path.
 
@@ -163,9 +172,9 @@ The test structure (pages, components, islands, layouts) mirrors a real site and
 
 ## Website Playground (`website/`)
 
-Demo site that consumes castro. Uses Tailwind CSS v4 + DaisyUI v5.
+Demo site that consumes castro. Uses Tailwind CSS v4 + DaisyUI v5 via `@vktrz/castro-tailwind`.
 
-**CSS pipeline**: `app.css` → PostCSS (`@tailwindcss/postcss`) → `public/output.css`. Run separately from castro's build via `bun run build` (which chains `build:css` then `castro build`).
+**CSS pipeline**: `app.css` → `@vktrz/castro-tailwind` plugin (PostCSS + `@tailwindcss/postcss`) → `dist/app.css`. Fully integrated into Castro's build — `castro build` and `castro dev` handle CSS automatically. The `<link>` tag is auto-injected via the plugin's `getPageAssets()`.
 
 **Themes**: Two custom DaisyUI themes defined in `app.css` — `castro` (light, cream/gold/red) and `castro-dark` (dark, halloween-inspired). Theme toggle persists via `localStorage`, flash-prevention script in layout `<head>`.
 

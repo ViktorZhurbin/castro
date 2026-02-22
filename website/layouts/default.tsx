@@ -30,7 +30,6 @@ const DefaultLayout = (props: Props) => {
 					rel="stylesheet"
 				/>
 				<link rel="stylesheet" href="/global.css" />
-				<link rel="stylesheet" href="./output.css"></link>
 			</head>
 			<body>
 				<Header />

@@ -14,7 +14,7 @@
  */
 
 import { watch } from "node:fs/promises";
-import { extname, join } from "node:path";
+import { basename, dirname, extname, join } from "node:path";
 import { styleText } from "node:util";
 import { buildAll } from "../builder/build-all.js";
 import { buildPage } from "../builder/build-page.js";
@@ -25,6 +25,7 @@ import {
 	OUTPUT_DIR,
 	PAGES_DIR,
 } from "../constants.js";
+import { allPlugins, userPlugins } from "../islands/plugins.js";
 import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
 
@@ -170,6 +171,13 @@ export async function startDevServer() {
 			logFileChanged(filePath);
 
 			try {
+				// User plugins (e.g., Tailwind) need to run on every page change
+				// so new CSS classes are picked up. Internal plugins are skipped —
+				// island compilation is expensive and unnecessary for single page saves.
+				for (const plugin of userPlugins) {
+					if (plugin.onPageBuild) await plugin.onPageBuild();
+				}
+
 				await buildPage(event.filename);
 			} catch (e) {
 				const err = /** @type {Bun.ErrorLike} */ (e);
@@ -226,6 +234,54 @@ export async function startDevServer() {
 				notifyReload();
 			}
 		})();
+	}
+
+	// Watch files declared by user plugins (e.g., app.css for Tailwind).
+	// Changes trigger the plugin's onPageBuild() and a browser reload.
+	// We watch the parent directory and filter by basename because
+	// fs.watch on individual files is unreliable across platforms.
+	for (const plugin of allPlugins) {
+		if (!plugin.watchPaths?.length) continue;
+
+		/** @type {Map<string, Set<string>>} */
+		const dirToFiles = new Map();
+
+		for (const watchPath of plugin.watchPaths) {
+			const dir = dirname(watchPath) || ".";
+			const file = basename(watchPath);
+			if (!dirToFiles.has(dir)) dirToFiles.set(dir, new Set());
+			const files = dirToFiles.get(dir);
+			if (files) files.add(file);
+		}
+
+		for (const [dir, fileNames] of dirToFiles) {
+			(async () => {
+				/** @type {AsyncIterable<import("node:fs/promises").FileChangeInfo<string>>} */
+				let watcher;
+
+				try {
+					watcher = watch(dir);
+				} catch {
+					return;
+				}
+
+				for await (const event of watcher) {
+					if (!event.filename || !fileNames.has(event.filename)) continue;
+
+					const filePath = join(dir, event.filename);
+					logFileChanged(filePath);
+
+					try {
+						if (plugin.onPageBuild) await plugin.onPageBuild();
+					} catch (e) {
+						const err = /** @type {Bun.ErrorLike} */ (e);
+						console.error(styleText("red", err.message));
+					}
+
+					notifyReload();
+				}
+			})();
+		}
 	}
 
 	function logFileChanged(/** @type {string} */ filePath) {

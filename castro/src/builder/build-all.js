@@ -12,7 +12,7 @@
 import { cp, mkdir, rm } from "node:fs/promises";
 import { styleText } from "node:util";
 import { OUTPUT_DIR, PAGES_DIR, PUBLIC_DIR } from "../constants.js";
-import { defaultPlugins } from "../islands/plugins.js";
+import { allPlugins } from "../islands/plugins.js";
 import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
 import { formatMs } from "../utils/format.js";
@@ -40,7 +40,7 @@ export async function buildAll(options = {}) {
 		}
 	}
 
-	for (const plugin of defaultPlugins) {
+	for (const plugin of allPlugins) {
 		if (plugin.onPageBuild) {
 			await plugin.onPageBuild();
 		}
