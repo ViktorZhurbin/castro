@@ -99,7 +99,10 @@ export async function buildAll(options = {}) {
 			const sourceFilePath = `${PAGES_DIR}/${sourcePath}`;
 
 			console.error(
-				styleText("red", messages.build.fileFailure(sourceFilePath, err.message)),
+				styleText(
+					"red",
+					messages.build.fileFailure(sourceFilePath, err.message),
+				),
 			);
 			throw err;
 		}
