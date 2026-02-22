@@ -40,7 +40,12 @@ const FrameworkConfig = {
 		 */
 		getBuildConfig: () => ({
 			jsx: { runtime: "automatic", importSource: "preact" },
-			external: ["preact", "preact/hooks", "preact/jsx-runtime"],
+			external: [
+				"preact",
+				"preact/hooks",
+				"@preact/signals",
+				"preact/jsx-runtime",
+			],
 		}),
 
 		/**
@@ -50,6 +55,7 @@ const FrameworkConfig = {
 		importMap: {
 			preact: "https://esm.sh/preact",
 			"preact/hooks": "https://esm.sh/preact/hooks",
+			"@preact/signals": "https://esm.sh/@preact/signals?external=preact",
 			"preact/jsx-runtime": "https://esm.sh/preact/jsx-runtime",
 		},
 

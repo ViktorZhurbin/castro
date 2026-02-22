@@ -110,11 +110,11 @@ export default function Home() {
 
 **Add an island** (`counter.island.tsx`):
 ```tsx
-import { useState } from "preact/hooks";
+import { useSignal } from "@preact/signals";
 
 export default function Counter({ initialCount = 0 }) {
-  const [count, setCount] = useState(initialCount);
-  return <button onClick={() => setCount(count + 1)}>{count}</button>;
+  const count = useSignal(initial);
+  return <button onClick={() => count.value++}>{count}</button>;
 }
 ```
 

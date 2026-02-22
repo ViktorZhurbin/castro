@@ -10,6 +10,7 @@
 		"build:css": "postcss app.css -o public/output.css"
 	},
 	"dependencies": {
+		"@preact/signals": "^2.8.1",
 		"@tailwindcss/postcss": "^4.2.0",
 		"@vktrz/castro": "workspace:*",
 		"daisyui": "^5.5.19",

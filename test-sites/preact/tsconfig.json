@@ -9,5 +9,5 @@
 		"allowImportingTsExtensions": true,
 		"noEmit": true
 	},
-	"include": ["components/**/*", "layouts/**/*", "pages/**/*"]
+	"include": ["components/**/*", "layouts/**/*", "pages/**/*", "types/**/*"]
 }

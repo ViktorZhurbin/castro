@@ -1,10 +1,15 @@
-import { useState } from "preact/hooks";
+import { useSignal } from "@preact/signals";
 import styles from "./Clicker.module.css";
 
 export default function Clicker() {
-	const [on, setOn] = useState(false);
+	const on = useSignal(false);
 	return (
-		<button class={styles.clicker} onClick={() => setOn(!on)}>
+		<button
+			class={styles.clicker}
+			onClick={() => {
+				on.value = !on;
+			}}
+		>
 			{on ? "ON" : "OFF"}
 		</button>
 	);

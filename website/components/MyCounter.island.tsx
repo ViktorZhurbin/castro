@@ -1,11 +1,11 @@
-import { useState } from "preact/hooks";
+import { useSignal } from "@preact/signals";
 
 interface CounterProps {
 	initial?: number;
 }
 
 export const MyCounter = ({ initial = 0 }: CounterProps) => {
-	const [count, setCount] = useState<number>(initial);
+	const count = useSignal(initial);
 
 	return (
 		<div className="card card-border border-base-300 card-sm bg-base-100">
@@ -13,25 +13,25 @@ export const MyCounter = ({ initial = 0 }: CounterProps) => {
 				<h3 className="card-title text-secondary font-display text-xl tracking-wide">
 					PREACT COUNTER ISLAND
 				</h3>
-				<p className="text-3xl font-bold tabular-nums">
-					Count: {count}
-				</p>
+				<p className="text-3xl font-bold tabular-nums">Count: {count}</p>
 				<div className="card-actions">
 					<button
 						className="btn btn-secondary btn-sm"
-						onClick={() => setCount(count - 1)}
+						onClick={() => count.value--}
 					>
 						−
 					</button>
 					<button
 						className="btn btn-secondary btn-sm"
-						onClick={() => setCount(count + 1)}
+						onClick={() => count.value++}
 					>
 						+
 					</button>
 					<button
 						className="btn btn-outline btn-sm"
-						onClick={() => setCount(initial)}
+						onClick={() => {
+							count.value = initial;
+						}}
 					>
 						Reset
 					</button>

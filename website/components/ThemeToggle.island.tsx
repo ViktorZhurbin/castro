@@ -1,20 +1,21 @@
-import { useEffect, useState } from "preact/hooks";
+import { useSignal } from "@preact/signals";
+import { useEffect } from "preact/hooks";
 
 const STORAGE_KEY = "castro-theme";
-const LIGHT = "castro";
+const LIGHT = "castro-light";
 const DARK = "castro-dark";
 
 export const ThemeToggle = () => {
-	const [dark, setDark] = useState(false);
+	const dark = useSignal(false);
 
 	useEffect(() => {
 		const saved = localStorage.getItem(STORAGE_KEY);
-		setDark(saved === DARK);
+		dark.value = saved === DARK;
 	}, []);
 
 	const toggle = () => {
-		const next = dark ? LIGHT : DARK;
-		setDark(!dark);
+		const next = dark.value ? LIGHT : DARK;
+		dark.value = !dark.value;
 		document.documentElement.setAttribute("data-theme", next);
 		localStorage.setItem(STORAGE_KEY, next);
 	};

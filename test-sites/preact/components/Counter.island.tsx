@@ -1,7 +1,15 @@
-import { useState } from "preact/hooks";
 import "./Counter.island.css";
+import { useSignal } from "@preact/signals";
 
 export default function Counter({ initial = 0 }) {
-	const [count, setCount] = useState(initial);
-	return <button onClick={() => setCount(count + 1)}>Count: {count}</button>;
+	const count = useSignal(initial);
+	return (
+		<button
+			onClick={() => {
+				count.value++;
+			}}
+		>
+			Count: {count}
+		</button>
+	);
 }
