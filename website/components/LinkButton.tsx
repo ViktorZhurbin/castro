@@ -13,7 +13,7 @@ export const LinkButton: FunctionComponent<LinkButtonProps> = ({
 	children,
 }) => {
 	const isExternal = href.startsWith("http://") || href.startsWith("https://");
-	const className = `btn btn-${variant}`;
+	const className = `link-btn link-btn-${variant}`;
 
 	return (
 		<a
