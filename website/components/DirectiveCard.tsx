@@ -1,9 +1,9 @@
 import type { ComponentChildren } from "preact";
 
 const cardStyles = {
-	neutral: { card: "border-neutral", title: "text-neutral" },
+	neutral: { card: "border-base-content/40", title: "text-base-content" },
 	primary: { card: "border-primary", title: "text-primary" },
-	accent: { card: "border-accent", title: "text-accent" },
+	secondary: { card: "border-secondary", title: "text-secondary" },
 } as const;
 
 interface DirectiveCardProps {
@@ -25,15 +25,19 @@ export const DirectiveCard = ({
 }: DirectiveCardProps) => {
 	const styles = cardStyles[color];
 	return (
-		<div className={`card card-border ${styles.card} bg-base-100`}>
+		<div className={`card card-border ${styles.card} bg-base-100 shadow-md`}>
 			<div className="card-body">
-				<h3 className={`card-title text-2xl ${styles.title}`}>{name}</h3>
-				<p className="italic text-sm opacity-60">{slogan}</p>
-				<p>{description}</p>
-				<div className="bg-base-200 p-4 rounded-box">
+				<h3
+					className={`card-title font-display text-3xl tracking-wide ${styles.title}`}
+				>
+					{name}
+				</h3>
+				<p className="italic text-sm text-base-content/70">{slogan}</p>
+				<p className="mt-2 text-base-content">{description}</p>
+				<div className="bg-base-200 p-4 mt-2 border border-dashed border-base-300">
 					{children}
 				</div>
-				<p className="text-sm italic opacity-50">{note}</p>
+				<p className="text-xs text-base-content/70 mt-2">{note}</p>
 			</div>
 		</div>
 	);

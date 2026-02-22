@@ -161,6 +161,24 @@ The test structure (pages, components, islands, layouts) mirrors a real site and
 - `website/dist/` and `test-sites/*/dist/` are ephemeral, cleaned on every build
 - Island imports must use relative paths, not tsconfig aliases (documented in `compile-jsx.js`)
 
+## Website Playground (`website/`)
+
+Demo site that consumes castro. Uses Tailwind CSS v4 + DaisyUI v5.
+
+**CSS pipeline**: `app.css` → PostCSS (`@tailwindcss/postcss`) → `public/output.css`. Run separately from castro's build via `bun run build` (which chains `build:css` then `castro build`).
+
+**Themes**: Two custom DaisyUI themes defined in `app.css` — `castro` (light, cream/gold/red) and `castro-dark` (dark, halloween-inspired). Theme toggle persists via `localStorage`, flash-prevention script in layout `<head>`.
+
+**Key files**:
+- `app.css` — Tailwind + DaisyUI config, both custom theme definitions, `font-display` utility
+- `public/global.css` — body font, `.castro-rays` decorative background class
+- `layouts/default.tsx` — HTML shell, Google Fonts (Bebas Neue + PT Sans), ThemeToggle island
+- `components/DirectiveCard.tsx` — card with explicit color map (avoids dynamic Tailwind class interpolation)
+- `components/MyCounter.island.tsx` — Preact counter demonstrating all three directives
+- `components/ThemeToggle.island.tsx` — `lenin:awake` island, DaisyUI swap + theme-controller
+
+**DaisyUI reference**: `.claude/docs/daisyui-llms.txt`
+
 ## Maintaining This File
 
 If your changes affect anything documented above (file structure, commands, architecture, design decisions), update this file as part of the same change. This file is the primary context source for AI-assisted development.

@@ -8,19 +8,23 @@ export const MyCounter = ({ initial = 0 }: CounterProps) => {
 	const [count, setCount] = useState<number>(initial);
 
 	return (
-		<div className="card card-border card-sm bg-base-100">
+		<div className="card card-border border-base-300 card-sm bg-base-100">
 			<div className="card-body">
-				<h3 className="card-title text-primary">Preact Counter Island</h3>
-				<p className="text-2xl font-semibold">Count: {count}</p>
+				<h3 className="card-title text-secondary font-display text-xl tracking-wide">
+					PREACT COUNTER ISLAND
+				</h3>
+				<p className="text-3xl font-bold tabular-nums">
+					Count: {count}
+				</p>
 				<div className="card-actions">
 					<button
-						className="btn btn-primary btn-sm"
+						className="btn btn-secondary btn-sm"
 						onClick={() => setCount(count - 1)}
 					>
 						−
 					</button>
 					<button
-						className="btn btn-primary btn-sm"
+						className="btn btn-secondary btn-sm"
 						onClick={() => setCount(count + 1)}
 					>
 						+
