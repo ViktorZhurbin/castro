@@ -110,9 +110,7 @@ export default function Home() {
 				<ul className="steps steps-vertical max-w-3xl mx-auto">
 					<li className="step step-primary" data-content="1">
 						<div className="text-left py-4">
-							<h3 className="font-display text-2xl text-primary">
-								BUILD TIME
-							</h3>
+							<h3 className="font-display text-2xl text-primary">BUILD TIME</h3>
 							<p className="text-neutral-content/70 mt-1">
 								Castro compiles your pages and renders all islands to static
 								HTML. Every component gets server-side rendered, creating
@@ -128,10 +126,7 @@ export default function Home() {
 							<p className="text-neutral-content/70 mt-1">
 								Pure HTML arrives first. Your page is visible immediately. No
 								waiting for JavaScript bundles. Islands are wrapped in{" "}
-								<code >
-									{"<castro-island>"}
-								</code>{" "}
-								custom elements.
+								<code>{"<castro-island>"}</code> custom elements.
 							</p>
 						</div>
 					</li>
@@ -142,14 +137,9 @@ export default function Home() {
 							</h3>
 							<p className="text-neutral-content/70 mt-1">
 								JavaScript loads based on your directive.{" "}
-								<code >no:pasaran</code>{" "}
-								stays static.{" "}
-								<code >lenin:awake</code>{" "}
-								hydrates immediately.{" "}
-								<code >
-									comrade:visible
-								</code>{" "}
-								waits for viewport intersection.
+								<code>no:pasaran</code> stays static. <code>lenin:awake</code>{" "}
+								hydrates immediately. <code>comrade:visible</code> waits for
+								viewport intersection.
 							</p>
 						</div>
 					</li>

@@ -15,18 +15,13 @@ export default function NotFound() {
 					<h1 className="font-display text-9xl text-secondary drop-shadow-md">
 						404
 					</h1>
-					<h2 className="font-display text-4xl mt-4 mb-8">
-						PAGE NOT FOUND
-					</h2>
+					<h2 className="font-display text-4xl mt-4 mb-8">PAGE NOT FOUND</h2>
 					<p className="text-lg font-bold mb-10 text-neutral-content">
 						This page has been redacted by the Ministry of Truth.
 						<br />
 						It never existed.
 					</p>
-					<a
-						href="/"
-						className="btn btn-primary btn-lg font-display text-xl"
-					>
+					<a href="/" className="btn btn-primary btn-lg font-display text-xl">
 						RETURN TO THE COLLECTIVE
 					</a>
 				</div>

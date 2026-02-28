@@ -27,9 +27,7 @@ export const DirectiveCard = ({
 	return (
 		<div className={`card card-border ${styles.card} bg-base-100 shadow-md`}>
 			<div className="card-body">
-				<h3
-					className={`card-title font-display text-3xl ${styles.title}`}
-				>
+				<h3 className={`card-title font-display text-3xl ${styles.title}`}>
 					{name}
 				</h3>
 				<p className="italic text-sm text-base-content/70">{slogan}</p>
