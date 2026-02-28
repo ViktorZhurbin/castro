@@ -8,7 +8,13 @@
  * so they can be wired into the build pipeline without polluting config.
  *
  * @import { CastroPlugin } from './types.js'
- * @typedef {{ port?: number, messages?: "satirical" | "serious", framework?: "preact", plugins?: CastroPlugin[] }} CastroConfig
+ *
+ * @typedef {{
+ * 	port?: number,
+ * 	messages?: "satirical" | "serious",
+ * 	framework?: string,
+ * 	plugins?: CastroPlugin[]
+ * }} CastroConfig
  */
 
 import { join } from "node:path";

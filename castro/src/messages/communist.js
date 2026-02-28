@@ -91,7 +91,12 @@ export const satirical = {
 			`❌ Failed to write cache file: ${path}\n${err}`,
 		frameworkUnsupported: (name) =>
 			`❌ Framework "${name}" is not recognized by the Party.\n` +
-			`   Approved frameworks: preact`,
+			`   Approved: preact. Others require a framework plugin.`,
+		frameworkConfigInvalid: (pluginName, missing) =>
+			`❌ Plugin "${pluginName}" submitted incomplete papers.\n` +
+			`   Missing: ${missing}`,
+		frameworkLoadFailed: (name, err) =>
+			`❌ Framework "${name}" collapsed during initialization.\n` + `   ${err}`,
 	},
 
 	// Commands

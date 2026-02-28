@@ -102,7 +102,7 @@ Old approach used `options.vnode` hook (runtime monkey-patch). Current approach:
 `castro.config.js` accepts a `plugins` array of `CastroPlugin` objects. User plugins are merged with internal plugins (island runtime, Preact islands) and participate in the same build lifecycle:
 - `onPageBuild()` — runs before pages are built (and on every page save in dev for user plugins)
 - `getPageAssets()` — injects `<link>`/`<style>`/`<script>` tags into every page
-- `getImportMap()` — adds entries to the browser import map
+- `frameworkConfig` — optional `FrameworkConfig` object to register a custom framework for islands
 - `watchDirs` — directories to watch in dev mode; changes trigger `onPageBuild()` + reload
 
 ### Dev Server
@@ -146,7 +146,7 @@ Key rules from `src/messages/README.md`:
 ## Key Design Decisions
 
 - **Layouts receive `children` (VNode)**, not a pre-rendered `content` HTML string. The entire tree renders in a single `renderToString()` pass.
-- **`frameworkConfig` singleton** resolved at startup from `config.framework`. Fails loud if unsupported.
+- **Framework configs** are loaded per-island via `framework-config.js` (async load + sync cache pattern). Preact is built-in; plugins can register additional frameworks via `CastroPlugin.frameworkConfig`. Directory convention (`components/solid/`) auto-detects registered frameworks.
 - **`IslandComponent.ssrModule`** typed as `{ default: Function }` (framework-agnostic). Pre-loaded by the registry, accessed synchronously by `renderMarker()`.
 - **`renderSSR` accepts `Function`**, not `ComponentType`. Each framework config casts internally.
 - **Island CSS** tracked per-page via `pageState` in `marker.js`, not on the registry singleton. `pageState.needsHydration` controls whether the runtime script is included (pages with only `no:pasaran` islands ship zero client JS).

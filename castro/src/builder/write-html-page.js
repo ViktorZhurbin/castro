@@ -8,6 +8,7 @@
  */
 
 import { join } from "node:path";
+import { getFrameworkConfig } from "../islands/framework-config.js";
 import { allPlugins } from "../islands/plugins.js";
 import { islands } from "../islands/registry.js";
 
@@ -49,14 +50,26 @@ async function resolvePageContext({
 	const importMap = {};
 	const assets = [...pageCssAssets];
 
-	// Plugin assets: island runtime script, import maps for CDN modules.
+	// Import maps: aggregate from the framework configs of islands used on this page.
+	// Each framework declares its own CDN URLs (e.g., Preact needs preact/hooks,
+	// Solid needs solid-js/web). Only frameworks actually used get included.
+	if (needsHydration) {
+		const frameworks = new Set();
+
+		for (const id of usedIslands) {
+			const island = islands.getIsland(id);
+			if (island) frameworks.add(island.frameworkId);
+		}
+
+		for (const name of frameworks) {
+			Object.assign(importMap, getFrameworkConfig(name).importMap);
+		}
+	}
+
+	// Plugin assets: island runtime script, CSS links, etc.
 	// Only included when at least one island needs client-side hydration
 	// (no:pasaran-only pages skip the runtime entirely).
 	for (const plugin of allPlugins) {
-		if (plugin.getImportMap) {
-			Object.assign(importMap, plugin.getImportMap());
-		}
-
 		if (plugin.getPageAssets) {
 			assets.push(...plugin.getPageAssets({ needsHydration }));
 		}
@@ -111,17 +124,17 @@ function injectAssets(html, { assets, importMap }) {
 		...assets.map(generateAssetTag),
 	].filter(Boolean);
 
-	if (tags.length === 0) return output;
+	if (tags.length > 0) {
+		// Inject before </head> so CSS is render-blocking (prevents flash of
+		// unstyled content). Fall back to </body> for layouts without a <head>.
+		const injection = tags.join("\n");
+		const headEnd = output.indexOf("</head>");
+		const bodyEnd = output.indexOf("</body>");
+		const insertAt = headEnd !== -1 ? headEnd : bodyEnd;
 
-	// Inject before </head> so CSS is render-blocking (prevents flash of
-	// unstyled content). Fall back to </body> for layouts without a <head>.
-	const injection = tags.join("\n");
-	const headEnd = output.indexOf("</head>");
-	const bodyEnd = output.indexOf("</body>");
-	const insertAt = headEnd !== -1 ? headEnd : bodyEnd;
-
-	if (insertAt !== -1) {
-		output = output.slice(0, insertAt) + injection + output.slice(insertAt);
+		if (insertAt !== -1) {
+			output = output.slice(0, insertAt) + injection + output.slice(insertAt);
+		}
 	}
 
 	if (!output.trimStart().toLowerCase().startsWith("<!doctype")) {

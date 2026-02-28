@@ -10,6 +10,7 @@
 import { mkdir } from "node:fs/promises";
 import { dirname, join, relative } from "node:path";
 import { styleText } from "node:util";
+import { config as castroConfig } from "../config.js";
 import {
 	COMPONENTS_DIR,
 	ISLANDS_OUTPUT_DIR,
@@ -19,6 +20,7 @@ import { messages } from "../messages/index.js";
 import { getModule } from "../utils/cache.js";
 import { getIslandId } from "../utils/ids.js";
 import { compileIsland } from "./compiler.js";
+import { isKnownFramework, loadFrameworkConfig } from "./framework-config.js";
 
 /**
  * @import { IslandComponent } from '../types.js'
@@ -64,6 +66,12 @@ class IslandsRegistry {
 		for await (const relativePath of islandGlob.scan(COMPONENTS_DIR)) {
 			const sourcePath = join(COMPONENTS_DIR, relativePath);
 
+			// Determine which framework this island uses.
+			// Convention: islands in components/solid/ use "solid", etc.
+			// Falls back to the default from castro.config.js.
+			const frameworkId = detectFramework(relativePath);
+			await loadFrameworkConfig(frameworkId);
+
 			// Preserve directory nesting in output (e.g., ui/Button → islands/ui/Button)
 			const relativeDir = dirname(relativePath);
 			const outputDir = join(outputIslandsDir, relativeDir);
@@ -77,6 +85,7 @@ class IslandsRegistry {
 					sourcePath,
 					outputDir,
 					publicDir,
+					frameworkId,
 				});
 
 				const islandId = getIslandId(sourcePath);
@@ -113,6 +122,31 @@ class IslandsRegistry {
 			}
 		}
 	}
+}
+
+/**
+ * Detect which framework an island uses based on its directory path.
+ *
+ * Convention: if the first directory segment inside components/ matches
+ * a registered framework name (built-in or plugin-provided), use that
+ * framework. Otherwise fall back to the project default from castro.config.js.
+ *
+ * Examples:
+ *   "solid/Counter.island.tsx"  → "solid" (if registered via plugin)
+ *   "ui/Button.island.tsx"      → default from config
+ *   "Counter.island.tsx"        → default from config
+ *
+ * @param {string} relativePath - Path relative to components directory
+ * @returns {string}
+ */
+function detectFramework(relativePath) {
+	const firstSegment = relativePath.split("/")[0];
+
+	if (isKnownFramework(firstSegment)) {
+		return firstSegment;
+	}
+
+	return castroConfig.framework;
 }
 
 export const islands = new IslandsRegistry();

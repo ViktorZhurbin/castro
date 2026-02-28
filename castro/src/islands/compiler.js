@@ -19,7 +19,7 @@
 import { basename, dirname, extname, resolve } from "node:path";
 import { styleText } from "node:util";
 import { messages } from "../messages/index.js";
-import { frameworkConfig } from "./framework-config.js";
+import { getFrameworkConfig } from "./framework-config.js";
 
 /**
  * @import { IslandComponent } from "../types.d.ts"
@@ -31,18 +31,24 @@ import { frameworkConfig } from "./framework-config.js";
  * Handles hashing and file writing. The compiler generates hashed filenames
  * for cache busting and returns the actual public paths to use in HTML.
  *
- * @param {{ sourcePath: string, outputDir: string, publicDir: string }} params
+ * @param {{ sourcePath: string, outputDir: string, publicDir: string, frameworkId: string }} params
  * @returns {Promise<IslandComponent>}
  */
-export async function compileIsland({ sourcePath, outputDir, publicDir }) {
+export async function compileIsland({
+	sourcePath,
+	outputDir,
+	publicDir,
+	frameworkId,
+}) {
 	try {
 		// Compile SSR version first (runs at build time in Bun)
-		const ssrCode = await compileIslandSSR({ sourcePath });
+		const ssrCode = await compileIslandSSR({ sourcePath, frameworkId });
 
 		// Compile client version (runs in browser)
 		const clientResult = await compileIslandClient({
 			sourcePath,
 			outputDir,
+			frameworkId,
 		});
 
 		// Find the actual generated files (with hashes)
@@ -67,6 +73,7 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
 			sourcePath,
 			publicJsPath,
 			cssContent,
+			frameworkId,
 		};
 	} catch (err) {
 		console.info(styleText("red", messages.build.islandFailed(err)));
@@ -81,15 +88,17 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
  * The mounting function handles hydration when called.
  * Outputs files with content hashes for cache busting.
  *
- * @param {{ sourcePath: string, outputDir: string }} params
+ * @param {{ sourcePath: string, outputDir: string, frameworkId: string }} params
  */
-async function compileIslandClient({ sourcePath, outputDir }) {
+async function compileIslandClient({ sourcePath, outputDir, frameworkId }) {
 	const componentName = basename(sourcePath, extname(sourcePath));
 
 	// Virtual entry point: a generated module that imports the real component
 	// and wraps it in a mounting function for hydration. This file never exists
 	// on disk — Bun's `files` option lets us feed code strings directly into the
 	// bundler as if they were real files (same concept as Vite/Rollup virtual modules).
+	const frameworkConfig = getFrameworkConfig(frameworkId);
+
 	const virtualEntry = `
 		import Component from './${basename(sourcePath)}';
 
@@ -141,9 +150,10 @@ async function compileIslandClient({ sourcePath, outputDir }) {
  * - Result is kept in memory, not written to disk
  * - Used only to generate static HTML at build time
  *
- * @param {{ sourcePath: string }} params
+ * @param {{ sourcePath: string, frameworkId: string }} params
  */
-async function compileIslandSSR({ sourcePath }) {
+async function compileIslandSSR({ sourcePath, frameworkId }) {
+	const frameworkConfig = getFrameworkConfig(frameworkId);
 	const buildConfig = frameworkConfig.getBuildConfig();
 
 	try {

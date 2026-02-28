@@ -1,97 +1,140 @@
-import { h } from "preact";
-import { render } from "preact-render-to-string";
+/**
+ * Framework Config Loader
+ *
+ * Manages framework configurations with three access patterns:
+ *
+ * 1. Plugin registration: registerFramework() lets plugins provide a
+ *    FrameworkConfig directly, bypassing the built-in frameworks/ directory.
+ *    Called at module load time from plugins.js, before any builds run.
+ *
+ * 2. Async loading (build time): loadFrameworkConfig("preact") dynamically
+ *    imports frameworks/preact.js and caches it. Called by registry.js
+ *    when discovering islands, before any rendering happens.
+ *
+ * 3. Sync access (render time): getFrameworkConfig("preact") returns the
+ *    cached config instantly. Called by marker.js during renderToString(),
+ *    which is synchronous — no opportunity to await.
+ *
+ * The async/sync split is necessary because renderToString() traverses the
+ * VNode tree synchronously, but framework configs may need async imports.
+ */
+
 import { config } from "../config.js";
 import { messages } from "../messages/index.js";
 
 /**
- * @import * as preact from "preact"
- * @import { ImportsMap } from "../types.js"
- *
- * @typedef {{
- *   framework: "preact";
- *   getBuildConfig: () => Partial<Bun.BuildConfig>;
- *   importMap: ImportsMap;
- *   hydrateFnString: string;
- *   renderSSR: (Component: Function, props: Record<string, unknown>) => string;
- * }} ConfigItem
+ * @import { FrameworkConfig } from "./frameworks/types.d.ts"
  */
 
 /**
- * Framework-specific settings for island compilation.
- *
- * To support a framework, we need to configure:
- * 1. How to compile components (Bun.build JSX settings)
- * 2. How to hydrate on the client (framework-specific code)
- * 3. How to render on the server (SSR function)
- * 4. Where to load the framework from (import map CDN URLs)
+ * In-memory cache of loaded framework configs.
+ * Populated during build initialization, read during rendering.
+ * @type {Map<string, FrameworkConfig>}
  */
+const loadedConfigs = new Map();
+
+/** @type {(keyof FrameworkConfig)[]} */
+const REQUIRED_FIELDS = [
+	"id",
+	"getBuildConfig",
+	"importMap",
+	"hydrateFnString",
+	"renderSSR",
+];
 
 /**
- * @type {Record<"preact", ConfigItem>}
+ * Register a framework config directly (used by plugins).
+ * Bypasses the dynamic import from ./frameworks/ entirely.
+ * Validates required fields so broken configs fail early with a clear error.
+ *
+ * @param {FrameworkConfig} frameworkConfig
+ * @param {string} pluginName - Name of the plugin providing this config
  */
-const FrameworkConfig = {
-	preact: {
-		framework: "preact",
+export function registerFramework(frameworkConfig, pluginName) {
+	const missing = REQUIRED_FIELDS.filter((f) => !frameworkConfig[f]);
 
-		/**
-		 * Preact-specific configuration for compiling components with Bun.build
-		 * Uses automatic JSX transform (no need to import h)
-		 * @return {Partial<Bun.BuildConfig>}
-		 */
-		getBuildConfig: () => ({
-			jsx: { runtime: "automatic", importSource: "preact" },
-			external: [
-				"preact",
-				"preact/hooks",
-				"@preact/signals",
-				"preact/jsx-runtime",
-			],
-		}),
+	if (missing.length > 0) {
+		throw new Error(
+			messages.errors.frameworkConfigInvalid(pluginName, missing.join(", ")),
+		);
+	}
 
-		/**
-		 * Import map tells the browser where to load Preact from
-		 * Using esm.sh CDN for zero-config module loading
-		 */
-		importMap: {
-			preact: "https://esm.sh/preact",
-			"preact/hooks": "https://esm.sh/preact/hooks",
-			"@preact/signals": "https://esm.sh/@preact/signals?external=preact",
-			"preact/jsx-runtime": "https://esm.sh/preact/jsx-runtime",
-		},
-
-		/**
-		 * Client-side hydration code
-		 *
-		 * This code string gets injected into the compiled island bundle.
-		 * It runs in the browser when the island loads.
-		 *
-		 * What it does:
-		 * 1. Dynamically imports Preact runtime (resolved via import map)
-		 * 2. Calls hydrate() which attaches event listeners to existing HTML
-		 *    without re-rendering (the HTML came from SSR)
-		 * 3. Component becomes interactive
-		 *
-		 * Variables available when this runs:
-		 * - Component: the imported component function
-		 * - props: extracted from data-* attributes
-		 * - container: the DOM element to hydrate
-		 */
-		hydrateFnString: `
-			const { h, hydrate } = await import("preact");
-			hydrate(h(Component, props), container);
-		`,
-
-		/**
-		 * Server-side rendering function
-		 * Runs at build time to generate static HTML
-		 */
-		renderSSR: (Component, props) =>
-			render(h(/** @type {preact.ComponentType<any>} */ (Component), props)),
-	},
-};
-
-export const frameworkConfig = FrameworkConfig[config.framework];
-
-if (!frameworkConfig) {
-	throw new Error(messages.errors.frameworkUnsupported(config.framework));
+	loadedConfigs.set(frameworkConfig.id, frameworkConfig);
 }
+
+/**
+ * Check if a framework id has been registered (built-in or plugin).
+ * Used by registry.js to detect framework folder conventions.
+ *
+ * @param {string} id
+ * @returns {boolean}
+ */
+export function isKnownFramework(id) {
+	return loadedConfigs.has(id);
+}
+
+/**
+ * Load a framework config file and cache it for later sync access.
+ *
+ * Dynamically imports from ./frameworks/{id}.js. This means:
+ * - Only the frameworks actually used get their dependencies loaded
+ * - Missing framework dependencies fail at build time with a clear error,
+ *   not at module-load time when the config file is first parsed
+ *
+ * @param {string} id
+ * @returns {Promise<FrameworkConfig>}
+ */
+export async function loadFrameworkConfig(id) {
+	const cached = loadedConfigs.get(id);
+
+	if (cached) return cached;
+
+	try {
+		const mod = await import(`./frameworks/${id}.js`);
+		const frameworkConfig = /** @type {FrameworkConfig} */ (mod.default);
+
+		loadedConfigs.set(id, frameworkConfig);
+
+		return frameworkConfig;
+	} catch (e) {
+		const err = /** @type {Bun.ErrorLike} */ (e);
+
+		// Module not found → unsupported framework name.
+		// Any other error → the config file exists but broke during load.
+		if (
+			err.code === "ERR_MODULE_NOT_FOUND" ||
+			err.code === "MODULE_NOT_FOUND"
+		) {
+			throw new Error(messages.errors.frameworkUnsupported(id));
+		}
+
+		throw new Error(messages.errors.frameworkLoadFailed(id, err.message));
+	}
+}
+
+/**
+ * Get a previously loaded framework config (synchronous).
+ *
+ * Must only be called after loadFrameworkConfig() has completed for this
+ * framework id. Throws if the config wasn't pre-loaded — this indicates
+ * a bug in the build pipeline (registry should load configs before rendering).
+ *
+ * @param {string} id
+ * @returns {FrameworkConfig}
+ */
+export function getFrameworkConfig(id) {
+	const frameworkConfig = loadedConfigs.get(id);
+
+	if (!frameworkConfig) {
+		throw new Error(
+			`Framework "${id}" was not pre-loaded. This is a Castro bug.`,
+		);
+	}
+
+	return frameworkConfig;
+}
+
+// Pre-load the default framework from castro.config.js at startup.
+// This ensures the default config is always available, even if no
+// islands explicitly request it.
+await loadFrameworkConfig(config.framework);

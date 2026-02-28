@@ -51,6 +51,8 @@ export interface Messages {
 		noLayoutFiles: (dir: string) => string;
 		cacheWriteFailed: (path: string, err: string) => string;
 		frameworkUnsupported: (name: string) => string;
+		frameworkConfigInvalid: (pluginName: string, missing: string) => string;
+		frameworkLoadFailed: (name: string, err: string) => string;
 	};
 
 	// CLI command messages

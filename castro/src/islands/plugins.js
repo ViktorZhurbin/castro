@@ -1,12 +1,21 @@
 import { join } from "node:path";
 import { userPlugins } from "../config.js";
 import { OUTPUT_DIR } from "../constants.js";
-import { frameworkConfig } from "./framework-config.js";
+import { registerFramework } from "./framework-config.js";
 import { islands } from "./registry.js";
 
 /**
  * @import { CastroPlugin } from '../types.d.ts'
  */
+
+// Register any frameworks provided by user plugins.
+// Must happen before island discovery so framework configs are
+// available when registry.js calls loadFrameworkConfig().
+for (const plugin of userPlugins) {
+	if (plugin.frameworkConfig) {
+		registerFramework(plugin.frameworkConfig, plugin.name);
+	}
+}
 
 /**
  * Internal plugins (islands) + user plugins (from castro.config.js).
@@ -32,15 +41,6 @@ function preactIslands() {
 		 */
 		async onPageBuild() {
 			await islands.load();
-		},
-
-		/**
-		 * Return import map (CDN URLs) for Preact runtime
-		 */
-		getImportMap() {
-			if (islands.count() === 0) return null;
-
-			return frameworkConfig.importMap;
 		},
 	};
 }

@@ -14,7 +14,7 @@
 
 import { h } from "preact";
 import { messages } from "../messages/index.js";
-import { frameworkConfig } from "./framework-config.js";
+import { getFrameworkConfig } from "./framework-config.js";
 import { islands } from "./registry.js";
 
 /**
@@ -52,6 +52,10 @@ export function renderMarker(islandId, props = {}) {
 		throw new Error(messages.errors.islandNotFoundRegistry(islandId));
 	}
 
+	// Each island carries its framework id from compilation.
+	// Resolve the config synchronously from the pre-loaded cache.
+	const frameworkConfig = getFrameworkConfig(island.frameworkId);
+
 	const { directive, cleanProps } = processProps(props);
 
 	pageState.usedIslands.add(islandId);
@@ -68,7 +72,10 @@ export function renderMarker(islandId, props = {}) {
 
 		console.error(messages.errors.islandRenderFailed(islandId, err.message));
 
-		ssrHtml = frameworkConfig.renderSSR(SSRError, { islandId, error: err });
+		// Error fallback always uses Preact's renderSSR since the SSRError
+		// component is a Preact component (uses h() from preact)
+		const defaultConfig = getFrameworkConfig("preact");
+		ssrHtml = defaultConfig.renderSSR(SSRError, { islandId, error: err });
 	}
 
 	// no:pasaran = static only, no hydration wrapper

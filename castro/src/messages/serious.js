@@ -90,7 +90,12 @@ export const serious = {
 			`❌ Failed to write cache file: ${path}\n${err}`,
 		frameworkUnsupported: (name) =>
 			`❌ Framework "${name}" is not supported.\n` +
-			`   Supported frameworks: preact`,
+			`   Built-in: preact. Others require a framework plugin.`,
+		frameworkConfigInvalid: (pluginName, missing) =>
+			`❌ Plugin "${pluginName}" provides an invalid frameworkConfig.\n` +
+			`   Missing: ${missing}`,
+		frameworkLoadFailed: (name, err) =>
+			`❌ Failed to load framework "${name}".\n` + `   ${err}`,
 	},
 
 	// Commands
