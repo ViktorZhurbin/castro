@@ -19,6 +19,8 @@ export type CastroPlugin = {
 	getPageAssets?: (params?: { needsHydration?: boolean }) => Asset[];
 	getImportMap?: () => ImportsMap | null;
 	onPageBuild?: () => Promise<void>;
+	/** Directories to watch in dev mode. Changes trigger onPageBuild() + browser reload. */
+	watchDirs?: string[];
 };
 
 export type IslandComponent = {

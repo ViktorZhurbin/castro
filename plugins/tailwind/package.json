@@ -1,0 +1,12 @@
+{
+	"name": "@vktrz/castro-tailwind",
+	"version": "0.1.0",
+	"type": "module",
+	"main": "index.js",
+	"types": "index.d.ts",
+	"dependencies": {
+		"@tailwindcss/postcss": "^4",
+		"@vktrz/castro": "workspace:*",
+		"postcss": "^8"
+	}
+}

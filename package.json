@@ -4,6 +4,7 @@
 	"private": true,
 	"workspaces": [
 		"castro",
+		"plugins/*",
 		"website",
 		"test-sites/*"
 	],

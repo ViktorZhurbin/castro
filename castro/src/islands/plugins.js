@@ -1,4 +1,5 @@
 import { join } from "node:path";
+import { userPlugins } from "../config.js";
 import { OUTPUT_DIR } from "../constants.js";
 import { frameworkConfig } from "./framework-config.js";
 import { islands } from "./registry.js";
@@ -8,10 +9,14 @@ import { islands } from "./registry.js";
  */
 
 /**
- * Default plugins - the minimal set needed for islands to work
+ * Internal plugins (islands) + user plugins (from castro.config.js).
+ * Build pipeline and dev server iterate this merged list.
  * @type {CastroPlugin[]}
  */
-export const defaultPlugins = [castroIslandRuntime(), preactIslands()];
+const internalPlugins = [castroIslandRuntime(), preactIslands()];
+export const allPlugins = [...internalPlugins, ...userPlugins];
+
+export { userPlugins };
 
 /**
  * Plugin that discovers and compiles Preact island components

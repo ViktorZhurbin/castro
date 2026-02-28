@@ -22,8 +22,7 @@
 			"Bash(bun -e:*)",
 			"Bash(bun:*)",
 			"mcp__ide__getDiagnostics",
-			"Bash(curl:*)",
-			"mcp__daisyui__search_daisyui_documentation"
+			"Bash(curl:*)"
 		]
 	}
 }

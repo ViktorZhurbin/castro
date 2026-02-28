@@ -25,8 +25,13 @@ import {
 	OUTPUT_DIR,
 	PAGES_DIR,
 } from "../constants.js";
+import { allPlugins, userPlugins } from "../islands/plugins.js";
 import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
+
+/**
+ * @import { FileChangeInfo } from "node:fs/promises";
+ */
 
 /**
  * Start the development server
@@ -170,6 +175,13 @@ export async function startDevServer() {
 			logFileChanged(filePath);
 
 			try {
+				// User plugins (e.g., Tailwind) need to run on every page change
+				// so new CSS classes are picked up. Internal plugins are skipped —
+				// island compilation is expensive and unnecessary for single page saves.
+				for (const plugin of userPlugins) {
+					if (plugin.onPageBuild) await plugin.onPageBuild();
+				}
+
 				await buildPage(event.filename);
 			} catch (e) {
 				const err = /** @type {Bun.ErrorLike} */ (e);
@@ -185,12 +197,9 @@ export async function startDevServer() {
 		}
 	})();
 
-	// Watch layouts and components directories
-	const watchDirs = [LAYOUTS_DIR, COMPONENTS_DIR];
-
-	for (const dir of watchDirs) {
+	for (const dir of [LAYOUTS_DIR, COMPONENTS_DIR]) {
 		(async () => {
-			/** @type {AsyncIterable<import("node:fs/promises").FileChangeInfo<string>>} */
+			/** @type {AsyncIterable<FileChangeInfo<string>>} */
 			let watcher;
 
 			try {
@@ -226,6 +235,41 @@ export async function startDevServer() {
 				notifyReload();
 			}
 		})();
+	}
+
+	// Watch directories declared by user plugins.
+	// Changes trigger the plugin's onPageBuild() and a browser reload.
+	for (const plugin of allPlugins) {
+		if (!plugin.watchDirs?.length) continue;
+
+		for (const dir of plugin.watchDirs) {
+			(async () => {
+				/** @type {AsyncIterable<FileChangeInfo<string>>} */
+				let watcher;
+
+				try {
+					watcher = watch(dir);
+				} catch {
+					return;
+				}
+
+				for await (const event of watcher) {
+					if (!event.filename) continue;
+					if (!SOURCE_EXTENSIONS.has(extname(event.filename))) continue;
+
+					logFileChanged(join(dir, event.filename));
+
+					try {
+						if (plugin.onPageBuild) await plugin.onPageBuild();
+					} catch (e) {
+						const err = /** @type {Bun.ErrorLike} */ (e);
+						console.error(styleText("red", err.message));
+					}
+
+					notifyReload();
+				}
+			})();
+		}
 	}
 
 	function logFileChanged(/** @type {string} */ filePath) {
