@@ -179,8 +179,7 @@ Demo site that consumes castro. Uses Tailwind CSS v4 + DaisyUI v5 via `@vktrz/ca
 **Themes**: Two custom DaisyUI themes defined in `styles/app.css` — `castro` (light, cream/gold/red) and `castro-dark` (dark, halloween-inspired). Theme toggle persists via `localStorage`, flash-prevention script in layout `<head>`.
 
 **Key files**:
-- `styles/app.css` — Tailwind + DaisyUI config, both custom theme definitions, `font-display` utility
-- `public/global.css` — body font, `.castro-rays` decorative background class
+- `styles/app.css` — Tailwind + DaisyUI config, both custom theme definitions, `font-display`/`font-sans` theme, `castro-rays` utility
 - `layouts/default.tsx` — HTML shell, Google Fonts (Bebas Neue + PT Sans), ThemeToggle island
 - `components/DirectiveCard.tsx` — card with explicit color map (avoids dynamic Tailwind class interpolation)
 - `components/MyCounter.island.tsx` — Preact counter demonstrating all three directives

@@ -10,7 +10,7 @@ export const MyCounter = ({ initial = 0 }: CounterProps) => {
 	return (
 		<div className="card card-border border-base-300 card-sm bg-base-100">
 			<div className="card-body">
-				<h3 className="card-title text-secondary font-display text-xl tracking-wide">
+				<h3 className="card-title text-secondary font-display text-xl">
 					PREACT COUNTER ISLAND
 				</h3>
 				<p className="text-3xl font-bold tabular-nums">Count: {count}</p>

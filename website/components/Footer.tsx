@@ -5,10 +5,10 @@ export const Footer = () => {
 	return (
 		<footer className="footer footer-center bg-accent text-accent-content p-10">
 			<div>
-				<p className="font-display text-3xl tracking-wide text-primary">
+				<p className="font-display text-3xl text-primary">
 					WORKERS OF THE WEB, UNITE!
 				</p>
-				<p className="font-display text-xl tracking-wide text-primary/80">
+				<p className="font-display text-xl text-primary/80">
 					SEIZE THE MEANS OF RENDERING.
 				</p>
 			</div>

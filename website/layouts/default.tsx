@@ -29,7 +29,6 @@ const DefaultLayout = (props: Props) => {
 					href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=PT+Sans:wght@400;700&display=swap"
 					rel="stylesheet"
 				/>
-				<link rel="stylesheet" href="/global.css" />
 			</head>
 			<body>
 				<Header />

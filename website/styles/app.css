@@ -82,4 +82,45 @@
 
 @theme {
 	--font-display: "Bebas Neue", sans-serif;
+	--font-sans: "PT Sans", -apple-system, sans-serif;
+}
+
+/* Display font always gets wide letter-spacing (Bebas Neue needs it) */
+@layer base {
+	.font-display {
+		letter-spacing: 0.05em;
+	}
+
+	code {
+		padding-inline: 0.25rem;
+		background-color: color-mix(in oklch, currentColor 10%, transparent);
+	}
+}
+
+/* Constructivist rays — decorative background for hero/dark sections.
+   Uses primary gold at low opacity for a subtle diagonal stripe pattern. */
+@utility castro-rays {
+	position: relative;
+
+	&::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background:
+			repeating-linear-gradient(
+				45deg,
+				transparent,
+				transparent 48px,
+				color-mix(in oklch, var(--color-primary) 6%, transparent) 48px,
+				color-mix(in oklch, var(--color-primary) 6%, transparent) 52px
+			),
+			repeating-linear-gradient(
+				-45deg,
+				transparent,
+				transparent 48px,
+				color-mix(in oklch, var(--color-primary) 6%, transparent) 48px,
+				color-mix(in oklch, var(--color-primary) 6%, transparent) 52px
+			);
+		pointer-events: none;
+	}
 }

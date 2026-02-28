@@ -15,7 +15,7 @@ export default function NotFound() {
 					<h1 className="font-display text-9xl text-secondary drop-shadow-md">
 						404
 					</h1>
-					<h2 className="font-display text-4xl tracking-wide mt-4 mb-8">
+					<h2 className="font-display text-4xl mt-4 mb-8">
 						PAGE NOT FOUND
 					</h2>
 					<p className="text-lg font-bold mb-10 text-neutral-content">
@@ -25,7 +25,7 @@ export default function NotFound() {
 					</p>
 					<a
 						href="/"
-						className="btn btn-primary btn-lg font-display text-xl tracking-wider"
+						className="btn btn-primary btn-lg font-display text-xl"
 					>
 						RETURN TO THE COLLECTIVE
 					</a>

@@ -15,10 +15,10 @@ export default function Home() {
 						<div className="w-32 h-32 mx-auto mb-10 text-primary drop-shadow-lg">
 							<StarIcon />
 						</div>
-						<h1 className="font-display text-8xl md:text-9xl tracking-wider text-primary drop-shadow-md">
+						<h1 className="font-display text-8xl md:text-9xl text-primary drop-shadow-md">
 							CASTRO
 						</h1>
-						<p className="font-display text-3xl md:text-5xl tracking-wide mt-2 mb-6">
+						<p className="font-display text-3xl md:text-5xl mt-2 mb-6">
 							THE PEOPLE'S FRAMEWORK
 						</p>
 						<div className="divider divider-primary max-w-xs mx-auto" />
@@ -32,17 +32,14 @@ export default function Home() {
 							"The satire is optional. The knowledge is real."
 						</p>
 						<div className="flex flex-wrap gap-4 justify-center">
-							<a
-								href="/manifesto"
-								className="btn btn-primary btn-lg font-display text-xl tracking-wider"
-							>
+							<a href="/manifesto" className="btn btn-lg btn-primary">
 								READ THE MANIFESTO
 							</a>
 							<a
 								href="https://github.com/vktrz/castro"
 								target="_blank"
 								rel="noopener"
-								className="btn btn-outline border-primary text-primary hover:bg-primary hover:text-primary-content btn-lg font-display text-xl tracking-wider"
+								className="btn btn-lg btn-outline btn-primary"
 							>
 								VIEW SOURCE
 							</a>
@@ -54,7 +51,7 @@ export default function Home() {
 			{/* Directives — cream background, three strong cards */}
 			<section className="py-24 px-6 bg-base-100">
 				<div className="text-center mb-16">
-					<h2 className="font-display text-5xl md:text-6xl tracking-wide text-secondary">
+					<h2 className="font-display text-5xl md:text-6xl text-secondary">
 						THE REVOLUTIONARY DIRECTIVES
 					</h2>
 					<div className="divider divider-secondary max-w-xs mx-auto" />
@@ -100,7 +97,7 @@ export default function Home() {
 			{/* How It Works — dark section with steps */}
 			<section className="py-24 px-6 bg-neutral text-neutral-content castro-rays">
 				<div className="text-center mb-16">
-					<h2 className="font-display text-5xl md:text-6xl tracking-wide text-primary">
+					<h2 className="font-display text-5xl md:text-6xl text-primary">
 						HOW THE REVOLUTION WORKS
 					</h2>
 					<div className="divider divider-primary max-w-xs mx-auto" />
@@ -113,7 +110,7 @@ export default function Home() {
 				<ul className="steps steps-vertical max-w-3xl mx-auto">
 					<li className="step step-primary" data-content="1">
 						<div className="text-left py-4">
-							<h3 className="font-display text-2xl tracking-wide text-primary">
+							<h3 className="font-display text-2xl text-primary">
 								BUILD TIME
 							</h3>
 							<p className="text-neutral-content/70 mt-1">
@@ -125,13 +122,13 @@ export default function Home() {
 					</li>
 					<li className="step step-primary" data-content="2">
 						<div className="text-left py-4">
-							<h3 className="font-display text-2xl tracking-wide text-primary">
+							<h3 className="font-display text-2xl text-primary">
 								BROWSER RECEIVES HTML
 							</h3>
 							<p className="text-neutral-content/70 mt-1">
 								Pure HTML arrives first. Your page is visible immediately. No
 								waiting for JavaScript bundles. Islands are wrapped in{" "}
-								<code className="bg-neutral-content/10 px-1">
+								<code >
 									{"<castro-island>"}
 								</code>{" "}
 								custom elements.
@@ -140,16 +137,16 @@ export default function Home() {
 					</li>
 					<li className="step step-primary" data-content="3">
 						<div className="text-left py-4">
-							<h3 className="font-display text-2xl tracking-wide text-primary">
+							<h3 className="font-display text-2xl text-primary">
 								SELECTIVE HYDRATION
 							</h3>
 							<p className="text-neutral-content/70 mt-1">
 								JavaScript loads based on your directive.{" "}
-								<code className="bg-neutral-content/10 px-1">no:pasaran</code>{" "}
+								<code >no:pasaran</code>{" "}
 								stays static.{" "}
-								<code className="bg-neutral-content/10 px-1">lenin:awake</code>{" "}
+								<code >lenin:awake</code>{" "}
 								hydrates immediately.{" "}
-								<code className="bg-neutral-content/10 px-1">
+								<code >
 									comrade:visible
 								</code>{" "}
 								waits for viewport intersection.
@@ -158,7 +155,7 @@ export default function Home() {
 					</li>
 					<li className="step step-primary" data-content="4">
 						<div className="text-left py-4">
-							<h3 className="font-display text-2xl tracking-wide text-primary">
+							<h3 className="font-display text-2xl text-primary">
 								INTERACTIVE ISLANDS
 							</h3>
 							<p className="text-neutral-content/70 mt-1">
