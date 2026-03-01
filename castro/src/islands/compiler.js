@@ -18,6 +18,7 @@
 
 import { basename, dirname, extname, resolve } from "node:path";
 import { styleText } from "node:util";
+import { config as castroConfig } from "../config.js";
 import { messages } from "../messages/index.js";
 import { getFrameworkConfig } from "./framework-config.js";
 
@@ -109,6 +110,12 @@ async function compileIslandClient({ sourcePath, outputDir, frameworkId }) {
 
 	const buildConfig = frameworkConfig.getBuildConfig();
 
+	// User import map entries become externals so Bun doesn't bundle them —
+	// the browser resolves them via the import map at runtime instead.
+	// Only applies to client builds; SSR bundles from node_modules.
+	const userExternals = Object.keys(castroConfig.importMap);
+	const external = [...(buildConfig.external ?? []), ...userExternals];
+
 	// Path must be absolute and in the same directory as the island source,
 	// so the relative import ('./${basename}') resolves to the real file
 	const virtualEntryPath = resolve(
@@ -130,6 +137,7 @@ async function compileIslandClient({ sourcePath, outputDir, frameworkId }) {
 			".css": "css",
 		},
 		...buildConfig,
+		external,
 	});
 
 	if (!result.success) {

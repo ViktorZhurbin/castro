@@ -199,6 +199,18 @@ test("mixed page has Solid SSR content", async () => {
 	expect(html).toContain("Solid:");
 });
 
+// ------ User import map ------
+
+test("user import map entries appear in pages with islands", async () => {
+	const html = await readHtml("mixed.html");
+	expect(html).toContain('"custom-lib": "https://esm.sh/custom-lib"');
+});
+
+test("user import map entries are absent from static pages", async () => {
+	const html = await readHtml("static.html");
+	expect(html).not.toContain("custom-lib");
+});
+
 // ------ Solid-only page ------
 
 test("solid-only page renders SSR content", async () => {

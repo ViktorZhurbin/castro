@@ -60,6 +60,23 @@ my-site/
 - Place islands in a framework-named subdirectory for other frameworks: `components/solid/Counter.island.tsx`
 - Different frameworks can coexist on the same page — each island is compiled and hydrated independently
 
+**Custom import map** (optional — in `castro.config.js`):
+
+Islands load framework dependencies from CDN via [import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap). You can extend or override the built-in CDN URLs:
+
+```js
+export default {
+  importMap: {
+    // Override a framework's default CDN
+    "preact": "https://cdn.jsdelivr.net/npm/preact/+esm",
+    // Add a shared library — loaded from CDN instead of bundled per-island
+    "three": "https://esm.sh/three",
+  }
+}
+```
+
+Import map entries are automatically excluded from island bundles. Without an import map entry, dependencies are bundled into each island that uses them.
+
 **Add scripts to package.json:**
 ```json
 {

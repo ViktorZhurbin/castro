@@ -8,6 +8,7 @@
  */
 
 import { join } from "node:path";
+import { config as castroConfig } from "../config.js";
 import { getFrameworkConfig } from "../islands/framework-config.js";
 import { allPlugins } from "../islands/plugins.js";
 import { islands } from "../islands/registry.js";
@@ -64,10 +65,18 @@ async function resolvePageContext({
 		}
 
 		for (const name of frameworks) {
-			const config = getFrameworkConfig(name);
-			Object.assign(importMap, config.importMap);
-			if (config.headAssets) assets.push(...config.headAssets);
+			const fwConfig = getFrameworkConfig(name);
+
+			Object.assign(importMap, fwConfig.importMap);
+
+			if (fwConfig.headAssets) {
+				assets.push(...fwConfig.headAssets);
+			}
 		}
+
+		// User import map entries override framework defaults (e.g., swap CDN)
+		// and add new entries (e.g., shared libs like three.js or lodash-es).
+		Object.assign(importMap, castroConfig.importMap);
 	}
 
 	// Plugin assets: island runtime script, CSS links, etc.

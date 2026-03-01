@@ -152,6 +152,12 @@ const nonFrameworkDirs = new Set();
 async function detectFramework(relativePath) {
 	const firstSegment = relativePath.split("/")[0];
 
+	// Root-level files (no subdirectory) have the filename as firstSegment —
+	// no point trying to load "Counter.island.tsx" as a framework.
+	if (firstSegment.includes(".")) {
+		return castroConfig.framework;
+	}
+
 	// Already registered (built-in pre-loaded at startup, or plugin-provided)
 	if (isKnownFramework(firstSegment)) {
 		return firstSegment;

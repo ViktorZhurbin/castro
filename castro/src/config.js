@@ -13,14 +13,20 @@
  * 	port?: number,
  * 	messages?: "satirical" | "serious",
  * 	framework?: string,
- * 	plugins?: CastroPlugin[]
+ * 	plugins?: CastroPlugin[],
+ * 	importMap?: Record<string, string>
  * }} CastroConfig
  */
 
 import { join } from "node:path";
 
 /** @type {Required<Omit<CastroConfig, "plugins">>} */
-const defaults = { port: 3000, messages: "satirical", framework: "preact" };
+const defaults = {
+	port: 3000,
+	messages: "satirical",
+	framework: "preact",
+	importMap: {},
+};
 
 /** @type {CastroConfig} */
 let userConfig = {};

@@ -98,6 +98,10 @@ Old approach used `options.vnode` hook (runtime monkey-patch). Current approach:
 
 `marker.js` maintains a module-level `usedIslands` Set (reset per page render). Only CSS for islands actually rendered on a page gets injected. The `<castro-island>` runtime script is also only included on pages that use islands.
 
+### Import Map
+
+`castro.config.js` accepts an `importMap` object mapping bare specifiers to CDN URLs. Entries are merged into the page's `<script type="importmap">` after framework defaults (user entries win on conflict). Any import map key is automatically treated as external during island client compilation — Bun won't bundle it, the browser loads it from the CDN instead.
+
 ### User Plugins
 
 `castro.config.js` accepts a `plugins` array of `CastroPlugin` objects. User plugins are merged with internal plugins (island runtime, Preact islands) and participate in the same build lifecycle:
