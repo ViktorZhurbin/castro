@@ -1,5 +1,5 @@
 {
-	"name": "test-site-preact",
+	"name": "test-site",
 	"version": "1.0.0",
 	"private": true,
 	"type": "module",
@@ -10,6 +10,7 @@
 	"dependencies": {
 		"@preact/signals": "^2.8.1",
 		"@vktrz/castro": "workspace:*",
-		"preact": "^10"
+		"preact": "^10",
+		"solid-js": "^1"
 	}
 }

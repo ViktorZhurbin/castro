@@ -22,7 +22,7 @@ bun loc              # LOC count (core only, excludes messages/)
 - `castro/` — core SSG engine (the npm package `@vktrz/castro`)
 - `plugins/` — plugins (eg, `@vktrz/castro-tailwind`)
 - `website/` — demo playground that consumes castro
-- `test-sites/` — minimal test site exercising both Preact and Solid islands
+- `test-site/` — minimal test site exercising both Preact and Solid islands
 
 ### Core Module Structure (`castro/src/`)
 
@@ -155,7 +155,7 @@ Key rules from `src/messages/README.md`:
 
 ## Testing
 
-`test-sites/` is a single test site that exercises the full build pipeline with both Preact and Solid islands. Run with `bun test:sites`. Tests verify:
+`test-site/` is a single test site that exercises the full build pipeline with both Preact and Solid islands. Run with `bun test:sites`. Tests verify:
 - Static pages (no islands)
 - All three directives (`comrade:visible`, `lenin:awake`, `no:pasaran`)
 - Component composition (islands in static components, static components in islands, islands in layouts)
@@ -170,7 +170,7 @@ The test structure (pages, components, islands, layouts) mirrors a real site and
 - Code must stay educational and well-commented — every file should explain "why"
 - Keep core LOC under ~1500 (currently ~1300)
 - Satire belongs in messages/docs/CLI output only, never in the code logic itself
-- `website/dist/` and `test-sites/dist/` are ephemeral, cleaned on every build
+- `website/dist/` and `test-site/dist/` are ephemeral, cleaned on every build
 - Island imports must use relative paths, not tsconfig aliases (documented in `compile-jsx.js`)
 
 ## Website Playground (`website/`)

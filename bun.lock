@@ -15,20 +15,18 @@
         "castro": "./bin/castro",
       },
       "dependencies": {
+        "@babel/core": "^7",
+        "@babel/preset-typescript": "^7.28.5",
+        "babel-preset-solid": "^1.9.10",
         "preact": "^10",
         "preact-render-to-string": "^6.5.12",
+        "solid-js": "^1",
       },
       "devDependencies": {
         "@types/babel__core": "^7.20.5",
         "@types/bun": "^1.3.8",
         "knip": "^5.83.0",
         "typescript": "^5.9.3",
-      },
-      "optionalDependencies": {
-        "@babel/core": "^7",
-        "@babel/preset-typescript": "^7.28.5",
-        "babel-preset-solid": "^1.9.10",
-        "solid-js": "^1",
       },
     },
     "plugins/tailwind": {
@@ -40,13 +38,14 @@
         "postcss": "^8",
       },
     },
-    "test-sites/preact": {
-      "name": "test-site-preact",
+    "test-site": {
+      "name": "test-site",
       "version": "1.0.0",
       "dependencies": {
         "@preact/signals": "^2.8.1",
         "@vktrz/castro": "workspace:*",
         "preact": "^10",
+        "solid-js": "^1",
       },
     },
     "website": {
@@ -405,7 +404,7 @@
 
     "tapable": ["tapable@2.3.0", "", {}, "sha512-g9ljZiwki/LfxmQADO3dEY1CbpmXT5Hm2fJ+QaGKwSXUylMybePR7/67YW7jOrrvjEgL1Fmz5kzyAjWVWLlucg=="],
 
-    "test-site-preact": ["test-site-preact@workspace:test-sites/preact"],
+    "test-site": ["test-site@workspace:test-site"],
 
     "to-regex-range": ["to-regex-range@5.0.1", "", { "dependencies": { "is-number": "^7.0.0" } }, "sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ=="],
 

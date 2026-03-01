@@ -6,5 +6,10 @@
 		"src/islands/hydration.js",
 		"src/islands/marker.js",
 		"src/islands/frameworks/*.js"
+	],
+	"ignoreDependencies": [
+		"@babel/preset-typescript",
+		"babel-preset-solid",
+		"solid-js"
 	]
 }

@@ -6,7 +6,7 @@
 		"castro",
 		"plugins/*",
 		"website",
-		"test-sites/*"
+		"test-site"
 	],
 	"scripts": {
 		"dev": "bun --filter website dev",
@@ -15,7 +15,7 @@
 		"check:castro": "bun --parallel --filter @vktrz/castro check",
 		"check:website": "bun --filter website type-check",
 		"check": "bun format && bun check:castro && bun check:website && bun test",
-		"test:sites": "bun test ./test-sites",
+		"test:sites": "bun test ./test-site",
 		"loc": "bunx cloc castro/src/ --exclude-dir=messages",
 		"loc-files": "bun run loc --by-file"
 	},
