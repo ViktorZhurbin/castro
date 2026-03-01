@@ -50,9 +50,11 @@ async function resolvePageContext({
 	const importMap = {};
 	const assets = [...pageCssAssets];
 
-	// Import maps: aggregate from the framework configs of islands used on this page.
-	// Each framework declares its own CDN URLs (e.g., Preact needs preact/hooks,
-	// Solid needs solid-js/web). Only frameworks actually used get included.
+	// Import maps and head assets: aggregate from the framework configs of
+	// islands used on this page. Each framework declares its own CDN URLs
+	// (e.g., Preact needs preact/hooks, Solid needs solid-js/web) and may
+	// provide head assets (e.g., Solid's hydration coordination script).
+	// Only frameworks actually used on this page get included.
 	if (needsHydration) {
 		const frameworks = new Set();
 
@@ -62,7 +64,9 @@ async function resolvePageContext({
 		}
 
 		for (const name of frameworks) {
-			Object.assign(importMap, getFrameworkConfig(name).importMap);
+			const config = getFrameworkConfig(name);
+			Object.assign(importMap, config.importMap);
+			if (config.headAssets) assets.push(...config.headAssets);
 		}
 	}
 
@@ -162,6 +166,8 @@ function generateImportMap(map) {
  * @returns {string}
  */
 function generateAssetTag(asset) {
+	if (typeof asset === "string") return asset;
+
 	switch (asset.tag) {
 		case "link": {
 			const attrs = attrsToString(asset.attrs);

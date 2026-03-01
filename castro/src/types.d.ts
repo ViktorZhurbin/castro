@@ -8,11 +8,17 @@ export type { FrameworkConfig } from "./islands/frameworks/types.d.ts";
 
 export type Directive = "lenin:awake" | "comrade:visible" | "no:pasaran";
 
-export type Asset = {
-	tag: string;
-	attrs?: Record<string, string | boolean>;
-	content?: string;
-};
+/**
+ * A raw HTML string or a structured tag definition.
+ * Raw strings are injected as-is (e.g. Solid's `generateHydrationScript()`).
+ */
+export type Asset =
+	| string
+	| {
+			tag: string;
+			attrs?: Record<string, string | boolean>;
+			content?: string;
+	  };
 
 export type ImportsMap = Record<string, string>;
 

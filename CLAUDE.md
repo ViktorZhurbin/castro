@@ -1,6 +1,6 @@
 # Castro
 
-Educational Static Site Generator (~1100 LOC) teaching island architecture. Communist satire wraps serious, well-commented code. Preact for rendering, Bun for everything else.
+Educational Static Site Generator (~1300 LOC) teaching island architecture. Communist satire wraps serious, well-commented code. Preact for page rendering, multiple frameworks (Preact, Solid) for islands, Bun for everything else.
 
 Comparable to:
 - Fresh, Marko (though way less advanced), early Astro (pre-marketplace era), Eleventy + is-land.
@@ -22,7 +22,7 @@ bun loc              # LOC count (core only, excludes messages/)
 - `castro/` — core SSG engine (the npm package `@vktrz/castro`)
 - `plugins/` — plugins (eg, `@vktrz/castro-tailwind`)
 - `website/` — demo playground that consumes castro
-- `test-sites/` — minimal test sites (one per framework) that exercise build pipeline
+- `test-sites/` — minimal test site exercising both Preact and Solid islands
 
 ### Core Module Structure (`castro/src/`)
 
@@ -44,7 +44,8 @@ islands/
   compiler.js           Island SSR + client compilation
   registry.js           Singleton island store + SSR module preloading
   marker.js             Build-time island renderer
-  framework-config.js   Framework-specific config (currently Preact only)
+  framework-config.js   Framework config loader (async load + sync cache)
+  frameworks/           Per-framework configs (preact.js, solid.js, types.d.ts)
   plugins.js            Plugin registry (internal + user plugins from config)
   hydration.js          Client-side <castro-island> custom element
 
@@ -154,20 +155,22 @@ Key rules from `src/messages/README.md`:
 
 ## Testing
 
-`test-sites/preact/` is a minimal Preact test site that exercises the build pipeline. Run with `bun test:sites`. Tests verify:
+`test-sites/` is a single test site that exercises the full build pipeline with both Preact and Solid islands. Run with `bun test:sites`. Tests verify:
 - Static pages (no islands)
 - All three directives (`comrade:visible`, `lenin:awake`, `no:pasaran`)
 - Component composition (islands in static components, static components in islands, islands in layouts)
 - CSS modules in static components and islands
+- Multi-framework pages (Preact + Solid islands on the same page)
+- Solid-only pages (SSR without Preact islands)
 
 The test structure (pages, components, islands, layouts) mirrors a real site and serves as a reference for expected patterns.
 
 ## What NOT to Change
 
 - Code must stay educational and well-commented — every file should explain "why"
-- Keep core LOC under ~1500 (currently ~1100)
+- Keep core LOC under ~1500 (currently ~1300)
 - Satire belongs in messages/docs/CLI output only, never in the code logic itself
-- `website/dist/` and `test-sites/*/dist/` are ephemeral, cleaned on every build
+- `website/dist/` and `test-sites/dist/` are ephemeral, cleaned on every build
 - Island imports must use relative paths, not tsconfig aliases (documented in `compile-jsx.js`)
 
 ## Website Playground (`website/`)
@@ -182,7 +185,8 @@ Demo site that consumes castro. Uses Tailwind CSS v4 + DaisyUI v5 via `@vktrz/ca
 - `styles/app.css` — Tailwind + DaisyUI config, both custom theme definitions, `font-display`/`font-sans` theme, `castro-rays` utility
 - `layouts/default.tsx` — HTML shell, Google Fonts (Bebas Neue + PT Sans), ThemeToggle island
 - `components/DirectiveCard.tsx` — card with explicit color map (avoids dynamic Tailwind class interpolation)
-- `components/MyCounter.island.tsx` — Preact counter demonstrating all three directives
+- `components/MyCounter.island.tsx` — Preact counter demonstrating `no:pasaran` and `lenin:awake`
+- `components/solid/SolidCounter.island.tsx` — Solid counter demonstrating `comrade:visible` (multi-framework)
 - `components/ThemeToggle.island.tsx` — `lenin:awake` island, DaisyUI swap + theme-controller
 
 **DaisyUI reference**: `.claude/docs/daisyui-llms.txt`

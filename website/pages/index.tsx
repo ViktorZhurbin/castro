@@ -2,6 +2,7 @@ import type { PageMeta } from "@vktrz/castro";
 import { DirectiveCard } from "../components/DirectiveCard.tsx";
 import { StarIcon } from "../components/icons/StarIcon.tsx";
 import MyCounter from "../components/MyCounter.island.tsx";
+import SolidCounter from "../components/solid/SolidCounter.island.tsx";
 
 export const meta: PageMeta = { title: "Castro - The People's Framework" };
 
@@ -86,10 +87,10 @@ export default function Home() {
 						name="COMRADE:VISIBLE"
 						slogan='"Only work when the people are watching"'
 						description="Component hydrates when scrolled into viewport. Lazy loading with IntersectionObserver. Default behavior."
-						note="JS loads when scrolled into view. Open DevTools Network tab to verify."
+						note="A Solid island! JS loads when scrolled into view. Open DevTools Network tab to verify."
 						color="primary"
 					>
-						<MyCounter initial={15} comrade:visible />
+						<SolidCounter initial={15} comrade:visible />
 					</DirectiveCard>
 				</div>
 			</section>

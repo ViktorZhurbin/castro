@@ -66,11 +66,10 @@ class IslandsRegistry {
 		for await (const relativePath of islandGlob.scan(COMPONENTS_DIR)) {
 			const sourcePath = join(COMPONENTS_DIR, relativePath);
 
-			// Determine which framework this island uses.
+			// Determine which framework this island uses and ensure its config is loaded.
 			// Convention: islands in components/solid/ use "solid", etc.
 			// Falls back to the default from castro.config.js.
-			const frameworkId = detectFramework(relativePath);
-			await loadFrameworkConfig(frameworkId);
+			const frameworkId = await detectFramework(relativePath);
 
 			// Preserve directory nesting in output (e.g., ui/Button → islands/ui/Button)
 			const relativeDir = dirname(relativePath);
@@ -125,28 +124,55 @@ class IslandsRegistry {
 }
 
 /**
- * Detect which framework an island uses based on its directory path.
+ * Tracks directory names that don't match any framework, so we don't
+ * retry failed dynamic imports for every island in that directory.
+ * @type {Set<string>}
+ */
+const nonFrameworkDirs = new Set();
+
+/**
+ * Detect and load the framework for an island based on its directory path.
  *
  * Convention: if the first directory segment inside components/ matches
- * a registered framework name (built-in or plugin-provided), use that
- * framework. Otherwise fall back to the project default from castro.config.js.
+ * a known or loadable framework, use it. Otherwise fall back to the
+ * project default from castro.config.js.
+ *
+ * Must be async because the framework might not be cached yet — if a
+ * directory name matches a built-in framework file (e.g. "solid"), we
+ * need to dynamically import it to confirm it's valid.
  *
  * Examples:
- *   "solid/Counter.island.tsx"  → "solid" (if registered via plugin)
+ *   "solid/Counter.island.tsx"  → "solid"
  *   "ui/Button.island.tsx"      → default from config
  *   "Counter.island.tsx"        → default from config
  *
  * @param {string} relativePath - Path relative to components directory
- * @returns {string}
+ * @returns {Promise<string>} Framework id
  */
-function detectFramework(relativePath) {
+async function detectFramework(relativePath) {
 	const firstSegment = relativePath.split("/")[0];
 
+	// Already registered (built-in pre-loaded at startup, or plugin-provided)
 	if (isKnownFramework(firstSegment)) {
 		return firstSegment;
 	}
 
-	return castroConfig.framework;
+	// Already tried and failed — skip the dynamic import
+	if (nonFrameworkDirs.has(firstSegment)) {
+		return castroConfig.framework;
+	}
+
+	// Try loading as a built-in framework. If components/solid/ exists and
+	// frameworks/solid.js exists, this succeeds and caches the config.
+	// If not (e.g. components/ui/), the import fails silently and we
+	// fall back to the default.
+	try {
+		await loadFrameworkConfig(firstSegment);
+		return firstSegment;
+	} catch {
+		nonFrameworkDirs.add(firstSegment);
+		return castroConfig.framework;
+	}
 }
 
 export const islands = new IslandsRegistry();

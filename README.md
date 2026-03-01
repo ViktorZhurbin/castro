@@ -2,7 +2,7 @@
 
 *An educational framework for understanding island architecture*
 
-Castro is a working Static Site Generator that implements island architecture in ~1100 lines of well-commented, readable code. The communist theme makes it memorable. The architecture lessons are real.
+Castro is a working Static Site Generator that implements island architecture in ~1300 lines of well-commented, readable code. The communist theme makes it memorable. The architecture lessons are real.
 
 **Learn by reading code, not documentation.**
 
@@ -54,6 +54,11 @@ my-site/
 **Component types:**
 - By default, all `.{jsx,tsx}` files are static UI components, server-side only, no JS shipped to client
 - Use `.island` suffix for when you need client-side interactivity, eg: `ComponentName.island.{jsx,tsx}`
+
+**Multi-framework islands:**
+- Islands use Preact by default (the `framework` value in `castro.config.js`)
+- Place islands in a framework-named subdirectory for other frameworks: `components/solid/Counter.island.tsx`
+- Different frameworks can coexist on the same page — each island is compiled and hydrated independently
 
 **Add scripts to package.json:**
 ```json
@@ -200,7 +205,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 ## Requirements
 
 - Bun 1.3.8+
-- Preact 10+ (peer dependency)
 
 ## License
 

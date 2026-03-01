@@ -5,7 +5,7 @@
  * export a default object matching this shape.
  */
 
-import type { ImportsMap } from "../../types.d.ts";
+import type { Asset, ImportsMap } from "../../types.d.ts";
 
 /**
  * Defines how islands are compiled, rendered (SSR), and hydrated.
@@ -15,10 +15,17 @@ export type FrameworkConfig = {
 	id: string;
 
 	/** Bun.build configuration for compiling components */
-	getBuildConfig: () => Partial<Bun.BuildConfig>;
+	getBuildConfig: (target?: "ssr") => Partial<Bun.BuildConfig>;
 
 	/** CDN URLs for browser-side module loading via import map */
 	importMap: ImportsMap;
+
+	/**
+	 * Assets injected into <head> for pages using this framework.
+	 * E.g. Solid's hydration coordination script.
+	 * Only included on pages that actually render islands from this framework.
+	 */
+	headAssets?: Asset[];
 
 	/**
 	 * Client-side hydration code string.

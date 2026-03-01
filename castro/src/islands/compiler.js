@@ -154,7 +154,7 @@ async function compileIslandClient({ sourcePath, outputDir, frameworkId }) {
  */
 async function compileIslandSSR({ sourcePath, frameworkId }) {
 	const frameworkConfig = getFrameworkConfig(frameworkId);
-	const buildConfig = frameworkConfig.getBuildConfig();
+	const buildConfig = frameworkConfig.getBuildConfig("ssr");
 
 	try {
 		// Stub regular CSS imports — they're side-effectful (no exports needed)
@@ -185,7 +185,10 @@ async function compileIslandSSR({ sourcePath, frameworkId }) {
 				"process.env.NODE_ENV": JSON.stringify("production"),
 			},
 			...buildConfig,
-			plugins: [cssStubPlugin],
+			// Merge framework plugins (e.g. Solid's Babel transform) with
+			// the CSS stub. Placed after ...buildConfig so cssStubPlugin
+			// always runs regardless of what the framework provides.
+			plugins: [...(buildConfig.plugins ?? []), cssStubPlugin],
 		});
 
 		if (!result.success) {

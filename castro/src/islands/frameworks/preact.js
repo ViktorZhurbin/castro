@@ -2,9 +2,9 @@
  * Preact Framework Configuration
  *
  * This file is dynamically imported by framework-config.js only when
- * a Preact island is discovered. This isolation means adding a new
- * framework (e.g., Solid) is just creating a new file in this directory
- * with the same shape — no changes to core code needed.
+ * a Preact island is discovered. Adding a new framework means creating
+ * a new file in this directory with the same shape, plus listing its
+ * dependencies as optionalDependencies in package.json.
  */
 
 import { h } from "preact";
