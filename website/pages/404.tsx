@@ -6,7 +6,7 @@ export const meta = {
 
 export default function NotFound() {
 	return (
-		<div className="hero min-h-[calc(100vh-3rem)] bg-neutral text-neutral-content castro-rays">
+		<div className="hero min-h-[calc(100vh-3rem)] bg-neutral text-neutral-content">
 			<div className="hero-content text-center">
 				<div className="max-w-lg">
 					<div className="w-24 h-24 mx-auto mb-10 text-neutral-content/20">

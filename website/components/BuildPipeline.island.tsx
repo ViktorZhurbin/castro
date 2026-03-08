@@ -83,14 +83,14 @@ export default function BuildPipeline() {
 
 			{/* Output: Static HTML */}
 			<span class="bp-output-label bp-output-label-html">Static HTML</span>
-			<div class="badge badge-primary bp-file bp-file-html">index.html</div>
+			<div class="badge badge-secondary bp-file bp-file-html">index.html</div>
 
 			{/* Output: Island JS */}
 			<span class="bp-output-label bp-output-label-js">Island JS</span>
-			<div class="badge badge-accent bp-file bp-file-js">Counter.js</div>
+			<div class="badge badge-primary bp-file bp-file-js">Counter.js</div>
 
 			<button
-				class="btn btn-primary bp-replay"
+				class="btn btn-secondary bp-replay"
 				onClick={replay}
 				disabled={state === "active"}
 			>

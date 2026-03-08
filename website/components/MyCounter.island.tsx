@@ -13,7 +13,7 @@ export const MyCounter = ({ initial = 0 }: CounterProps) => {
 				<h3 className="card-title text-secondary font-display text-xl">
 					PREACT COUNTER ISLAND
 				</h3>
-				<p className="text-3xl font-bold tabular-nums">Count: {count}</p>
+				<p className="text-2xl">Count: {count}</p>
 				<div className="card-actions">
 					<button
 						className="btn btn-secondary btn-sm"

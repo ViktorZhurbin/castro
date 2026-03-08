@@ -12,13 +12,13 @@
 	prefersdark: false;
 	color-scheme: light;
 
-	--color-base-100: #f5e6d3;
-	--color-base-200: #ead5be;
-	--color-base-300: #dfc5a8;
+	--color-base-100: #ede8e0;
+	--color-base-200: #e2dbd1;
+	--color-base-300: #d6cfc4;
 	--color-base-content: #1a1a1a;
-	--color-primary: #d4af37;
-	--color-primary-content: #1a1a1a;
-	--color-secondary: #c41e3a;
+	--color-primary: #c41e3a;
+	--color-primary-content: #f5e6d3;
+	--color-secondary: #765d00;
 	--color-secondary-content: #f5e6d3;
 	--color-accent: #8b0000;
 	--color-accent-content: #f5e6d3;
@@ -28,7 +28,7 @@
 	--color-info-content: #f5e6d3;
 	--color-success: #2d6a4f;
 	--color-success-content: #f5e6d3;
-	--color-warning: #d4af37;
+	--color-warning: #b8960c;
 	--color-warning-content: #1a1a1a;
 	--color-error: #c41e3a;
 	--color-error-content: #f5e6d3;
@@ -40,7 +40,7 @@
 	--size-field: 0.25rem;
 	--border: 2px;
 	--depth: 1;
-	--noise: 0;
+	--noise: 0.5;
 }
 
 @plugin "daisyui/theme" {
@@ -49,26 +49,26 @@
 	prefersdark: true;
 	color-scheme: dark;
 
-	--color-base-100: #1a1018;
-	--color-base-200: #140c12;
-	--color-base-300: #0e080c;
-	--color-base-content: #e8d5c4;
-	--color-primary: #d4af37;
-	--color-primary-content: #1a1018;
-	--color-secondary: #e63946;
-	--color-secondary-content: #e8d5c4;
-	--color-accent: #8b0000;
-	--color-accent-content: #e8d5c4;
-	--color-neutral: #2a1a24;
-	--color-neutral-content: #e8d5c4;
+	--color-base-100: #1c1917;
+	--color-base-200: #252220;
+	--color-base-300: #2e2a28;
+	--color-base-content: #e8e0d6;
+	--color-primary: #e63946;
+	--color-primary-content: #e8e0d6;
+	--color-secondary: #f6c113;
+	--color-secondary-content: #1c1917;
+	--color-accent: #c0392b;
+	--color-accent-content: #e8e0d6;
+	--color-neutral: #141211;
+	--color-neutral-content: #e8e0d6;
 	--color-info: #6b8fb5;
-	--color-info-content: #e8d5c4;
+	--color-info-content: #e8e0d6;
 	--color-success: #4a9e6f;
-	--color-success-content: #e8d5c4;
-	--color-warning: #d4af37;
-	--color-warning-content: #1a1018;
+	--color-success-content: #e8e0d6;
+	--color-warning: #f6c113;
+	--color-warning-content: #1c1917;
 	--color-error: #e63946;
-	--color-error-content: #e8d5c4;
+	--color-error-content: #e8e0d6;
 
 	--radius-selector: 0rem;
 	--radius-field: 0rem;
@@ -77,16 +77,30 @@
 	--size-field: 0.25rem;
 	--border: 2px;
 	--depth: 1;
-	--noise: 0;
+	--noise: 0.3;
 }
 
 @theme {
 	--font-display: "Bebas Neue", sans-serif;
-	--font-sans: "PT Sans", -apple-system, sans-serif;
+	--font-sans: "Barlow", -apple-system, sans-serif;
 }
 
 /* Display font always gets wide letter-spacing (Bebas Neue needs it) */
 @layer base {
+	body {
+		font-weight: 500;
+		line-height: 1.5;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		font-weight: 700;
+	}
+
 	.font-display {
 		letter-spacing: 0.05em;
 	}
@@ -97,30 +111,6 @@
 	}
 }
 
-/* Constructivist rays — decorative background for hero/dark sections.
-   Uses primary gold at low opacity for a subtle diagonal stripe pattern. */
-@utility castro-rays {
-	position: relative;
-
-	&::before {
-		content: "";
-		position: absolute;
-		inset: 0;
-		background:
-			repeating-linear-gradient(
-				45deg,
-				transparent,
-				transparent 48px,
-				color-mix(in oklch, var(--color-primary) 6%, transparent) 48px,
-				color-mix(in oklch, var(--color-primary) 6%, transparent) 52px
-			),
-			repeating-linear-gradient(
-				-45deg,
-				transparent,
-				transparent 48px,
-				color-mix(in oklch, var(--color-primary) 6%, transparent) 48px,
-				color-mix(in oklch, var(--color-primary) 6%, transparent) 52px
-			);
-		pointer-events: none;
-	}
+.btn-sm {
+	font-weight: 500;
 }

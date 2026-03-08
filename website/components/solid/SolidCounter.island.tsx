@@ -13,7 +13,7 @@ export default function SolidCounter(props: CounterProps) {
 				<h3 class="card-title text-accent font-display text-xl">
 					SOLID COUNTER ISLAND
 				</h3>
-				<p class="text-3xl font-bold tabular-nums">Count: {count()}</p>
+				<p class="text-2xl">Count: {count()}</p>
 				<div class="card-actions">
 					<button
 						class="btn btn-accent btn-sm"
