@@ -17,7 +17,6 @@ import { watch } from "node:fs/promises";
 import { extname, join } from "node:path";
 import { styleText } from "node:util";
 import { buildAll } from "../builder/build-all.js";
-import { buildPage } from "../builder/build-page.js";
 import { config } from "../config.js";
 import {
 	COMPONENTS_DIR,
@@ -25,9 +24,9 @@ import {
 	OUTPUT_DIR,
 	PAGES_DIR,
 } from "../constants.js";
-import { allPlugins, userPlugins } from "../islands/plugins.js";
-import { layouts } from "../layouts/registry.js";
+import { allPlugins } from "../islands/plugins.js";
 import { messages } from "../messages/index.js";
+import { debounceAsync } from "../utils/debounce-async.js";
 
 /**
  * @import { FileChangeInfo } from "node:fs/promises";
@@ -162,6 +161,21 @@ export async function startDevServer() {
 	const PAGE_EXTENSIONS = new Set([".md", ".jsx", ".tsx"]);
 	const SOURCE_EXTENSIONS = new Set([".tsx", ".ts", ".jsx", ".js", ".css"]);
 
+	// Debounced rebuild — collapses rapid file events (e.g., git checkout)
+	// into a single buildAll(). Serialized so builds never overlap.
+	const rebuild = debounceAsync(
+		async () => {
+			try {
+				await buildAll();
+			} catch (e) {
+				const err = /** @type {Bun.ErrorLike} */ (e);
+				console.error(styleText("red", err.message));
+			}
+		},
+		80,
+		{ onComplete: notifyReload },
+	);
+
 	// Watch pages directory
 	(async () => {
 		const watcher = watch(PAGES_DIR, { recursive: true });
@@ -170,30 +184,8 @@ export async function startDevServer() {
 			if (!event.filename) continue;
 			if (!PAGE_EXTENSIONS.has(extname(event.filename))) continue;
 
-			const filePath = join(PAGES_DIR, event.filename);
-
-			logFileChanged(filePath);
-
-			try {
-				// User plugins (e.g., Tailwind) need to run on every page change
-				// so new CSS classes are picked up. Internal plugins are skipped —
-				// island compilation is expensive and unnecessary for single page saves.
-				for (const plugin of userPlugins) {
-					if (plugin.onPageBuild) await plugin.onPageBuild();
-				}
-
-				await buildPage(event.filename);
-			} catch (e) {
-				const err = /** @type {Bun.ErrorLike} */ (e);
-
-				console.error(
-					styleText("red", messages.build.fileFailure(filePath, err.message)),
-				);
-			}
-
-			// Always notify — even on failure the browser should reload
-			// to show the last successful build or pick up partial changes
-			notifyReload();
+			logFileChanged(join(PAGES_DIR, event.filename));
+			rebuild.schedule();
 		}
 	})();
 
@@ -219,20 +211,7 @@ export async function startDevServer() {
 				if (!SOURCE_EXTENSIONS.has(extname(event.filename))) continue;
 
 				logFileChanged(`${dir}/${event.filename}`);
-
-				try {
-					if (dir === LAYOUTS_DIR) {
-						await layouts.load();
-					}
-
-					await buildAll();
-				} catch (e) {
-					const err = /** @type {Bun.ErrorLike} */ (e);
-
-					console.error(styleText("red", err.message));
-				}
-
-				notifyReload();
+				rebuild.schedule();
 			}
 		})();
 	}
@@ -258,15 +237,7 @@ export async function startDevServer() {
 					if (!SOURCE_EXTENSIONS.has(extname(event.filename))) continue;
 
 					logFileChanged(join(dir, event.filename));
-
-					try {
-						if (plugin.onPageBuild) await plugin.onPageBuild();
-					} catch (e) {
-						const err = /** @type {Bun.ErrorLike} */ (e);
-						console.error(styleText("red", err.message));
-					}
-
-					notifyReload();
+					rebuild.schedule();
 				}
 			})();
 		}

@@ -25,8 +25,6 @@ for (const plugin of userPlugins) {
 const internalPlugins = [castroIslandRuntime(), preactIslands()];
 export const allPlugins = [...internalPlugins, ...userPlugins];
 
-export { userPlugins };
-
 /**
  * Plugin that discovers and compiles Preact island components
  * @returns {CastroPlugin}
