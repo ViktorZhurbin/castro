@@ -33,11 +33,11 @@ export default function Home() {
 							"The satire is optional. The knowledge is real."
 						</p>
 						<div className="flex flex-wrap gap-4 justify-center">
-							<a href="/manifesto" className="btn btn-lg btn-primary">
-								READ THE MANIFESTO
+							<a href="/tutorial" className="btn btn-lg btn-primary">
+								TUTORIAL
 							</a>
 							<a
-								href="https://github.com/vktrz/castro"
+								href="https://github.com/ViktorZhurbin/castro"
 								target="_blank"
 								rel="noopener"
 								className="btn btn-lg btn-outline btn-primary"

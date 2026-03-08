@@ -1,0 +1,302 @@
+.bp-root {
+	/* Layout variables — tracks and files both reference these,
+	   so moving a track automatically moves its files too */
+	--bp-in-y: 50%;
+	--bp-html-y: 40%;
+	--bp-js-y: 60%;
+	--bp-factory-x: 38%;
+	--bp-factory-w: 20%;
+	--bp-factory-right: calc(var(--bp-factory-x) + var(--bp-factory-w));
+
+	position: relative;
+	width: 100%;
+	max-width: 960px;
+	margin: 0 auto;
+	aspect-ratio: 16 / 9;
+	overflow: hidden;
+	background: var(--color-base-200);
+	border: 2px solid var(--color-base-300);
+}
+
+/* Conveyor belt tracks */
+.bp-track {
+	position: absolute;
+	height: 3px;
+	background: var(--color-base-content);
+	opacity: 0.2;
+}
+
+.bp-track::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: repeating-linear-gradient(
+		90deg,
+		var(--color-base-content) 0,
+		var(--color-base-content) 8px,
+		transparent 8px,
+		transparent 16px
+	);
+	opacity: 0.5;
+}
+
+.bp-track-in {
+	top: var(--bp-in-y);
+	left: 0;
+	width: var(--bp-factory-x);
+}
+
+.bp-track-html {
+	top: var(--bp-html-y);
+	left: var(--bp-factory-right);
+	width: calc(100% - var(--bp-factory-right));
+}
+
+.bp-track-js {
+	top: var(--bp-js-y);
+	left: var(--bp-factory-right);
+	width: calc(100% - var(--bp-factory-right));
+}
+
+/* Factory box */
+.bp-factory {
+	position: absolute;
+	top: 50%;
+	left: var(--bp-factory-x);
+	width: var(--bp-factory-w);
+	aspect-ratio: 1;
+	transform: translateY(-50%);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background: var(--color-neutral);
+	color: var(--color-neutral-content);
+	border: 3px solid var(--color-base-content);
+	z-index: 10;
+}
+
+.bp-factory-label {
+	font-family: var(--font-display);
+	font-size: clamp(1rem, 2.5vw, 1.8rem);
+	letter-spacing: 0.08em;
+	line-height: 1;
+}
+
+.bp-factory-sub {
+	font-size: clamp(0.5rem, 1.2vw, 0.75rem);
+	opacity: 0.6;
+	margin-top: 0.25em;
+}
+
+/* Smokestacks */
+.bp-chimney {
+	position: absolute;
+	bottom: 100%;
+	width: 12%;
+	background: var(--color-neutral);
+	border: 2px solid var(--color-base-content);
+	border-bottom: none;
+}
+
+.bp-chimney-1 {
+	left: 20%;
+	height: 30%;
+}
+
+.bp-chimney-2 {
+	right: 20%;
+	height: 45%;
+}
+
+/* Smoke puffs */
+.bp-smoke {
+	position: absolute;
+	aspect-ratio: 1;
+	border-radius: 50%;
+	background: var(--color-base-content);
+	opacity: 0;
+}
+
+.bp-smoke-1 {
+	width: 8%;
+	top: -25%;
+	right: 16%;
+}
+
+.bp-smoke-2 {
+	width: 6%;
+	top: -35%;
+	right: 22%;
+	animation-delay: 1s;
+}
+
+.bp-smoke-3 {
+	width: 10%;
+	top: -20%;
+	right: 10%;
+	animation-delay: 2s;
+}
+
+/* Gear — sits on the input track at the factory edge */
+.bp-gear {
+	position: absolute;
+	top: var(--bp-in-y);
+	left: var(--bp-factory-x);
+	width: 8%;
+	aspect-ratio: 1;
+	transform: translate(-50%, -50%);
+	border: 3px dashed var(--color-base-content);
+	border-radius: 50%;
+	opacity: 0.3;
+	z-index: 11;
+}
+
+/* File items on conveyors — visual styling from DaisyUI badge */
+.bp-file {
+	position: absolute;
+	white-space: nowrap;
+	opacity: 0;
+	z-index: 5;
+}
+
+/* Input files — slide in from left */
+.bp-file-in {
+	top: var(--bp-in-y);
+	left: -20%;
+	transform: translateY(-50%);
+}
+
+.bp-file-in-2 {
+	animation-delay: 1.2s;
+}
+
+/* Output files — slide out to right */
+.bp-file-html {
+	top: var(--bp-html-y);
+	right: -20%;
+	transform: translateY(-50%);
+	animation-delay: 3.3s;
+}
+
+.bp-file-js {
+	top: var(--bp-js-y);
+	right: -20%;
+	transform: translateY(-50%);
+	animation-delay: 3.6s;
+}
+
+/* Output labels */
+.bp-output-label {
+	position: absolute;
+	right: 4%;
+	font-family: var(--font-display);
+	font-size: clamp(0.7rem, 1.8vw, 1.1rem);
+	letter-spacing: 0.08em;
+	opacity: 0.5;
+}
+
+.bp-output-label-html {
+	top: var(--bp-html-y);
+	transform: translate(20%, -180%);
+}
+
+.bp-output-label-js {
+	top: var(--bp-js-y);
+	transform: translate(20%, 75%);
+}
+
+/* Animations */
+@keyframes bp-slide-in {
+	0% {
+		left: -20%;
+		opacity: 0;
+	}
+	10% {
+		opacity: 1;
+	}
+	90% {
+		opacity: 1;
+	}
+	100% {
+		left: calc(var(--bp-factory-x) - 2%);
+		opacity: 0;
+	}
+}
+
+@keyframes bp-slide-out {
+	0% {
+		right: calc(100% - var(--bp-factory-right) - 2%);
+		opacity: 0;
+	}
+	15% {
+		opacity: 1;
+	}
+	100% {
+		right: 2%;
+		opacity: 1;
+	}
+}
+
+@keyframes bp-gear-spin {
+	from {
+		transform: translate(-50%, -50%) rotate(0deg);
+	}
+	to {
+		transform: translate(-50%, -50%) rotate(360deg);
+	}
+}
+
+@keyframes bp-smoke-rise {
+	0% {
+		opacity: 0;
+		transform: translateY(0) scale(0.5);
+	}
+	30% {
+		opacity: 0.15;
+	}
+	100% {
+		opacity: 0;
+		transform: translateY(-200%) scale(1.5);
+	}
+}
+
+/* Active state — gear and smoke run only while building */
+.bp-root[data-state="active"] {
+	& .bp-gear {
+		animation: bp-gear-spin 6s linear infinite;
+	}
+
+	& .bp-smoke {
+		animation: bp-smoke-rise 3.5s ease-out infinite;
+	}
+}
+
+/* File animations need both states — removing the animation
+   on done would reset fill-mode:forwards and snap files back */
+.bp-root:is([data-state="active"], [data-state="done"]) {
+	& .bp-file-in {
+		animation-name: bp-slide-in;
+		animation-duration: 2.5s;
+		animation-timing-function: ease-in-out;
+		animation-fill-mode: forwards;
+	}
+
+	& .bp-file-html,
+	& .bp-file-js {
+		animation-name: bp-slide-out;
+		animation-duration: 2s;
+		animation-timing-function: ease-out;
+		animation-fill-mode: forwards;
+	}
+}
+
+/* Replay button */
+.bp-replay {
+	position: absolute;
+	bottom: 6%;
+	left: 50%;
+	transform: translateX(-75%);
+	z-index: 20;
+	transition: opacity 0.3s;
+}
