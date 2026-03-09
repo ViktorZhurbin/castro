@@ -3,5 +3,5 @@
 	"[javascript]": {
 		"editor.defaultFormatter": "biomejs.biome"
 	},
-	"cSpell.words": ["pasaran"]
+	"cSpell.words": ["gsap", "pasaran"]
 }
