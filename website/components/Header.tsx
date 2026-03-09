@@ -10,7 +10,7 @@ export const Header = () => {
 					className="btn btn-ghost btn-sm mr-auto gap-1"
 					aria-label="Home"
 				>
-					<HomeIcon />
+					<HomeIcon className="w-5 h-5" />
 					<span className="font-display text-lg leading-none translate-y-px">
 						CASTRO
 					</span>

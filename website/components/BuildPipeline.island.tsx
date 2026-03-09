@@ -9,8 +9,12 @@ import "./BuildPipeline.css";
  * static HTML (top conveyor) and island JS bundles (bottom conveyor).
  * Triggered by scroll — plays once when the component enters viewport.
  *
- * All text is editable HTML. The factory and conveyors are pure CSS.
+ * The factory and gear are inline SVGs in a constructivist industrial style.
+ * All text is editable HTML. Conveyors and motion are pure CSS.
  */
+
+/** Rotation angles for the 12 gear teeth */
+const TEETH = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
 
 export default function BuildPipeline() {
 	const rootRef = useRef<HTMLDivElement>(null);
@@ -61,19 +65,65 @@ export default function BuildPipeline() {
 			<div class="bp-track bp-track-html" />
 			<div class="bp-track bp-track-js" />
 
-			{/* Factory */}
+			{/* Factory — constructivist industrial silhouette */}
 			<div class="bp-factory">
-				<div class="bp-chimney bp-chimney-1" />
-				<div class="bp-chimney bp-chimney-2" />
+				<svg viewBox="0 0 100 140" class="bp-factory-svg" aria-hidden="true">
+					{/* Smokestacks with caps */}
+					<rect x="12" y="0" width="9" height="42" />
+					<rect x="9" y="0" width="15" height="4" />
+					<rect x="30" y="15" width="7" height="27" />
+					<rect x="27" y="15" width="13" height="3" />
+					<rect x="72" y="6" width="10" height="36" />
+					<rect x="68" y="6" width="18" height="4" />
+
+					{/* Sawtooth roof */}
+					<polygon points="0,52 12,42 24,52 36,42 48,52 60,42 72,52 84,42 100,52" />
+
+					{/* Main body */}
+					<rect x="0" y="52" width="100" height="78" />
+
+					{/* Windows — subtle lighter rectangles */}
+					<rect x="10" y="64" width="14" height="10" rx="1" class="bp-window" />
+					<rect x="30" y="64" width="14" height="10" rx="1" class="bp-window" />
+					<rect x="56" y="64" width="14" height="10" rx="1" class="bp-window" />
+					<rect x="76" y="64" width="14" height="10" rx="1" class="bp-window" />
+
+					{/* Foundation */}
+					<rect x="-4" y="128" width="108" height="12" />
+				</svg>
+
+				{/* Smoke puffs — CSS-animated above the stacks */}
 				<div class="bp-smoke bp-smoke-1" />
 				<div class="bp-smoke bp-smoke-2" />
 				<div class="bp-smoke bp-smoke-3" />
+
 				<span class="bp-factory-label">BUN.BUILD</span>
 				<span class="bp-factory-sub">compile + split</span>
 			</div>
 
-			{/* Gear decoration */}
-			<div class="bp-gear" />
+			{/* Gear — toothed cog at the input conveyor / factory junction */}
+			<svg viewBox="0 0 100 100" class="bp-gear" aria-hidden="true">
+				{TEETH.map((angle) => (
+					<rect
+						x="42"
+						y="4"
+						width="16"
+						height="18"
+						rx="1"
+						transform={`rotate(${angle} 50 50)`}
+					/>
+				))}
+				<circle cx="50" cy="50" r="33" />
+				<circle
+					cx="50"
+					cy="50"
+					r="18"
+					fill="none"
+					stroke-width="3"
+					class="bp-gear-ring"
+				/>
+				<circle cx="50" cy="50" r="6" class="bp-gear-axle" />
+			</svg>
 
 			{/* Input files */}
 			<div class="badge badge-primary bp-file bp-file-in">index.tsx</div>
@@ -90,7 +140,7 @@ export default function BuildPipeline() {
 			<div class="badge badge-primary bp-file bp-file-js">Counter.js</div>
 
 			<button
-				class="btn btn-secondary bp-replay"
+				class="btn btn-primary bp-replay"
 				onClick={replay}
 				disabled={state === "active"}
 			>

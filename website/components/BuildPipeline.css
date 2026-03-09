@@ -1,11 +1,11 @@
 .bp-root {
-	/* Layout variables — tracks and files both reference these,
+	/* Track positions — files and labels both reference these,
 	   so moving a track automatically moves its files too */
 	--bp-in-y: 50%;
-	--bp-html-y: 40%;
-	--bp-js-y: 60%;
-	--bp-factory-x: 38%;
-	--bp-factory-w: 20%;
+	--bp-html-y: 38%;
+	--bp-js-y: 62%;
+	--bp-factory-x: 35%;
+	--bp-factory-w: 24%;
 	--bp-factory-right: calc(var(--bp-factory-x) + var(--bp-factory-w));
 
 	position: relative;
@@ -18,10 +18,10 @@
 	border: 2px solid var(--color-base-300);
 }
 
-/* Conveyor belt tracks */
+/* Conveyor belt tracks — thick industrial lines with dashed pattern */
 .bp-track {
 	position: absolute;
-	height: 3px;
+	height: 6px;
 	background: var(--color-base-content);
 	opacity: 0.2;
 }
@@ -33,11 +33,11 @@
 	background: repeating-linear-gradient(
 		90deg,
 		var(--color-base-content) 0,
-		var(--color-base-content) 8px,
-		transparent 8px,
-		transparent 16px
+		var(--color-base-content) 10px,
+		transparent 10px,
+		transparent 18px
 	);
-	opacity: 0.5;
+	opacity: 0.4;
 }
 
 .bp-track-in {
@@ -58,58 +58,55 @@
 	width: calc(100% - var(--bp-factory-right));
 }
 
-/* Factory box */
+/* Factory — positioning container for the SVG silhouette + overlays.
+   The SVG body center is at ~65% of the viewBox height, so translateY(-65%)
+   aligns the body with the 50% track line. */
 .bp-factory {
 	position: absolute;
 	top: 50%;
 	left: var(--bp-factory-x);
 	width: var(--bp-factory-w);
-	aspect-ratio: 1;
-	transform: translateY(-50%);
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	background: var(--color-neutral);
-	color: var(--color-neutral-content);
-	border: 3px solid var(--color-base-content);
+	aspect-ratio: 5 / 7;
+	transform: translateY(-65%);
 	z-index: 10;
 }
 
+/* Factory SVG — uses base-content so it auto-inverts for dark mode */
+.bp-factory-svg {
+	width: 100%;
+	height: 100%;
+	fill: var(--color-base-content);
+}
+
+/* Factory windows — subtle cutouts in the body */
+.bp-window {
+	fill: var(--color-base-200);
+	opacity: 0.15;
+}
+
 .bp-factory-label {
+	position: absolute;
+	left: 50%;
+	top: 65%;
+	transform: translate(-50%, -50%);
 	font-family: var(--font-display);
-	font-size: clamp(1rem, 2.5vw, 1.8rem);
+	font-size: clamp(0.8rem, 2.2vw, 1.5rem);
 	letter-spacing: 0.08em;
 	line-height: 1;
+	color: var(--color-base-200);
 }
 
 .bp-factory-sub {
-	font-size: clamp(0.5rem, 1.2vw, 0.75rem);
-	opacity: 0.6;
-	margin-top: 0.25em;
-}
-
-/* Smokestacks */
-.bp-chimney {
 	position: absolute;
-	bottom: 100%;
-	width: 12%;
-	background: var(--color-neutral);
-	border: 2px solid var(--color-base-content);
-	border-bottom: none;
+	left: 50%;
+	top: 73%;
+	transform: translate(-50%, -50%);
+	font-size: clamp(0.45rem, 1vw, 0.7rem);
+	color: var(--color-base-200);
+	opacity: 0.6;
 }
 
-.bp-chimney-1 {
-	left: 20%;
-	height: 30%;
-}
-
-.bp-chimney-2 {
-	right: 20%;
-	height: 45%;
-}
-
-/* Smoke puffs */
+/* Smoke puffs — positioned above the smokestacks */
 .bp-smoke {
 	position: absolute;
 	aspect-ratio: 1;
@@ -119,37 +116,46 @@
 }
 
 .bp-smoke-1 {
-	width: 8%;
-	top: -25%;
-	right: 16%;
+	width: 10%;
+	top: -3%;
+	left: 14%;
 }
 
 .bp-smoke-2 {
-	width: 6%;
-	top: -35%;
-	right: 22%;
+	width: 7%;
+	top: -8%;
+	left: 28%;
 	animation-delay: 1s;
 }
 
 .bp-smoke-3 {
-	width: 10%;
-	top: -20%;
-	right: 10%;
+	width: 12%;
+	top: -2%;
+	left: 72%;
 	animation-delay: 2s;
 }
 
-/* Gear — sits on the input track at the factory edge */
+/* Gear — toothed SVG cog at the input/factory junction.
+   Uses base-content fill so it inverts naturally in dark mode. */
 .bp-gear {
 	position: absolute;
 	top: var(--bp-in-y);
 	left: var(--bp-factory-x);
-	width: 8%;
+	width: 14%;
 	aspect-ratio: 1;
 	transform: translate(-50%, -50%);
-	border: 3px dashed var(--color-base-content);
-	border-radius: 50%;
-	opacity: 0.3;
+	fill: var(--color-base-content);
+	opacity: 0.25;
 	z-index: 11;
+}
+
+.bp-gear-ring {
+	stroke: var(--color-base-200);
+	opacity: 0.3;
+}
+
+.bp-gear-axle {
+	fill: var(--color-base-200);
 }
 
 /* File items on conveyors — visual styling from DaisyUI badge */
@@ -261,7 +267,7 @@
 	}
 }
 
-/* Active state — gear and smoke run only while building */
+/* Active state — gear spins and smoke rises */
 .bp-root[data-state="active"] {
 	& .bp-gear {
 		animation: bp-gear-spin 6s linear infinite;
@@ -272,8 +278,9 @@
 	}
 }
 
-/* File animations need both states — removing the animation
-   on done would reset fill-mode:forwards and snap files back */
+/* File animations persist through both active and done states —
+   removing the animation on done would reset fill-mode:forwards
+   and snap files back to their start position */
 .bp-root:is([data-state="active"], [data-state="done"]) {
 	& .bp-file-in {
 		animation-name: bp-slide-in;
