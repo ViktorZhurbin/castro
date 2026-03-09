@@ -6,19 +6,15 @@ export const meta: PageMeta = { title: "Build Pipeline — Castro Tutorial" };
 export default function Tutorial() {
 	return (
 		<section className="py-16 px-6 bg-base-100">
+			{/* Pipeline diagram + description — both pinned by ScrollTrigger
+			    during the scroll animation. Uses lenin:awake so GSAP
+			    initializes before the user scrolls past. */}
 			<div className="max-w-4xl mx-auto">
-				<h1 className="font-display text-5xl md:text-7xl text-primary mb-4">
-					THE BUILD PIPELINE
-				</h1>
-				<p className="text-base-content max-w-2xl mb-12">
-					Castro compiles your pages and islands at build time. Pages become
-					static HTML. Islands get their own JS bundles for client-side
-					hydration. The factory splits them apart.
-				</p>
+				<BuildPipeline lenin:awake />
+			</div>
 
-				<BuildPipeline comrade:visible />
-
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+			<div className="max-w-4xl mx-auto">
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
 					<div>
 						<h3 className="font-display text-2xl text-primary mb-2">
 							1. INPUT
