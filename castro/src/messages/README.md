@@ -2,7 +2,23 @@
 
 **Rule 1: Clarity First, Satire Second**
 
-User-facing messages must be scannable at a glance. Satire should enhance, not obscure.
+User-facing messages must be scannable at a glance. Satire should enhance, not obscure. If it only adds flavor, cut it.
+
+**Rule 2: The Grandiosity Gap**
+
+The joke lives in the distance between the language and the event. The language is ideological and grand. The event is technical and small. Never reverse this.
+
+When both the frame and the event are grand, it's noise. When neither is, it's not satire. The gap is the joke.
+
+## Testing it
+
+Ask yourself:
+1. **Can I scan it?** Find the error in < 2 seconds?
+2. **Does it smile?** Is the joke actually funny?
+3. **Does it illuminate?** Does the satirical frame make the technical event more visible?
+4. **Is the gap right?** Grand language, small event — not the reverse?
+
+If you hesitate on any question, remove the satire.
 
 ## Emoji Policy
 
@@ -58,20 +74,6 @@ errors: {
     `   Eliminate one to restore order.`,            // ← Too much
 }
 ```
-
-## Testing Your Changes
-
-Run a build and read the output:
-```bash
-bun run build
-```
-
-Ask yourself:
-1. **Can I scan it?** Find the error in < 2 seconds?
-2. **Does it smile?** Is the joke actually funny?
-3. **Is it necessary?** Does it add value or just noise?
-
-If you hesitate on any question, remove the satire.
 
 ## Preset Philosophy
 
