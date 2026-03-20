@@ -16,7 +16,7 @@
 import { watch } from "node:fs/promises";
 import { extname, join } from "node:path";
 import { styleText } from "node:util";
-import { buildAll } from "../builder/build-all.js";
+import { buildAll } from "../builder/buildAll.js";
 import { config } from "../config.js";
 import {
 	COMPONENTS_DIR,
@@ -26,7 +26,7 @@ import {
 } from "../constants.js";
 import { allPlugins } from "../islands/plugins.js";
 import { messages } from "../messages/index.js";
-import { debounceAsync } from "../utils/debounce-async.js";
+import { debounceAsync } from "../utils/debounceAsync.js";
 
 /**
  * @import { FileChangeInfo } from "node:fs/promises";

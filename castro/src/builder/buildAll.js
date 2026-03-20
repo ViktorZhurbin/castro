@@ -16,7 +16,7 @@ import { allPlugins } from "../islands/plugins.js";
 import { islands } from "../islands/registry.js";
 import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
-import { buildPage } from "./build-page.js";
+import { buildPage } from "./buildPage.js";
 
 export async function buildAll() {
 	const isProd = process.env.NODE_ENV === "production";

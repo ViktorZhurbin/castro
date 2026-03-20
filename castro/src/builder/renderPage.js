@@ -14,7 +14,7 @@ import { renderToString } from "preact-render-to-string";
 import { pageState } from "../islands/marker.js";
 import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
-import { writeHtmlPage } from "./write-html-page.js";
+import { writeHtmlPage } from "./writeHtmlPage.js";
 
 /**
  * @import { Asset, PageMeta } from "../types.js"

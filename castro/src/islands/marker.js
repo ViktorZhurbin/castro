@@ -2,7 +2,7 @@
  * Island Marker
  *
  * Called synchronously during renderToString() when the VNode tree hits
- * an island component. The build-plugins replaced the real island import
+ * an island component. The buildPlugins replaced the real island import
  * with a stub that calls renderMarker(), which:
  *
  * 1. Looks up the island's pre-loaded SSR module in the registry
@@ -14,7 +14,7 @@
 
 import { h } from "preact";
 import { messages } from "../messages/index.js";
-import { getFrameworkConfig } from "./framework-config.js";
+import { getFrameworkConfig } from "./frameworkConfig.js";
 import { islands } from "./registry.js";
 
 /**

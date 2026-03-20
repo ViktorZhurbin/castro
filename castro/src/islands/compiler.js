@@ -20,7 +20,7 @@ import { basename, dirname, extname, resolve } from "node:path";
 import { styleText } from "node:util";
 import { config as castroConfig } from "../config.js";
 import { messages } from "../messages/index.js";
-import { getFrameworkConfig } from "./framework-config.js";
+import { getFrameworkConfig } from "./frameworkConfig.js";
 
 /**
  * @import { IslandComponent } from "../types.d.ts"

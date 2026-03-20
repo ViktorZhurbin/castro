@@ -3,9 +3,9 @@ import { h } from "preact";
 import { OUTPUT_DIR, PAGES_DIR } from "../constants.js";
 import { messages } from "../messages/index.js";
 import { validateMeta } from "../utils/validateMeta.js";
-import { compileJSX } from "./compile-jsx.js";
-import { renderPage } from "./render-page.js";
-import { writeCSSFiles } from "./write-css.js";
+import { compileJSX } from "./compileJsx.js";
+import { renderPage } from "./renderPage.js";
+import { writeCSSFiles } from "./writeCss.js";
 
 /**
  * @param {string} relativeSourcePath - Relative path of source file

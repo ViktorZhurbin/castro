@@ -18,7 +18,7 @@ import {
 import { getModule } from "../utils/cache.js";
 import { getIslandId } from "../utils/ids.js";
 import { compileIsland } from "./compiler.js";
-import { isKnownFramework, loadFrameworkConfig } from "./framework-config.js";
+import { isKnownFramework, loadFrameworkConfig } from "./frameworkConfig.js";
 
 /**
  * @import { IslandComponent } from '../types.js'

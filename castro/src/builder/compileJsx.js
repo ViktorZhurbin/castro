@@ -2,7 +2,7 @@ import { resolve } from "node:path";
 import {
 	castroExternalsPlugin,
 	islandMarkerPlugin,
-} from "../islands/build-plugins.js";
+} from "../islands/buildPlugins.js";
 import { messages } from "../messages/index.js";
 import { getModule } from "../utils/cache.js";
 
@@ -29,7 +29,7 @@ export async function compileJSX(sourcePath) {
 		packages: "external",
 		format: "esm",
 		// Pages and layouts compile to Preact VNodes (not HTML strings directly).
-		// The final renderToString() call in render-page.js converts the complete
+		// The final renderToString() call in renderPage.js converts the complete
 		// VNode tree to HTML in one pass. This is a build-time convenience —
 		// Preact is NOT shipped to the browser for static pages.
 		jsx: { runtime: "automatic", importSource: "preact" },

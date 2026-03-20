@@ -1,7 +1,7 @@
 /**
  * Preact Framework Configuration
  *
- * This file is dynamically imported by framework-config.js only when
+ * This file is dynamically imported by frameworkConfig.js only when
  * a Preact island is discovered. Adding a new framework means creating
  * a new file in this directory with the same shape, plus listing its
  * dependencies as optionalDependencies in package.json.

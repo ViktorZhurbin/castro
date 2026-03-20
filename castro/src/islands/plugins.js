@@ -1,7 +1,7 @@
 import { join } from "node:path";
 import { userPlugins } from "../config.js";
 import { OUTPUT_DIR } from "../constants.js";
-import { registerFramework } from "./framework-config.js";
+import { registerFramework } from "./frameworkConfig.js";
 
 /**
  * @import { CastroPlugin } from '../types.d.ts'

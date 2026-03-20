@@ -1,7 +1,7 @@
 /**
  * Solid Framework Configuration
  *
- * Dynamically imported by framework-config.js when a Solid island is
+ * Dynamically imported by frameworkConfig.js when a Solid island is
  * discovered. Bun has no native Solid JSX support, so we use Babel
  * with babel-preset-solid to transform JSX at build time.
  *

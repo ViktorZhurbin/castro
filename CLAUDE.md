@@ -32,19 +32,19 @@ config.js               Loads castro.config.js
 constants.js            Shared path constants
 
 builder/
-  build-all.js          Full site build orchestration
-  build-page.js         Single page build (JSX or Markdown)
-  compile-jsx.js        Bun.build pipeline for pages and layouts
-  render-page.js        VNode → HTML via renderToString
-  write-html-page.js    HTML assembly (assets, CSS injection, import maps)
-  write-css.js          CSS file extraction
+  buildAll.js          Full site build orchestration
+  buildPage.js         Single page build (JSX or Markdown)
+  compileJsx.js        Bun.build pipeline for pages and layouts
+  renderPage.js        VNode → HTML via renderToString
+  writeHtmlPage.js    HTML assembly (assets, CSS injection, import maps)
+  writeCss.js          CSS file extraction
 
 islands/
-  build-plugins.js      Bun.build plugins for compile-time island interception
+  buildPlugins.js      Bun.build plugins for compile-time island interception
   compiler.js           Island SSR + client compilation
   registry.js           Singleton island store + SSR module preloading
   marker.js             Build-time island renderer
-  framework-config.js   Framework config loader (async load + sync cache)
+  frameworkConfig.js   Framework config loader (async load + sync cache)
   frameworks/           Per-framework configs (preact.js, solid.js, types.d.ts)
   plugins.js            Plugin registry (internal + user plugins from config)
   hydration.js          Client-side <castro-island> custom element
@@ -54,7 +54,7 @@ layouts/
 
 dev/
   server.js             Dev server (Bun.serve + file watching + SSE)
-  live-reload.js        Client-side SSE reconnection script
+  liveReload.js        Client-side SSE reconnection script
 
 messages/
   messages.d.ts         Shared interface (both presets implement this)
@@ -151,7 +151,7 @@ Key rules from `src/messages/README.md`:
 ## Key Design Decisions
 
 - **Layouts receive `children` (VNode)**, not a pre-rendered `content` HTML string. The entire tree renders in a single `renderToString()` pass.
-- **Framework configs** are loaded per-island via `framework-config.js` (async load + sync cache pattern). Preact is built-in; plugins can register additional frameworks via `CastroPlugin.frameworkConfig`. Directory convention (`components/solid/`) auto-detects registered frameworks.
+- **Framework configs** are loaded per-island via `frameworkConfig.js` (async load + sync cache pattern). Preact is built-in; plugins can register additional frameworks via `CastroPlugin.frameworkConfig`. Directory convention (`components/solid/`) auto-detects registered frameworks.
 - **`IslandComponent.ssrModule`** typed as `{ default: Function }` (framework-agnostic). Pre-loaded by the registry, accessed synchronously by `renderMarker()`.
 - **`renderSSR` accepts `Function`**, not `ComponentType`. Each framework config casts internally.
 - **Island CSS** tracked per-page via `pageState` in `marker.js`, not on the registry singleton. `pageState.needsHydration` controls whether the runtime script is included (pages with only `no:pasaran` islands ship zero client JS).
@@ -175,7 +175,7 @@ The test structure (pages, components, islands, layouts) mirrors a real site and
 - Keep core LOC under ~1500 (currently ~1300)
 - Satire belongs in messages/docs/CLI output only, never in the code logic itself
 - `website/dist/` and `test-site/dist/` are ephemeral, cleaned on every build
-- Island imports must use relative paths, not tsconfig aliases (documented in `compile-jsx.js`)
+- Island imports must use relative paths, not tsconfig aliases (documented in `compileJsx.js`)
 
 ## Website Playground (`website/`)
 
