@@ -108,18 +108,6 @@ class IslandsRegistry {
 				throw new Error(err.message);
 			}
 		}
-
-		if (this.#islands.size > 0) {
-			console.info(
-				styleText("green", messages.files.compiled(this.#islands.size)),
-			);
-
-			for (const component of this.#islands.values()) {
-				const relativePath = relative(process.cwd(), component.sourcePath);
-
-				console.info(`  · ${styleText("cyan", relativePath)}`);
-			}
-		}
 	}
 }
 

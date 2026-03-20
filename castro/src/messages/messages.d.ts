@@ -16,10 +16,9 @@ export interface Messages {
 	// Build process messages
 	build: {
 		starting: string;
-		success: (count: string, time: string) => string;
+		success: (count: string) => string;
 		noFiles: string;
 		writingFile: (source: string, dest: string) => string;
-		fileSuccess: (file: string, time: string) => string;
 		fileFailure: (file: string, err: string) => string;
 		islandFailed: (err: unknown) => string;
 		ssrCompileFailed: (source: string, errMessage: string) => string;
@@ -30,18 +29,16 @@ export interface Messages {
 	// File operation messages
 	files: {
 		changed: (path: string) => string;
-		compiled: (count: number) => string;
-		layoutsLoaded: (names: string) => string;
 	};
 
 	// Error messages
 	errors: {
 		routeConflict: (file1: string, file2: string) => string;
-		layoutNotFound: (name: string) => string;
+		layoutNotFound: (name: string, sourceFilePath: string) => string;
 		missingDefaultLayout: () => string;
 		noLayoutsDir: (dir: string) => string;
-		islandNoExport: (file: string) => string;
-		pageBuildFailed: (file: string, err: string) => string;
+		noDefaultExport: (file: string) => string;
+		layoutBuildFailed: (file: string, err: string) => string;
 		jsxNoExport: (filePath: string) => string;
 		invalidMeta: (file: string, issues: string[]) => string;
 		islandNotFoundRegistry: (name: string) => string;

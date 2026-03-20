@@ -10,7 +10,7 @@
 	],
 	"scripts": {
 		"dev": "bun --filter website dev",
-		"build": "bun --filter website build",
+		"build": "bun --elide-lines=0 --filter website build ",
 		"format": "biome format --write",
 		"check:castro": "bun --parallel --filter @vktrz/castro check",
 		"check:website": "bun --filter website type-check",

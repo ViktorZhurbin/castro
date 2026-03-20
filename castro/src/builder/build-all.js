@@ -15,7 +15,6 @@ import { OUTPUT_DIR, PAGES_DIR, PUBLIC_DIR } from "../constants.js";
 import { allPlugins } from "../islands/plugins.js";
 import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
-import { formatMs } from "../utils/format.js";
 import { buildPage } from "./build-page.js";
 
 /**
@@ -23,7 +22,6 @@ import { buildPage } from "./build-page.js";
  */
 export async function buildAll(options = {}) {
 	const { verbose = false } = options;
-	const startTime = performance.now();
 
 	console.info(messages.build.starting);
 
@@ -113,6 +111,5 @@ export async function buildAll(options = {}) {
 		return;
 	}
 
-	const buildTime = formatMs(performance.now() - startTime);
-	console.info(messages.build.success(`${outputMap.size}`, buildTime));
+	console.info(messages.build.success(`${outputMap.size}`));
 }

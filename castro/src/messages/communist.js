@@ -16,11 +16,9 @@ export const satirical = {
 
 	build: {
 		starting: "Realizing the Five-Year Plan...",
-		success: (count, time) =>
-			`✓ Delivered ${count} pages to the people in ${time}`,
-		noFiles: "⚠️  No files found. The collective is empty.",
+		success: (count) => `✓ Delivered ${count} pages to the people.`,
+		noFiles: "⚠️  No pages found to build.",
 		writingFile: (source, dest) => `Writing ${source} → ${dest}`,
-		fileSuccess: (file, time) => `✓ ${file} (${time})`,
 		fileFailure: (file, err) => `Sabotage detected in ${file}: ${err}`,
 		islandFailed: (err) => `Island build failed: ${err}`,
 		ssrCompileFailed: (source, err) =>
@@ -32,8 +30,6 @@ export const satirical = {
 	// File operations
 	files: {
 		changed: (path) => `Revised: ${path}`,
-		compiled: (count) => `✓ Compiled ${count} island${count === 1 ? "" : "s"}:`,
-		layoutsLoaded: (names) => `✓ Loaded layouts: ${names}`,
 	},
 
 	// The Ministry of Errors
@@ -46,9 +42,9 @@ export const satirical = {
 			`   The revolution cannot serve two masters.`,
 
 		// Missing layouts
-		layoutNotFound: (layoutName) =>
+		layoutNotFound: (layoutName, sourceFilePath) =>
 			`❌ Layout '${layoutName}' not found in layouts/\n` +
-			`   Create the missing layout file.`,
+			`   Create the missing layout file, or change layout for ${sourceFilePath}.`,
 
 		missingDefaultLayout: () =>
 			`❌ Required layout 'default.jsx' not found in layouts/\n` +
@@ -58,14 +54,13 @@ export const satirical = {
 			`❌ Layouts directory not found: ${layoutsDir}\n` +
 			`   Create the directory and add at least default.jsx`,
 
-		islandNoExport: (fileName) =>
-			`⚠️  ${fileName} must export a default function.\n` +
-			`   Island components require a default export.`,
+		noDefaultExport: (fileName) =>
+			`⚠️  ${fileName} must export a default function.`,
 
-		// Page build errors
-		pageBuildFailed: (fileName, errorMessage) =>
-			`❌ Build failed (sabotage detected)\n\n` +
-			`   Page: ${fileName}\n` +
+		// Layout build errors
+		layoutBuildFailed: (fileName, errorMessage) =>
+			`❌ Layout build failed (sabotage detected)\n\n` +
+			`   Layout: ${fileName}\n` +
 			`   Error: ${errorMessage}`,
 
 		jsxNoExport: (filePath) =>
@@ -79,19 +74,19 @@ export const satirical = {
 			issues.map((i) => `   - ${i}`).join("\n") +
 			`\n\n   Check the page 'meta' export.`,
 		islandNotFoundRegistry: (name) =>
-			`❌ Island "${name}" not found in registry`,
+			`❌ Island "${name}" failed to load. This is a Castro bug.`,
 		islandRenderFailed: (name, err) =>
 			`❌ Failed to render island "${name}": ${err}`,
 		ssrErrorTitle: "⚠️ Counter-revolutionary logic detected",
 		multipleDirectives: (directives) =>
-			`❌ Multiple directives on same component: ${directives}. Use only one.`,
+			`❌ Multiple directives on same component: ${directives}. Pick one.`,
 		noLayoutFiles: (dir) =>
 			`❌ No layout files found in ${dir}\nCreate at least default.jsx`,
 		cacheWriteFailed: (path, err) =>
 			`❌ Failed to write cache file: ${path}\n${err}`,
 		frameworkUnsupported: (name) =>
 			`❌ Framework "${name}" is not recognized by the Party.\n` +
-			`   Approved: preact. Others require a framework plugin.`,
+			`   Built-in: preact, solid. Others require a framework plugin.`,
 		frameworkConfigInvalid: (pluginName, missing) =>
 			`❌ Plugin "${pluginName}" submitted incomplete papers.\n` +
 			`   Missing: ${missing}`,

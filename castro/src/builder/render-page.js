@@ -55,7 +55,9 @@ export async function renderPage({
 		const layoutComponent = layouts.getLayout(layoutName);
 
 		if (!layoutComponent) {
-			throw new Error(messages.errors.layoutNotFound(layoutName));
+			throw new Error(
+				messages.errors.layoutNotFound(layoutName, sourceFilePath),
+			);
 		}
 
 		const layoutCssAssets = layouts.getCssAssets(layoutName) ?? [];

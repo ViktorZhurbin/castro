@@ -16,10 +16,9 @@ export const serious = {
 
 	build: {
 		starting: "Building site...",
-		success: (count, time) => `✓ Build complete: ${count} pages in ${time}`,
-		noFiles: "⚠️  No files found to build.",
+		success: (count) => `✓ Build complete: ${count} pages.`,
+		noFiles: "⚠️  No pages found to build.",
 		writingFile: (source, dest) => `Writing ${source} → ${dest}`,
-		fileSuccess: (file, time) => `✓ ${file} (${time})`,
 		fileFailure: (file, err) => `✗ Failed to build ${file}: ${err}`,
 		islandFailed: (err) => `Island build failed: ${err}`,
 		ssrCompileFailed: (source, err) =>
@@ -31,8 +30,6 @@ export const serious = {
 	// File operations
 	files: {
 		changed: (path) => `Changed: ${path}`,
-		compiled: (count) => `✓ Compiled ${count} island${count === 1 ? "" : "s"}:`,
-		layoutsLoaded: (names) => `✓ Loaded layouts: ${names}`,
 	},
 
 	// Errors
@@ -45,9 +42,9 @@ export const serious = {
 			`   Remove or rename one of these files.`,
 
 		// Missing layouts
-		layoutNotFound: (layoutName) =>
+		layoutNotFound: (layoutName, sourceFilePath) =>
 			`❌ Layout '${layoutName}' not found in layouts/ directory.\n` +
-			`   Create the missing layout file.`,
+			`   Create the missing layout file, or change layout for ${sourceFilePath}.`,
 
 		missingDefaultLayout: () =>
 			`❌ Required layout 'default.jsx' not found in layouts/ directory.\n` +
@@ -57,14 +54,13 @@ export const serious = {
 			`❌ Layouts directory not found: ${layoutsDir}\n` +
 			`   Create the directory and add at least default.jsx`,
 
-		islandNoExport: (fileName) =>
-			`⚠️  ${fileName} must export a default function.\n` +
-			`   Island components require a default export.`,
+		noDefaultExport: (fileName) =>
+			`⚠️  ${fileName} must export a default function.`,
 
-		// Page build errors
-		pageBuildFailed: (fileName, errorMessage) =>
-			`❌ Failed to build page\n\n` +
-			`   Page: ${fileName}\n` +
+		// Layout build errors
+		layoutBuildFailed: (fileName, errorMessage) =>
+			`❌ Failed to build layout\n\n` +
+			`   Layout: ${fileName}\n` +
 			`   Error: ${errorMessage}`,
 
 		jsxNoExport: (filePath) =>
@@ -78,7 +74,7 @@ export const serious = {
 			issues.map((i) => `   - ${i}`).join("\n") +
 			`\n\n   Check the page 'meta' export.`,
 		islandNotFoundRegistry: (name) =>
-			`❌ Island "${name}" not found in registry`,
+			`❌ Island "${name}" failed to load. This is a Castro bug.`,
 		islandRenderFailed: (name, err) =>
 			`❌ Failed to render island "${name}": ${err}`,
 		ssrErrorTitle: "⚠️ Server Rendering Error",
@@ -90,7 +86,7 @@ export const serious = {
 			`❌ Failed to write cache file: ${path}\n${err}`,
 		frameworkUnsupported: (name) =>
 			`❌ Framework "${name}" is not supported.\n` +
-			`   Built-in: preact. Others require a framework plugin.`,
+			`   Built-in: preact, solid. Others require a framework plugin.`,
 		frameworkConfigInvalid: (pluginName, missing) =>
 			`❌ Plugin "${pluginName}" provides an invalid frameworkConfig.\n` +
 			`   Missing: ${missing}`,

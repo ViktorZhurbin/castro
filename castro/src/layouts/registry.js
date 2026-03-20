@@ -102,7 +102,7 @@ class LayoutsRegistry {
 					await compileJSX(sourceFilePath);
 
 				if (!layoutModule.default) {
-					throw new Error(messages.errors.islandNoExport(fileName));
+					throw new Error(messages.errors.noDefaultExport(fileName));
 				}
 
 				this.#layouts.set(layoutId, layoutModule.default);
@@ -117,7 +117,9 @@ class LayoutsRegistry {
 			} catch (e) {
 				const err = /** @type {Bun.ErrorLike} */ (e);
 
-				throw new Error(messages.errors.pageBuildFailed(fileName, err.message));
+				throw new Error(
+					messages.errors.layoutBuildFailed(fileName, err.message),
+				);
 			}
 		}
 
@@ -125,10 +127,6 @@ class LayoutsRegistry {
 		if (this.#layouts.size === 0) {
 			throw new Error(messages.errors.noLayoutFiles(LAYOUTS_DIR));
 		}
-
-		const layoutNames = Array.from(this.#layouts.keys()).join(", ");
-
-		console.info(styleText("green", messages.files.layoutsLoaded(layoutNames)));
 
 		if (!this.#layouts.has("default")) {
 			throw new Error(messages.errors.missingDefaultLayout());
