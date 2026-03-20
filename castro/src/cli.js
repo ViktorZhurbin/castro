@@ -23,7 +23,7 @@ switch (command) {
 	case "build": {
 		process.env.NODE_ENV = "production";
 		const { buildAll } = await import("./builder/build-all.js");
-		await buildAll({ verbose: true });
+		await buildAll();
 		break;
 	}
 

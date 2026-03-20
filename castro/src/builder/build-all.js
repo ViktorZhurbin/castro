@@ -18,11 +18,8 @@ import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
 import { buildPage } from "./build-page.js";
 
-/**
- * @param {{ verbose?: boolean }} [options]
- */
-export async function buildAll(options = {}) {
-	const { verbose = false } = options;
+export async function buildAll() {
+	const isProd = process.env.NODE_ENV === "production";
 
 	console.info(messages.build.starting);
 
@@ -83,7 +80,7 @@ export async function buildAll(options = {}) {
 	}
 
 	for (const [outputPath, sourcePath] of outputMap.entries()) {
-		if (verbose) {
+		if (isProd) {
 			console.info(
 				messages.build.writingFile(
 					styleText("cyan", sourcePath),
