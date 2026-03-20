@@ -24,10 +24,7 @@ export default function Home() {
 						</p>
 						<div className="divider divider-primary max-w-xs mx-auto" />
 						<p className="text-lg font-bold mb-1">
-							The Educational Island Architecture Framework
-						</p>
-						<p className="text-lg mb-6 text-base-content/80">
-							(That Happens to Be Communist)
+							Your Five-Year Plan to Learn Island Architecture
 						</p>
 						<p className="italic text-sm mb-10 text-base-content/60">
 							"The satire is optional. The knowledge is real."
@@ -114,8 +111,8 @@ export default function Home() {
 							<h3 className="font-display text-2xl text-primary">BUILD TIME</h3>
 							<p className="text-base-content/80 mt-1">
 								Castro compiles your pages and renders all islands to static
-								HTML. Every component gets server-side rendered, creating
-								instant visual content.
+								HTML. Every component gets server-side rendered at build time,
+								creating instant visual content.
 							</p>
 						</div>
 					</li>

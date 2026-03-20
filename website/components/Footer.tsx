@@ -1,14 +1,6 @@
-import { StarIcon } from "./icons/StarIcon.tsx";
-
-/**
- * Castro website footer with slogan and links.
- */
 export const Footer = () => {
 	return (
-		<footer className="footer footer-center bg-base-300 py-16 px-6 border-t-2 border-primary">
-			<div className="w-12 h-12 text-primary">
-				<StarIcon />
-			</div>
+		<footer className="footer footer-center footer-horizontal sm:footer-vertical bg-base-300 py-16 px-6 border-t-2 border-primary">
 			<div>
 				<p className="font-display text-3xl text-primary">
 					WORKERS OF THE WEB, UNITE!
