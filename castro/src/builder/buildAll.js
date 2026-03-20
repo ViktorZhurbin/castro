@@ -2,10 +2,10 @@
  * Build Orchestrator
  *
  * Coordinates the full site build:
- * 1. Clean and prepare output directory
- * 2. Copy public/ assets
- * 3. Run plugin build hooks (island compilation, runtime copying)
- * 4. Load layouts
+ * 1. Wipe and recreate output dir
+ * 2. Copy public dir to output dir
+ * 3. Run plugin build hooks
+ * 4. Compile and load islands and layouts
  * 5. Scan pages, detect route conflicts, build each page
  */
 
@@ -23,14 +23,17 @@ export async function buildAll() {
 
 	console.info(messages.build.starting);
 
+	// Fresh build: wipe and recreate output dir.
 	await rm(OUTPUT_DIR, { recursive: true, force: true });
 	await mkdir(OUTPUT_DIR, { recursive: true });
 
+	// Copy static assets from public → output dir
 	try {
 		await cp(PUBLIC_DIR, OUTPUT_DIR, { recursive: true });
 	} catch (e) {
 		const err = /** @type {Bun.ErrorLike} */ (e);
 
+		// ENOENT means PUBLIC_DIR doesn't exist, which is fine
 		if (err.code !== "ENOENT") {
 			throw err;
 		}
@@ -45,10 +48,7 @@ export async function buildAll() {
 	await islands.load();
 	await layouts.load();
 
-	// Scan all pages and detect route conflicts before building.
-	// Two source files (e.g., foo.md and foo.jsx) targeting the same
-	// output path would silently overwrite each other.
-
+	// Scan all pages upfront to detect route conflicts before building.
 	/** @type {Map<string, string>} */
 	const outputMap = new Map();
 
@@ -58,6 +58,7 @@ export async function buildAll() {
 		for await (const sourcePath of pageGlob.scan(PAGES_DIR)) {
 			const outputPath = sourcePath.replace(/\.(md|[jt]sx)$/, ".html");
 
+			// Example: both foo.md and foo.jsx try to be foo.html
 			if (outputMap.has(outputPath)) {
 				const existingFile = outputMap.get(outputPath);
 				const errorMessage = messages.errors.routeConflict(
@@ -77,6 +78,11 @@ export async function buildAll() {
 			return;
 		}
 		throw err;
+	}
+
+	if (outputMap.size === 0) {
+		console.warn(messages.build.noFiles);
+		return;
 	}
 
 	for (const [outputPath, sourcePath] of outputMap.entries()) {
@@ -103,11 +109,6 @@ export async function buildAll() {
 			);
 			throw err;
 		}
-	}
-
-	if (outputMap.size === 0) {
-		console.warn(messages.build.noFiles);
-		return;
 	}
 
 	console.info(messages.build.success(`${outputMap.size}`));
