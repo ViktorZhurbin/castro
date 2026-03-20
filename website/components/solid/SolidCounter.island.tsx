@@ -16,13 +16,13 @@ export default function SolidCounter(props: CounterProps) {
 				<p class="text-2xl">Count: {count()}</p>
 				<div class="card-actions">
 					<button
-						class="btn btn-accent btn-sm"
+						class="btn btn-secondary btn-sm"
 						onClick={() => setCount((c) => c - 1)}
 					>
 						−
 					</button>
 					<button
-						class="btn btn-accent btn-sm"
+						class="btn btn-secondary btn-sm"
 						onClick={() => setCount((c) => c + 1)}
 					>
 						+
