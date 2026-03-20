@@ -13,6 +13,7 @@ import { cp, mkdir, rm } from "node:fs/promises";
 import { styleText } from "node:util";
 import { OUTPUT_DIR, PAGES_DIR, PUBLIC_DIR } from "../constants.js";
 import { allPlugins } from "../islands/plugins.js";
+import { islands } from "../islands/registry.js";
 import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
 import { buildPage } from "./build-page.js";
@@ -44,6 +45,7 @@ export async function buildAll(options = {}) {
 		}
 	}
 
+	await islands.load();
 	await layouts.load();
 
 	// Scan all pages and detect route conflicts before building.

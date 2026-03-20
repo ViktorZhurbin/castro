@@ -2,7 +2,6 @@ import { join } from "node:path";
 import { userPlugins } from "../config.js";
 import { OUTPUT_DIR } from "../constants.js";
 import { registerFramework } from "./framework-config.js";
-import { islands } from "./registry.js";
 
 /**
  * @import { CastroPlugin } from '../types.d.ts'
@@ -22,26 +21,8 @@ for (const plugin of userPlugins) {
  * Build pipeline and dev server iterate this merged list.
  * @type {CastroPlugin[]}
  */
-const internalPlugins = [castroIslandRuntime(), preactIslands()];
+const internalPlugins = [castroIslandRuntime()];
 export const allPlugins = [...internalPlugins, ...userPlugins];
-
-/**
- * Plugin that discovers and compiles Preact island components
- * @returns {CastroPlugin}
- */
-
-function preactIslands() {
-	return {
-		name: "islands-preact",
-
-		/**
-		 * Build hook: discover, compile, and load islands into registry
-		 */
-		async onPageBuild() {
-			await islands.load();
-		},
-	};
-}
 
 /**
  * Loads the <castro-island> custom element runtime (client-side)

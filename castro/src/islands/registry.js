@@ -8,15 +8,13 @@
  */
 
 import { mkdir } from "node:fs/promises";
-import { dirname, join, relative } from "node:path";
-import { styleText } from "node:util";
+import { dirname, join } from "node:path";
 import { config as castroConfig } from "../config.js";
 import {
 	COMPONENTS_DIR,
 	ISLANDS_OUTPUT_DIR,
 	OUTPUT_DIR,
 } from "../constants.js";
-import { messages } from "../messages/index.js";
 import { getModule } from "../utils/cache.js";
 import { getIslandId } from "../utils/ids.js";
 import { compileIsland } from "./compiler.js";
