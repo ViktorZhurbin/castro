@@ -30,8 +30,8 @@ export default function Home() {
 							"The satire is optional. The knowledge is real."
 						</p>
 						<div className="flex flex-wrap gap-4 justify-center">
-							<a href="/tutorial" className="btn btn-lg btn-primary">
-								TUTORIAL
+							<a href="/how-it-works/build" className="btn btn-lg btn-primary">
+								HOW IT WORKS
 							</a>
 							<a
 								href="https://github.com/ViktorZhurbin/castro"

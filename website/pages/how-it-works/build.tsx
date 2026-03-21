@@ -31,7 +31,9 @@ export default function Tutorial() {
 						<code>.island.tsx</code> file goes through <code>Bun.build</code>{" "}
 						twice — once for the server (producing an SSR module that's
 						pre-loaded into a registry) and once for the browser (producing a
-						hashed JS bundle written to <code>dist/islands/</code>).
+						hashed JS bundle written to <code>dist/islands/</code>). The server
+						needs a Bun module; the browser needs an ES module. Same source, two
+						targets.
 					</p>
 
 					{/* Diagram: one source → two outputs */}
@@ -73,7 +75,30 @@ export default function Tutorial() {
 					</div>
 
 					<p className="text-sm text-base-content/50 mt-4">
-						→ <code>compiler.js</code> · <code>registry.js</code>
+						→{" "}
+						<a
+							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/compiler.js"
+							target="_blank"
+							rel="noopener"
+							className="underline"
+						>
+							compiler.js
+						</a>{" "}
+						·{" "}
+						<a
+							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/registry.js"
+							target="_blank"
+							rel="noopener"
+							className="underline"
+						>
+							registry.js
+						</a>
+					</p>
+
+					<p className="text-sm text-base-content/60 mt-4">
+						Islands can import CSS too. The build extracts each island's styles
+						and injects them per-page — only CSS for islands actually rendered
+						on a given page gets included.
 					</p>
 				</div>
 			</section>
@@ -137,7 +162,15 @@ export default function Page() {
 					</div>
 
 					<p className="text-sm text-base-content/50 mt-4">
-						→ <code>build-plugins.js</code>
+						→{" "}
+						<a
+							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/buildPlugins.js"
+							target="_blank"
+							rel="noopener"
+							className="underline"
+						>
+							buildPlugins.js
+						</a>
 					</p>
 				</div>
 			</section>
@@ -152,12 +185,13 @@ export default function Page() {
 					</h2>
 
 					<p className="text-base-content max-w-2xl mb-4">
-						<code>renderToString()</code> walks the entire component tree in one
-						synchronous pass. When it hits the marker stub,{" "}
-						<code>renderMarker()</code> grabs the SSR module from the registry,
-						renders the island to HTML, and wraps it in a{" "}
-						<code>{"<castro-island>"}</code> custom element. The browser
-						receives pure HTML — the page renders before any JavaScript loads.
+						<code>renderToString()</code> traverses the entire component tree in
+						one synchronous pass — page, layout, and all. When it hits a
+						marker stub, <code>renderMarker()</code> looks up the pre-loaded
+						SSR module, renders the island to HTML, and wraps it in a{" "}
+						<code>{"<castro-island>"}</code> element. The HTML block below is
+						what that produces — the browser receives it before any JavaScript
+						loads.
 					</p>
 
 					<p className="text-sm text-base-content/70 border-l-4 border-primary pl-4 mb-6">
@@ -174,6 +208,9 @@ export default function Page() {
 								<span className="text-base-content/50">{`<!DOCTYPE html>
 <html>
   <head>
+    <script type="importmap">
+      { "imports": { "preact": "https://esm.sh/preact", ... } }
+    </script>
     <script type="module" src="/castro-island.js"></script>
   </head>
   <body>
@@ -200,7 +237,24 @@ export default function Page() {
 					</div>
 
 					<p className="text-sm text-base-content/50 mt-4">
-						→ <code>marker.js</code> · <code>render-page.js</code>
+						→{" "}
+						<a
+							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/marker.js"
+							target="_blank"
+							rel="noopener"
+							className="underline"
+						>
+							marker.js
+						</a>{" "}
+						·{" "}
+						<a
+							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/src/builder/renderPage.js"
+							target="_blank"
+							rel="noopener"
+							className="underline"
+						>
+							renderPage.js
+						</a>
 					</p>
 				</div>
 			</section>
@@ -210,20 +264,26 @@ export default function Page() {
 			{/* Summary */}
 			<section className="py-10 px-6 bg-base-200">
 				<div className="max-w-4xl mx-auto">
+					<h2 className="font-display text-3xl md:text-4xl text-primary mb-8">
+						Example OUTPUT
+					</h2>
 					<pre className="bg-base-300 border-2 border-base-content/10 p-6 overflow-x-auto text-sm leading-relaxed mb-8">
 						<code>{`dist/
 ├── index.html              ← static HTML with <castro-island> wrappers
 ├── islands/
 │   └── Counter-a1b2.js     ← client bundle, loaded on demand
-├── castro-island.js         ← hydration runtime (~60 lines)
-└── app.css                  ← styles`}</code>
+├── castro-island.js        ← hydration runtime (only if needed)
+└── app.css                 ← styles`}</code>
 					</pre>
 
 					<p className="font-display text-2xl text-primary italic mb-8">
 						HTML ships instantly. JavaScript loads on demand.
 					</p>
 
-					<a href="/tutorial/hydration" className="btn btn-outline btn-primary">
+					<a
+						href="/how-it-works/hydration"
+						className="btn btn-outline btn-primary"
+					>
 						Next: Hydration — how {"<castro-island>"} brings components to life
 						→
 					</a>

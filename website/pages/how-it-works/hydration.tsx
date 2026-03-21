@@ -59,7 +59,9 @@ export default function Hydration() {
 								<span className="badge badge-secondary mb-2">no:pasaran</span>
 								<p className="text-sm text-base-content/70">
 									Return immediately. No JavaScript loaded. The island stays as
-									static HTML forever.
+									static HTML forever. If every island on a page uses{" "}
+									<code>no:pasaran</code>, the build skips the runtime script
+									and import map entirely — the page ships zero JavaScript.
 								</p>
 							</div>
 							<div className="card card-bordered border-primary/30 bg-base-200 p-4">
@@ -69,7 +71,8 @@ export default function Hydration() {
 								<p className="text-sm text-base-content/70">
 									Wait for the element to enter the viewport via{" "}
 									<code>IntersectionObserver</code> (with a 100px buffer). Then
-									hydrate.
+									hydrate. This is the default — used when no directive is
+									specified.
 								</p>
 							</div>
 							<div className="card card-bordered border-accent/30 bg-base-200 p-4">
@@ -83,7 +86,15 @@ export default function Hydration() {
 					</div>
 
 					<p className="text-sm text-base-content/50 mt-4">
-						→ <code>hydration.js</code>
+						→{" "}
+						<a
+							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/hydration.js"
+							target="_blank"
+							rel="noopener"
+							className="underline"
+						>
+							hydration.js
+						</a>
 					</p>
 				</div>
 			</section>
@@ -98,12 +109,13 @@ export default function Hydration() {
 					</h2>
 
 					<p className="text-base-content max-w-2xl mb-8">
-						When it's time to hydrate, the element dynamically imports its
-						client bundle via the <code>import</code> attribute. The island
-						bundle stays small because it doesn't bundle the framework — an
-						import map in <code>{"<head>"}</code> maps bare specifiers to CDN
-						URLs. The browser loads the framework once and caches it across all
-						islands.
+						When it's time to hydrate, the element does{" "}
+						<code>{'await import(this.getAttribute("import"))'}</code> to load
+						its client bundle. The bundle contains a bare{" "}
+						<code>{'import("preact")'}</code> — no URL. The import map, injected
+						into the page's <code>{"<head>"}</code> by the build pipeline, is
+						what tells the browser where to fetch it. The framework loads from
+						the CDN and is cached across all islands on the page.
 					</p>
 
 					{/* Two-column: island bundle vs import map */}
@@ -153,7 +165,24 @@ export default async (container, props) => {
 					</div>
 
 					<p className="text-sm text-base-content/50 mt-4">
-						→ <code>compiler.js</code> · <code>writeHtmlPage.js</code>
+						→{" "}
+						<a
+							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/compiler.js"
+							target="_blank"
+							rel="noopener"
+							className="underline"
+						>
+							compiler.js
+						</a>{" "}
+						·{" "}
+						<a
+							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/src/builder/writeHtmlPage.js"
+							target="_blank"
+							rel="noopener"
+							className="underline"
+						>
+							writeHtmlPage.js
+						</a>
 					</p>
 				</div>
 			</section>
@@ -210,7 +239,24 @@ const props = propsJson ? JSON.parse(propsJson) : {};
 					</div>
 
 					<p className="text-sm text-base-content/50 mt-4">
-						→ <code>compiler.js</code> · <code>frameworks/preact.js</code>
+						→{" "}
+						<a
+							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/compiler.js"
+							target="_blank"
+							rel="noopener"
+							className="underline"
+						>
+							compiler.js
+						</a>{" "}
+						·{" "}
+						<a
+							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/frameworks/preact.js"
+							target="_blank"
+							rel="noopener"
+							className="underline"
+						>
+							frameworks/preact.js
+						</a>
 					</p>
 				</div>
 			</section>
@@ -236,7 +282,7 @@ const props = propsJson ? JSON.parse(propsJson) : {};
 						to life.
 					</p>
 
-					<a href="/tutorial" className="btn btn-outline btn-primary">
+					<a href="/how-it-works/build" className="btn btn-outline btn-primary">
 						← Back to The Build Pipeline
 					</a>
 				</div>
