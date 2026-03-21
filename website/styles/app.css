@@ -114,3 +114,13 @@
 .btn-sm {
 	font-weight: 500;
 }
+
+[data-theme="castro-dark"] .btn-ghost.btn-active {
+	--btn-bg: var(--color-base-300);
+	--btn-fg: var(--color-primary);
+}
+
+[data-theme="castro-dark"] .menu {
+	--menu-active-bg: var(--color-base-300);
+	--menu-active-fg: var(--color-primary);
+}

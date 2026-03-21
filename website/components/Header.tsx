@@ -1,20 +1,22 @@
-import { HomeIcon } from "./icons/HomeIcon.tsx";
 import ThemeToggle from "./ThemeToggle.island.tsx";
 
-export const Header = () => {
+export const Header = ({ activePath }: { activePath?: string }) => {
+	const isHowItWorks = activePath?.startsWith("/how-it-works");
+
 	return (
-		<header className="sticky top-0 z-50 bg-base-100 border-b-2 border-primary [--noise:0]">
-			<div className="max-w-6xl mx-auto px-6 h-12 flex items-center">
-				<a
-					href="/"
-					className="btn btn-ghost btn-sm mr-auto gap-1"
-					aria-label="Home"
-				>
-					<HomeIcon className="w-5 h-5" />
-					<span className="font-display text-lg leading-none translate-y-px">
-						CASTRO
-					</span>
+		<header className="navbar sticky top-0 z-50 bg-base-100 border-b-2 border-primary [--noise:0] min-h-12 px-6">
+			<div className="navbar-start">
+				<a href="/" className="btn btn-ghost btn-sm gap-1" aria-label="Home">
+					<span className="font-display text-lg leading-none">CASTRO</span>
 				</a>
+				<a
+					href="/how-it-works"
+					className={`btn btn-ghost btn-sm font-display text-sm ${isHowItWorks ? "btn-active" : ""}`}
+				>
+					HOW IT WORKS
+				</a>
+			</div>
+			<div className="navbar-end gap-2">
 				<ThemeToggle lenin:awake />
 			</div>
 		</header>

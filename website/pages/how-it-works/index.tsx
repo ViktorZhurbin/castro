@@ -1,6 +1,10 @@
 import type { PageMeta } from "@vktrz/castro";
 
-export const meta: PageMeta = { title: "Build Pipeline — Castro Tutorial" };
+export const meta: PageMeta = {
+	title: "Build Pipeline — Castro Tutorial",
+	layout: "docs",
+	path: "/how-it-works",
+};
 
 export default function Tutorial() {
 	return (
@@ -186,9 +190,9 @@ export default function Page() {
 
 					<p className="text-base-content max-w-2xl mb-4">
 						<code>renderToString()</code> traverses the entire component tree in
-						one synchronous pass — page, layout, and all. When it hits a
-						marker stub, <code>renderMarker()</code> looks up the pre-loaded
-						SSR module, renders the island to HTML, and wraps it in a{" "}
+						one synchronous pass — page, layout, and all. When it hits a marker
+						stub, <code>renderMarker()</code> looks up the pre-loaded SSR
+						module, renders the island to HTML, and wraps it in a{" "}
 						<code>{"<castro-island>"}</code> element. The HTML block below is
 						what that produces — the browser receives it before any JavaScript
 						loads.
@@ -284,8 +288,7 @@ export default function Page() {
 						href="/how-it-works/hydration"
 						className="btn btn-outline btn-primary"
 					>
-						Next: Hydration — how {"<castro-island>"} brings components to life
-						→
+						Next: Hydration →
 					</a>
 				</div>
 			</section>

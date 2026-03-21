@@ -1,6 +1,10 @@
 import type { PageMeta } from "@vktrz/castro";
 
-export const meta: PageMeta = { title: "Hydration — Castro Tutorial" };
+export const meta: PageMeta = {
+	title: "Hydration — Castro Tutorial",
+	layout: "docs",
+	path: "/how-it-works/hydration",
+};
 
 export default function Hydration() {
 	return (
@@ -282,7 +286,7 @@ const props = propsJson ? JSON.parse(propsJson) : {};
 						to life.
 					</p>
 
-					<a href="/how-it-works/build" className="btn btn-outline btn-primary">
+					<a href="/how-it-works" className="btn btn-outline btn-primary">
 						← Back to The Build Pipeline
 					</a>
 				</div>
