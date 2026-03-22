@@ -52,7 +52,6 @@
       "name": "website",
       "version": "1.0.0",
       "dependencies": {
-        "@preact/signals": "^2.8.1",
         "@vktrz/castro": "workspace:*",
         "@vktrz/castro-tailwind": "workspace:*",
         "daisyui": "^5.5.19",

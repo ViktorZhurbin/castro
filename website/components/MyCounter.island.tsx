@@ -1,11 +1,11 @@
-import { useSignal } from "@preact/signals";
+import { useState } from "preact/hooks";
 
 interface CounterProps {
 	initial?: number;
 }
 
 export const MyCounter = ({ initial = 0 }: CounterProps) => {
-	const count = useSignal(initial);
+	const [count, setCount] = useState(initial);
 
 	return (
 		<div className="card card-border border-base-300 card-sm bg-base-100">
@@ -17,21 +17,19 @@ export const MyCounter = ({ initial = 0 }: CounterProps) => {
 				<div className="card-actions">
 					<button
 						className="btn btn-secondary btn-sm"
-						onClick={() => count.value--}
+						onClick={() => setCount(count - 1)}
 					>
 						−
 					</button>
 					<button
 						className="btn btn-secondary btn-sm"
-						onClick={() => count.value++}
+						onClick={() => setCount(count + 1)}
 					>
 						+
 					</button>
 					<button
 						className="btn btn-outline btn-sm"
-						onClick={() => {
-							count.value = initial;
-						}}
+						onClick={() => setCount(initial)}
 					>
 						Reset
 					</button>

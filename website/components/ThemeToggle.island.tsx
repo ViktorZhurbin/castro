@@ -1,18 +1,17 @@
-import { useSignal } from "@preact/signals";
-import { useEffect } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { DARK, LIGHT, STORAGE_KEY } from "../lib/theme.ts";
 
 export const ThemeToggle = () => {
-	const dark = useSignal(false);
+	const [dark, setDark] = useState(false);
 
 	useEffect(() => {
 		const saved = localStorage.getItem(STORAGE_KEY);
-		dark.value = saved === DARK;
+		setDark(saved === DARK);
 	}, []);
 
 	const toggle = () => {
-		const next = dark.value ? LIGHT : DARK;
-		dark.value = !dark.value;
+		const next = dark ? LIGHT : DARK;
+		setDark(!dark);
 		document.documentElement.setAttribute("data-theme", next);
 		localStorage.setItem(STORAGE_KEY, next);
 	};
