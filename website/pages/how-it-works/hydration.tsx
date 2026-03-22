@@ -1,9 +1,11 @@
 import type { PageMeta } from "@vktrz/castro";
+import { Note } from "../../components/Note.tsx";
 
 export const meta: PageMeta = {
 	title: "Hydration — Castro Tutorial",
 	layout: "docs",
 	path: "/how-it-works/hydration",
+	section: "how-it-works",
 };
 
 export default function Hydration() {
@@ -209,11 +211,11 @@ export default async (container, props) => {
 						attaching event listeners to the existing DOM.
 					</p>
 
-					<p className="text-sm text-base-content/70 border-l-4 border-primary pl-4 mb-6">
+					<Note className="mb-6">
 						<code>hydrate()</code> is different from <code>render()</code> — it
 						reuses the server-rendered DOM nodes instead of replacing them. The
 						page never flashes or re-renders. It just becomes interactive.
-					</p>
+					</Note>
 
 					{/* The hydration sequence */}
 					<div className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto">

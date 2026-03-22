@@ -5,18 +5,40 @@ import { Header } from "../components/Header.tsx";
 interface Props {
 	title: string;
 	path?: string;
+	section?: SectionKey;
 	children: VNode;
 }
 
-const sidebarLinks = [
-	{ href: "/how-it-works", label: "Build Pipeline" },
-	{ href: "/how-it-works/hydration", label: "Hydration" },
-];
+type SectionKey = "how-it-works" | "guide";
+
+const sidebarSections: Record<
+	SectionKey,
+	{ title: string; links: { href: string; label: string }[] }
+> = {
+	"how-it-works": {
+		title: "HOW IT WORKS",
+		links: [
+			{ href: "/how-it-works", label: "Build Pipeline" },
+			{ href: "/how-it-works/hydration", label: "Hydration" },
+		],
+	},
+	guide: {
+		title: "GUIDE",
+		links: [
+			{ href: "/guide/quick-start", label: "Quick Start" },
+			{ href: "/guide/configuration", label: "Configuration" },
+			{ href: "/guide/multi-framework", label: "Multi-Framework" },
+			{ href: "/guide/plugins", label: "Plugins" },
+		],
+	},
+};
 
 const themeScript = `(function(){var t=localStorage.getItem("castro-theme");if(t)document.documentElement.setAttribute("data-theme",t)})()`;
 
 const DocsLayout = (props: Props) => {
-	const { title, path, children } = props;
+	const { title, path, section = "guide", children } = props;
+
+	const { title: sectionTitle, links } = sidebarSections[section];
 
 	return (
 		<html lang="en">
@@ -32,8 +54,8 @@ const DocsLayout = (props: Props) => {
 					crossOrigin="anonymous"
 				/>
 				<link
-					href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&family=Bebas+Neue&display=swap"
 					rel="stylesheet"
+					href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&family=Bebas+Neue&display=swap"
 				/>
 			</head>
 			<body>
@@ -73,9 +95,9 @@ const DocsLayout = (props: Props) => {
 						/>
 						<ul className="menu bg-base-200 min-h-full w-56 p-4 pt-6">
 							<li className="menu-title font-display text-primary">
-								HOW IT WORKS
+								{sectionTitle}
 							</li>
-							{sidebarLinks.map((link) => (
+							{links.map((link) => (
 								<li key={link.href}>
 									<a
 										href={link.href}

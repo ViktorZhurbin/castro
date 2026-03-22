@@ -30,14 +30,17 @@ export default function Home() {
 							"The satire is optional. The knowledge is real."
 						</p>
 						<div className="flex flex-wrap gap-4 justify-center">
-							<a href="/how-it-works" className="btn btn-lg btn-primary">
+							<a href="/guide/quick-start" className="btn btn-lg btn-primary">
+								GET STARTED
+							</a>
+							<a href="/how-it-works" className="btn btn-lg btn-outline btn-primary">
 								HOW IT WORKS
 							</a>
 							<a
 								href="https://github.com/ViktorZhurbin/castro"
 								target="_blank"
 								rel="noopener"
-								className="btn btn-lg btn-outline btn-primary"
+								className="btn btn-lg btn-ghost"
 							>
 								VIEW SOURCE
 							</a>

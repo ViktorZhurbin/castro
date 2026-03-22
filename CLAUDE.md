@@ -188,10 +188,14 @@ Demo site that consumes castro. Uses Tailwind CSS v4 + DaisyUI v5 via `@vktrz/ca
 **Key files**:
 - `styles/app.css` — Tailwind + DaisyUI config, both custom theme definitions, `font-display`/`font-sans` theme
 - `layouts/default.tsx` — HTML shell, Google Fonts (Bebas Neue + PT Sans), ThemeToggle island
+- `layouts/docs.tsx` — docs layout with DaisyUI drawer sidebar; section-aware via `sidebarSections` map keyed by `"how-it-works"` / `"guide"`
+- `components/Header.tsx` — sticky navbar; GUIDE and HOW IT WORKS links go active when `activePath` starts with `/guide` or `/how-it-works`
 - `components/DirectiveCard.tsx` — card with explicit color map (avoids dynamic Tailwind class interpolation)
 - `components/MyCounter.island.tsx` — Preact counter demonstrating `no:pasaran` and `lenin:awake`
 - `components/solid/SolidCounter.island.tsx` — Solid counter demonstrating `comrade:visible` (multi-framework)
 - `components/ThemeToggle.island.tsx` — `lenin:awake` island, DaisyUI swap + theme-controller
+
+**Docs pages** (`how-it-works/`, `guide/`): each exports a `meta` with `layout: "docs"`, `path: "<exact-url>"`, and `section: "<section-key>"`. The `path` field drives sidebar active highlighting and header active state — **update it if a page's URL changes**. The `section` field selects which sidebar group is shown (`"how-it-works"` or `"guide"`).
 
 **DaisyUI reference**: `.claude/docs/daisyui-llms.txt`
 

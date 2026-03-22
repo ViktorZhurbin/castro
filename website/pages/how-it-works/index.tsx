@@ -1,9 +1,11 @@
 import type { PageMeta } from "@vktrz/castro";
+import { Note } from "../../components/Note.tsx";
 
 export const meta: PageMeta = {
 	title: "Build Pipeline — Castro Tutorial",
 	layout: "docs",
 	path: "/how-it-works",
+	section: "how-it-works",
 };
 
 export default function Tutorial() {
@@ -99,11 +101,11 @@ export default function Tutorial() {
 						</a>
 					</p>
 
-					<p className="text-sm text-base-content/60 mt-4">
+					<Note className="mt-4">
 						Islands can import CSS too. The build extracts each island's styles
 						and injects them per-page — only CSS for islands actually rendered
 						on a given page gets included.
-					</p>
+					</Note>
 				</div>
 			</section>
 
@@ -198,12 +200,12 @@ export default function Page() {
 						loads.
 					</p>
 
-					<p className="text-sm text-base-content/70 border-l-4 border-primary pl-4 mb-6">
+					<Note className="mb-6">
 						The <code>{"<castro-island>"}</code> custom element wraps
 						server-rendered HTML. The <code>import</code> attribute points to
 						the client JS bundle. The <code>directive</code> attribute controls
 						when it hydrates.
-					</p>
+					</Note>
 
 					{/* HTML output with highlighted island */}
 					<div className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto">
