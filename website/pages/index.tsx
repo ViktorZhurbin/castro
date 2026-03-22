@@ -33,7 +33,10 @@ export default function Home() {
 							<a href="/guide/quick-start" className="btn btn-lg btn-primary">
 								GET STARTED
 							</a>
-							<a href="/how-it-works" className="btn btn-lg btn-outline btn-primary">
+							<a
+								href="/how-it-works"
+								className="btn btn-lg btn-outline btn-primary"
+							>
 								HOW IT WORKS
 							</a>
 							<a

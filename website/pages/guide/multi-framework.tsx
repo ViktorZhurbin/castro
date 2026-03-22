@@ -197,8 +197,8 @@ export default function Page() {
 						5. ADDING A NEW FRAMEWORK
 					</h2>
 					<p className="text-base-content mb-4">
-						Register a custom framework by providing a <code>frameworkConfig</code>{" "}
-						on your plugin:
+						Register a custom framework by providing a{" "}
+						<code>frameworkConfig</code> on your plugin:
 					</p>
 					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-6">
 						<code>{`// castro.config.js

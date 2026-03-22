@@ -84,8 +84,8 @@ bun add @vktrz/castro`}</code>
 						3. PROJECT STRUCTURE
 					</h2>
 					<p className="text-base-content mb-6">
-						Castro follows a convention-over-configuration structure. There is no
-						required config file — create the directories and start building.
+						Castro follows a convention-over-configuration structure. There is
+						no required config file — create the directories and start building.
 					</p>
 					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed">
 						<code>{`my-site/
@@ -152,8 +152,8 @@ export default function DefaultLayout({ title, children }: Props) {
 						5. CREATE A PAGE
 					</h2>
 					<p className="text-base-content mb-4">
-						Pages live in <code>pages/</code>. Both{" "}
-						<code>.tsx</code> and <code>.md</code> files are supported.
+						Pages live in <code>pages/</code>. Both <code>.tsx</code> and{" "}
+						<code>.md</code> files are supported.
 					</p>
 
 					<Note className="mb-6">
@@ -291,10 +291,7 @@ export default function Home() {
 					</ul>
 					<p className="text-sm text-base-content/60">
 						See{" "}
-						<a
-							href="/how-it-works/hydration"
-							className="underline"
-						>
+						<a href="/how-it-works/hydration" className="underline">
 							Hydration
 						</a>{" "}
 						for a deep-dive on how each directive works at runtime.
@@ -331,10 +328,16 @@ bun run build    # production build → dist/`}</code>
 						WHAT'S NEXT
 					</h2>
 					<div className="flex flex-wrap gap-4">
-						<a href="/guide/configuration" className="btn btn-outline btn-primary">
+						<a
+							href="/guide/configuration"
+							className="btn btn-outline btn-primary"
+						>
 							Configuration →
 						</a>
-						<a href="/guide/multi-framework" className="btn btn-outline btn-primary">
+						<a
+							href="/guide/multi-framework"
+							className="btn btn-outline btn-primary"
+						>
 							Multi-Framework →
 						</a>
 						<a href="/guide/plugins" className="btn btn-outline btn-primary">

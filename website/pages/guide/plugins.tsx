@@ -55,9 +55,9 @@ export default function Plugins() {
 							<p className="text-base-content mb-2">
 								Called once per page render. Returns an array of{" "}
 								<code>Asset</code> objects to inject into the page's{" "}
-								<code>{"<head>"}</code>. Receives <code>needsHydration</code>{" "}
-								so plugins can conditionally inject assets only on pages that
-								use interactive islands.
+								<code>{"<head>"}</code>. Receives <code>needsHydration</code> so
+								plugins can conditionally inject assets only on pages that use
+								interactive islands.
 							</p>
 						</div>
 
@@ -258,10 +258,7 @@ export function tailwind({ input }) {
 						>
 							← Multi-Framework
 						</a>
-						<a
-							href="/how-it-works"
-							className="btn btn-outline btn-primary"
-						>
+						<a href="/how-it-works" className="btn btn-outline btn-primary">
 							How It Works →
 						</a>
 					</div>
