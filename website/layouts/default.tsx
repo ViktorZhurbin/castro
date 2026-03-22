@@ -1,13 +1,12 @@
 import type { VNode } from "preact";
 import { Footer } from "../components/Footer.tsx";
 import { Header } from "../components/Header.tsx";
+import { ThemeScript } from "../components/ThemeScript.tsx";
 
 interface Props {
 	title: string;
 	children: VNode;
 }
-
-const themeScript = `(function(){var t=localStorage.getItem("castro-theme");if(t)document.documentElement.setAttribute("data-theme",t)})()`;
 
 const DefaultLayout = (props: Props) => {
 	const { title, children } = props;
@@ -18,7 +17,7 @@ const DefaultLayout = (props: Props) => {
 				<meta charSet="UTF-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 				<title>{title}</title>
-				<script dangerouslySetInnerHTML={{ __html: themeScript }} />
+				<ThemeScript />
 				<link rel="preconnect" href="https://fonts.googleapis.com" />
 				<link
 					rel="preconnect"

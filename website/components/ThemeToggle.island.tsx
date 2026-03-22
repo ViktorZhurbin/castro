@@ -1,9 +1,6 @@
 import { useSignal } from "@preact/signals";
 import { useEffect } from "preact/hooks";
-
-const STORAGE_KEY = "castro-theme";
-const LIGHT = "castro-light";
-const DARK = "castro-dark";
+import { DARK, LIGHT, STORAGE_KEY } from "../lib/theme.ts";
 
 export const ThemeToggle = () => {
 	const dark = useSignal(false);
