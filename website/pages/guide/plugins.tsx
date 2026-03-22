@@ -27,7 +27,7 @@ export default function Plugins() {
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
-						1. THE CASTROPLUGIN INTERFACE
+						1. THE CastroPlugin INTERFACE
 					</h2>
 					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-6">
 						<code>{`type CastroPlugin = {
@@ -41,7 +41,7 @@ export default function Plugins() {
 
 					<div className="space-y-6">
 						<div>
-							<h3 className="font-display text-xl text-primary mb-2">NAME</h3>
+							<h3 className="font-mono text-lg text-primary mb-2">name</h3>
 							<p className="text-base-content">
 								Required. A unique identifier for the plugin, used in error
 								messages.
@@ -49,33 +49,36 @@ export default function Plugins() {
 						</div>
 
 						<div>
-							<h3 className="font-display text-xl text-primary mb-2">
-								GETPAGEASSETS
+							<h3 className="font-mono text-lg text-primary mb-2">
+								getPageAssets
 							</h3>
 							<p className="text-base-content mb-2">
 								Called once per page render. Returns an array of{" "}
 								<code>Asset</code> objects to inject into the page's{" "}
 								<code>{"<head>"}</code>. Receives <code>needsHydration</code> so
 								plugins can conditionally inject assets only on pages that use
-								interactive islands.
+								interactive islands — see{" "}
+								<a href="/how-it-works/hydration" className="underline">
+									Hydration
+								</a>{" "}
+								for how Castro decides which pages need client JS.
 							</p>
 						</div>
 
 						<div>
-							<h3 className="font-display text-xl text-primary mb-2">
-								ONPAGEBUILD
+							<h3 className="font-mono text-lg text-primary mb-2">
+								onPageBuild
 							</h3>
 							<p className="text-base-content">
-								Called before pages are built (and on every page save in dev
-								mode). Use this for preprocessing steps like compiling CSS,
-								copying static assets, or generating data files.
+								Called before pages are built. In dev mode, runs on every file
+								change (page, layout, or component). Use this for preprocessing
+								steps like compiling CSS, copying static assets, or generating
+								data files.
 							</p>
 						</div>
 
 						<div>
-							<h3 className="font-display text-xl text-primary mb-2">
-								WATCHDIRS
-							</h3>
+							<h3 className="font-mono text-lg text-primary mb-2">watchDirs</h3>
 							<p className="text-base-content">
 								An array of directories (relative to project root) to watch in
 								dev mode. When any file in a watched directory changes,{" "}
@@ -84,8 +87,8 @@ export default function Plugins() {
 						</div>
 
 						<div>
-							<h3 className="font-display text-xl text-primary mb-2">
-								FRAMEWORKCONFIG
+							<h3 className="font-mono text-lg text-primary mb-2">
+								frameworkConfig
 							</h3>
 							<p className="text-base-content">
 								Registers a custom island framework. See{" "}
@@ -214,7 +217,7 @@ export function tailwind({ input }) {
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
-						4. THE ASSET TYPE
+						4. THE Asset TYPE
 					</h2>
 					<p className="text-base-content mb-4">
 						<code>getPageAssets()</code> returns <code>Asset[]</code>. An asset
@@ -237,7 +240,10 @@ export function tailwind({ input }) {
 // Structured tag with content: produces <script>...</script>
 { tag: "script", content: "console.log('hello')" }
 
-// Boolean attr: produces <script type="module" defer>
+// Inline style: produces <style>...</style>
+{ tag: "style", content: ":root { --brand: red }" }
+
+// Boolean attr: produces <script type="module" defer src="/app.js">
 { tag: "script", attrs: { type: "module", defer: true, src: "/app.js" } }
 
 // Raw string: injected as-is (useful for frameworks like Solid

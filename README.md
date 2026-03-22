@@ -7,7 +7,7 @@ Castro is a working Static Site Generator that implements island architecture in
 **Learn by reading code, not documentation.**
 
 > [!NOTE]
-> Castro requires Bun 1.3.8+ to be installed on your env - [instructions](https://bun.com/docs/installation)
+> Castro requires [Bun](https://bun.sh) 1.3.8+
 
 ## What Is This?
 
@@ -15,217 +15,73 @@ Island architecture is how modern frameworks (Astro, Marko, Fresh, Qwik) achieve
 
 Castro shows you exactly how this works by implementing it from scratch.
 
-In essence, Castro splits the render tree **at build time** into:
-1. static HTML
-2. interactive islands (pre-rendered + hydrated on demand)
-
-## What You'll Learn
-
-Reading through Castro's codebase, you'll understand:
-
-- **Island Architecture** - How to selectively hydrate components
-- **SSR/SSG** - Build-time vs runtime rendering strategies
-- **Progressive Enhancement** - Static HTML first, JavaScript on demand
-- **Web Components** - Using custom elements as hydration boundaries
-- **Build Tools** - How Bun's bundler compilation pipelines work
-- **Dev Servers** - File watching, live reload via SSE
-- **Plugin Systems** - Extensible architecture patterns
-
-The code is extensively commented to explain not just *what* it does, but *why* and *how*.
-
 ## Quick Start
 
 ```bash
+mkdir my-site && cd my-site
+bun init -y
 bun add @vktrz/castro preact
 ```
 
-**Project structure:**
-```
-my-site/
-├── pages/             # Your content (.md, .jsx, .tsx)
-│   └── index.md
-├── layouts/           # Page layouts (.jsx, .tsx)
-│   └── default.jsx
-└── components/        # Components (.jsx, .tsx)
-    └── Button.jsx
-    └── Button.island.jsx
-```
+Create a page (`pages/index.tsx`):
 
-**Component types:**
-- By default, all `.{jsx,tsx}` files are static UI components, server-side only, no JS shipped to client
-- Use `.island` suffix for when you need client-side interactivity, eg: `ComponentName.island.{jsx,tsx}`
-
-**Multi-framework islands:**
-- Islands use Preact by default (the `framework` value in `castro.config.js`)
-- Place islands in a framework-named subdirectory for other frameworks: `components/solid/Counter.island.tsx`
-- Different frameworks can coexist on the same page — each island is compiled and hydrated independently
-
-**Custom import map** (optional — in `castro.config.js`):
-
-Islands load framework dependencies from CDN via [import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap). You can extend or override the built-in CDN URLs:
-
-```js
-export default {
-  importMap: {
-    // Override a framework's default CDN
-    "preact": "https://cdn.jsdelivr.net/npm/preact/+esm",
-    // Add a shared library — loaded from CDN instead of bundled per-island
-    "three": "https://esm.sh/three",
-  }
-}
-```
-
-Import map entries are automatically excluded from island bundles. Without an import map entry, dependencies are bundled into each island that uses them.
-
-**Add scripts to package.json:**
-```json
-{
-  "scripts": {
-    "dev": "castro",
-    "build": "castro build"
-  }
-}
-```
-
-**Create a layout** (`layouts/default.jsx`):
-```jsx
-export default ({ title, children }) => (
-  <html>
-    <head>
-      <title>{title}</title>
-    </head>
-    <body>{children}</body>
-  </html>
-);
-```
-
-**Create a page** (`pages/index.md`):
-```markdown
----
-title: My Site
----
-
-# Hello World
-
-This is static HTML. Fast to load, no JavaScript needed.
-```
-
-**Create reusable components** (`components/Button.jsx`):
-```jsx
-export function Button({ href, children }) {
-  return <a href={href} className="btn">{children}</a>;
-}
-```
-
-Import components in pages, layouts, or islands:
-```jsx
-import { Button } from "../components/Button.jsx";
-
-export default function Home() {
-  return (
-    <div>
-      <Button href="/about">Learn More</Button>
-    </div>
-  );
-}
-```
-
-**Add an island** (`counter.island.tsx`):
 ```tsx
-import { useSignal } from "@preact/signals";
-
-export default function Counter({ initialCount = 0 }) {
-  const count = useSignal(initial);
-  return <button onClick={() => count.value++}>{count}</button>;
+export default function Home() {
+  return <h1>Hello, world!</h1>;
 }
 ```
 
-**Use the island** in any `.jsx`/`.tsx` file:
-```jsx
-<Counter initialCount={5} />
+```bash
+bun castro dev    # → http://localhost:3000
+bun castro build  # → dist/
 ```
 
-Run `bun run dev` and visit `http://localhost:3000`.
-
-## The Revolutionary Directives
-
-While learning, you get communist-themed hydration directives:
-
-- **`comrade:visible`** - Hydrate when scrolled into view (default)
-  *"Only work when the people are watching"*
-
-- **`lenin:awake`** - Hydrate immediately on page load
-  *"The leader is always ready"*
-
-- **`no:pasaran`** - Static render only, no JavaScript shipped
-  *"They shall not pass (to the client)"*
-
-These map to standard island patterns. The names just make them more memorable while learning.
-
-Example usage:
-```jsx
-<Counter lenin:awake initialCount={6} />
-```
+See the [Quick Start guide](https://castro-web.pages.dev/guide/quick-start) for the full walkthrough — layouts, islands, directives, and more.
 
 ## How It Works
 
-1. **Build time**: Castro compiles your pages and islands
-   - Pages → HTML
-   - Islands have separate JS bundles
-   - Islands are wrapped into an internal <castro-island> custom component which handles hydration (loads component's JS, makes it interactive) on the client
+1. **Build time** — pages compile to static HTML, islands get separate JS bundles
+2. **Browser receives** — pure HTML, no JavaScript executed yet
+3. **Hydration triggers** — based on directive (`comrade:visible`, `lenin:awake`, or `no:pasaran`)
+4. **Island loads** — JavaScript downloaded, component becomes interactive
 
-2. **Browser receives**: Pure HTML
-   - Page loads instantly
-   - No JavaScript executed yet
-
-3. **Hydration triggers**: Based on directive
-   - `comrade:visible`: (default) When scrolled into viewport
-   - `lenin:awake`: Immediately
-   - `no:pasaran`: Never (stays static)
-
-4. **Island loads**: JavaScript downloaded and component becomes interactive
-
-Result: Fast initial page load, progressive enhancement, minimal JavaScript.
-
-## Why "Castro"?
-
-Because learning complex architectural patterns should be memorable. The communist satire is a wrapper around serious educational code.
-
-The framework is real. The performance benefits are real. The puns just make it stick while you read the implementation.
-
-## Project Status
-
-Castro is an educational project. It's a real, working framework that you can use, but the primary goal is teaching. Use it to:
-
-- Learn how island architecture works internally
-- Understand modern SSG compilation pipelines
-- See Web Components as hydration boundaries
-- Study a complete but minimal build tool
-
-You can use it for small websites, personal blogs, etc. For larger projects with higher risks, consider [Astro](https://astro.build), [Fresh](https://fresh.deno.dev), or another framework of your liking.
+See [How It Works](https://castro-web.pages.dev/how-it-works) for the full build pipeline and hydration deep-dive.
 
 ## Documentation
 
-The code is the documentation. Start reading from:
+**Website:** [castro-web.pages.dev](https://castro-web.pages.dev)
 
-- `castro/src/cli.js` - Entry point
-- `castro/src/builder/` - Build orchestration
-- `castro/src/islands/` - Island architecture implementation
-- `castro/src/dev/server.js` - Development server
+- [Quick Start](https://castro-web.pages.dev/guide/quick-start) — install, project structure, first island
+- [Configuration](https://castro-web.pages.dev/guide/configuration) — `castro.config.js` reference
+- [Multi-Framework](https://castro-web.pages.dev/guide/multi-framework) — Preact + Solid on the same page
+- [Plugins](https://castro-web.pages.dev/guide/plugins) — the `CastroPlugin` interface, Tailwind example
+- [The Build Pipeline](https://castro-web.pages.dev/how-it-works) — compilation, interception, rendering
+- [Hydration](https://castro-web.pages.dev/how-it-works/hydration) — the `<castro-island>` custom element
 
-Every file has comments explaining the implementation.
+**Reading the source:** every file has comments explaining the implementation.
+
+- `castro/src/cli.js` — entry point
+- `castro/src/builder/` — build orchestration
+- `castro/src/islands/` — island architecture implementation
+- `castro/src/dev/server.js` — development server
+
+## Why "Castro"?
+
+Because learning complex architectural patterns should be memorable. The communist satire is a wrapper around serious educational code. The framework is real. The performance benefits are real. The puns just make it stick.
+
+## Project Status
+
+Castro is an educational project — a real, working framework, but the primary goal is teaching. Use it for small websites, personal blogs, or to learn how island architecture works internally.
+
+For production projects, consider [Astro](https://astro.build), [Fresh](https://fresh.deno.dev), or another framework of your liking.
 
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Requirements
-
-- Bun 1.3.8+
-
 ## License
 
-MIT - The people's license
+MIT — The people's license
 
 ---
 

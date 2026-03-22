@@ -164,8 +164,13 @@ export default async (container, props) => {
 </script>`}</code>
 							</pre>
 							<p className="text-xs text-base-content/50 mt-2">
-								Injected into every page that uses islands. The browser resolves
-								bare specifiers to CDN URLs.
+								Injected into every page that uses islands. Framework defaults
+								are merged with any entries from{" "}
+								<a href="/guide/configuration" className="underline">
+									importMap
+								</a>{" "}
+								in your config (user entries win on conflict). The browser
+								resolves bare specifiers to CDN URLs.
 							</p>
 						</div>
 					</div>
@@ -288,9 +293,17 @@ const props = propsJson ? JSON.parse(propsJson) : {};
 						to life.
 					</p>
 
-					<a href="/how-it-works" className="btn btn-outline btn-primary">
-						← Back to The Build Pipeline
-					</a>
+					<div className="flex flex-wrap gap-4">
+						<a href="/how-it-works" className="btn btn-outline btn-primary">
+							← Back to The Build Pipeline
+						</a>
+						<a
+							href="/guide/quick-start"
+							className="btn btn-outline btn-primary"
+						>
+							Quick Start Guide →
+						</a>
+					</div>
 				</div>
 			</section>
 		</>

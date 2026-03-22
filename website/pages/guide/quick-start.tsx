@@ -241,7 +241,7 @@ export default function Home() {
   return (
     <div>
       <h1>My Site</h1>
-      <Counter initial={5} comrade:visible />
+      <Counter initial={5} />
     </div>
   );
 }`}</code>
@@ -289,6 +289,10 @@ export default function Home() {
 							</span>
 						</li>
 					</ul>
+					<p className="text-base-content mb-4">
+						If you don't specify a directive, <code>comrade:visible</code> is
+						used automatically — the island in section 6 above uses the default.
+					</p>
 					<p className="text-sm text-base-content/60">
 						See{" "}
 						<a href="/how-it-works/hydration" className="underline">

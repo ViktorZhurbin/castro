@@ -286,12 +286,20 @@ export default function Page() {
 						HTML ships instantly. JavaScript loads on demand.
 					</p>
 
-					<a
-						href="/how-it-works/hydration"
-						className="btn btn-outline btn-primary"
-					>
-						Next: Hydration →
-					</a>
+					<div className="flex flex-wrap gap-4">
+						<a
+							href="/how-it-works/hydration"
+							className="btn btn-outline btn-primary"
+						>
+							Next: Hydration →
+						</a>
+						<a
+							href="/guide/quick-start"
+							className="btn btn-outline btn-primary"
+						>
+							Quick Start Guide →
+						</a>
+					</div>
 				</div>
 			</section>
 		</>

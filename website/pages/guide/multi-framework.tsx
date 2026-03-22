@@ -91,19 +91,40 @@ export default function Page() {
 					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
 						3. WHAT HAPPENS UNDER THE HOOD
 					</h2>
-					<p className="text-base-content mb-4">
-						During island discovery, the registry resolves each island's
-						framework by checking its file path against known framework
-						directories. It then calls <code>loadFrameworkConfig(id)</code> to
-						load and cache the config before any rendering starts. At render
-						time, <code>renderMarker()</code> calls the cached{" "}
-						<code>renderSSR()</code> function for that specific framework — both
-						Preact's <code>renderToString</code> and Solid's{" "}
-						<code>renderToString</code> produce static HTML, wrapped in the same{" "}
-						<code>{"<castro-island>"}</code> element. The client bundle for each
-						island calls its own framework's <code>hydrate()</code>.
+					<ul className="space-y-3 text-base-content">
+						<li>
+							<strong>Discovery</strong> — the registry checks each island's
+							file path against known framework directories to resolve its
+							framework ID.
+						</li>
+						<li>
+							<strong>Config loading</strong> —{" "}
+							<code>loadFrameworkConfig(id)</code> loads and caches the config
+							before any rendering starts.
+						</li>
+						<li>
+							<strong>SSR</strong> — <code>renderMarker()</code> calls the
+							cached <code>renderSSR()</code> for that framework. Both Preact
+							and Solid produce static HTML, wrapped in the same{" "}
+							<code>{"<castro-island>"}</code> element.
+						</li>
+						<li>
+							<strong>Client hydration</strong> — each island's client bundle
+							calls its own framework's <code>hydrate()</code>.
+						</li>
+					</ul>
+					<p className="text-base-content text-sm mt-4">
+						For more on how islands compile and hydrate, see{" "}
+						<a href="/how-it-works" className="underline">
+							The Build Pipeline
+						</a>{" "}
+						and{" "}
+						<a href="/how-it-works/hydration" className="underline">
+							Hydration
+						</a>
+						.
 					</p>
-					<p className="text-sm text-base-content/50">
+					<p className="text-sm text-base-content/50 mt-2">
 						→{" "}
 						<a
 							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/frameworkConfig.js"
@@ -141,7 +162,7 @@ export default function Page() {
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
-						4. THE FRAMEWORKCONFIG INTERFACE
+						4. THE FrameworkConfig INTERFACE
 					</h2>
 					<p className="text-base-content mb-6">
 						To add a framework (via plugin or a built-in file in{" "}

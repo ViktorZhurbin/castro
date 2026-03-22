@@ -27,7 +27,7 @@ export default function Configuration() {
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
-						CASTRO CONFIG
+						Castro Config
 					</h2>
 					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-4">
 						<code>{`// castro.config.js
@@ -58,8 +58,8 @@ export default {
 			{/* port */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-4">
-						PORT
+					<h2 className="font-mono text-2xl md:text-3xl text-primary mb-4">
+						port
 					</h2>
 					<p className="text-base-content mb-2">
 						<code>port?: number</code> — default: <code>3000</code>
@@ -76,8 +76,8 @@ export default {
 			{/* messages */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-4">
-						MESSAGES
+					<h2 className="font-mono text-2xl md:text-3xl text-primary mb-4">
+						messages
 					</h2>
 					<p className="text-base-content mb-2">
 						<code>{'messages?: "satirical" | "serious"'}</code> — default:{" "}
@@ -96,8 +96,8 @@ export default {
 			{/* framework */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-4">
-						FRAMEWORK
+					<h2 className="font-mono text-2xl md:text-3xl text-primary mb-4">
+						framework
 					</h2>
 					<p className="text-base-content mb-2">
 						<code>framework?: string</code> — default: <code>"preact"</code>
@@ -123,8 +123,8 @@ export default {
 			{/* plugins */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-4">
-						PLUGINS
+					<h2 className="font-mono text-2xl md:text-3xl text-primary mb-4">
+						plugins
 					</h2>
 					<p className="text-base-content mb-2">
 						<code>plugins?: CastroPlugin[]</code> — default: <code>[]</code>
@@ -150,8 +150,8 @@ export default {
 			{/* importMap */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-4">
-						IMPORTMAP
+					<h2 className="font-mono text-2xl md:text-3xl text-primary mb-4">
+						importMap
 					</h2>
 					<p className="text-base-content mb-2">
 						<code>{"importMap?: Record<string, string>"}</code> — default:{" "}
