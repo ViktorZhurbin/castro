@@ -189,6 +189,11 @@ async function compileIslandSSR({ sourcePath, frameworkId }) {
 			entrypoints: [sourcePath],
 			format: "esm",
 			target: "bun",
+			// Externalize all packages — SSR runs in Bun, so node_modules
+			// are resolved at runtime, not bundled. Same approach as page
+			// compilation in compileJsx.js. Framework getBuildConfig() only
+			// needs to specify externals for the client (browser) build.
+			packages: "external",
 			define: {
 				"process.env.NODE_ENV": JSON.stringify("production"),
 			},

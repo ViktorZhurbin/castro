@@ -211,6 +211,15 @@ test("user import map entries are absent from static pages", async () => {
 	expect(html).not.toContain("custom-lib");
 });
 
+// ------ User importMap → external (signals via config, not built-in) ------
+
+test("user importMap entries are treated as external in island bundles", async () => {
+	const html = await readHtml("visible.html");
+	// @preact/signals is in the import map (added via castro.config.js, not built-in)
+	expect(html).toContain('"@preact/signals"');
+	expect(html).toContain("esm.sh/@preact/signals");
+});
+
 // ------ Solid-only page ------
 
 test("solid-only page renders SSR content", async () => {
