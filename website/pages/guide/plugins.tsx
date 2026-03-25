@@ -78,7 +78,9 @@ export default function Plugins() {
 						</div>
 
 						<div>
-							<h3 className="font-mono text-lg text-secondary mb-2">watchDirs</h3>
+							<h3 className="font-mono text-lg text-secondary mb-2">
+								watchDirs
+							</h3>
 							<p className="text-base-content">
 								An array of directories (relative to project root) to watch in
 								dev mode. When any file in a watched directory changes,{" "}

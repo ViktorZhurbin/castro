@@ -12,11 +12,11 @@ export default function NotFound() {
 					<div className="w-32 h-32 mx-auto mb-10 text-primary">
 						<StarIcon />
 					</div>
-					<h1 className="font-display text-9xl text-primary">
-						404
-					</h1>
+					<h1 className="font-display text-9xl text-primary">404</h1>
 					<div className="divider divider-primary max-w-xs mx-auto" />
-					<h2 className="font-display text-4xl mb-8 text-secondary">PAGE NOT FOUND</h2>
+					<h2 className="font-display text-4xl mb-8 text-secondary">
+						PAGE NOT FOUND
+					</h2>
 					<p className="text-lg font-bold mb-10 text-base-content">
 						This page has been redacted by the Ministry of Truth.
 						<br />

@@ -4,6 +4,7 @@ const cardStyles = {
 	neutral: { card: "border-base-content/40", title: "text-base-content" },
 	primary: { card: "border-primary", title: "text-primary" },
 	secondary: { card: "border-secondary", title: "text-secondary" },
+	accent: { card: "border-accent", title: "text-accent" },
 } as const;
 
 interface DirectiveCardProps {
