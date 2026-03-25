@@ -7,6 +7,7 @@
 	"dependencies": {
 		"@tailwindcss/postcss": "^4",
 		"@vktrz/castro": "workspace:*",
-		"postcss": "^8"
+		"postcss": "^8",
+		"tailwindcss": "^4"
 	}
 }

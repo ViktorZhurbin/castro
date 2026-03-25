@@ -12,7 +12,8 @@
 		"@vktrz/castro": "workspace:*",
 		"@vktrz/castro-tailwind": "workspace:*",
 		"daisyui": "^5.5.19",
-		"preact": "^10.28.2"
+		"preact": "^10.28.2",
+		"tailwindcss": "^4"
 	},
 	"devDependencies": {
 		"typescript": "^5.9.3"
