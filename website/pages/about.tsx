@@ -4,27 +4,33 @@ export const meta: PageMeta = { title: "About — Castro" };
 
 export default function About() {
 	return (
-		<section className="pt-16 pb-10 px-6 bg-base-100">
+		<section className="py-24 px-6 bg-base-200">
 			<div className="max-w-3xl mx-auto">
-				<h1 className="font-display text-5xl md:text-7xl text-primary mb-8">
+				<h1 className="font-display text-5xl md:text-7xl text-primary">
 					ABOUT
 				</h1>
+				<div className="divider divider-primary max-w-xs" />
+				<h2 className="font-display text-2xl md:text-3xl text-secondary mb-8">
+					WHY IT EXISTS
+				</h2>
 
 				<p className="text-base-content mb-6">
-					Castro is a working Static Site Generator that implements island
-					architecture in ~1,300 lines of well-commented, readable code. Island
-					architecture is how modern frameworks like Astro, Marko, and Fresh
-					achieve great performance — instead of shipping JavaScript for your
-					entire page, you selectively hydrate only the interactive components.
-					The rest stays as static HTML. Castro shows you exactly how this works
-					by implementing it from scratch.
+					Existing static site generators felt like they were either too
+					implicit or too heavy. The gap between "I want a fast static site" and
+					"I want to understand how island architecture actually works" had no
+					good answer — so Castro started as a learning project that became a
+					working framework.
 				</p>
 
-				<p className="text-base-content mb-8">
-					The communist theme makes it memorable. The architecture lessons are
-					real. Every file in the codebase has comments explaining not just{" "}
-					<em>what</em> it does, but <em>why</em> and <em>how</em>. The goal is
-					to learn by reading code, not documentation.
+				<p className="text-base-content mb-10">
+					Every design decision traces back to a specific frustration. JSX and
+					TypeScript everywhere, because implicit template magic obscures what's
+					happening. ~1,300 lines total, because a codebase you can read in an
+					afternoon teaches more than one you have to trust.
+				</p>
+
+				<p className="text-base-content mb-10">
+					The communist theme makes it memorable. The lessons are real.
 				</p>
 
 				<div className="flex flex-wrap gap-4">
@@ -32,11 +38,14 @@ export default function About() {
 						href="https://github.com/ViktorZhurbin/castro"
 						target="_blank"
 						rel="noopener"
-						className="btn btn-primary"
+						className="btn btn-lg btn-primary"
 					>
 						VIEW SOURCE
 					</a>
-					<a href="/how-it-works/build" className="btn btn-outline btn-primary">
+					<a
+						href="/how-it-works"
+						className="btn btn-lg btn-outline btn-primary"
+					>
 						HOW IT WORKS
 					</a>
 				</div>

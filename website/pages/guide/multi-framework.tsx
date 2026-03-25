@@ -12,7 +12,7 @@ export default function MultiFramework() {
 	return (
 		<>
 			{/* Header */}
-			<section className="pt-16 pb-10 px-6 bg-base-100">
+			<section className="py-12 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h1 className="font-display text-5xl md:text-7xl text-primary mb-4">
 						MULTI-FRAMEWORK
@@ -27,7 +27,7 @@ export default function MultiFramework() {
 			{/* Directory convention */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
 						1. DIRECTORY CONVENTION
 					</h2>
 					<p className="text-base-content mb-6">
@@ -54,7 +54,7 @@ export default function MultiFramework() {
 			{/* Using both on a page */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
 						2. USING BOTH ON A PAGE
 					</h2>
 					<p className="text-base-content mb-6">
@@ -88,7 +88,7 @@ export default function Page() {
 			{/* What happens under the hood */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
 						3. WHAT HAPPENS UNDER THE HOOD
 					</h2>
 					<ul className="space-y-3 text-base-content">
@@ -161,7 +161,7 @@ export default function Page() {
 			{/* FrameworkConfig interface */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
 						4. THE FrameworkConfig INTERFACE
 					</h2>
 					<p className="text-base-content mb-6">
@@ -214,7 +214,7 @@ export default function Page() {
 			{/* Adding a new framework */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
 						5. ADDING A NEW FRAMEWORK
 					</h2>
 					<p className="text-base-content mb-4">

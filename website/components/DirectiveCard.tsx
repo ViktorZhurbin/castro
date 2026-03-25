@@ -25,17 +25,17 @@ export const DirectiveCard = ({
 }: DirectiveCardProps) => {
 	const styles = cardStyles[color];
 	return (
-		<div className={`card card-border ${styles.card} bg-base-100 shadow-md`}>
+		<div className={`card card-border ${styles.card} bg-base-100`}>
 			<div className="card-body">
 				<h3 className={`card-title font-display text-3xl ${styles.title}`}>
 					{name}
 				</h3>
-				<p className="italic text-sm text-base-content/60">{slogan}</p>
+				<p className="italic text-sm text-base-content/80">{slogan}</p>
 				<p className="mt-2 text-base-content">{description}</p>
 				<div className="bg-base-200 p-4 mt-2 border border-dashed border-base-300">
 					{children}
 				</div>
-				<p className="text-xs text-base-content/60 mt-2">{note}</p>
+				<p className="text-xs text-base-content/80 mt-2">{note}</p>
 			</div>
 		</div>
 	);

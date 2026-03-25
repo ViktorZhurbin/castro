@@ -12,7 +12,7 @@ export default function Tutorial() {
 	return (
 		<>
 			{/* Header */}
-			<section className="pt-16 pb-10 px-6 bg-base-100">
+			<section className="py-12 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h1 className="font-display text-5xl md:text-7xl text-primary mb-4">
 						THE BUILD PIPELINE
@@ -28,7 +28,7 @@ export default function Tutorial() {
 			{/* Panel 1: The Split */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-8">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-8">
 						1. THE DUAL COMPILATION
 					</h2>
 
@@ -49,13 +49,13 @@ export default function Tutorial() {
 							<span className="badge badge-primary mb-3 mx-auto">
 								Counter.island.tsx
 							</span>
-							<p className="text-sm text-base-content/70">
+							<p className="text-sm text-base-content/80">
 								Your island source file
 							</p>
 						</div>
 
 						{/* Arrows */}
-						<div className="flex flex-col items-center gap-2 text-base-content/40">
+						<div className="flex flex-col items-center gap-2 text-base-content/80">
 							<span className="hidden md:block text-2xl">→</span>
 							<span className="hidden md:block text-2xl">→</span>
 							<span className="md:hidden text-2xl">↓ ↓</span>
@@ -63,16 +63,16 @@ export default function Tutorial() {
 
 						{/* Outputs */}
 						<div className="flex flex-col gap-4">
-							<div className="card card-bordered border-primary/30 bg-base-200 p-5">
+							<div className="card card-bordered border-primary bg-base-200 p-5">
 								<span className="badge badge-secondary mb-2">SSR Module</span>
-								<p className="text-sm text-base-content/70">
+								<p className="text-sm text-base-content/80">
 									Runs at build time. Renders the island to HTML on the server.
 									Stored in-memory, and accessed during page rendering.
 								</p>
 							</div>
-							<div className="card card-bordered border-primary/30 bg-base-200 p-5">
+							<div className="card card-bordered border-primary bg-base-200 p-5">
 								<span className="badge badge-accent mb-2">Counter-a1b2.js</span>
-								<p className="text-sm text-base-content/70">
+								<p className="text-sm text-base-content/80">
 									Client bundle. Put into <code>dist/islands/</code>. Loaded by
 									the browser on demand.
 								</p>
@@ -80,7 +80,7 @@ export default function Tutorial() {
 						</div>
 					</div>
 
-					<p className="text-sm text-base-content/50 mt-4">
+					<p className="text-sm text-base-content/80 mt-4">
 						→{" "}
 						<a
 							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/compiler.js"
@@ -114,7 +114,7 @@ export default function Tutorial() {
 			{/* Panel 2: The Swap */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-8">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-8">
 						2. THE INTERCEPTION
 					</h2>
 
@@ -150,7 +150,7 @@ export default function Page() {
 							<h3 className="font-display text-lg text-primary mb-3">
 								WHAT IT COMPILES TO
 							</h3>
-							<pre className="bg-base-200 border-2 border-primary/30 p-5 overflow-x-auto text-sm leading-relaxed">
+							<pre className="bg-base-200 border-2 border-primary p-5 overflow-x-auto text-sm leading-relaxed">
 								<code>{`import { renderMarker } from
   "castro/islands/marker.js";
 
@@ -167,7 +167,7 @@ export default function Page() {
 						</div>
 					</div>
 
-					<p className="text-sm text-base-content/50 mt-4">
+					<p className="text-sm text-base-content/80 mt-4">
 						→{" "}
 						<a
 							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/buildPlugins.js"
@@ -186,7 +186,7 @@ export default function Page() {
 			{/* Panel 3: The Render */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-8">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-8">
 						3. THE ASSEMBLY
 					</h2>
 
@@ -211,7 +211,7 @@ export default function Page() {
 					<div className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto">
 						<pre className="text-sm leading-relaxed">
 							<code>
-								<span className="text-base-content/50">{`<!DOCTYPE html>
+								<span className="text-base-content/80">{`<!DOCTYPE html>
 <html>
   <head>
     <script type="importmap">
@@ -224,7 +224,7 @@ export default function Page() {
     <p>Static content renders instantly.</p>
 
 `}</span>
-								<span className="text-base-content/50">
+								<span className="text-base-content/80">
 									{"    "}
 									{"<!-- This is the island ↓ -->"}
 								</span>
@@ -236,13 +236,13 @@ export default function Page() {
     <button>Count: 5</button>
 </castro-island>`}</span>
 								{"\n\n"}
-								<span className="text-base-content/50">{`  </body>
+								<span className="text-base-content/80">{`  </body>
 </html>`}</span>
 							</code>
 						</pre>
 					</div>
 
-					<p className="text-sm text-base-content/50 mt-4">
+					<p className="text-sm text-base-content/80 mt-4">
 						→{" "}
 						<a
 							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/marker.js"
@@ -270,7 +270,7 @@ export default function Page() {
 			{/* Summary */}
 			<section className="py-10 px-6 bg-base-200">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-8">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-8">
 						Example OUTPUT
 					</h2>
 					<pre className="bg-base-300 border-2 border-base-content/10 p-6 overflow-x-auto text-sm leading-relaxed mb-8">

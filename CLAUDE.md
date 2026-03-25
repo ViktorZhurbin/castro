@@ -187,7 +187,7 @@ Demo site that consumes castro. Uses Tailwind CSS v4 + DaisyUI v5 via `@vktrz/ca
 
 **Key files**:
 - `styles/app.css` — Tailwind + DaisyUI config, both custom theme definitions, `font-display`/`font-sans` theme
-- `layouts/default.tsx` — HTML shell, Google Fonts (Bebas Neue + PT Sans), ThemeToggle island
+- `layouts/default.tsx` — HTML shell, Google Fonts (Bebas Neue + Barlow), ThemeToggle island
 - `layouts/docs.tsx` — docs layout with DaisyUI drawer sidebar; section-aware via `sidebarSections` map keyed by `"how-it-works"` / `"guide"`
 - `components/Header.tsx` — sticky navbar; GUIDE and HOW IT WORKS links go active when `activePath` starts with `/guide` or `/how-it-works`
 - `components/DirectiveCard.tsx` — card with explicit color map (avoids dynamic Tailwind class interpolation)

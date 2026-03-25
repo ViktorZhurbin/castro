@@ -3,13 +3,21 @@ interface FeatureCardProps {
 	description: string;
 	href: string;
 	external?: boolean;
+	color?: "primary" | "secondary" | "accent";
 }
+
+const borderColor = {
+	primary: "hover:border-primary",
+	secondary: "hover:border-secondary",
+	accent: "hover:border-accent",
+};
 
 export const FeatureCard = ({
 	title,
 	description,
 	href,
 	external,
+	color = "primary",
 }: FeatureCardProps) => {
 	const linkProps = external ? { target: "_blank", rel: "noopener" } : {};
 
@@ -17,10 +25,10 @@ export const FeatureCard = ({
 		<a
 			href={href}
 			{...linkProps}
-			className="card card-border border-base-content/20 bg-base-100 shadow-md hover:shadow-lg hover:border-primary transition-all"
+			className={`card card-border border-base-300 bg-base-100 ${borderColor[color]} transition-colors`}
 		>
 			<div className="card-body">
-				<h3 className="card-title font-display text-2xl text-primary">
+				<h3 className={`card-title font-display text-2xl text-${color}`}>
 					{title}
 				</h3>
 				<p className="text-base-content/80">{description}</p>

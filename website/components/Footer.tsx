@@ -1,11 +1,11 @@
 export const Footer = () => {
 	return (
-		<footer className="footer footer-center footer-horizontal sm:footer-vertical bg-base-300 py-16 px-6 border-t-2 border-primary">
+		<footer className="footer footer-center footer-horizontal sm:footer-vertical bg-base-300 py-8 px-6 border-t-2 border-primary">
 			<div>
-				<p className="font-display text-3xl text-primary">
+				<p className="font-display text-3xl text-secondary">
 					WORKERS OF THE WEB, UNITE!
 				</p>
-				<p className="font-display text-xl text-base-content/60">
+				<p className="font-display text-xl text-base-content/80">
 					SEIZE THE MEANS OF RENDERING.
 				</p>
 			</div>
@@ -22,7 +22,7 @@ export const Footer = () => {
 					GitHub
 				</a>
 			</nav>
-			<p className="text-base-content/60 text-xs">
+			<p className="text-base-content/80 text-xs">
 				Built with Castro | The People's Framework
 			</p>
 		</footer>

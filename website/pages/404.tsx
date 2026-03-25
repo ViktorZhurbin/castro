@@ -6,16 +6,17 @@ export const meta = {
 
 export default function NotFound() {
 	return (
-		<div className="hero min-h-[calc(100vh-3rem)] bg-base-100 text-base-content">
+		<div className="hero min-h-[calc(100vh-3rem)] bg-base-200 text-base-content">
 			<div className="hero-content text-center">
 				<div className="max-w-lg">
-					<div className="w-24 h-24 mx-auto mb-10 text-base-content/20">
+					<div className="w-32 h-32 mx-auto mb-10 text-primary">
 						<StarIcon />
 					</div>
-					<h1 className="font-display text-9xl text-primary drop-shadow-md">
+					<h1 className="font-display text-9xl text-primary">
 						404
 					</h1>
-					<h2 className="font-display text-4xl mt-4 mb-8">PAGE NOT FOUND</h2>
+					<div className="divider divider-primary max-w-xs mx-auto" />
+					<h2 className="font-display text-4xl mb-8 text-secondary">PAGE NOT FOUND</h2>
 					<p className="text-lg font-bold mb-10 text-base-content">
 						This page has been redacted by the Ministry of Truth.
 						<br />

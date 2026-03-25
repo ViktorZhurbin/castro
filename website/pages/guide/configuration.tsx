@@ -11,7 +11,7 @@ export default function Configuration() {
 	return (
 		<>
 			{/* Header */}
-			<section className="pt-16 pb-10 px-6 bg-base-100">
+			<section className="py-12 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h1 className="font-display text-5xl md:text-7xl text-primary mb-4">
 						CONFIGURATION
@@ -26,7 +26,7 @@ export default function Configuration() {
 			{/* Full type */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
 						Castro Config
 					</h2>
 					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-4">
@@ -39,7 +39,7 @@ export default {
   importMap: {},
 };`}</code>
 					</pre>
-					<p className="text-sm text-base-content/50">
+					<p className="text-sm text-base-content/80">
 						→{" "}
 						<a
 							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/src/config.js"
@@ -58,7 +58,7 @@ export default {
 			{/* port */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-mono text-2xl md:text-3xl text-primary mb-4">
+					<h2 className="font-mono text-2xl md:text-3xl text-secondary mb-4">
 						port
 					</h2>
 					<p className="text-base-content mb-2">
@@ -76,7 +76,7 @@ export default {
 			{/* messages */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-mono text-2xl md:text-3xl text-primary mb-4">
+					<h2 className="font-mono text-2xl md:text-3xl text-secondary mb-4">
 						messages
 					</h2>
 					<p className="text-base-content mb-2">
@@ -96,7 +96,7 @@ export default {
 			{/* framework */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-mono text-2xl md:text-3xl text-primary mb-4">
+					<h2 className="font-mono text-2xl md:text-3xl text-secondary mb-4">
 						framework
 					</h2>
 					<p className="text-base-content mb-2">
@@ -123,7 +123,7 @@ export default {
 			{/* plugins */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-mono text-2xl md:text-3xl text-primary mb-4">
+					<h2 className="font-mono text-2xl md:text-3xl text-secondary mb-4">
 						plugins
 					</h2>
 					<p className="text-base-content mb-2">
@@ -150,7 +150,7 @@ export default {
 			{/* importMap */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-mono text-2xl md:text-3xl text-primary mb-4">
+					<h2 className="font-mono text-2xl md:text-3xl text-secondary mb-4">
 						importMap
 					</h2>
 					<p className="text-base-content mb-2">
@@ -181,14 +181,14 @@ export default {
 			{/* Real example */}
 			<section className="py-10 px-6 bg-base-200">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
 						REAL EXAMPLE
 					</h2>
 					<p className="text-base-content mb-4">
 						This website's own config — Tailwind CSS plugin, port 3000,
 						satirical messages, Preact as the default island framework:
 					</p>
-					<pre className="bg-base-300 border-2 border-base-content/10 p-6 overflow-x-auto text-sm leading-relaxed">
+					<pre className="bg-base-300 border-2 border-base-300 p-6 overflow-x-auto text-sm leading-relaxed">
 						<code>{`import { tailwind } from "@vktrz/castro-tailwind";
 
 export default {
@@ -198,7 +198,7 @@ export default {
   framework: "preact",
 };`}</code>
 					</pre>
-					<p className="text-sm text-base-content/50 mt-4">
+					<p className="text-sm text-base-content/80 mt-4">
 						→{" "}
 						<a
 							href="https://github.com/ViktorZhurbin/castro/blob/main/website/castro.config.js"

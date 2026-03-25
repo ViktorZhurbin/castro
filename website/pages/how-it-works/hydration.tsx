@@ -12,7 +12,7 @@ export default function Hydration() {
 	return (
 		<>
 			{/* Header */}
-			<section className="pt-16 pb-10 px-6 bg-base-100">
+			<section className="py-12 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h1 className="font-display text-5xl md:text-7xl text-primary mb-4">
 						HYDRATION
@@ -29,7 +29,7 @@ export default function Hydration() {
 			{/* Panel 1: The Custom Element */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-8">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-8">
 						1. THE CUSTOM ELEMENT
 					</h2>
 
@@ -47,14 +47,14 @@ export default function Hydration() {
 							<span className="badge badge-primary mb-3 mx-auto">
 								connectedCallback()
 							</span>
-							<p className="text-sm text-base-content/70">
+							<p className="text-sm text-base-content/80">
 								Fires when the element enters the DOM. Reads the{" "}
 								<code>directive</code> attribute.
 							</p>
 						</div>
 
 						{/* Arrow */}
-						<div className="flex flex-col items-center gap-2 text-base-content/40">
+						<div className="flex flex-col items-center gap-2 text-base-content/80">
 							<span className="hidden md:block text-2xl">→</span>
 							<span className="md:hidden text-2xl">↓</span>
 						</div>
@@ -63,27 +63,27 @@ export default function Hydration() {
 						<div className="flex flex-col gap-4">
 							<div className="card card-bordered border-base-300 bg-base-200 p-4">
 								<span className="badge badge-secondary mb-2">no:pasaran</span>
-								<p className="text-sm text-base-content/70">
+								<p className="text-sm text-base-content/80">
 									Return immediately. No JavaScript loaded. The island stays as
 									static HTML forever. If every island on a page uses{" "}
 									<code>no:pasaran</code>, the build skips the runtime script
 									and import map entirely — the page ships zero JavaScript.
 								</p>
 							</div>
-							<div className="card card-bordered border-primary/30 bg-base-200 p-4">
+							<div className="card card-bordered border-primary bg-base-200 p-4">
 								<span className="badge badge-primary mb-2">
 									comrade:visible
 								</span>
-								<p className="text-sm text-base-content/70">
+								<p className="text-sm text-base-content/80">
 									Wait for the element to enter the viewport via{" "}
 									<code>IntersectionObserver</code> (with a 100px buffer). Then
 									hydrate. This is the default — used when no directive is
 									specified.
 								</p>
 							</div>
-							<div className="card card-bordered border-accent/30 bg-base-200 p-4">
+							<div className="card card-bordered border-accent bg-base-200 p-4">
 								<span className="badge badge-accent mb-2">lenin:awake</span>
-								<p className="text-sm text-base-content/70">
+								<p className="text-sm text-base-content/80">
 									Hydrate immediately. No waiting. JS loads as soon as the
 									element connects.
 								</p>
@@ -91,7 +91,7 @@ export default function Hydration() {
 						</div>
 					</div>
 
-					<p className="text-sm text-base-content/50 mt-4">
+					<p className="text-sm text-base-content/80 mt-4">
 						→{" "}
 						<a
 							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/hydration.js"
@@ -110,7 +110,7 @@ export default function Hydration() {
 			{/* Panel 2: The Import */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-8">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-8">
 						2. THE IMPORT
 					</h2>
 
@@ -141,7 +141,7 @@ export default async (container, props) => {
   hydrate(h(Component, props), container);
 };`}</code>
 							</pre>
-							<p className="text-xs text-base-content/50 mt-2">
+							<p className="text-xs text-base-content/80 mt-2">
 								Generated at compile time. The <code>import("preact")</code>{" "}
 								call is a bare specifier — it doesn't bundle Preact.
 							</p>
@@ -151,7 +151,7 @@ export default async (container, props) => {
 							<h3 className="font-display text-lg text-primary mb-3">
 								IMPORT MAP
 							</h3>
-							<pre className="bg-base-200 border-2 border-primary/30 p-5 overflow-x-auto text-sm leading-relaxed">
+							<pre className="bg-base-200 border-2 border-primary p-5 overflow-x-auto text-sm leading-relaxed">
 								<code>{`<script type="importmap">
 {
   "imports": {
@@ -163,7 +163,7 @@ export default async (container, props) => {
 }
 </script>`}</code>
 							</pre>
-							<p className="text-xs text-base-content/50 mt-2">
+							<p className="text-xs text-base-content/80 mt-2">
 								Injected into every page that uses islands. Framework defaults
 								are merged with any entries from{" "}
 								<a href="/guide/configuration" className="underline">
@@ -175,7 +175,7 @@ export default async (container, props) => {
 						</div>
 					</div>
 
-					<p className="text-sm text-base-content/50 mt-4">
+					<p className="text-sm text-base-content/80 mt-4">
 						→{" "}
 						<a
 							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/compiler.js"
@@ -203,7 +203,7 @@ export default async (container, props) => {
 			{/* Panel 3: The Mount */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-8">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-8">
 						3. THE MOUNT
 					</h2>
 
@@ -226,30 +226,30 @@ export default async (container, props) => {
 					<div className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto">
 						<pre className="text-sm leading-relaxed">
 							<code>
-								<span className="text-base-content/50">{`// Inside hydration.js — the hydrate() method
+								<span className="text-base-content/80">{`// Inside hydration.js — the hydrate() method
 
 `}</span>
 								{`const propsJson = this.dataset.props;
 const props = propsJson ? JSON.parse(propsJson) : {};
 
 `}
-								<span className="text-base-content/50">{`// Dynamic import — triggers network request for the island JS
+								<span className="text-base-content/80">{`// Dynamic import — triggers network request for the island JS
 `}</span>
 								{`const module = await import(this.getAttribute("import"));
 
 `}
-								<span className="text-base-content/50">{`// Call the mounting function — framework hydrates the container
+								<span className="text-base-content/80">{`// Call the mounting function — framework hydrates the container
 `}</span>
 								<span className="border-l-4 border-primary pl-3 inline-block">{`await module.default(this, props);`}</span>
 								{"\n\n"}
-								<span className="text-base-content/50">{`// Mark as ready (useful for CSS transitions or testing)
+								<span className="text-base-content/80">{`// Mark as ready (useful for CSS transitions or testing)
 `}</span>
 								{`this.setAttribute("ready", "");`}
 							</code>
 						</pre>
 					</div>
 
-					<p className="text-sm text-base-content/50 mt-4">
+					<p className="text-sm text-base-content/80 mt-4">
 						→{" "}
 						<a
 							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/compiler.js"

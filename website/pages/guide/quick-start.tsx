@@ -12,7 +12,7 @@ export default function QuickStart() {
 	return (
 		<>
 			{/* Header */}
-			<section className="pt-16 pb-10 px-6 bg-base-100">
+			<section className="py-12 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h1 className="font-display text-5xl md:text-7xl text-primary mb-4">
 						QUICK START
@@ -26,7 +26,7 @@ export default function QuickStart() {
 			{/* Prerequisites */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
 						1. PREREQUISITES
 					</h2>
 					<p className="text-base-content mb-4">
@@ -53,7 +53,7 @@ export default function QuickStart() {
 			{/* Install */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
 						2. INSTALL
 					</h2>
 					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-4">
@@ -80,7 +80,7 @@ bun add @vktrz/castro`}</code>
 			{/* Project structure */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
 						3. PROJECT STRUCTURE
 					</h2>
 					<p className="text-base-content mb-6">
@@ -103,7 +103,7 @@ bun add @vktrz/castro`}</code>
 			{/* Create a layout */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
 						4. CREATE A LAYOUT
 					</h2>
 					<p className="text-base-content mb-4">
@@ -148,7 +148,7 @@ export default function DefaultLayout({ title, children }: Props) {
 			{/* Create a page */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
 						5. CREATE A PAGE
 					</h2>
 					<p className="text-base-content mb-4">
@@ -206,7 +206,7 @@ becomes an HTML page.`}</code>
 			{/* Add an island */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
 						6. ADD AN ISLAND
 					</h2>
 					<p className="text-base-content mb-4">
@@ -254,7 +254,7 @@ export default function Home() {
 			{/* Directives */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
 						7. DIRECTIVES
 					</h2>
 					<p className="text-base-content mb-6">
@@ -293,7 +293,7 @@ export default function Home() {
 						If you don't specify a directive, <code>comrade:visible</code> is
 						used automatically — the island in section 6 above uses the default.
 					</p>
-					<p className="text-sm text-base-content/60">
+					<p className="text-sm text-base-content/80">
 						See{" "}
 						<a href="/how-it-works/hydration" className="underline">
 							Hydration
@@ -308,7 +308,7 @@ export default function Home() {
 			{/* Run it */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
 						8. RUN IT
 					</h2>
 					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-4">
@@ -328,7 +328,7 @@ bun run build    # production build → dist/`}</code>
 			{/* What's Next */}
 			<section className="py-10 px-6 bg-base-200">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-primary mb-6">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
 						WHAT'S NEXT
 					</h2>
 					<div className="flex flex-wrap gap-4">
