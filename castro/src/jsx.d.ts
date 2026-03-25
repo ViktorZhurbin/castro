@@ -19,6 +19,18 @@ declare module "preact" {
 			"lenin:awake"?: boolean;
 
 			/**
+			 * Idle hydration - loads JavaScript after page load, when browser is idle.
+			 * Uses requestIdleCallback for efficient scheduling.
+			 * Best for important above-the-fold content that isn't critical-path.
+			 *
+			 * @example
+			 * ```tsx
+			 * <Counter initial={5} comrade:idle />
+			 * ```
+			 */
+			"comrade:idle"?: boolean;
+
+			/**
 			 * Lazy hydration - loads JavaScript when component scrolls into viewport.
 			 * This is the DEFAULT behavior if no directive is specified.
 			 *

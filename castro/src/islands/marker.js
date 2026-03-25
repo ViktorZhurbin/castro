@@ -94,7 +94,12 @@ export function renderMarker(islandId, props = {}) {
 }
 
 /** @type {Directive[]} */
-const DIRECTIVES = ["lenin:awake", "comrade:visible", "no:pasaran"];
+const DIRECTIVES = [
+	"lenin:awake",
+	"comrade:idle",
+	"comrade:visible",
+	"no:pasaran",
+];
 /** @type {Directive} */
 const DEFAULT_DIRECTIVE = "comrade:visible";
 

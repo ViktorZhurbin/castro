@@ -39,6 +39,9 @@ class CastroIsland extends HTMLElement {
 		if (directive === "comrade:visible") {
 			// Lazy load when scrolled into view
 			await this.waitVisible();
+		} else if (directive === "comrade:idle") {
+			// Hydrate when browser is idle after page load
+			await this.waitIdle();
 		} else if (directive === "lenin:awake") {
 			// Immediate hydration, no waiting
 			// (fall through to hydrate())
@@ -46,6 +49,32 @@ class CastroIsland extends HTMLElement {
 
 		// Load and mount component
 		await this.hydrate();
+	}
+
+	/**
+	 * Wait until browser is idle after page load
+	 *
+	 * Waits for page load first (idle during initial load defeats the purpose),
+	 * then uses requestIdleCallback. Falls back to immediate hydration in
+	 * browsers that don't support requestIdleCallback (Safari <119).
+	 *
+	 * @returns {Promise<void>}
+	 */
+	waitIdle() {
+		return new Promise((resolve) => {
+			const onLoad = () => {
+				if ("requestIdleCallback" in window) {
+					requestIdleCallback(() => resolve());
+				} else {
+					resolve();
+				}
+			};
+			if (document.readyState === "complete") {
+				onLoad();
+			} else {
+				window.addEventListener("load", onLoad, { once: true });
+			}
+		});
 	}
 
 	/**

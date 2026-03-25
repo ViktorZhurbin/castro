@@ -70,6 +70,35 @@ test("comrade:visible has island CSS", async () => {
 	expect(html).toContain("color: red");
 });
 
+// ------ comrade:idle directive ------
+
+test("comrade:idle has island wrapper", async () => {
+	const html = await readHtml("idle.html");
+	expect(html).toContain("<castro-island");
+	expect(html).toContain('directive="comrade:idle"');
+});
+
+test("comrade:idle has island runtime", async () => {
+	const html = await readHtml("idle.html");
+	expect(html).toContain("castro-island.js");
+});
+
+test("comrade:idle has island JS bundle reference", async () => {
+	const html = await readHtml("idle.html");
+	expect(html).toContain('import="/');
+});
+
+test("comrade:idle has SSR content", async () => {
+	const html = await readHtml("idle.html");
+	expect(html).toContain("Count:");
+});
+
+test("comrade:idle has island CSS", async () => {
+	const html = await readHtml("idle.html");
+	expect(html).toContain("<style>");
+	expect(html).toContain("color: red");
+});
+
 // ------ lenin:awake directive ------
 
 test("lenin:awake has correct directive", async () => {

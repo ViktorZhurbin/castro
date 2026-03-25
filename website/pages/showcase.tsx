@@ -17,40 +17,60 @@ export default function Showcase() {
 				</h1>
 				<div className="divider divider-primary max-w-xs mx-auto" />
 				<p className="max-w-xl mx-auto text-base-content">
-					Three hydration strategies, live on this page. Open DevTools to see
+					Four hydration strategies, live on this page. Open DevTools to see
 					what JavaScript gets loaded — and when.
 				</p>
 			</div>
 
-			<div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-				<DirectiveCard
-					name="NO:PASARAN"
-					slogan='"They shall not pass (to the client)"'
-					description="Component renders at build time. No JavaScript shipped to client. Pure static HTML for maximum performance."
-					note="Try clicking. Nothing happens. Zero JS was sent to your browser."
-					color="neutral"
-				>
-					<MyCounter initial={5} no:pasaran />
-				</DirectiveCard>
-
+			<div className="space-y-8 max-w-2xl mx-auto">
 				<DirectiveCard
 					name="LENIN:AWAKE"
 					slogan='"The leader is always ready"'
 					description="Component becomes interactive immediately on page load. Full interactivity from the start."
-					note="This counter is interactive immediately. JS loaded on page load."
+					note="This counter is interactive right now. JS loaded on page load."
 					color="primary"
 				>
 					<MyCounter initial={10} lenin:awake />
 				</DirectiveCard>
 
 				<DirectiveCard
+					name="COMRADE:IDLE"
+					slogan='"Work when nobody else is busy"'
+					description="Component hydrates after page load, when browser is idle. Uses requestIdleCallback for efficient scheduling."
+					note="This counter loads after the page settles. Check DevTools to see it hydrate after initial load completes."
+					color="accent"
+				>
+					<MyCounter initial={12} comrade:idle />
+				</DirectiveCard>
+
+				<div className="py-8 px-6 text-center border-2 border-dashed border-base-300">
+					<p className="text-base-content/80">
+						↓ Scroll down to see <code>comrade:visible</code> in action ↓
+					</p>
+				</div>
+
+				<div style={{ minHeight: "600px" }} />
+
+				<DirectiveCard
 					name="COMRADE:VISIBLE"
 					slogan='"Only work when the people are watching"'
 					description="Component hydrates when scrolled into viewport. Lazy loading with IntersectionObserver. Default behavior."
-					note="A Solid island! JS loads when scrolled into view. Open DevTools Network tab to verify."
+					note="A Solid island! JS loads when you scroll into view. Open DevTools Network tab to verify."
 					color="secondary"
 				>
 					<SolidCounter initial={15} comrade:visible />
+				</DirectiveCard>
+
+				<div style={{ minHeight: "400px" }} />
+
+				<DirectiveCard
+					name="NO:PASARAN"
+					slogan='"They shall not pass (to the client)"'
+					description="Component renders at build time only. In practice, use a regular Component.tsx if you don't need interactivity. This directive is here for the memes."
+					note="Try clicking. Nothing happens. Zero JS was sent to your browser."
+					color="neutral"
+				>
+					<MyCounter initial={5} no:pasaran />
 				</DirectiveCard>
 			</div>
 		</section>

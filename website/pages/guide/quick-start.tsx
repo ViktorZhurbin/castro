@@ -30,7 +30,7 @@ export default function QuickStart() {
 						1. PREREQUISITES
 					</h2>
 					<p className="text-base-content mb-4">
-						Castro requires{" "}
+						Castro runs on{" "}
 						<a
 							href="https://bun.sh"
 							target="_blank"
@@ -39,11 +39,11 @@ export default function QuickStart() {
 						>
 							Bun
 						</a>{" "}
-						1.3.8 or later. It uses Bun's native bundler, module loader, and
-						file APIs throughout the build pipeline.
+						1.3.8+. It uses Bun's build pipeline, markdown parser, YAML parser,
+						and dev server — Node won't work. If you don't have it:
 					</p>
 					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed">
-						<code>{`curl -fsSL https://bun.sh/install | bash`}</code>
+						<code>{`curl -fsSL https://bun.sh/install | bash  # takes ~10 seconds`}</code>
 					</pre>
 				</div>
 			</section>
@@ -259,7 +259,7 @@ export default function Home() {
 					</h2>
 					<p className="text-base-content mb-6">
 						Every island prop ending in a directive controls when the island
-						hydrates. Three are available:
+						hydrates. Four are available:
 					</p>
 					<ul className="space-y-3 mb-6">
 						<li className="flex gap-3 items-start">
@@ -269,6 +269,15 @@ export default function Home() {
 							<span className="text-base-content">
 								Hydrate when the island scrolls into view (default — used when
 								no directive is specified).
+							</span>
+						</li>
+						<li className="flex gap-3 items-start">
+							<code className="badge badge-accent shrink-0 mt-0.5">
+								comrade:idle
+							</code>
+							<span className="text-base-content">
+								Hydrate after page load, when the browser is idle. Uses
+								requestIdleCallback for efficient scheduling.
 							</span>
 						</li>
 						<li className="flex gap-3 items-start">

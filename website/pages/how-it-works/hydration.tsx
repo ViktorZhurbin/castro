@@ -59,7 +59,6 @@ export default function Hydration() {
 							<span className="md:hidden text-2xl">↓</span>
 						</div>
 
-						{/* Three paths */}
 						<div className="flex flex-col gap-4">
 							<div className="card card-bordered border-base-300 bg-base-200 p-4">
 								<span className="badge badge-secondary mb-2">no:pasaran</span>

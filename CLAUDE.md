@@ -161,7 +161,7 @@ Key rules from `src/messages/README.md`:
 
 `test-site/` is a single test site that exercises the full build pipeline with both Preact and Solid islands. Run with `bun test:sites`. Tests verify:
 - Static pages (no islands)
-- All three directives (`comrade:visible`, `lenin:awake`, `no:pasaran`)
+- All four directives (`comrade:visible`, `comrade:idle`, `lenin:awake`, `no:pasaran`)
 - Component composition (islands in static components, static components in islands, islands in layouts)
 - CSS modules in static components and islands
 - Multi-framework pages (Preact + Solid islands on the same page)
