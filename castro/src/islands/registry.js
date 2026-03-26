@@ -144,7 +144,8 @@ async function detectFramework(relativePath) {
 		return castroConfig.framework;
 	}
 
-	// Already registered (built-in pre-loaded at startup, or plugin-provided)
+	// Already loaded — either the default framework (pre-loaded at startup
+	// by frameworkConfig.js), a prior island on this page, or a plugin-provided config
 	if (isKnownFramework(firstSegment)) {
 		return firstSegment;
 	}

@@ -1,6 +1,7 @@
 import type { PageMeta } from "@vktrz/castro";
+import BareCounter from "../components/bare-jsx/BareCounter.island.tsx";
+import Counter from "../components/Counter.island.tsx";
 import { DirectiveCard } from "../components/DirectiveCard.tsx";
-import MyCounter from "../components/MyCounter.island.tsx";
 import SolidCounter from "../components/solid/SolidCounter.island.tsx";
 
 export const meta: PageMeta = {
@@ -30,17 +31,17 @@ export default function Showcase() {
 					note="This counter is interactive right now. JS loaded on page load."
 					color="primary"
 				>
-					<MyCounter initial={10} lenin:awake />
+					<Counter initial={10} lenin:awake />
 				</DirectiveCard>
 
 				<DirectiveCard
 					name="COMRADE:IDLE"
 					slogan='"Work when nobody else is busy"'
 					description="Component hydrates after page load, when browser is idle. Uses requestIdleCallback for efficient scheduling."
-					note="This counter loads after the page settles. Check DevTools to see it hydrate after initial load completes."
+					note="A bare-jsx island (no VDOM, no CDN). Loads after the page settles — check DevTools Network to see bare-jsx.js arrive."
 					color="accent"
 				>
-					<MyCounter initial={12} comrade:idle />
+					<BareCounter initial={12} comrade:idle />
 				</DirectiveCard>
 
 				<div className="py-8 px-6 text-center border-2 border-dashed border-base-300">
@@ -70,7 +71,7 @@ export default function Showcase() {
 					note="Try clicking. Nothing happens. Zero JS was sent to your browser."
 					color="neutral"
 				>
-					<MyCounter initial={5} no:pasaran />
+					<Counter initial={5} no:pasaran />
 				</DirectiveCard>
 			</div>
 		</section>

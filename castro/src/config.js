@@ -24,7 +24,7 @@ import { join } from "node:path";
 const defaults = {
 	port: 3000,
 	messages: "satirical",
-	framework: "preact",
+	framework: "bare-jsx",
 	importMap: {},
 };
 

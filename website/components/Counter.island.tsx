@@ -4,7 +4,7 @@ interface CounterProps {
 	initial?: number;
 }
 
-export const MyCounter = ({ initial = 0 }: CounterProps) => {
+export const Counter = ({ initial = 0 }: CounterProps) => {
 	const [count, setCount] = useState(initial);
 
 	return (
@@ -39,4 +39,4 @@ export const MyCounter = ({ initial = 0 }: CounterProps) => {
 	);
 };
 
-export default MyCounter;
+export default Counter;

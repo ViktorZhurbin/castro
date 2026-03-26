@@ -68,7 +68,7 @@ function Features() {
 					WHAT THE PARTY OFFERS
 				</h2>
 				<p className="max-w-xl mt-4 text-base-content">
-					A working Static Site Generator in ~1300 lines of well-commented code.
+					A working Static Site Generator in ~1500 lines of well-commented code.
 					Learn island architecture by reading the source.
 				</p>
 			</div>
@@ -81,7 +81,7 @@ function Features() {
 					color="primary"
 				/>
 				<FeatureCard
-					title="~1300 LINES OF CODE"
+					title="~1500 LINES OF CODE"
 					description="The entire engine fits in your head. Every file explains why."
 					href="https://github.com/ViktorZhurbin/castro/tree/main/castro/src"
 					external

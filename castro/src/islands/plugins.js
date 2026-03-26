@@ -2,6 +2,7 @@ import { join } from "node:path";
 import { userPlugins } from "../config.js";
 import { OUTPUT_DIR } from "../constants.js";
 import { registerFramework } from "./frameworkConfig.js";
+import { BARE_JSX_RUNTIME } from "./frameworks/bare-jsx.js";
 
 /**
  * @import { CastroPlugin } from '../types.d.ts'
@@ -21,14 +22,55 @@ for (const plugin of userPlugins) {
  * Build pipeline and dev server iterate this merged list.
  * @type {CastroPlugin[]}
  */
-const internalPlugins = [castroIslandRuntime()];
+const internalPlugins = [castroIslandRuntime(), bareRuntimePlugin()];
 export const allPlugins = [...internalPlugins, ...userPlugins];
 
 /**
- * Loads the <castro-island> custom element runtime (client-side)
+ * Bundles the bare-jsx runtime into dist for browser loading.
+ *
+ * bare-jsx islands externalize their runtime imports (signals, h, Fragment)
+ * and resolve them via import map → /bare-jsx.{version}.js. Only writes
+ * when at least one page actually used a bare-jsx island.
+ *
  * @returns {CastroPlugin}
  */
+function bareRuntimePlugin() {
+	return {
+		name: "bare-jsx-runtime",
 
+		async onAfterBuild({ usedFrameworks }) {
+			if (!usedFrameworks.has("bare-jsx")) return;
+
+			const entrypoint = join(
+				import.meta.dir,
+				"..",
+				"..",
+				"runtime",
+				"jsx",
+				"dom",
+				"index.js",
+			);
+
+			const result = await Bun.build({
+				entrypoints: [entrypoint],
+				format: "esm",
+				target: "browser",
+				minify: true,
+			});
+
+			if (result.success && result.outputs[0]) {
+				await Bun.write(join(OUTPUT_DIR, BARE_JSX_RUNTIME), result.outputs[0]);
+			}
+		},
+	};
+}
+
+/**
+ * Copies the <castro-island> custom element runtime to dist.
+ * Only writes when at least one page needs client-side hydration.
+ *
+ * @returns {CastroPlugin}
+ */
 function castroIslandRuntime() {
 	return {
 		name: "castro-island-runtime",
@@ -46,12 +88,13 @@ function castroIslandRuntime() {
 			return [];
 		},
 
-		async onPageBuild() {
-			// Copy runtime file to dist (Bun.write auto-creates directories)
-			const source = Bun.file(join(import.meta.dir, "./hydration.js"));
-			const destPath = join(OUTPUT_DIR, "castro-island.js");
+		async onAfterBuild({ needsHydration }) {
+			if (!needsHydration) return;
 
-			await Bun.write(destPath, source);
+			await Bun.write(
+				join(OUTPUT_DIR, "castro-island.js"),
+				Bun.file(join(import.meta.dir, "./hydration.js")),
+			);
 		},
 	};
 }

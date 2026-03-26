@@ -1,8 +1,5 @@
 /**
- * Directory constants that define the project structure.
- *
- * No dependencies on other modules — safe to import from anywhere
- * without risk of circular imports.
+ * Shared constants — safe to import from anywhere (no I/O, no module dependencies).
  */
 
 export const OUTPUT_DIR = "dist";
