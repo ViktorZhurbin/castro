@@ -25,7 +25,7 @@ import { createEffect } from "../../signals/index.js";
 // Re-exported so island components can import signals from the same
 // module the build plugin injects (jsx-dom.js for client, jsx-ssr.js for SSR).
 // Without this, components would need a separate import for signals.
-export { createEffect, createMemo, createSignal } from "../../signals/index.js";
+export { createEffect, createSignal } from "../../signals/index.js";
 
 /**
  * JSX factory — creates real DOM elements with reactive bindings.

@@ -14,7 +14,7 @@
 // Re-exported so island components can import signals from the same
 // module the build plugin injects (jsx-ssr.js for SSR, jsx-dom.js for client).
 // Without this, components would need a separate import for signals.
-export { createEffect, createMemo, createSignal } from "../../signals/index.js";
+export { createEffect, createSignal } from "../../signals/index.js";
 
 /** HTML elements that have no closing tag (self-closing) */
 const VOID_ELEMENTS = new Set([

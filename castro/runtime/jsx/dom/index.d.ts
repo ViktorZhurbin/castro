@@ -1,8 +1,4 @@
-export {
-	createEffect,
-	createMemo,
-	createSignal,
-} from "../../signals/index.d.ts";
+export { createEffect, createSignal } from "../../signals/index.d.ts";
 
 /** JSX factory — creates real DOM elements with reactive bindings. */
 export function h(

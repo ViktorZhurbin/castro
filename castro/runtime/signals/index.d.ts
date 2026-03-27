@@ -14,5 +14,3 @@ export function createSignal<T>(
 ): [get: () => T, set: (value: T | ((prev: T) => T)) => void];
 
 export function createEffect(fn: () => void): void;
-
-export function createMemo<T>(fn: () => T): () => T;

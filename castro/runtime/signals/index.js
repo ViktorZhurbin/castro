@@ -15,7 +15,7 @@
  */
 
 /**
- * @import { Effect, Signal, createSignal, createEffect, createMemo } from "./index.d.ts"
+ * @import { Effect, Signal, createSignal, createEffect } from "./index.d.ts"
  */
 
 /**
@@ -91,59 +91,6 @@ export function createEffect(fn) {
 
 	// Run immediately on creation
 	effect.execute();
-}
-
-/**
- * Creates a memoized derived value — a signal that recomputes only
- * when its dependencies change. Acts as both an effect (tracks deps,
- * re-runs) and a signal (can be read, notifies subscribers).
- *
- * @type {createMemo}
- */
-export function createMemo(fn) {
-	/** @type {any} */
-	let value;
-
-	/** @type {Set<Effect>} */
-	const subscribers = new Set();
-
-	/**
-	 * The memo acts as an effect (has dependencies, re-runs)
-	 * @type {Effect}
-	 */
-	const memo = {
-		dependencies: new Set(),
-
-		execute() {
-			const newValue = runWithTracking(memo, fn);
-
-			// Only notify downstream if the value actually changed (memoization)
-			if (newValue !== value) {
-				value = newValue;
-				for (const effect of [...subscribers]) {
-					effect.execute();
-				}
-			}
-		},
-	};
-
-	// Compute initial value
-	memo.execute();
-
-	// Same subscription logic as createSignal.read() — memos are readable signals
-	function read() {
-		if (listener) {
-			subscribers.add(listener);
-			listener.dependencies.add(read);
-		}
-
-		return value;
-	}
-
-	// Expose subscribers for cleanup
-	read.subscribers = subscribers;
-
-	return read;
 }
 
 /**

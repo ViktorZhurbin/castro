@@ -79,7 +79,7 @@ Framework runtimes that ship with Castro — code that runs in the browser or du
 
 ```
 signals/
-  index.js      createSignal, createEffect, createMemo
+  index.js      createSignal, createEffect
   index.d.ts    Signal type declarations
 
 jsx/
