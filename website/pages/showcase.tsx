@@ -1,8 +1,9 @@
 import type { PageMeta } from "@vktrz/castro";
-import BareCounter from "../components/bare-jsx/BareCounter.island.tsx";
-import Counter from "../components/Counter.island.tsx";
+import BureaucraticPermit from "../components/BureaucraticPermit.island.tsx";
 import { DirectiveCard } from "../components/DirectiveCard.tsx";
-import SolidCounter from "../components/solid/SolidCounter.island.tsx";
+import PropagandaRadio from "../components/PropagandaRadio.island.tsx";
+import Redactor from "../components/bare-jsx/Redactor.island.tsx";
+import FiveYearPlan from "../components/solid/FiveYearPlan.island.tsx";
 
 export const meta: PageMeta = {
 	title: "Showcase — Castro",
@@ -27,21 +28,21 @@ export default function Showcase() {
 				<DirectiveCard
 					name="LENIN:AWAKE"
 					slogan='"The leader is always ready"'
-					description="Component becomes interactive immediately on page load. Full interactivity from the start."
-					note="This counter is interactive right now. JS loaded on page load."
+					description="The State Radio is always broadcasting. This island hydrates immediately on page load — the timer starts before you even look at it."
+					note="Already broadcasting. JS loaded on page load — no interaction needed."
 					color="primary"
 				>
-					<Counter initial={10} lenin:awake />
+					<PropagandaRadio lenin:awake />
 				</DirectiveCard>
 
 				<DirectiveCard
 					name="COMRADE:IDLE"
 					slogan='"Work when nobody else is busy"'
-					description="Component hydrates after page load, when browser is idle. Uses requestIdleCallback for efficient scheduling."
-					note="A bare-jsx island (no VDOM, no CDN). Loads after the page settles — check DevTools Network to see bare-jsx.js arrive."
+					description="The Ministry's censorship toggle activates after the page settles. Built with Castro's bare-jsx runtime — signals and direct DOM, no virtual DOM, no CDN."
+					note="A bare-jsx island (no VDOM, no CDN). Toggle the switch — censorship activates after the browser settles."
 					color="accent"
 				>
-					<BareCounter initial={12} comrade:idle />
+					<Redactor comrade:idle />
 				</DirectiveCard>
 
 				<div className="py-8 px-6 text-center border-2 border-dashed border-base-300">
@@ -55,11 +56,11 @@ export default function Showcase() {
 				<DirectiveCard
 					name="COMRADE:VISIBLE"
 					slogan='"Only work when the people are watching"'
-					description="Component hydrates when scrolled into viewport. Lazy loading with IntersectionObserver. Default behavior."
-					note="A Solid island! JS loads when you scroll into view. Open DevTools Network tab to verify."
+					description="The Five-Year Plan tracker only begins when you scroll here. Solid's fine-grained reactivity updates the progress bar attribute directly."
+					note="A Solid island. The quota starts when you scroll here. Check DevTools Network to see SolidJS arrive."
 					color="secondary"
 				>
-					<SolidCounter initial={15} comrade:visible />
+					<FiveYearPlan comrade:visible />
 				</DirectiveCard>
 
 				<div style={{ minHeight: "400px" }} />
@@ -67,11 +68,11 @@ export default function Showcase() {
 				<DirectiveCard
 					name="NO:PASARAN"
 					slogan='"They shall not pass (to the client)"'
-					description="Component renders at build time only. In practice, use a regular Component.tsx if you don't need interactivity. This directive is here for the memes."
-					note="Try clicking. Nothing happens. Zero JS was sent to your browser."
+					description="A perfectly rendered form that does absolutely nothing. The button exists, the fields exist, but zero JavaScript was shipped. The request is permanently pending."
+					note="Try submitting. Nothing happens. Zero JS was sent to your browser. The form is permanently pending."
 					color="neutral"
 				>
-					<Counter initial={5} no:pasaran />
+					<BureaucraticPermit no:pasaran />
 				</DirectiveCard>
 			</div>
 		</section>
