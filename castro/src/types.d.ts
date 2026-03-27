@@ -6,7 +6,7 @@
 
 export type { FrameworkConfig } from "./islands/frameworks/types.d.ts";
 
-export type Directive = "lenin:awake" | "comrade:idle" | "comrade:visible";
+export type Directive = "lenin:awake" | "comrade:patient" | "comrade:visible";
 
 /**
  * A raw HTML string or a structured tag definition.

@@ -186,7 +186,7 @@ Key rules from `src/messages/README.md`:
 
 `test-site/` is a single test site that exercises the full build pipeline with bare-jsx, Preact, and Solid islands. Run with `bun test:sites`. Tests verify:
 - Static pages (no islands)
-- All three directives (`comrade:visible`, `comrade:idle`, `lenin:awake`)
+- All three directives (`comrade:visible`, `comrade:patient`, `lenin:awake`)
 - Component composition (islands in static components, static components in islands, islands in layouts)
 - CSS modules in static components and islands
 - Multi-framework pages (Preact + Solid islands on the same page)
@@ -218,7 +218,7 @@ Demo site that consumes castro. Uses Tailwind CSS v4 + DaisyUI v5 via `@vktrz/ca
 - `components/Header.tsx` — sticky navbar; GUIDE and HOW IT WORKS links go active when `activePath` starts with `/guide` or `/how-it-works`
 - `components/DirectiveCard.tsx` — card with explicit color map (avoids dynamic Tailwind class interpolation)
 - `components/PropagandaRadio.island.tsx` — Preact radio with cycling headlines (`lenin:awake`)
-- `components/bare-jsx/Redactor.island.tsx` — bare-jsx censorship toggle (`comrade:idle`)
+- `components/bare-jsx/Redactor.island.tsx` — bare-jsx censorship toggle (`comrade:patient`)
 - `components/solid/FiveYearPlan.island.tsx` — Solid progress tracker (`comrade:visible`)
 - `components/ThemeToggle.island.tsx` — `lenin:awake` island, DaisyUI swap + theme-controller
 

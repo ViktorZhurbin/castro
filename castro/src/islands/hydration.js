@@ -34,7 +34,7 @@ class CastroIsland extends HTMLElement {
 		if (directive === "comrade:visible") {
 			// Lazy load when scrolled into view
 			await this.waitVisible();
-		} else if (directive === "comrade:idle") {
+		} else if (directive === "comrade:patient") {
 			// Hydrate when browser is idle after page load
 			await this.waitIdle();
 		} else if (directive === "lenin:awake") {

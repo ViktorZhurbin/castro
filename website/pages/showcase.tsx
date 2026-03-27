@@ -1,7 +1,7 @@
 import type { PageMeta } from "@vktrz/castro";
+import Redactor from "../components/bare-jsx/Redactor.island.tsx";
 import { DirectiveCard } from "../components/DirectiveCard.tsx";
 import PropagandaRadio from "../components/PropagandaRadio.island.tsx";
-import Redactor from "../components/bare-jsx/Redactor.island.tsx";
 import FiveYearPlan from "../components/solid/FiveYearPlan.island.tsx";
 
 export const meta: PageMeta = {
@@ -35,13 +35,13 @@ export default function Showcase() {
 				</DirectiveCard>
 
 				<DirectiveCard
-					name="COMRADE:IDLE"
-					slogan='"Work when nobody else is busy"'
+					name="COMRADE:PATIENT"
+					slogan={`"Oh don't mind me, I'll hydrate when everyone else is done"`}
 					description="The Ministry's censorship toggle activates after the page settles. Built with Castro's bare-jsx runtime — signals and direct DOM, no virtual DOM, no CDN."
 					note="A bare-jsx island (no VDOM, no CDN). Toggle the switch — censorship activates after the browser settles."
 					color="accent"
 				>
-					<Redactor comrade:idle />
+					<Redactor comrade:patient />
 				</DirectiveCard>
 
 				<div className="py-8 px-6 text-center border-2 border-dashed border-base-300">

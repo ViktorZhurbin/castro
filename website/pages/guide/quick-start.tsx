@@ -273,7 +273,7 @@ export default function Home() {
 						</li>
 						<li className="flex gap-3 items-start">
 							<code className="badge badge-accent shrink-0 mt-0.5">
-								comrade:idle
+								comrade:patient
 							</code>
 							<span className="text-base-content">
 								Hydrate after page load, when the browser is idle. Uses

@@ -44,57 +44,57 @@ test("static page has no island artifacts", async () => {
 // ------ comrade:visible directive ------
 
 test("comrade:visible has island wrapper", async () => {
-	const html = await readHtml("visible.html");
+	const html = await readHtml("comrade-visible.html");
 	expect(html).toContain("<castro-island");
 	expect(html).toContain('directive="comrade:visible"');
 });
 
 test("comrade:visible has island runtime", async () => {
-	const html = await readHtml("visible.html");
+	const html = await readHtml("comrade-visible.html");
 	expect(html).toContain("castro-island.js");
 });
 
 test("comrade:visible has island JS bundle reference", async () => {
-	const html = await readHtml("visible.html");
+	const html = await readHtml("comrade-visible.html");
 	expect(html).toContain('import="/');
 });
 
 test("comrade:visible has SSR content", async () => {
-	const html = await readHtml("visible.html");
+	const html = await readHtml("comrade-visible.html");
 	expect(html).toContain("Count:");
 });
 
 test("comrade:visible has island CSS", async () => {
-	const html = await readHtml("visible.html");
+	const html = await readHtml("comrade-visible.html");
 	expect(html).toContain("<style>");
 	expect(html).toContain("color: red");
 });
 
-// ------ comrade:idle directive ------
+// ------ comrade:patient directive ------
 
-test("comrade:idle has island wrapper", async () => {
-	const html = await readHtml("idle.html");
+test("comrade:patient has island wrapper", async () => {
+	const html = await readHtml("comrade-patient.html");
 	expect(html).toContain("<castro-island");
-	expect(html).toContain('directive="comrade:idle"');
+	expect(html).toContain('directive="comrade:patient"');
 });
 
-test("comrade:idle has island runtime", async () => {
-	const html = await readHtml("idle.html");
+test("comrade:patient has island runtime", async () => {
+	const html = await readHtml("comrade-patient.html");
 	expect(html).toContain("castro-island.js");
 });
 
-test("comrade:idle has island JS bundle reference", async () => {
-	const html = await readHtml("idle.html");
+test("comrade:patient has island JS bundle reference", async () => {
+	const html = await readHtml("comrade-patient.html");
 	expect(html).toContain('import="/');
 });
 
-test("comrade:idle has SSR content", async () => {
-	const html = await readHtml("idle.html");
+test("comrade:patient has SSR content", async () => {
+	const html = await readHtml("comrade-patient.html");
 	expect(html).toContain("Count:");
 });
 
-test("comrade:idle has island CSS", async () => {
-	const html = await readHtml("idle.html");
+test("comrade:patient has island CSS", async () => {
+	const html = await readHtml("comrade-patient.html");
 	expect(html).toContain("<style>");
 	expect(html).toContain("color: red");
 });
@@ -102,13 +102,13 @@ test("comrade:idle has island CSS", async () => {
 // ------ lenin:awake directive ------
 
 test("lenin:awake has correct directive", async () => {
-	const html = await readHtml("awake.html");
+	const html = await readHtml("lenin-awake.html");
 	expect(html).toContain("<castro-island");
 	expect(html).toContain('directive="lenin:awake"');
 });
 
 test("lenin:awake has island runtime", async () => {
-	const html = await readHtml("awake.html");
+	const html = await readHtml("lenin-awake.html");
 	expect(html).toContain("castro-island.js");
 });
 
@@ -225,7 +225,7 @@ test("user import map entries are absent from static pages", async () => {
 // ------ User importMap → external (signals via config, not built-in) ------
 
 test("user importMap entries are treated as external in island bundles", async () => {
-	const html = await readHtml("visible.html");
+	const html = await readHtml("comrade-visible.html");
 	// @preact/signals is in the import map (added via castro.config.js, not built-in)
 	expect(html).toContain('"@preact/signals"');
 	expect(html).toContain("esm.sh/@preact/signals");

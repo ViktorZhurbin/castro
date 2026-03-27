@@ -1,8 +1,8 @@
 import Counter from "../components/Counter.island.tsx";
 
-export const meta = { title: "Visible" };
+export const meta = { title: "ComradeVisible" };
 
-export default function Visible() {
+export default function ComradeVisible() {
 	return (
 		<div>
 			<h1>Visible Test</h1>

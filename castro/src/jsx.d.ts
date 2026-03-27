@@ -25,10 +25,10 @@ declare module "preact" {
 			 *
 			 * @example
 			 * ```tsx
-			 * <Counter initial={5} comrade:idle />
+			 * <Counter initial={5} comrade:patient />
 			 * ```
 			 */
-			"comrade:idle"?: boolean;
+			"comrade:patient"?: boolean;
 
 			/**
 			 * Lazy hydration - loads JavaScript when component scrolls into viewport.

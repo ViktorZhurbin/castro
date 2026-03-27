@@ -159,7 +159,7 @@ function HowItWorks() {
 						</h3>
 						<p className="text-base-content/80 mt-1">
 							JavaScript loads based on your directive. <code>lenin:awake</code>{" "}
-							hydrates immediately. <code>comrade:idle</code> waits for idle
+							hydrates immediately. <code>comrade:patient</code> waits for idle
 							time. <code>comrade:visible</code> waits for viewport
 							intersection.
 						</p>
