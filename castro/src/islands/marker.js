@@ -25,15 +25,19 @@ import { islands } from "./registry.js";
 /**
  * Per-page island tracking. Reset before each page render.
  * - usedIslands: all rendered islands (determines CSS injection)
+ * - usedFrameworks: framework IDs encountered (determines which runtimes to emit)
  * - needsHydration: true if at least one island isn't no:pasaran (determines runtime script)
  */
 export const pageState = {
 	/** @type {Set<string>} */
 	usedIslands: new Set(),
+	/** @type {Set<string>} */
+	usedFrameworks: new Set(),
 	needsHydration: false,
 
 	reset() {
 		this.usedIslands.clear();
+		this.usedFrameworks.clear();
 		this.needsHydration = false;
 	},
 };
@@ -59,6 +63,8 @@ export function renderMarker(islandId, props = {}) {
 	const { directive, cleanProps } = processProps(props);
 
 	pageState.usedIslands.add(islandId);
+	pageState.usedFrameworks.add(island.frameworkId);
+
 	if (directive !== "no:pasaran") {
 		pageState.needsHydration = true;
 	}

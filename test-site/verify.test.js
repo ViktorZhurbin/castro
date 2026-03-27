@@ -8,7 +8,7 @@
  * Usage: bun test test-site/verify.test.js
  */
 
-import { beforeAll, describe, expect, test } from "bun:test";
+import { beforeAll, expect, test } from "bun:test";
 import { execSync } from "node:child_process";
 import { join } from "node:path";
 
@@ -259,4 +259,53 @@ test("solid-only page renders SSR content", async () => {
 test("solid-only no:pasaran has no island wrapper", async () => {
 	const html = await readHtml("solid-only.html");
 	expect(html).not.toContain("<castro-island");
+});
+
+// ------ bare-jsx framework (signals + direct DOM) ------
+
+test("bare-jsx island renders SSR content", async () => {
+	const html = await readHtml("bare.html");
+	expect(html).toContain("Bare: 5");
+});
+
+test("bare-jsx island has island wrapper", async () => {
+	const html = await readHtml("bare.html");
+	expect(html).toContain("<castro-island");
+	expect(html).toContain('directive="comrade:visible"');
+});
+
+test("bare-jsx island has island runtime", async () => {
+	const html = await readHtml("bare.html");
+	expect(html).toContain("castro-island.js");
+});
+
+test("bare-jsx island has JS bundle reference", async () => {
+	const html = await readHtml("bare.html");
+	expect(html).toContain('import="/islands/bare-jsx/BareCounter');
+});
+
+test("bare-jsx island has local runtime in import map (no CDN)", async () => {
+	const html = await readHtml("bare.html");
+	// bare-jsx externalizes its runtime and resolves it locally via import map —
+	// no CDN entries like Preact/Solid use
+	expect(html).toContain('"@vktrz/castro/signals"');
+	expect(html).toContain('"@vktrz/castro/runtime/jsx/dom"');
+	expect(html).toMatch(/\/bare-jsx\.\d+\.\d+\.\d+\.js/);
+	expect(html).not.toContain('"preact"');
+	expect(html).not.toContain('"solid-js"');
+});
+
+// ------ onAfterBuild: conditional asset writing ------
+
+test("bare-jsx runtime exists in dist with version stamp", async () => {
+	const files = await Array.fromAsync(
+		new Bun.Glob("bare-jsx.*.js").scan(distDir),
+	);
+	expect(files.length).toBe(1);
+	expect(files[0]).toMatch(/^bare-jsx\.\d+\.\d+\.\d+\.js$/);
+});
+
+test("castro-island.js exists in dist (hydrated islands used)", async () => {
+	const file = Bun.file(join(distDir, "castro-island.js"));
+	expect(await file.exists()).toBe(true);
 });

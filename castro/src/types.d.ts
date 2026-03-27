@@ -26,10 +26,21 @@ export type Asset =
 
 export type ImportsMap = Record<string, string>;
 
+/** Passed to onAfterBuild — aggregated across all pages in the build. */
+export type BuildContext = {
+	/** Framework IDs that had at least one island rendered (e.g. "bare-jsx", "preact", "solid") */
+	usedFrameworks: Set<string>;
+	/** True if any page has an island that needs client-side hydration */
+	needsHydration: boolean;
+};
+
 export type CastroPlugin = {
 	name: string;
 	getPageAssets?: (params?: { needsHydration?: boolean }) => Asset[];
+	/** Runs before pages are built. Use for pre-build work (e.g. CSS compilation). */
 	onPageBuild?: () => Promise<void>;
+	/** Runs after all pages are built. Receives build context for conditional work. */
+	onAfterBuild?: (context: BuildContext) => Promise<void>;
 	/** Directories to watch in dev mode. Changes trigger onPageBuild() + browser reload. */
 	watchDirs?: string[];
 	/**

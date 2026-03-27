@@ -1,7 +1,7 @@
 {
 	"name": "@vktrz/castro",
 	"version": "0.1.0",
-	"description": "Educational SSG teaching island architecture through <1500 lines of well-commented code",
+	"description": "Educational SSG teaching island architecture through concise, well-commented code",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/ViktorZhurbin/castro.git"
@@ -14,9 +14,27 @@
 		"castro": "./bin/castro"
 	},
 	"types": "./src/types.d.ts",
+	"exports": {
+		".": {
+			"types": "./src/types.d.ts"
+		},
+		"./signals": {
+			"types": "./runtime/signals/index.d.ts",
+			"default": "./runtime/signals/index.js"
+		},
+		"./runtime/jsx/dom": {
+			"types": "./runtime/jsx/dom/index.d.ts",
+			"default": "./runtime/jsx/dom/index.js"
+		},
+		"./runtime/jsx/ssr": {
+			"types": "./runtime/jsx/ssr/index.d.ts",
+			"default": "./runtime/jsx/ssr/index.js"
+		}
+	},
 	"files": [
 		"bin/",
-		"src/"
+		"src/",
+		"runtime/"
 	],
 	"scripts": {
 		"knip": "knip",

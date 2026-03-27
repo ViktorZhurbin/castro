@@ -4,19 +4,25 @@
  * Coordinates the full site build:
  * 1. Wipe and recreate output dir
  * 2. Copy public dir to output dir
- * 3. Run plugin build hooks
+ * 3. Run plugin pre-build hooks (onPageBuild)
  * 4. Compile and load islands and layouts
  * 5. Scan pages, detect route conflicts, build each page
+ * 6. Run plugin post-build hooks (onAfterBuild) with build context
  */
 
 import { cp, mkdir, rm } from "node:fs/promises";
 import { styleText } from "node:util";
 import { OUTPUT_DIR, PAGES_DIR, PUBLIC_DIR } from "../constants.js";
+import { pageState } from "../islands/marker.js";
 import { allPlugins } from "../islands/plugins.js";
 import { islands } from "../islands/registry.js";
 import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
 import { buildPage } from "./buildPage.js";
+
+/**
+ * @import { BuildContext } from "../types.d.ts"
+ */
 
 export async function buildAll() {
 	const isProd = process.env.NODE_ENV === "production";
@@ -85,6 +91,10 @@ export async function buildAll() {
 		return;
 	}
 
+	// Accumulate build context across pages for onAfterBuild hooks
+	/** @type {BuildContext} */
+	const buildContext = { usedFrameworks: new Set(), needsHydration: false };
+
 	for (const [outputPath, sourcePath] of outputMap.entries()) {
 		if (isProd) {
 			console.info(
@@ -108,6 +118,20 @@ export async function buildAll() {
 				),
 			);
 			throw err;
+		}
+
+		// Merge per-page state into cross-page build context
+		buildContext.usedFrameworks = buildContext.usedFrameworks.union(
+			pageState.usedFrameworks,
+		);
+		if (pageState.needsHydration) buildContext.needsHydration = true;
+	}
+
+	// Post-build hooks: plugins can conditionally write assets based
+	// on which frameworks were actually used across all pages
+	for (const plugin of allPlugins) {
+		if (plugin.onAfterBuild) {
+			await plugin.onAfterBuild(buildContext);
 		}
 	}
 
