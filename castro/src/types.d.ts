@@ -6,11 +6,7 @@
 
 export type { FrameworkConfig } from "./islands/frameworks/types.d.ts";
 
-export type Directive =
-	| "lenin:awake"
-	| "comrade:idle"
-	| "comrade:visible"
-	| "no:pasaran";
+export type Directive = "lenin:awake" | "comrade:idle" | "comrade:visible";
 
 /**
  * A raw HTML string or a structured tag definition.
@@ -30,13 +26,11 @@ export type ImportsMap = Record<string, string>;
 export type BuildContext = {
 	/** Framework IDs that had at least one island rendered (e.g. "bare-jsx", "preact", "solid") */
 	usedFrameworks: Set<string>;
-	/** True if any page has an island that needs client-side hydration */
-	needsHydration: boolean;
 };
 
 export type CastroPlugin = {
 	name: string;
-	getPageAssets?: (params?: { needsHydration?: boolean }) => Asset[];
+	getPageAssets?: (params?: { hasIslands?: boolean }) => Asset[];
 	/** Runs before pages are built. Use for pre-build work (e.g. CSS compilation). */
 	onPageBuild?: () => Promise<void>;
 	/** Runs after all pages are built. Receives build context for conditional work. */

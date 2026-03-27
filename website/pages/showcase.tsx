@@ -1,5 +1,4 @@
 import type { PageMeta } from "@vktrz/castro";
-import BureaucraticPermit from "../components/BureaucraticPermit.island.tsx";
 import { DirectiveCard } from "../components/DirectiveCard.tsx";
 import PropagandaRadio from "../components/PropagandaRadio.island.tsx";
 import Redactor from "../components/bare-jsx/Redactor.island.tsx";
@@ -61,18 +60,6 @@ export default function Showcase() {
 					color="secondary"
 				>
 					<FiveYearPlan comrade:visible />
-				</DirectiveCard>
-
-				<div style={{ minHeight: "400px" }} />
-
-				<DirectiveCard
-					name="NO:PASARAN"
-					slogan='"They shall not pass (to the client)"'
-					description="A perfectly rendered form that does absolutely nothing. The button exists, the fields exist, but zero JavaScript was shipped. The request is permanently pending."
-					note="Try submitting. Nothing happens. Zero JS was sent to your browser. The form is permanently pending."
-					color="neutral"
-				>
-					<BureaucraticPermit no:pasaran />
 				</DirectiveCard>
 			</div>
 		</section>

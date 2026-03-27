@@ -88,8 +88,8 @@ function Features() {
 					color="secondary"
 				/>
 				<FeatureCard
-					title="THREE HYDRATION STRATEGIES"
-					description="Immediate, lazy, or static-only. You choose per component."
+					title="CLIENT DIRECTIVES"
+					description="Immediate, idle, or lazy. You choose per component."
 					href="/showcase"
 					color="accent"
 				/>
@@ -158,9 +158,10 @@ function HowItWorks() {
 							SELECTIVE HYDRATION
 						</h3>
 						<p className="text-base-content/80 mt-1">
-							JavaScript loads based on your directive. <code>no:pasaran</code>{" "}
-							stays static. <code>lenin:awake</code> hydrates immediately.{" "}
-							<code>comrade:visible</code> waits for viewport intersection.
+							JavaScript loads based on your directive. <code>lenin:awake</code>{" "}
+							hydrates immediately. <code>comrade:idle</code> waits for idle
+							time. <code>comrade:visible</code> waits for viewport
+							intersection.
 						</p>
 					</div>
 				</li>

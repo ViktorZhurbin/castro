@@ -288,15 +288,6 @@ export default function Home() {
 								Hydrate immediately on page load.
 							</span>
 						</li>
-						<li className="flex gap-3 items-start">
-							<code className="badge badge-neutral shrink-0 mt-0.5">
-								no:pasaran
-							</code>
-							<span className="text-base-content">
-								Render at build time only. Zero JavaScript shipped to the
-								browser.
-							</span>
-						</li>
 					</ul>
 					<p className="text-base-content mb-4">
 						If you don't specify a directive, <code>comrade:visible</code> is

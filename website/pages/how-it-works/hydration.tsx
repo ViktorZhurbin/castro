@@ -60,15 +60,6 @@ export default function Hydration() {
 						</div>
 
 						<div className="flex flex-col gap-4">
-							<div className="card card-bordered border-base-300 bg-base-200 p-4">
-								<span className="badge badge-secondary mb-2">no:pasaran</span>
-								<p className="text-sm text-base-content/80">
-									Return immediately. No JavaScript loaded. The island stays as
-									static HTML forever. If every island on a page uses{" "}
-									<code>no:pasaran</code>, the build skips the runtime script
-									and import map entirely — the page ships zero JavaScript.
-								</p>
-							</div>
 							<div className="card card-bordered border-primary bg-base-200 p-4">
 								<span className="badge badge-primary mb-2">
 									comrade:visible

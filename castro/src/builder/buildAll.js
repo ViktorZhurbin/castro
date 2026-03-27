@@ -93,7 +93,7 @@ export async function buildAll() {
 
 	// Accumulate build context across pages for onAfterBuild hooks
 	/** @type {BuildContext} */
-	const buildContext = { usedFrameworks: new Set(), needsHydration: false };
+	const buildContext = { usedFrameworks: new Set() };
 
 	for (const [outputPath, sourcePath] of outputMap.entries()) {
 		if (isProd) {
@@ -124,7 +124,6 @@ export async function buildAll() {
 		buildContext.usedFrameworks = buildContext.usedFrameworks.union(
 			pageState.usedFrameworks,
 		);
-		if (pageState.needsHydration) buildContext.needsHydration = true;
 	}
 
 	// Post-build hooks: plugins can conditionally write assets based

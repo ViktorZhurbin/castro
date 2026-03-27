@@ -30,11 +30,6 @@ class CastroIsland extends HTMLElement {
 		// Get directive from attribute
 		const directive = this.getAttribute("directive") || "comrade:visible";
 
-		// Handle no:pasaran - static only, no hydration
-		if (directive === "no:pasaran") {
-			return;
-		}
-
 		// Wait for trigger condition based on directive
 		if (directive === "comrade:visible") {
 			// Lazy load when scrolled into view

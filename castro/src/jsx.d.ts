@@ -46,19 +46,6 @@ declare module "preact" {
 			 * ```
 			 */
 			"comrade:visible"?: boolean;
-
-			/**
-			 * Static only - component renders at build time, no JavaScript shipped.
-			 * Use for components that appear interactive but don't need client-side behavior.
-			 *
-			 * Perfect for demo/preview purposes or truly static decorative elements.
-			 *
-			 * @example
-			 * ```tsx
-			 * <Counter initial={5} no:pasaran />
-			 * ```
-			 */
-			"no:pasaran"?: boolean;
 		}
 	}
 }

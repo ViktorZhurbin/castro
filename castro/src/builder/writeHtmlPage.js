@@ -16,7 +16,7 @@ import { islands } from "../islands/registry.js";
 /**
  * @import { Asset, ImportsMap } from '../types.js'
  *
- * @typedef {{ pageCssAssets?: Asset[]; usedIslands: Set<string>; needsHydration: boolean; }} Options
+ * @typedef {{ pageCssAssets?: Asset[]; usedIslands: Set<string>; }} Options
  */
 
 /**
@@ -42,21 +42,18 @@ export async function writeHtmlPage(rawHtml, outputPath, options) {
 /**
  * @param {Options} options
  */
-async function resolvePageContext({
-	usedIslands,
-	needsHydration,
-	pageCssAssets = [],
-}) {
+async function resolvePageContext({ usedIslands, pageCssAssets = [] }) {
 	/** @type {ImportsMap} */
 	const importMap = {};
 	const assets = [...pageCssAssets];
+	const hasIslands = usedIslands.size > 0;
 
 	// Import maps and head assets: aggregate from the framework configs of
 	// islands used on this page. Each framework declares its own CDN URLs
 	// (e.g., Preact needs preact/hooks, Solid needs solid-js/web) and may
 	// provide head assets (e.g., Solid's hydration coordination script).
 	// Only frameworks actually used on this page get included.
-	if (needsHydration) {
+	if (hasIslands) {
 		const frameworks = new Set();
 
 		for (const id of usedIslands) {
@@ -80,11 +77,9 @@ async function resolvePageContext({
 	}
 
 	// Plugin assets: island runtime script, CSS links, etc.
-	// Only included when at least one island needs client-side hydration
-	// (no:pasaran-only pages skip the runtime entirely).
 	for (const plugin of allPlugins) {
 		if (plugin.getPageAssets) {
-			assets.push(...plugin.getPageAssets({ needsHydration }));
+			assets.push(...plugin.getPageAssets({ hasIslands }));
 		}
 	}
 

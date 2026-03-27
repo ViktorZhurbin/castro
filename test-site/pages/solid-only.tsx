@@ -6,7 +6,7 @@ export default function SolidOnly() {
 	return (
 		<div>
 			<h1>Solid Only Test</h1>
-			<SolidCounter initial={5} no:pasaran />
+			<SolidCounter initial={5} lenin:awake />
 		</div>
 	);
 }

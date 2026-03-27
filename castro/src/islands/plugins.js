@@ -76,7 +76,7 @@ function castroIslandRuntime() {
 		name: "castro-island-runtime",
 
 		getPageAssets(params = {}) {
-			if (params.needsHydration) {
+			if (params.hasIslands) {
 				return [
 					{
 						tag: "script",
@@ -88,8 +88,8 @@ function castroIslandRuntime() {
 			return [];
 		},
 
-		async onAfterBuild({ needsHydration }) {
-			if (!needsHydration) return;
+		async onAfterBuild({ usedFrameworks }) {
+			if (!usedFrameworks.size) return;
 
 			await Bun.write(
 				join(OUTPUT_DIR, "castro-island.js"),

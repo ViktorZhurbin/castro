@@ -32,7 +32,7 @@ export default function Plugins() {
 					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-6">
 						<code>{`type CastroPlugin = {
   name: string;
-  getPageAssets?: (params?: { needsHydration?: boolean }) => Asset[];
+  getPageAssets?: (params?: { hasIslands?: boolean }) => Asset[];
   onPageBuild?: () => Promise<void>;
   watchDirs?: string[];
   frameworkConfig?: FrameworkConfig;
@@ -55,9 +55,9 @@ export default function Plugins() {
 							<p className="text-base-content mb-2">
 								Called once per page render. Returns an array of{" "}
 								<code>Asset</code> objects to inject into the page's{" "}
-								<code>{"<head>"}</code>. Receives <code>needsHydration</code> so
+								<code>{"<head>"}</code>. Receives <code>hasIslands</code> so
 								plugins can conditionally inject assets only on pages that use
-								interactive islands — see{" "}
+								islands — see{" "}
 								<a href="/how-it-works/hydration" className="underline">
 									Hydration
 								</a>{" "}

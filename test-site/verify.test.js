@@ -112,24 +112,6 @@ test("lenin:awake has island runtime", async () => {
 	expect(html).toContain("castro-island.js");
 });
 
-// ------ no:pasaran directive ------
-
-test("no:pasaran renders HTML content", async () => {
-	const html = await readHtml("nopasaran.html");
-	expect(html).toContain("Count:");
-});
-
-test("no:pasaran has no island wrapper", async () => {
-	const html = await readHtml("nopasaran.html");
-	expect(html).not.toContain("<castro-island");
-});
-
-test("no:pasaran ships no client JS", async () => {
-	const html = await readHtml("nopasaran.html");
-	expect(html).not.toContain('import="/');
-	expect(html).not.toContain("castro-island.js");
-});
-
 // ------ Multiple islands ------
 
 test("multi page has both islands", async () => {
@@ -256,9 +238,9 @@ test("solid-only page renders SSR content", async () => {
 	expect(html).toContain("Solid:");
 });
 
-test("solid-only no:pasaran has no island wrapper", async () => {
+test("solid-only page has island wrapper", async () => {
 	const html = await readHtml("solid-only.html");
-	expect(html).not.toContain("<castro-island");
+	expect(html).toContain("<castro-island");
 });
 
 // ------ bare-jsx framework (signals + direct DOM) ------

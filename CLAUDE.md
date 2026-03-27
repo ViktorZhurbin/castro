@@ -129,7 +129,7 @@ Old approach used `options.vnode` hook (runtime monkey-patch). Current approach:
 
 `castro.config.js` accepts a `plugins` array of `CastroPlugin` objects. User plugins are merged with internal plugins (island runtime, Preact islands) and participate in the same build lifecycle:
 - `onPageBuild()` — runs before pages are built (and on every page save in dev for user plugins)
-- `onAfterBuild(context)` — runs after all pages are built. Receives `{ usedFrameworks: Set<string>, needsHydration: boolean }` so plugins can conditionally write assets (e.g., only copy a runtime if the framework was actually used)
+- `onAfterBuild(context)` — runs after all pages are built. Receives `{ usedFrameworks: Set<string> }` so plugins can conditionally write assets (e.g., only copy a runtime if the framework was actually used)
 - `getPageAssets()` — injects `<link>`/`<style>`/`<script>` tags into every page
 - `frameworkConfig` — optional `FrameworkConfig` object to register a custom framework for islands
 - `watchDirs` — directories to watch in dev mode; changes trigger `onPageBuild()` + reload
@@ -179,14 +179,14 @@ Key rules from `src/messages/README.md`:
 - **bare-jsx framework** ships its ~2KB runtime (`castro/runtime/`) inside the `@vktrz/castro` package — no CDN, no third-party dependencies. The runtime is built once by `bareRuntimePlugin` (via `onAfterBuild`) and served as `/bare-jsx.js`, shared across all bare islands via import map. Uses `Bun.Transpiler` in a build plugin to transform JSX with classic mode (`h()` factory), bypassing the project's tsconfig. Island components import signals from `@vktrz/castro/signals`; the build plugin injects `h`/`Fragment` from `@vktrz/castro/runtime/jsx/dom` (client) or `@vktrz/castro/runtime/jsx/ssr` (server) — two specifiers because they must resolve to different files in SSR (`signals.js` vs `jsx-ssr.js`). In the browser both map to `/bare-jsx.js` via import map. The `onResolve` hook in SSR builds maps these specifiers to absolute paths so they get bundled (not externalized). Re-render hydration (clear + mount) instead of DOM walking. Known limitations: no effect disposal, no batching, no fragment-aware reactive replacement (reactive conditionals must return single root elements, not Fragments).
 - **`IslandComponent.ssrModule`** typed as `{ default: Function }` (framework-agnostic). Pre-loaded by the registry, accessed synchronously by `renderMarker()`.
 - **`renderSSR` accepts `Function`**, not `ComponentType`. Each framework config casts internally.
-- **Island CSS** tracked per-page via `pageState` in `marker.js`, not on the registry singleton. `pageState.needsHydration` controls whether the runtime script is included (pages with only `no:pasaran` islands ship zero client JS).
+- **Island CSS** tracked per-page via `pageState` in `marker.js`, not on the registry singleton. The runtime script is included when `usedIslands.size > 0`.
 - **Island imports must use relative paths**, not tsconfig `paths` aliases. `Bun.build`'s `packages: "external"` treats `@`-prefixed imports as scoped npm packages and externalizes them before path alias resolution runs, so the `islandMarkerPlugin` never intercepts them.
 
 ## Testing
 
 `test-site/` is a single test site that exercises the full build pipeline with bare-jsx, Preact, and Solid islands. Run with `bun test:sites`. Tests verify:
 - Static pages (no islands)
-- All four directives (`comrade:visible`, `comrade:idle`, `lenin:awake`, `no:pasaran`)
+- All three directives (`comrade:visible`, `comrade:idle`, `lenin:awake`)
 - Component composition (islands in static components, static components in islands, islands in layouts)
 - CSS modules in static components and islands
 - Multi-framework pages (Preact + Solid islands on the same page)
@@ -217,9 +217,9 @@ Demo site that consumes castro. Uses Tailwind CSS v4 + DaisyUI v5 via `@vktrz/ca
 - `layouts/docs.tsx` — docs layout with DaisyUI drawer sidebar; section-aware via `sidebarSections` map keyed by `"how-it-works"` / `"guide"`
 - `components/Header.tsx` — sticky navbar; GUIDE and HOW IT WORKS links go active when `activePath` starts with `/guide` or `/how-it-works`
 - `components/DirectiveCard.tsx` — card with explicit color map (avoids dynamic Tailwind class interpolation)
-- `components/Counter.island.tsx` — Preact counter demonstrating `no:pasaran` and `lenin:awake`
-- `components/bare-jsx/BareCounter.island.tsx` — bare-jsx counter demonstrating `comrade:idle`
-- `components/solid/SolidCounter.island.tsx` — Solid counter demonstrating `comrade:visible` (multi-framework)
+- `components/PropagandaRadio.island.tsx` — Preact radio with cycling headlines (`lenin:awake`)
+- `components/bare-jsx/Redactor.island.tsx` — bare-jsx censorship toggle (`comrade:idle`)
+- `components/solid/FiveYearPlan.island.tsx` — Solid progress tracker (`comrade:visible`)
 - `components/ThemeToggle.island.tsx` — `lenin:awake` island, DaisyUI swap + theme-controller
 
 **Docs pages** (`how-it-works/`, `guide/`): each exports a `meta` with `layout: "docs"`, `path: "<exact-url>"`, and `section: "<section-key>"`. The `path` field drives sidebar active highlighting and header active state — **update it if a page's URL changes**. The `section` field selects which sidebar group is shown (`"how-it-works"` or `"guide"`).

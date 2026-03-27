@@ -24,21 +24,18 @@ import { islands } from "./registry.js";
 
 /**
  * Per-page island tracking. Reset before each page render.
- * - usedIslands: all rendered islands (determines CSS injection)
+ * - usedIslands: all rendered islands (determines CSS injection and runtime injection)
  * - usedFrameworks: framework IDs encountered (determines which runtimes to emit)
- * - needsHydration: true if at least one island isn't no:pasaran (determines runtime script)
  */
 export const pageState = {
 	/** @type {Set<string>} */
 	usedIslands: new Set(),
 	/** @type {Set<string>} */
 	usedFrameworks: new Set(),
-	needsHydration: false,
 
 	reset() {
 		this.usedIslands.clear();
 		this.usedFrameworks.clear();
-		this.needsHydration = false;
 	},
 };
 
@@ -65,10 +62,6 @@ export function renderMarker(islandId, props = {}) {
 	pageState.usedIslands.add(islandId);
 	pageState.usedFrameworks.add(island.frameworkId);
 
-	if (directive !== "no:pasaran") {
-		pageState.needsHydration = true;
-	}
-
 	let ssrHtml = "";
 
 	try {
@@ -84,13 +77,6 @@ export function renderMarker(islandId, props = {}) {
 		ssrHtml = defaultConfig.renderSSR(SSRError, { islandId, error: err });
 	}
 
-	// no:pasaran = static only, no hydration wrapper
-	if (directive === "no:pasaran") {
-		return h("div", {
-			dangerouslySetInnerHTML: { __html: ssrHtml },
-		});
-	}
-
 	return h("castro-island", {
 		directive,
 		import: island.publicJsPath,
@@ -100,12 +86,7 @@ export function renderMarker(islandId, props = {}) {
 }
 
 /** @type {Directive[]} */
-const DIRECTIVES = [
-	"lenin:awake",
-	"comrade:idle",
-	"comrade:visible",
-	"no:pasaran",
-];
+const DIRECTIVES = ["lenin:awake", "comrade:idle", "comrade:visible"];
 /** @type {Directive} */
 const DEFAULT_DIRECTIVE = "comrade:visible";
 
