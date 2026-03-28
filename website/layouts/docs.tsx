@@ -28,6 +28,7 @@ const sidebarSections: Record<
 		links: [
 			{ href: "/guide/quick-start", label: "Quick Start" },
 			{ href: "/guide/configuration", label: "Configuration" },
+			{ href: "/guide/directives", label: "Directives" },
 			{ href: "/guide/multi-framework", label: "Multi-Framework" },
 			{ href: "/guide/plugins", label: "Plugins" },
 		],

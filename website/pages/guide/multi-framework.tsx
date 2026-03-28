@@ -1,5 +1,8 @@
 import type { PageMeta } from "@vktrz/castro";
+import Redactor from "../../components/bare-jsx/Redactor.island.tsx";
 import { Note } from "../../components/Note.tsx";
+import PropagandaRadio from "../../components/PropagandaRadio.island.tsx";
+import FiveYearPlan from "../../components/solid/FiveYearPlan.island.tsx";
 
 export const meta: PageMeta = {
 	title: "Multi-Framework — Castro Guide",
@@ -85,11 +88,74 @@ export default function Page() {
 
 			<div className="divider max-w-4xl mx-auto" />
 
+			{/* Live demo */}
+			<section className="py-10 px-6 bg-base-100">
+				<div className="max-w-4xl mx-auto">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
+						3. LIVE DEMO: THREE FRAMEWORKS, ONE PAGE
+					</h2>
+					<p className="text-base-content mb-8">
+						Three islands below, three different frameworks. Castro handles the
+						separate compilation and import maps automatically. Open DevTools
+						Network to see Preact, bare-jsx runtime, and Solid load
+						independently.
+					</p>
+
+					<div className="space-y-6">
+						<div className="card card-border border-primary bg-base-100">
+							<div className="card-body">
+								<h3 className="card-title font-display text-2xl text-primary">
+									PREACT
+								</h3>
+								<p className="text-sm text-base-content/80">
+									Virtual DOM diffing. Loaded from CDN via import map.
+								</p>
+								<div className="bg-base-200 p-4 border border-dashed border-base-300">
+									<PropagandaRadio />
+								</div>
+							</div>
+						</div>
+
+						<div className="card card-border border-accent bg-base-100">
+							<div className="card-body">
+								<h3 className="card-title font-display text-2xl text-accent">
+									BARE-JSX
+								</h3>
+								<p className="text-sm text-base-content/80">
+									Castro's own runtime. Signals + direct DOM, no virtual DOM, no
+									CDN.
+								</p>
+								<div className="bg-base-200 p-4 border border-dashed border-base-300">
+									<Redactor />
+								</div>
+							</div>
+						</div>
+
+						<div className="card card-border border-secondary bg-base-100">
+							<div className="card-body">
+								<h3 className="card-title font-display text-2xl text-secondary">
+									SOLID
+								</h3>
+								<p className="text-sm text-base-content/80">
+									Compiled reactive DOM. Fine-grained updates without a virtual
+									DOM.
+								</p>
+								<div className="bg-base-200 p-4 border border-dashed border-base-300">
+									<FiveYearPlan />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<div className="divider max-w-4xl mx-auto" />
+
 			{/* What happens under the hood */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
-						3. WHAT HAPPENS UNDER THE HOOD
+						4. WHAT HAPPENS UNDER THE HOOD
 					</h2>
 					<ul className="space-y-3 text-base-content">
 						<li>
@@ -162,7 +228,7 @@ export default function Page() {
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
-						4. THE FrameworkConfig INTERFACE
+						5. THE FrameworkConfig INTERFACE
 					</h2>
 					<p className="text-base-content mb-6">
 						To add a framework (via plugin or a built-in file in{" "}
@@ -215,7 +281,7 @@ export default function Page() {
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
-						5. ADDING A NEW FRAMEWORK
+						6. ADDING A NEW FRAMEWORK
 					</h2>
 					<p className="text-base-content mb-4">
 						Register a custom framework by providing a{" "}
@@ -264,11 +330,8 @@ export function myFrameworkPlugin() {
 			<section className="py-10 px-6 bg-base-200">
 				<div className="max-w-4xl mx-auto">
 					<div className="flex flex-wrap gap-4">
-						<a
-							href="/guide/configuration"
-							className="btn btn-outline btn-primary"
-						>
-							← Configuration
+						<a href="/guide/directives" className="btn btn-outline btn-primary">
+							← Directives
 						</a>
 						<a href="/guide/plugins" className="btn btn-outline btn-primary">
 							Next: Plugins →

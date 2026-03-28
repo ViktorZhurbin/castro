@@ -61,14 +61,23 @@ export default function Hydration() {
 
 						<div className="flex flex-col gap-4">
 							<div className="card card-bordered border-primary bg-base-200 p-4">
-								<span className="badge badge-primary mb-2">
-									comrade:visible
-								</span>
+								<div className="flex items-center mb-2 gap-2">
+									<span className="badge badge-primary">comrade:visible</span>
+									<span className="badge badge-sm badge-neutral badge-dash">
+										default
+									</span>
+								</div>
 								<p className="text-sm text-base-content/80">
 									Wait for the element to enter the viewport via{" "}
 									<code>IntersectionObserver</code> (with a 100px buffer). Then
-									hydrate. This is the default — used when no directive is
-									specified.
+									hydrate.
+								</p>
+							</div>
+							<div className="card card-bordered border-accent bg-base-200 p-4">
+								<span className="badge badge-accent mb-2">comrade:patient</span>
+								<p className="text-sm text-base-content/80">
+									Wait for the browser to be idle via{" "}
+									<code>requestIdleCallback</code>. Then hydrate.
 								</p>
 							</div>
 							<div className="card card-bordered border-accent bg-base-200 p-4">

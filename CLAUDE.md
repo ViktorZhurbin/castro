@@ -216,11 +216,14 @@ Demo site that consumes castro. Uses Tailwind CSS v4 + DaisyUI v5 via `@vktrz/ca
 - `layouts/default.tsx` — HTML shell, Google Fonts (Bebas Neue + Barlow), ThemeToggle island
 - `layouts/docs.tsx` — docs layout with DaisyUI drawer sidebar; section-aware via `sidebarSections` map keyed by `"how-it-works"` / `"guide"`
 - `components/Header.tsx` — sticky navbar; GUIDE and HOW IT WORKS links go active when `activePath` starts with `/guide` or `/how-it-works`
-- `components/DirectiveCard.tsx` — card with explicit color map (avoids dynamic Tailwind class interpolation)
 - `components/PropagandaRadio.island.tsx` — Preact radio with cycling headlines (`lenin:awake`)
+- `components/bare-jsx/PropagandaRadio.island.tsx` — bare-jsx port of PropagandaRadio, used on the directives guide page
 - `components/bare-jsx/Redactor.island.tsx` — bare-jsx censorship toggle (`comrade:patient`)
+- `components/bare-jsx/FiveYearPlan.island.tsx` — bare-jsx port of FiveYearPlan, used on the directives guide page
 - `components/solid/FiveYearPlan.island.tsx` — Solid progress tracker (`comrade:visible`)
 - `components/ThemeToggle.island.tsx` — `lenin:awake` island, DaisyUI swap + theme-controller
+- `pages/guide/directives.tsx` — prose + live demos for all three directives, one bare-jsx island per directive
+- `pages/guide/multi-framework.tsx` — side-by-side live demos of Preact, bare-jsx, and Solid islands
 
 **Docs pages** (`how-it-works/`, `guide/`): each exports a `meta` with `layout: "docs"`, `path: "<exact-url>"`, and `section: "<section-key>"`. The `path` field drives sidebar active highlighting and header active state — **update it if a page's URL changes**. The `section` field selects which sidebar group is shown (`"how-it-works"` or `"guide"`).
 

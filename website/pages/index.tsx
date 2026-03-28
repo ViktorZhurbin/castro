@@ -90,7 +90,7 @@ function Features() {
 				<FeatureCard
 					title="CLIENT DIRECTIVES"
 					description="Immediate, idle, or lazy. You choose per component."
-					href="/showcase"
+					href="/guide/directives"
 					color="accent"
 				/>
 				<FeatureCard

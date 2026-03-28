@@ -5,15 +5,17 @@ export default function Redactor() {
 
 	return (
 		<div>
-			<label class="flex items-center gap-3 mb-4 cursor-pointer">
+			<label class="label">
 				<input
+					class="toggle toggle-primary"
 					type="checkbox"
-					class="toggle toggle-error"
+					checked={censored()}
 					onChange={(e) => setCensored((e.target as HTMLInputElement).checked)}
 				/>
-				<span class="font-display text-sm">APPLY STATE CENSORSHIP</span>
+				APPLY STATE CENSORSHIP
 			</label>
-			<p class="leading-relaxed">
+
+			<p class="leading-relaxed mt-2">
 				The recent harvest was{" "}
 				{() =>
 					censored() ? (
