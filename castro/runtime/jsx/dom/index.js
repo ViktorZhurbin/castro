@@ -42,7 +42,7 @@ function setAttr(element, key, value) {
  * @param {...Children} children
  * @returns {Node}
  */
-export function h(tag, props, ...children) {
+export function createElement(tag, props, ...children) {
 	if (typeof tag === "function") {
 		return tag({
 			...props,

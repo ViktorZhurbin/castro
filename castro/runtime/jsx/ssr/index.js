@@ -1,7 +1,7 @@
 /**
  * JSX SSR Runtime — HTML String Generation
  *
- * Server-side counterpart to jsx/dom.js. Same h(tag, props, ...children)
+ * Server-side counterpart to jsx/dom.js. Same createElement(tag, props, ...children)
  * interface, but returns HTML strings. Function values (signals) are
  * resolved immediately — no reactivity on the server, just a snapshot.
  *
@@ -84,13 +84,13 @@ function resolveChild(child) {
  * @param {...Children} children
  * @returns {HtmlString}
  */
-export function h(tag, props, ...children) {
+export function createElement(tag, props, ...children) {
 	if (typeof tag === "function") {
 		const result = tag({
 			...props,
 			children: children.length === 1 ? children[0] : children,
 		});
-		// Components should return HtmlString (from calling h() internally),
+		// Components should return HtmlString (from calling createElement() internally),
 		// but if one returns a raw string/number, escape it to prevent XSS.
 		if (result instanceof HtmlString) {
 			return result;

@@ -19,7 +19,7 @@ export type Children = Child | Child[];
 export type Component = (props: Record<string, any>) => HtmlString;
 
 /** JSX factory — turns `<div class="x">` into an HTML string. */
-export function h(
+export function createElement(
 	tag: string | Component,
 	props: Record<string, any> | null,
 	...children: Children[]

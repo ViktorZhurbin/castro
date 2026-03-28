@@ -38,15 +38,15 @@ const JSX_DIR = join(RUNTIME_DIR, "jsx");
 /**
  * Bun.build plugin that wires up the bare-jsx runtime.
  *
- * Injects h() and Fragment imports into .jsx/.tsx files. Classic JSX
- * transform compiles <div> to h("div", ...) but doesn't auto-inject
+ * Injects createElement() and Fragment imports into .jsx/.tsx files. Classic JSX
+ * transform compiles <div> to createElement("div", ...) but doesn't auto-inject
  * imports like the "automatic" runtime does. This plugin handles it,
  * using Bun.Transpiler to override the project's tsconfig JSX settings.
  *
  * Why Bun.Transpiler? The project's tsconfig sets `jsx: "react-jsx"`
  * (automatic runtime for Preact). Per-file `@jsx` pragmas only work in
  * classic mode, and `@jsxImportSource` would need a jsx-runtime adapter
- * layer. The transpiler lets us compile with classic `h()` factory
+ * layer. The transpiler lets us compile with classic `createElement()` factory
  * directly — same pattern Solid uses with Babel.
  *
  * @param {"dom" | "ssr"} target
@@ -85,7 +85,7 @@ function bareJsxPlugin(target) {
 				});
 			}
 
-			// Transform JSX using Bun's transpiler with our h() factory.
+			// Transform JSX using Bun's transpiler with our createElement() factory.
 			// Returns plain JS (loader: "js") so Bun's built-in JSX
 			// transform doesn't re-process it with the project's tsconfig.
 			build.onLoad({ filter: /\.[jt]sx$/ }, async ({ path }) => {
@@ -95,13 +95,13 @@ function bareJsxPlugin(target) {
 					tsconfig: JSON.stringify({
 						compilerOptions: {
 							jsx: "react",
-							jsxFactory: "h",
+							jsxFactory: "createElement",
 							jsxFragmentFactory: "Fragment",
 						},
 					}),
 				});
 				const code = transpiler.transformSync(
-					`import { h, Fragment } from "${runtimeImport}";\n${source}`,
+					`import { createElement, Fragment } from "${runtimeImport}";\n${source}`,
 				);
 				return { contents: code, loader: "js" };
 			});
@@ -115,13 +115,13 @@ export default {
 
 	/**
 	 * Bun.build settings for bare-jsx islands.
-	 * Uses classic JSX transform (explicit h() factory) instead of automatic
+	 * Uses classic JSX transform (explicit createElement() factory) instead of automatic
 	 * (which would look for a jsx-runtime module). Client builds externalize
 	 * the runtime — the browser loads it once via import map, shared across
 	 * all bare-jsx islands on the page.
 	 */
 	getBuildConfig: (target) => ({
-		jsx: { runtime: "classic", factory: "h", fragment: "Fragment" },
+		jsx: { runtime: "classic", factory: "createElement", fragment: "Fragment" },
 		plugins: [bareJsxPlugin(target ?? "dom")],
 		external:
 			target === "ssr"

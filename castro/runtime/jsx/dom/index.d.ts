@@ -20,7 +20,7 @@ export type Children = Child | Child[];
 export type Component = (props: Record<string, any>) => Node;
 
 /** JSX factory — turns `<div class="x">` into real DOM nodes. */
-export function h(
+export function createElement(
 	tag: string | Component,
 	props: Record<string, any> | null,
 	...children: Children[]

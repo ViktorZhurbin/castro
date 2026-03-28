@@ -306,8 +306,8 @@ export function myFrameworkPlugin() {
         "my-framework": "https://esm.sh/my-framework",
       },
       hydrateFnString: \`
-        const { hydrate, h } = await import("my-framework");
-        hydrate(h(Component, props), container);
+        const { hydrate, createElement } = await import("my-framework");
+        hydrate(createElement(Component, props), container);
       \`,
       renderSSR: (Component, props) => {
         // Return an HTML string
