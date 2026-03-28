@@ -1,5 +1,3 @@
-export { createEffect, createSignal } from "../../signals/index.d.ts";
-
 /** Wraps an HTML string to distinguish safe markup from user text. */
 export class HtmlString {
 	constructor(html: string);

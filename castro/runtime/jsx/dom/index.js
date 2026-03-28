@@ -1,7 +1,7 @@
 /**
  * JSX DOM Runtime — Real DOM Nodes with Reactive Bindings
  *
- * A VDOM-less JSX factory. Creates actual DOM elements and wires up
+ * A no-virtual-DOM JSX factory. Creates actual DOM elements and wires up
  * fine-grained reactivity via signals. When a prop or child is
  * a function (signal getter), it's wrapped in an effect that updates that
  * specific DOM node or attribute — no re-rendering, no diffing.
@@ -22,9 +22,9 @@
 
 import { createEffect } from "../../signals/index.js";
 
-// Re-exported so island components can import signals from the same
-// module the build plugin injects (jsx-dom.js for client, jsx-ssr.js for SSR).
-// Without this, components would need a separate import for signals.
+// Re-exported because the browser import map collapses both
+// `@vktrz/castro/runtime/jsx/dom` and `@vktrz/castro/signals` to the same
+// /bare-jsx.js file. That single file must export h, Fragment, AND signals.
 export { createEffect, createSignal } from "../../signals/index.js";
 
 /**
