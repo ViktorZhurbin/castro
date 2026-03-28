@@ -9,8 +9,12 @@
 export type Effect = { dependencies: Set<Signal>; execute: () => void };
 export type Signal = (() => unknown) & { subscribers: Set<Effect> };
 
+// Public API — names follow SolidJS conventions
+export type Accessor<T> = () => T;
+export type Setter<T> = (value: T | ((prev: T) => T)) => void;
+
 export function createSignal<T>(
 	initialValue: T,
-): [get: () => T, set: (value: T | ((prev: T) => T)) => void];
+): [get: Accessor<T>, set: Setter<T>];
 
 export function createEffect(fn: () => void): void;

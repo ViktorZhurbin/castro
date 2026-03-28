@@ -1,44 +1,43 @@
 /**
  * Signals — Fine-Grained Reactive Primitives
  *
- * Automatic dependency tracking via a global listener context. When an
- * effect runs, it sets itself as the listener. Any signal read during
- * that execution subscribes the effect. When the signal changes, it
- * re-runs all subscribed effects — which re-track their dependencies
- * from scratch (enabling dynamic/conditional deps).
+ * 1. GLOBAL CONTEXT TRACKING
+ *    A `listener` variable tracks which effect is currently executing.
+ *    When a signal is read during execution, it subscribes the listener.
+ *
+ * 2. BIDIRECTIONAL CONNECTIONS
+ *    Signals → Subscribers (forward): "when I change, notify these effects"
+ *    Effects → Dependencies (backward): "I depend on these signals" (for cleanup)
+ *
+ * 3. DYNAMIC DEPENDENCIES
+ *    Before re-running, effects clean up old subscriptions. During re-run,
+ *    new subscriptions form based on which signals are actually read —
+ *    so conditional logic (if/else) can change deps at runtime.
+ *
+ * Core pattern: cleanup → set listener → execute → subscribe
  *
  * Limitations (intentional, for simplicity):
- * - No effect disposal (effects live forever, can't be stopped once created)
- * - No batching (each write triggers subscribers immediately — deep
- *   dependency chains can cause cascading re-execution or stack overflow)
+ * - No effect disposal (effects live forever once created)
+ * - No batching (each write triggers subscribers immediately)
  * - No error boundaries
  */
 
 /**
- * @import { Effect, Signal, createSignal, createEffect } from "./index.d.ts"
+ * @import { Effect, Signal, Accessor, Setter } from "./index.d.ts"
  */
 
-/**
- * The currently executing effect, or null. Signal reads during
- * execution subscribe this effect. See runWithTracking for the
- * save/restore that supports nesting.
- * @type {Effect | null}
- */
+/** @type {Effect | null} */
 let listener = null;
 
-/** Max re-entrant depth before we throw. Catches infinite loops from
- *  diamond dependencies or write-during-read patterns that would
- *  otherwise stack overflow silently. The limit is generous — real
- *  components rarely exceed 5-10 levels. */
+/** Catches infinite loops from cascading signal writes. Real components
+ *  rarely exceed 5-10 levels — 100 is generous. */
 const MAX_DEPTH = 100;
-/** Current re-entrance level, incremented/decremented by runWithTracking */
 let depth = 0;
 
 /**
- * Creates a reactive signal — an observable value with automatic tracking.
- * Returns [getter, setter] tuple like React's useState.
- *
- * @type {createSignal}
+ * @template T
+ * @param {T} initialValue
+ * @returns {[get: Accessor<T>, set: Setter<T>]}
  */
 export function createSignal(initialValue) {
 	let value = initialValue;
@@ -46,29 +45,28 @@ export function createSignal(initialValue) {
 	/** @type {Set<Effect>} */
 	const subscribers = new Set();
 
-	/** Subscribe bidirectionally: effect → signal (for cleanup) and signal → effect (for notification) */
+	/** @type {Accessor<T>} */
 	function read() {
 		if (listener) {
+			// Subscribe bidirectionally:
+			//  - effect → signal (for cleanup)
+			//  - signal → effect (for notification)
 			subscribers.add(listener);
 			listener.dependencies.add(/** @type {Signal} */ (read));
 		}
 		return value;
 	}
 
-	/**
-	 * Updates the signal. Accepts a value or an updater function (prev → next).
-	 * @param {any} nextValue
-	 */
+	/** @type {Setter<T>} */
 	function write(nextValue) {
 		value = typeof nextValue === "function" ? nextValue(value) : nextValue;
 
-		// Snapshot subscribers — an effect re-running may modify the set
+		// Snapshot — an effect re-running may modify the subscriber set
 		for (const effect of [...subscribers]) {
 			effect.execute();
 		}
 	}
 
-	// Expose subscribers so cleanup() can remove effects from this signal
 	read.subscribers = subscribers;
 
 	return [read, write];
@@ -76,9 +74,9 @@ export function createSignal(initialValue) {
 
 /**
  * Creates a reactive effect that re-runs when its dependencies change.
- * Runs immediately on creation to establish initial subscriptions.
+ * Runs immediately to establish initial subscriptions.
  *
- * @param {() => void} fn - The effect function to run
+ * @param {() => void} fn
  */
 export function createEffect(fn) {
 	/** @type {Effect} */
@@ -89,18 +87,12 @@ export function createEffect(fn) {
 		},
 	};
 
-	// Run immediately on creation
 	effect.execute();
 }
 
 /**
- * Runs a function with dependency tracking. Saves and restores the
- * listener so nested effects (createEffect inside createEffect) don't
- * clobber the outer context. Production systems like SolidJS use the
- * same push/pop pattern.
- *
- * Also enforces a depth limit to catch infinite loops from cascading
- * signal writes — the educational alternative to a full batch queue.
+ * Executes `fn` with dependency tracking. Enforces a depth limit
+ * to catch infinite loops — the educational alternative to a batch queue.
  *
  * @param {Effect} effect
  * @param {() => any} fn
@@ -117,13 +109,13 @@ function runWithTracking(effect, fn) {
 
 	cleanup(effect);
 
-	// Push: save current listener, set this effect as active
+	// Save and restore listener so nested effects don't
+	// clobber the outer tracking context
 	const prev = listener;
 	listener = effect;
 	try {
 		return fn();
 	} finally {
-		// Pop: restore previous listener (supports nesting)
 		listener = prev;
 		depth--;
 	}
@@ -131,7 +123,7 @@ function runWithTracking(effect, fn) {
 
 /**
  * Removes an effect from all its dependencies' subscriber sets.
- * Called before re-running an effect so stale subscriptions are cleared.
+ * Called before re-running so stale subscriptions are cleared.
  *
  * @param {Effect} effect
  */
