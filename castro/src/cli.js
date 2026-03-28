@@ -20,11 +20,15 @@ switch (command) {
 		break;
 	}
 
+	// biome-ignore lint/suspicious/noFallthroughSwitchClause: process.exit() would do the job
 	case "build": {
 		process.env.NODE_ENV = "production";
 		const { buildAll } = await import("./builder/buildAll.js");
 		await buildAll();
-		break;
+
+		// Explicit exit — plugins can keep file watchers alive
+		// that prevent natural process termination.
+		process.exit(0);
 	}
 
 	default: {
