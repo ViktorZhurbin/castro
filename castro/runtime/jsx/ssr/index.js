@@ -1,14 +1,16 @@
 /**
  * JSX SSR Runtime — HTML String Generation
  *
- * Server-side counterpart to jsx-dom.js. Same h(tag, props, ...children)
- * interface, but concatenates HTML strings instead of creating DOM nodes.
- * Function values (signals) are resolved immediately — no reactivity on
- * the server, just a static snapshot.
+ * Server-side counterpart to jsx/dom.js. Same h(tag, props, ...children)
+ * interface, but returns HTML strings. Function values (signals) are
+ * resolved immediately — no reactivity on the server, just a snapshot.
  *
- * The HtmlString wrapper distinguishes framework-generated markup (safe)
- * from user text (needs escaping), preventing XSS. Same problem React
- * solves with $$typeof symbols — here it's a visible class instead.
+ * HtmlString distinguishes framework markup (safe) from user text
+ * (needs escaping), preventing XSS — same role as React's $$typeof.
+ */
+
+/**
+ * @import { Children } from "./index.d.ts"
  */
 
 /** HTML elements that have no closing tag (self-closing) */
@@ -53,26 +55,33 @@ function escapeHtml(str) {
 }
 
 /**
- * Resolves a child value to an HTML string.
- * Server-side counterpart to appendStaticChild in jsx-dom.js.
- * Functions (signals) are called immediately. HtmlString values pass
- * through as safe markup; everything else is escaped as text.
+ * Resolves a child value to an HTML string. Server-side counterpart
+ * to appendChild in jsx/dom.js. HtmlString passes through as safe
+ * markup; everything else is escaped.
  *
  * @param {any} child
  * @returns {string}
  */
 function resolveChild(child) {
 	const val = typeof child === "function" ? child() : child;
-	if (val == null || val === false || val === true) return "";
-	return val instanceof HtmlString ? val.value : escapeHtml(String(val));
+
+	if (val == null || val === false || val === true) {
+		return "";
+	}
+
+	if (val instanceof HtmlString) {
+		return val.value;
+	}
+
+	return escapeHtml(String(val));
 }
 
 /**
- * JSX factory for SSR — produces HTML strings, not DOM nodes.
+ * JSX factory — turns `<div class="x">` into an HTML string.
  *
- * @param {string | Function} tag
+ * @param {string | ((props: Record<string, any>) => HtmlString)} tag
  * @param {Record<string, any> | null} props
- * @param {...any} children
+ * @param {...Children} children
  * @returns {HtmlString}
  */
 export function h(tag, props, ...children) {
@@ -83,29 +92,38 @@ export function h(tag, props, ...children) {
 		});
 		// Components should return HtmlString (from calling h() internally),
 		// but if one returns a raw string/number, escape it to prevent XSS.
-		return result instanceof HtmlString
-			? result
-			: new HtmlString(escapeHtml(String(result ?? "")));
+		if (result instanceof HtmlString) {
+			return result;
+		}
+
+		return new HtmlString(escapeHtml(String(result ?? "")));
 	}
 
 	let html = `<${tag}`;
 
 	for (const [key, value] of Object.entries(props ?? {})) {
-		// Skip children (handled below) and event handlers (no DOM to bind in SSR)
-		if (key === "children" || key.startsWith("on")) continue;
+		// Skip children (handled below) and event handlers (no DOM in SSR)
+		if (key === "children" || key.startsWith("on")) {
+			continue;
+		}
 
-		// Resolve reactive values (signals) to their current snapshot
 		const resolved = typeof value === "function" ? value() : value;
-		if (resolved == null || resolved === false) continue;
 
-		// Boolean true → bare attribute (e.g. `disabled`), otherwise quoted value
-		html +=
+		if (resolved == null || resolved === false) {
+			continue;
+		}
+
+		const propString =
 			resolved === true
 				? ` ${key}`
 				: ` ${key}="${escapeHtml(String(resolved))}"`;
+
+		html += propString;
 	}
 
-	if (VOID_ELEMENTS.has(tag)) return new HtmlString(`${html} />`);
+	if (VOID_ELEMENTS.has(tag)) {
+		return new HtmlString(`${html} />`);
+	}
 
 	html += ">";
 
@@ -119,7 +137,7 @@ export function h(tag, props, ...children) {
 /**
  * Fragment — concatenates children into a single HtmlString.
  *
- * @param {{ children: any }} props
+ * @param {{ children: Children }} props
  * @returns {HtmlString}
  */
 export function Fragment({ children }) {

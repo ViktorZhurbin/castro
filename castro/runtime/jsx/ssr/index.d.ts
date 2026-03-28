@@ -4,12 +4,26 @@ export class HtmlString {
 	value: string;
 }
 
-/** JSX factory for SSR — produces HTML strings, not DOM nodes. */
+/** A valid child in SSR: HtmlStrings, primitives, or reactive functions. */
+export type Child =
+	| HtmlString
+	| string
+	| number
+	| boolean
+	| null
+	| undefined
+	| (() => Child);
+export type Children = Child | Child[];
+
+/** A bare-jsx component function — receives props, returns an HtmlString. */
+export type Component = (props: Record<string, any>) => HtmlString;
+
+/** JSX factory — turns `<div class="x">` into an HTML string. */
 export function h(
-	tag: string | Function,
+	tag: string | Component,
 	props: Record<string, any> | null,
-	...children: any[]
+	...children: Children[]
 ): HtmlString;
 
 /** Concatenates children into a single HtmlString. */
-export function Fragment(props: { children: any }): HtmlString;
+export function Fragment(props: { children: Children }): HtmlString;
