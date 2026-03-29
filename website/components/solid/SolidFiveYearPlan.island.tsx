@@ -1,15 +1,23 @@
 /** @jsxImportSource solid-js */
-import { createMemo, createSignal, Show } from "solid-js";
+import { createEffect, createSignal, Show } from "solid-js";
 
-export default function FiveYearPlan() {
+export default function SolidFiveYearPlan() {
 	const [progress, setProgress] = createSignal(0);
 	const [quota, setQuota] = createSignal(1);
+	const [badge, setBadge] = createSignal<{
+		text: string;
+		style: string;
+	} | null>(null);
 
-	const badge = createMemo(() => {
+	createEffect(() => {
 		const p = progress();
-		if (p >= 50) return { text: "Record Output!", style: "badge-success" };
-		if (p >= 25) return { text: "Adequate Output", style: "badge-info" };
-		return null;
+
+		if (p >= 50) {
+			setBadge({ text: "Record Output!", style: "badge-success" });
+		}
+		if (p >= 25) {
+			setBadge({ text: "Adequate Output", style: "badge-info" });
+		}
 	});
 
 	function work() {

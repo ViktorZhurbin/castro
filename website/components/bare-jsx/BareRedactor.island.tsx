@@ -1,6 +1,6 @@
 import { createSignal } from "@vktrz/castro/signals";
 
-export default function Redactor() {
+export default function BareRedactor() {
 	const [censored, setCensored] = createSignal(false);
 
 	return (

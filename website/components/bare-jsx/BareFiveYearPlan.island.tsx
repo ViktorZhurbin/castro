@@ -1,15 +1,23 @@
-import { createSignal } from "@vktrz/castro/signals";
+import { createEffect, createSignal } from "@vktrz/castro/signals";
 
-export default function FiveYearPlan() {
+export default function BareFiveYearPlan() {
 	const [progress, setProgress] = createSignal(0);
 	const [quota, setQuota] = createSignal(1);
+	const [badge, setBadge] = createSignal<{
+		text: string;
+		style: string;
+	} | null>(null);
 
-	function badge() {
+	createEffect(() => {
 		const p = progress();
-		if (p >= 50) return { text: "Record Output!", style: "badge-success" };
-		if (p >= 25) return { text: "Adequate Output", style: "badge-info" };
-		return null;
-	}
+
+		if (p >= 50) {
+			setBadge({ text: "Record Output!", style: "badge-success" });
+		}
+		if (p >= 25) {
+			setBadge({ text: "Adequate Output", style: "badge-info" });
+		}
+	});
 
 	function work() {
 		const next = progress() + 5;

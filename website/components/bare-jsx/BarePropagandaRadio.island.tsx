@@ -9,7 +9,7 @@ const HEADLINES = [
 	"Central Committee approves new CSS standard",
 ];
 
-export default function PropagandaRadio() {
+export default function BarePropagandaRadio() {
 	const [index, setIndex] = createSignal(0);
 
 	function prev() {
