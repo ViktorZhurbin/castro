@@ -1,7 +1,7 @@
 import type { PageMeta } from "@vktrz/castro";
-import FiveYearPlan from "../../components/bare-jsx/FiveYearPlan.island.tsx";
-import PropagandaRadio from "../../components/bare-jsx/PropagandaRadio.island.tsx";
-import Redactor from "../../components/bare-jsx/Redactor.island.tsx";
+import FiveYearPlan from "../../components/bare-jsx/BareFiveYearPlan.island.tsx";
+import PropagandaRadio from "../../components/bare-jsx/BarePropagandaRadio.island.tsx";
+import Redactor from "../../components/bare-jsx/BareRedactor.island.tsx";
 import { Note } from "../../components/Note.tsx";
 
 export const meta: PageMeta = {

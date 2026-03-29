@@ -1,8 +1,8 @@
 import type { PageMeta } from "@vktrz/castro";
-import Redactor from "../../components/bare-jsx/Redactor.island.tsx";
+import Redactor from "../../components/bare-jsx/BareRedactor.island.tsx";
 import { Note } from "../../components/Note.tsx";
 import PropagandaRadio from "../../components/PropagandaRadio.island.tsx";
-import FiveYearPlan from "../../components/solid/FiveYearPlan.island.tsx";
+import FiveYearPlan from "../../components/solid/SolidFiveYearPlan.island.tsx";
 
 export const meta: PageMeta = {
 	title: "Multi-Framework — Castro Guide",
