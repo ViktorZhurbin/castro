@@ -19,8 +19,8 @@ export default function BareJsxPage() {
 					</h1>
 					<p className="text-base-content max-w-2xl">
 						Castro's built-in reactive framework. No compiler, no virtual DOM,
-						no third-party dependencies. See what Solid's compiler
-						generates—bare-jsx makes you write it explicitly.
+						no third-party dependencies. This page explains how the reactive
+						system works under the hood.
 					</p>
 				</div>
 			</section>
@@ -31,51 +31,59 @@ export default function BareJsxPage() {
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
-						1. THE REACTIVE MODEL
+						1. HOW TRACKING WORKS
 					</h2>
 
 					<p className="text-base-content mb-4">
-						bare-jsx shifts from component-centric (React) to signal-centric
-						(fine-grained) reactivity.
+						The reactive system uses a single global variable —{" "}
+						<code>listener</code> — to thread dependency tracking through signal
+						reads:
 					</p>
 
-					<ul className="list-inside list-disc text-base-content space-y-3 mb-6">
-						<li>
-							<code>createSignal(value)</code> — mutable, tracked state. Returns
-							getter and setter functions. Changes don't trigger re-renders;
-							they trigger effects.
-						</li>
-						<li>
-							<code>createEffect(fn)</code> — subscribes to all signals read
-							inside. Re-runs whenever any dependency changes. No explicit
-							dependencies list—tracking is automatic.
-						</li>
-						<li>
-							<strong>No virtual DOM:</strong> Component functions run once.
-							Effects update specific DOM nodes (text, attributes, children).
-						</li>
-						<li>
-							<strong>Fine-grained updates:</strong> If a signal changes, only
-							the parts of the DOM that depend on it re-render.
-						</li>
-					</ul>
+					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-6">
+						<code>{`let listener = null;  // currently-running effect
 
-					<div className="bg-base-200 border-l-4 border-primary p-4 mb-6">
-						<p className="text-sm text-base-content">
-							<strong>Comparison:</strong> React re-renders the entire component
-							tree on state change. bare-jsx uses effects to surgically update
-							specific DOM nodes. Solid works the same way, but uses a compiler
-							to generate the effects automatically—bare-jsx makes you write
-							them via function wrappers.
-						</p>
-					</div>
+function createSignal(value) {
+  const subscribers = new Set();
+
+  const getter = () => {
+    if (listener) subscribers.add(listener);  // subscribe
+    return value;
+  };
+
+  const setter = (next) => {
+    value = next;
+    for (const sub of subscribers) sub();  // notify
+  };
+
+  return [getter, setter];
+}
+
+function createEffect(fn) {
+  const effect = () => {
+    listener = effect;
+    fn();             // run fn — any signal reads during this subscribe
+    listener = null;
+  };
+  effect();           // run once immediately
+}`}</code>
+					</pre>
+
+					<p className="text-base-content mb-4">
+						The key insight:{" "}
+						<strong>dependency tracking is bidirectional</strong>. Each signal
+						keeps a set of subscriber effects; each effect re-reads its signals
+						on every run, so subscriptions update dynamically. A signal read
+						inside an <code>if</code> branch only creates a subscription when
+						that branch executes.
+					</p>
 
 					<p className="text-base-content text-sm">
-						Read more in the guide:{" "}
+						See the{" "}
 						<a href="/guide/using-jsx" className="underline">
-							Using JSX
-						</a>
-						.
+							Using JSX guide
+						</a>{" "}
+						for the user-facing API.
 					</p>
 				</div>
 			</section>
@@ -86,109 +94,63 @@ export default function BareJsxPage() {
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
-						2. THE FUNCTION WRAPPER PATTERN
+						2. HOW h() HANDLES PROPS
 					</h2>
 
 					<p className="text-base-content mb-4">
-						In React, component functions are called on every state change. In
-						bare-jsx, component functions run <strong>once</strong>. To make a
-						value reactive, wrap it in a function:
+						JSX compiles to <code>h(type, props, ...children)</code> calls. The
+						runtime classifies each prop by type and wires it up accordingly:
 					</p>
 
 					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-6">
-						<code>{`const [count, setCount] = createSignal(0);
+						<code>{`// Simplified prop handling in createElement()
+for (const [key, value] of Object.entries(props)) {
+  if (key.startsWith("on")) {
+    // Event handlers attached once, never re-run
+    el.addEventListener(key.slice(2).toLowerCase(), value);
 
-// WRONG: Evaluated once at component creation
-return <div>{count()}</div>;
+  } else if (typeof value === "function") {
+    // Reactive prop: wrap in an effect, update DOM on change
+    createEffect(() => setAttribute(el, key, value()));
 
-// RIGHT: Function = the runtime wraps it in an effect
-return <div>{() => count()}</div>;`}</code>
+  } else {
+    // Static value: set once
+    setAttribute(el, key, value);
+  }
+}
+
+// Reactive children use a placeholder comment node
+function bindReactiveChild(parent, fn) {
+  let current = document.createComment("");
+  parent.appendChild(current);
+  createEffect(() => {
+    const node = toNode(fn());  // call fn, get new DOM node
+    current.replaceWith(node);
+    current = node;             // track current node for next update
+  });
+}`}</code>
 					</pre>
 
 					<p className="text-base-content mb-4">
-						When the runtime sees a function in JSX, it:
-					</p>
-
-					<ol className="list-inside list-decimal text-base-content space-y-2 mb-6">
-						<li>
-							Checks if it's an event handler (name starts with "on") →{" "}
-							<code>addEventListener()</code>
-						</li>
-						<li>
-							Otherwise, wraps it in <code>createEffect()</code> → when signal
-							dependencies change, the function re-runs and the DOM updates
-						</li>
-					</ol>
-
-					<p className="text-base-content mb-4">This applies to:</p>
-
-					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed">
-						<code>{`{/* Text children */}
-<div>{() => count()}</div>
-
-{/* Attributes */}
-<div class={() => active() ? "active" : ""} />
-
-{/* Conditionals (reactive) */}
-{() => show() ? <div>Visible</div> : null}
-
-{/* Event handlers (NOT wrapped in effects, just listeners) */}
-<button onClick={() => setCount(count() + 1)}>Click</button>`}</code>
-					</pre>
-
-					<Note>
-						This is not magic. The runtime's <code>createElement()</code>{" "}
-						function simply checks the type of each prop and attribute value. If
-						it's a function, it wraps it in an effect. This is what Solid's
-						compiler generates automatically. See
-						<a href="/castro/runtime/jsx/dom/index.js" className="underline">
-							{" "}
-							the source
+						This is why reactive values need function wrappers — without a
+						function, the value is read once at creation and the runtime has no
+						way to re-read it. Solid's compiler generates these wrappers
+						automatically.{" "}
+						<a
+							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/runtime/jsx/dom/index.js"
+							className="underline"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							View source →
 						</a>
-						.
-					</Note>
-				</div>
-			</section>
-
-			<div className="divider max-w-4xl mx-auto" />
-
-			{/* Signals API */}
-			<section className="py-10 px-6 bg-base-100">
-				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
-						3. SIGNALS API
-					</h2>
-
-					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-6">
-						<code>{`import { createSignal, createEffect } from "@vktrz/castro/signals";
-
-// createSignal(initialValue): [getter, setter]
-const [count, setCount] = createSignal(0);
-console.log(count());        // 0 (call getter)
-setCount(1);                 // Call setter (triggers effects)
-console.log(count());        // 1
-
-// createEffect(fn)
-// Auto-tracks all signal reads, re-runs on changes
-createEffect(() => {
-  console.log("Count:", count());
-  // Subscribes to count(). If it changes, this re-runs.
-});
-
-// Effect runs on creation, then whenever a dependency changes
-// Output: "Count: 0" on creation
-//         "Count: 1" after setCount(1)`}</code>
-					</pre>
-
-					<p className="text-base-content text-sm mb-4">
-						That's the entire public API. No hooks, no memo, no cleanup
-						functions. Simplicity by design.
 					</p>
 
 					<p className="text-base-content text-sm">
-						Complex state management? Use multiple signals or create a custom
-						hook-like function that returns signals. Context? Use module-level
-						signals for shared state (coarse but functional for islands).
+						<a href="/guide/using-jsx" className="underline">
+							The guide covers when and how to apply the function wrapper
+							pattern →
+						</a>
 					</p>
 				</div>
 			</section>
@@ -199,7 +161,7 @@ createEffect(() => {
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
-						4. HYDRATION STRATEGY
+						3. HYDRATION STRATEGY
 					</h2>
 
 					<p className="text-base-content mb-4">
@@ -248,7 +210,7 @@ container.appendChild(dom);  // Mount fresh reactive tree`}</code>
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
-						5. KNOWN LIMITATIONS
+						4. KNOWN LIMITATIONS
 					</h2>
 
 					<div className="space-y-6">
@@ -366,7 +328,7 @@ setB(2);  // Effects run again
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
-						6. BARE-JSX VS SOLID VS PREACT
+						5. BARE-JSX VS SOLID VS PREACT
 					</h2>
 
 					<div className="overflow-x-auto">
@@ -418,9 +380,9 @@ setB(2);  // Effects run again
 								</tr>
 								<tr>
 									<td>Learning curve</td>
-									<td>Shows how effects work</td>
-									<td>Clean syntax, solid mental model</td>
-									<td>Familiar React API</td>
+									<td>Explicit wiring</td>
+									<td>Compiler abstracts wiring</td>
+									<td>No signals, just re-render</td>
 								</tr>
 							</tbody>
 						</table>

@@ -34,27 +34,26 @@ export default function UsingJsx() {
 						JSX OUT OF THE BOX
 					</h2>
 					<p className="text-base-content mb-4">
-						You can write regular JSX without any additional setup.
-						<pre className="bg-base-200 border-2 border-base-300 p-4 overflow-x-auto text-xs leading-relaxed">
-							<code>{`// MyComponent.tsx
-							export function MyComponent() {
-
-  return (
-    <div>Some exmaple</div>
-  );
-}
-
-import { MyComponent } from "../components/MyComponent.tsx
-
-export function OtherComponent() {
-  return <MyComponent />
-}
-`}</code>
-						</pre>
+						You can write regular JSX without any additional setup. Pages,
+						layouts, and components are all plain JSX files:
 					</p>
+					<pre className="bg-base-200 border-2 border-base-300 p-4 overflow-x-auto text-xs leading-relaxed mb-4">
+						<code>{`// components/MyComponent.tsx
+export function MyComponent() {
+  return <div>Some content</div>;
+}
+
+// pages/index.tsx
+import { MyComponent } from "../components/MyComponent.tsx";
+
+export default function Index() {
+  return <MyComponent />;
+}`}</code>
+					</pre>
 					<p className="text-base-content mb-4">
-						Island components are JSX files with `.island` suffix. Write regular
-						JSX and import whatever reactive primitives your framework provides.
+						Island components are JSX files with an <code>.island</code> suffix.
+						Write regular JSX and import whatever reactive primitives your
+						framework provides.
 					</p>
 
 					<div className="tabs tabs-border mb-6">
@@ -85,28 +84,6 @@ export default function Counter() {
 							type="radio"
 							name="jsx-frameworks"
 							className="tab font-display"
-							aria-label="Preact"
-						/>
-						<div className="tab-content pt-4">
-							<pre className="bg-base-200 border-2 border-base-300 p-4 overflow-x-auto text-xs leading-relaxed">
-								<code>{`import { useState } from "preact/hooks";
-
-export default function Counter() {
-  const [count, setCount] = useState(0);
-
-  return (
-    <button onClick={() => setCount(count + 1)}>
-      Count: {count}
-    </button>
-  );
-}`}</code>
-							</pre>
-						</div>
-
-						<input
-							type="radio"
-							name="jsx-frameworks"
-							className="tab font-display"
 							aria-label="Solid"
 						/>
 						<div className="tab-content pt-4">
@@ -124,7 +101,37 @@ export default function Counter() {
 }`}</code>
 							</pre>
 						</div>
+
+						<input
+							type="radio"
+							name="jsx-frameworks"
+							className="tab font-display"
+							aria-label="Preact"
+						/>
+						<div className="tab-content pt-4">
+							<pre className="bg-base-200 border-2 border-base-300 p-4 overflow-x-auto text-xs leading-relaxed">
+								<code>{`import { useState } from "preact/hooks";
+
+export default function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      Count: {count}
+    </button>
+  );
+}`}</code>
+							</pre>
+						</div>
 					</div>
+
+					<p className="text-sm text-base-content/80 mt-4">
+						bare-jsx and Solid look nearly identical here — both use signals
+						with getter functions. The difference surfaces in JSX children:
+						bare-jsx needs <code>{`{() => count()}`}</code>, Solid uses{" "}
+						<code>{`{count()}`}</code> because its compiler adds the wrapper
+						automatically.
+					</p>
 				</div>
 			</section>
 
@@ -269,19 +276,13 @@ return <div>Count: {() => count()}</div>;`}</code>
 					</p>
 
 					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-6">
-						<code>{`// Always import from this path
-import { createSignal, createEffect } from "@vktrz/castro/signals";
+						<code>{`import { createSignal, createEffect } from "@vktrz/castro/signals";
 
-// createSignal(initialValue)
-// Returns [getter, setter]
-const [count, setCount] = createSignal(0);
-console.log(count());      // Read: 0
-setCount(count() + 1);     // Write: 1
+const [count, setCount] = createSignal(0);  // [getter, setter]
+setCount(count() + 1);                      // read: count(), write: setCount()
 
-// createEffect(fn)
-// Auto-tracks signal reads, re-runs on dependencies change
 createEffect(() => {
-  console.log("Count is now:", count());
+  console.log(count());  // re-runs whenever count changes
 });`}</code>
 					</pre>
 
@@ -338,21 +339,11 @@ createEffect(() => {
 							<h3 className="font-bold text-base-content mb-2">
 								No Effect Cleanup
 							</h3>
-							<p className="text-sm text-base-content/80 mb-2">
-								Effects run forever—no cleanup mechanism. Keep side effects
-								(timers, listeners) at module scope:
+							<p className="text-sm text-base-content/80">
+								Effects never clean up—no cleanup mechanism exists. If your
+								component needs timers or event listener teardown, use Preact or
+								Solid instead.
 							</p>
-							<pre className="bg-base-200 border-2 border-base-300 p-3 overflow-x-auto text-xs leading-relaxed">
-								<code>{`// Module scope (runs once when component loads)
-setInterval(() => {
-  console.log(count());
-}, 1000);
-
-export default function MyIsland() {
-  const [count, setCount] = createSignal(0);
-  // ...
-}`}</code>
-							</pre>
 						</div>
 
 						{/* No context */}
@@ -422,14 +413,14 @@ export default function MyIsland() {
 			<section className="py-10 px-6 bg-base-200">
 				<div className="max-w-4xl mx-auto">
 					<div className="flex flex-wrap gap-4">
-						<a href="/guide/directives" className="btn btn-outline btn-primary">
-							← Directives
-						</a>
 						<a
-							href="/guide/multi-framework"
+							href="/guide/configuration"
 							className="btn btn-outline btn-primary"
 						>
-							Next: Multi-Framework →
+							← Configuration
+						</a>
+						<a href="/guide/directives" className="btn btn-outline btn-primary">
+							Directives →
 						</a>
 					</div>
 				</div>

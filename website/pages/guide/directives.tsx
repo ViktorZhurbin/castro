@@ -86,7 +86,7 @@ export default function Directives() {
 					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
 						COMRADE:EAGER
 					</h2>
-					<p className="text-base-content/60 italic mb-4">
+					<p className="text-base-content/80 italic mb-4">
 						"Some comrades wait. This one doesn't."
 					</p>
 					<p className="text-base-content mb-4">
@@ -109,7 +109,7 @@ export default function Directives() {
 					<div className="bg-base-200 p-4 border border-dashed border-base-300">
 						<PropagandaRadio comrade:eager />
 					</div>
-					<p className="text-xs text-base-content/60 mt-2">
+					<p className="text-xs text-base-content/80 mt-2">
 						The radio is already cycling headlines. JS loaded on page load — no
 						interaction needed.
 					</p>
@@ -124,7 +124,7 @@ export default function Directives() {
 					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
 						COMRADE:PATIENT
 					</h2>
-					<p className="text-base-content/60 italic mb-4">
+					<p className="text-base-content/80 italic mb-4">
 						"I'll hydrate when everyone else is done"
 					</p>
 					<p className="text-base-content mb-4">
@@ -146,7 +146,7 @@ export default function Directives() {
 					<div className="bg-base-200 p-4 border border-dashed border-base-300">
 						<Redactor comrade:patient />
 					</div>
-					<p className="text-xs text-base-content/60 mt-2">
+					<p className="text-xs text-base-content/80 mt-2">
 						Toggle the switch. Censorship activates after the browser settles.
 					</p>
 				</div>
@@ -161,7 +161,7 @@ export default function Directives() {
 						COMRADE:VISIBLE{" "}
 						<span className="badge badge-primary ml-2">DEFAULT</span>
 					</h2>
-					<p className="text-base-content/60 italic mb-4">
+					<p className="text-base-content/80 italic mb-4">
 						"Only work when the people are watching"
 					</p>
 					<p className="text-base-content mb-4">
@@ -196,7 +196,7 @@ export default function Directives() {
 					<div className="bg-base-200 p-4 border border-dashed border-base-300">
 						<FiveYearPlan comrade:visible />
 					</div>
-					<p className="text-xs text-base-content/60 mt-2">
+					<p className="text-xs text-base-content/80 mt-2">
 						The progress tracker only hydrated when you scrolled here. Check
 						DevTools Network to verify.
 					</p>

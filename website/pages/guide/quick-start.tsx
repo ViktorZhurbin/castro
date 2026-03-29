@@ -279,7 +279,7 @@ export default function Home() {
 						scroll), <code>comrade:patient</code> (on idle),{" "}
 						<code>comrade:eager</code> (immediately).
 					</p>
-					<p className="text-sm text-base-content/60">
+					<p className="text-sm text-base-content/80">
 						<a href="/guide/directives" className="underline">
 							Directives guide →
 						</a>
