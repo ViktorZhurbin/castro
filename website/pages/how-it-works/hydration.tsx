@@ -81,7 +81,7 @@ export default function Hydration() {
 								</p>
 							</div>
 							<div className="card card-bordered border-accent bg-base-200 p-4">
-								<span className="badge badge-accent mb-2">lenin:awake</span>
+								<span className="badge badge-accent mb-2">comrade:eager</span>
 								<p className="text-sm text-base-content/80">
 									Hydrate immediately. No waiting. JS loads as soon as the
 									element connects.

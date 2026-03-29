@@ -13,10 +13,10 @@ declare module "preact" {
 			 *
 			 * @example
 			 * ```tsx
-			 * <Counter initial={5} lenin:awake />
+			 * <Counter initial={5} comrade:eager />
 			 * ```
 			 */
-			"lenin:awake"?: boolean;
+			"comrade:eager"?: boolean;
 
 			/**
 			 * Idle hydration - loads JavaScript after page load, when browser is idle.

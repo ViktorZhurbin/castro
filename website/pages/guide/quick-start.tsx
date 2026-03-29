@@ -241,7 +241,7 @@ export default function Home() {
   return (
     <div>
       <h1>My Site</h1>
-      <Counter initial={5} />
+      <Counter initial={5} comrade:patient />
     </div>
   );
 }`}</code>
@@ -259,7 +259,7 @@ export default function Home() {
 					</h2>
 					<p className="text-base-content mb-6">
 						Every island prop ending in a directive controls when the island
-						hydrates. Four are available:
+						hydrates. Available directives:
 					</p>
 					<ul className="space-y-3 mb-6">
 						<li className="flex gap-3 items-start">
@@ -282,7 +282,7 @@ export default function Home() {
 						</li>
 						<li className="flex gap-3 items-start">
 							<code className="badge badge-primary shrink-0 mt-0.5">
-								lenin:awake
+								comrade:eager
 							</code>
 							<span className="text-base-content">
 								Hydrate immediately on page load.

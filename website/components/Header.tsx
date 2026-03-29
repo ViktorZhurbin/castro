@@ -26,7 +26,7 @@ export const Header = ({ activePath }: { activePath?: string }) => {
 				</a>
 			</div>
 			<div className="navbar-end gap-2">
-				<ThemeToggle lenin:awake />
+				<ThemeToggle comrade:eager />
 			</div>
 		</header>
 	);

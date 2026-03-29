@@ -99,16 +99,16 @@ test("comrade:patient has island CSS", async () => {
 	expect(html).toContain("color: red");
 });
 
-// ------ lenin:awake directive ------
+// ------ comrade:eager directive ------
 
-test("lenin:awake has correct directive", async () => {
-	const html = await readHtml("lenin-awake.html");
+test("comrade:eager has correct directive", async () => {
+	const html = await readHtml("comrade-eager.html");
 	expect(html).toContain("<castro-island");
-	expect(html).toContain('directive="lenin:awake"');
+	expect(html).toContain('directive="comrade:eager"');
 });
 
-test("lenin:awake has island runtime", async () => {
-	const html = await readHtml("lenin-awake.html");
+test("comrade:eager has island runtime", async () => {
+	const html = await readHtml("comrade-eager.html");
 	expect(html).toContain("castro-island.js");
 });
 
@@ -143,7 +143,7 @@ test("static component inside island renders", async () => {
 test("island in layout renders with wrapper", async () => {
 	const html = await readHtml("layout-island.html");
 	expect(html).toContain("<castro-island");
-	expect(html).toContain('directive="lenin:awake"');
+	expect(html).toContain('directive="comrade:eager"');
 	expect(html).toContain("Count:");
 	expect(html).toContain("<h1>Layout Island Test</h1>");
 });

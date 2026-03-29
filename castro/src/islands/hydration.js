@@ -37,7 +37,7 @@ class CastroIsland extends HTMLElement {
 		} else if (directive === "comrade:patient") {
 			// Hydrate when browser is idle after page load
 			await this.waitIdle();
-		} else if (directive === "lenin:awake") {
+		} else if (directive === "comrade:eager") {
 			// Immediate hydration, no waiting
 			// (fall through to hydrate())
 		}

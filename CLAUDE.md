@@ -186,7 +186,7 @@ Key rules from `src/messages/README.md`:
 
 `test-site/` is a single test site that exercises the full build pipeline with bare-jsx, Preact, and Solid islands. Run with `bun test:sites`. Tests verify:
 - Static pages (no islands)
-- All three directives (`comrade:visible`, `comrade:patient`, `lenin:awake`)
+- All three directives (`comrade:visible`, `comrade:patient`, `comrade:eager`)
 - Component composition (islands in static components, static components in islands, islands in layouts)
 - CSS modules in static components and islands
 - Multi-framework pages (Preact + Solid islands on the same page)
@@ -216,12 +216,12 @@ Demo site that consumes castro. Uses Tailwind CSS v4 + DaisyUI v5 via `@vktrz/ca
 - `layouts/default.tsx` — HTML shell, Google Fonts (Bebas Neue + Barlow), ThemeToggle island
 - `layouts/docs.tsx` — docs layout with DaisyUI drawer sidebar; section-aware via `sidebarSections` map keyed by `"how-it-works"` / `"guide"`
 - `components/Header.tsx` — sticky navbar; GUIDE and HOW IT WORKS links go active when `activePath` starts with `/guide` or `/how-it-works`
-- `components/PropagandaRadio.island.tsx` — Preact radio with cycling headlines (`lenin:awake`)
+- `components/PropagandaRadio.island.tsx` — Preact radio with cycling headlines (`comrade:eager`)
 - `components/bare-jsx/PropagandaRadio.island.tsx` — bare-jsx port of PropagandaRadio, used on the directives guide page
 - `components/bare-jsx/Redactor.island.tsx` — bare-jsx censorship toggle (`comrade:patient`)
 - `components/bare-jsx/FiveYearPlan.island.tsx` — bare-jsx port of FiveYearPlan, used on the directives guide page
 - `components/solid/FiveYearPlan.island.tsx` — Solid progress tracker (`comrade:visible`)
-- `components/ThemeToggle.island.tsx` — `lenin:awake` island, DaisyUI swap + theme-controller
+- `components/ThemeToggle.island.tsx` — `comrade:eager` island, DaisyUI swap + theme-controller
 - `pages/guide/directives.tsx` — prose + live demos for all three directives, one bare-jsx island per directive
 - `pages/guide/multi-framework.tsx` — side-by-side live demos of Preact, bare-jsx, and Solid islands
 

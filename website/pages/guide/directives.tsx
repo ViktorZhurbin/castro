@@ -47,7 +47,7 @@ export default function Directives() {
 							<tbody>
 								<tr>
 									<td>
-										<code>lenin:awake</code>
+										<code>comrade:eager</code>
 									</td>
 									<td>Immediately on page load</td>
 									<td>Navigation, search, auto-play, analytics</td>
@@ -80,14 +80,14 @@ export default function Directives() {
 
 			<div className="divider max-w-4xl mx-auto" />
 
-			{/* lenin:awake */}
+			{/* comrade:eager */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
-						LENIN:AWAKE
+						COMRADE:EAGER
 					</h2>
 					<p className="text-base-content/60 italic mb-4">
-						"The leader is always ready"
+						"Some comrades wait. This one doesn't."
 					</p>
 					<p className="text-base-content mb-4">
 						Hydrates immediately on page load. The island's JavaScript is
@@ -99,15 +99,15 @@ export default function Directives() {
 						Use this for content that must be interactive from the start:
 						navigation menus, search bars, auto-playing media, analytics
 						widgets. The tradeoff is that it adds to the initial page load —
-						every <code>lenin:awake</code> island competes for bandwidth with
+						every <code>comrade:eager</code> island competes for bandwidth with
 						the rest of the page.
 					</p>
 					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-6">
-						<code>{`<PropagandaRadio lenin:awake />`}</code>
+						<code>{`<PropagandaRadio comrade:eager />`}</code>
 					</pre>
 
 					<div className="bg-base-200 p-4 border border-dashed border-base-300">
-						<PropagandaRadio lenin:awake />
+						<PropagandaRadio comrade:eager />
 					</div>
 					<p className="text-xs text-base-content/60 mt-2">
 						The radio is already cycling headlines. JS loaded on page load — no

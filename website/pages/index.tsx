@@ -158,10 +158,10 @@ function HowItWorks() {
 							SELECTIVE HYDRATION
 						</h3>
 						<p className="text-base-content/80 mt-1">
-							JavaScript loads based on your directive. <code>lenin:awake</code>{" "}
-							hydrates immediately. <code>comrade:patient</code> waits for idle
-							time. <code>comrade:visible</code> waits for viewport
-							intersection.
+							JavaScript loads based on your directive.{" "}
+							<code>comrade:eager</code> hydrates immediately.{" "}
+							<code>comrade:patient</code> waits for idle time.{" "}
+							<code>comrade:visible</code> waits for viewport intersection.
 						</p>
 					</div>
 				</li>

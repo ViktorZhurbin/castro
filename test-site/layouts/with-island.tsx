@@ -8,7 +8,7 @@ export default function WithIsland({ title, children }) {
 			</head>
 			<body>
 				<nav>
-					<Counter initial={0} lenin:awake />
+					<Counter initial={0} comrade:eager />
 				</nav>
 				<main>{children}</main>
 			</body>
