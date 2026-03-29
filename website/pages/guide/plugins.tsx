@@ -94,8 +94,8 @@ export default function Plugins() {
 							</h3>
 							<p className="text-base-content">
 								Registers a custom island framework. See{" "}
-								<a href="/guide/multi-framework" className="underline">
-									Multi-Framework
+								<a href="/guide/components-islands" className="underline">
+									Components & Islands
 								</a>{" "}
 								for the full <code>FrameworkConfig</code> interface.
 							</p>
@@ -261,10 +261,10 @@ export function tailwind({ input }) {
 				<div className="max-w-4xl mx-auto">
 					<div className="flex flex-wrap gap-4">
 						<a
-							href="/guide/multi-framework"
+							href="/guide/components-islands"
 							className="btn btn-outline btn-primary"
 						>
-							← Multi-Framework
+							← Components & Islands
 						</a>
 						<a
 							href="/how-it-works/bare-jsx"

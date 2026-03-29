@@ -2,7 +2,7 @@ import type { PageMeta } from "@vktrz/castro";
 import { Note } from "../../components/Note.tsx";
 
 export const meta: PageMeta = {
-	title: "Build Pipeline — Castro Tutorial",
+	title: "1. Build Pipeline — Castro",
 	layout: "docs",
 	path: "/how-it-works",
 	section: "how-it-works",
@@ -15,7 +15,7 @@ export default function Tutorial() {
 			<section className="py-12 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h1 className="font-display text-5xl md:text-7xl text-primary mb-4">
-						THE BUILD PIPELINE
+						1. THE BUILD PIPELINE
 					</h1>
 					<p className="text-base-content max-w-2xl">
 						Castro compiles your pages and islands at build time. Three

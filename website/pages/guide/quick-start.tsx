@@ -280,8 +280,8 @@ export default function Home() {
 						<code>comrade:eager</code> (immediately).
 					</p>
 					<p className="text-sm text-base-content/80">
-						<a href="/guide/directives" className="underline">
-							Directives guide →
+						<a href="/guide/components-islands" className="underline">
+							Components & Islands →
 						</a>
 					</p>
 				</div>
@@ -309,6 +309,133 @@ bun run build    # production build → dist/`}</code>
 
 			<div className="divider max-w-4xl mx-auto" />
 
+			{/* Configuration */}
+			<section className="py-10 px-6 bg-base-100">
+				<div className="max-w-4xl mx-auto">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
+						CONFIGURATION
+					</h2>
+					<p className="text-base-content mb-4">
+						Castro works without any config file. When you need to customize
+						behavior, create <code>castro.config.js</code> at your project root.
+					</p>
+					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-4">
+						<code>{`// castro.config.js
+export default {
+  port: 3000,
+  messages: "satirical",
+  framework: "preact",
+  plugins: [],
+  importMap: {},
+};`}</code>
+					</pre>
+					<p className="text-sm text-base-content/80 mb-8">
+						→{" "}
+						<a
+							href="https://github.com/ViktorZhurbin/castro/blob/main/castro/src/config.js"
+							target="_blank"
+							rel="noopener"
+							className="underline"
+						>
+							config.js
+						</a>
+					</p>
+
+					<div className="space-y-6">
+						<div>
+							<h3 className="font-mono text-xl text-secondary mb-2">port</h3>
+							<p className="text-base-content">
+								<code>port?: number</code> — default: <code>3000</code>. The
+								port the dev server listens on.
+							</p>
+						</div>
+
+						<div>
+							<h3 className="font-mono text-xl text-secondary mb-2">
+								messages
+							</h3>
+							<p className="text-base-content">
+								<code>{'messages?: "satirical" | "serious"'}</code> — default:{" "}
+								<code>"satirical"</code>. Controls CLI output tone. Both contain
+								the same information.
+							</p>
+						</div>
+
+						<div>
+							<h3 className="font-mono text-xl text-secondary mb-2">
+								framework
+							</h3>
+							<p className="text-base-content">
+								<code>framework?: string</code> — default: <code>"preact"</code>
+								. The default framework for islands not inside a named framework
+								directory (e.g. <code>components/solid/</code>). Built-in
+								options: <code>"bare-jsx"</code>, <code>"preact"</code>,{" "}
+								<code>"solid"</code>.
+							</p>
+						</div>
+
+						<div>
+							<h3 className="font-mono text-xl text-secondary mb-2">plugins</h3>
+							<p className="text-base-content">
+								<code>plugins?: CastroPlugin[]</code> — default: <code>[]</code>
+								. Plugins hook into the build pipeline to inject assets, run
+								processors, and register custom island frameworks. See{" "}
+								<a href="/guide/plugins" className="underline">
+									Plugins
+								</a>
+								.
+							</p>
+						</div>
+
+						<div>
+							<h3 className="font-mono text-xl text-secondary mb-2">
+								importMap
+							</h3>
+							<p className="text-base-content mb-3">
+								<code>{"importMap?: Record<string, string>"}</code> — default:{" "}
+								<code>{"{}"}</code>. Additional entries merged into the{" "}
+								<code>{'<script type="importmap">'}</code> on every island page.
+								Any key is treated as external during island compilation — the
+								browser loads it from CDN instead of bundling.
+							</p>
+							<pre className="bg-base-200 border-2 border-base-300 p-4 overflow-x-auto text-xs leading-relaxed">
+								<code>{`importMap: { "my-lib": "https://esm.sh/my-lib@1.0.0" }`}</code>
+							</pre>
+						</div>
+					</div>
+
+					<div className="mt-8">
+						<p className="text-base-content mb-4">
+							This website's own config — Tailwind plugin, port 3000, satirical
+							messages, Preact default:
+						</p>
+						<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-2">
+							<code>{`import { tailwind } from "@vktrz/castro-tailwind";
+
+export default {
+  plugins: [tailwind({ input: "styles/app.css" })],
+  port: 3000,
+  messages: "satirical",
+  framework: "preact",
+};`}</code>
+						</pre>
+						<p className="text-sm text-base-content/80">
+							→{" "}
+							<a
+								href="https://github.com/ViktorZhurbin/castro/blob/main/website/castro.config.js"
+								target="_blank"
+								rel="noopener"
+								className="underline"
+							>
+								website/castro.config.js
+							</a>
+						</p>
+					</div>
+				</div>
+			</section>
+
+			<div className="divider max-w-4xl mx-auto" />
+
 			{/* What's Next */}
 			<section className="py-10 px-6 bg-base-200">
 				<div className="max-w-4xl mx-auto">
@@ -316,20 +443,11 @@ bun run build    # production build → dist/`}</code>
 						WHAT'S NEXT
 					</h2>
 					<div className="flex flex-wrap gap-4">
-						<a href="/guide/directives" className="btn btn-outline btn-primary">
-							Directives →
-						</a>
 						<a
-							href="/guide/configuration"
+							href="/guide/components-islands"
 							className="btn btn-outline btn-primary"
 						>
-							Configuration →
-						</a>
-						<a
-							href="/guide/multi-framework"
-							className="btn btn-outline btn-primary"
-						>
-							Multi-Framework →
+							Components & Islands →
 						</a>
 						<a href="/guide/plugins" className="btn btn-outline btn-primary">
 							Plugins →

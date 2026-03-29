@@ -2,7 +2,7 @@ import type { PageMeta } from "@vktrz/castro";
 import { Note } from "../../components/Note.tsx";
 
 export const meta: PageMeta = {
-	title: "Hydration — Castro Tutorial",
+	title: "2. Island Hydration — Castro",
 	layout: "docs",
 	path: "/how-it-works/hydration",
 	section: "how-it-works",
@@ -15,7 +15,7 @@ export default function Hydration() {
 			<section className="py-12 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h1 className="font-display text-5xl md:text-7xl text-primary mb-4">
-						HYDRATION
+						2. ISLAND HYDRATION
 					</h1>
 					<p className="text-base-content max-w-2xl">
 						The build pipeline produces static HTML with{" "}
@@ -165,7 +165,7 @@ export default async (container, props) => {
 							<p className="text-xs text-base-content/80 mt-2">
 								Injected into every page that uses islands. Framework defaults
 								are merged with any entries from{" "}
-								<a href="/guide/configuration" className="underline">
+								<a href="/guide/quick-start#importmap" className="underline">
 									importMap
 								</a>{" "}
 								in your config (user entries win on conflict). The browser

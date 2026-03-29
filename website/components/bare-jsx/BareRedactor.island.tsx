@@ -75,8 +75,8 @@ export default function BareRedactor() {
 				>
 					{() =>
 						censored()
-							? "✓ CENSORSHIP ACTIVE — REVEAL TRUTH"
-							: "APPLY STATE CENSORSHIP"
+							? "✓ APPROVED BY THE MINISTRY OF TRUTH"
+							: "SUBMIT FOR REVIEW"
 					}
 				</button>
 			</div>

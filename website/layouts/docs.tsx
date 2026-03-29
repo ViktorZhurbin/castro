@@ -19,19 +19,16 @@ const sidebarSections: Record<
 	"how-it-works": {
 		title: "HOW IT WORKS",
 		links: [
-			{ href: "/how-it-works", label: "Build Pipeline" },
-			{ href: "/how-it-works/hydration", label: "Hydration" },
-			{ href: "/how-it-works/bare-jsx", label: "bare-jsx Framework" },
+			{ href: "/how-it-works", label: "1. Build Pipeline" },
+			{ href: "/how-it-works/hydration", label: "2. Island Hydration" },
+			{ href: "/how-it-works/bare-jsx", label: "3. bare-jsx Runtime" },
 		],
 	},
 	guide: {
 		title: "GUIDE",
 		links: [
 			{ href: "/guide/quick-start", label: "Quick Start" },
-			{ href: "/guide/configuration", label: "Configuration" },
-			{ href: "/guide/using-jsx", label: "Using JSX" },
-			{ href: "/guide/directives", label: "Directives" },
-			{ href: "/guide/multi-framework", label: "Multi-Framework" },
+			{ href: "/guide/components-islands", label: "Components & Islands" },
 			{ href: "/guide/plugins", label: "Plugins" },
 		],
 	},

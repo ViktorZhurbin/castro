@@ -2,7 +2,7 @@ import type { PageMeta } from "@vktrz/castro";
 import { Note } from "../../components/Note.tsx";
 
 export const meta: PageMeta = {
-	title: "bare-jsx Framework — Castro Tutorial",
+	title: "3. bare-jsx Runtime — Castro",
 	layout: "docs",
 	path: "/how-it-works/bare-jsx",
 	section: "how-it-works",
@@ -15,7 +15,7 @@ export default function BareJsxPage() {
 			<section className="py-12 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h1 className="font-display text-5xl md:text-7xl text-primary mb-4">
-						BARE-JSX FRAMEWORK
+						3. BARE-JSX RUNTIME
 					</h1>
 					<p className="text-base-content max-w-2xl">
 						Castro's built-in reactive framework. No compiler, no virtual DOM,
@@ -328,11 +328,11 @@ setB(2);  // Effects run again
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
-						5. BARE-JSX VS SOLID VS PREACT
+						5. COMPARED TO OTHER FRAMEWORKS
 					</h2>
 
 					<div className="overflow-x-auto">
-						<table className="table text-sm">
+						<table className="table">
 							<thead>
 								<tr>
 									<th>Feature</th>
@@ -343,46 +343,16 @@ setB(2);  // Effects run again
 							</thead>
 							<tbody>
 								<tr>
-									<td>Reactive model</td>
-									<td>Fine-grained (signals)</td>
-									<td>Fine-grained (signals)</td>
-									<td>Component-based (hooks)</td>
-								</tr>
-								<tr>
-									<td>Manual function wrappers</td>
-									<td>Yes ✓</td>
-									<td>No (compiled)</td>
-									<td>No</td>
-								</tr>
-								<tr>
-									<td>Batching</td>
-									<td>❌ No</td>
-									<td>✓ Yes</td>
-									<td>✓ Yes</td>
-								</tr>
-								<tr>
-									<td>Effect cleanup</td>
-									<td>❌ No</td>
-									<td>✓ onCleanup()</td>
-									<td>✓ return fn</td>
-								</tr>
-								<tr>
-									<td>Hydration</td>
-									<td>Clear-remount</td>
-									<td>Compiled markers</td>
-									<td>DOM-walking</td>
-								</tr>
-								<tr>
 									<td>Bundle size</td>
 									<td>~2KB</td>
 									<td>~18KB</td>
 									<td>~9KB</td>
 								</tr>
 								<tr>
-									<td>Learning curve</td>
-									<td>Explicit wiring</td>
-									<td>Compiler abstracts wiring</td>
-									<td>No signals, just re-render</td>
+									<td>Specifics</td>
+									<td>Signals, explicit wiring</td>
+									<td>Signals, compiler abstracts wiring</td>
+									<td>Hooks, just re-render</td>
 								</tr>
 							</tbody>
 						</table>
