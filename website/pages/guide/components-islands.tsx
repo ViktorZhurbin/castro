@@ -327,9 +327,9 @@ export default function Index() {
 						DIRECTORY CONVENTION
 					</h2>
 					<p className="text-base-content mb-4">
-						You can specify default framework through{" "}
-						<code>castro.config.js</code>. If not specified, it defaults to
-						Preact.
+						Set <code>defaultIslandFramework</code> in{" "}
+						<code>castro.config.js</code> to choose which framework islands use
+						by default. If not specified, it defaults to Preact.
 					</p>
 					<p className="text-base-content mb-4">
 						To use other frameworks place it inside a directory named after a

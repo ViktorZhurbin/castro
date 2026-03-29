@@ -1,5 +1,5 @@
 export default {
-	framework: "preact",
+	defaultIslandFramework: "preact",
 	messages: "serious",
 	importMap: {
 		"custom-lib": "https://esm.sh/custom-lib",

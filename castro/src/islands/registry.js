@@ -141,7 +141,7 @@ async function detectFramework(relativePath) {
 	// Root-level files (no subdirectory) have the filename as firstSegment —
 	// no point trying to load "Counter.island.tsx" as a framework.
 	if (firstSegment.includes(".")) {
-		return castroConfig.framework;
+		return castroConfig.defaultIslandFramework;
 	}
 
 	// Already loaded — either the default framework (pre-loaded at startup
@@ -152,7 +152,7 @@ async function detectFramework(relativePath) {
 
 	// Already tried and failed — skip the dynamic import
 	if (nonFrameworkDirs.has(firstSegment)) {
-		return castroConfig.framework;
+		return castroConfig.defaultIslandFramework;
 	}
 
 	// Try loading as a built-in framework. If components/solid/ exists and
@@ -164,7 +164,7 @@ async function detectFramework(relativePath) {
 		return firstSegment;
 	} catch {
 		nonFrameworkDirs.add(firstSegment);
-		return castroConfig.framework;
+		return castroConfig.defaultIslandFramework;
 	}
 }
 

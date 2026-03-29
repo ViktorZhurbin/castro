@@ -324,7 +324,7 @@ bun run build    # production build → dist/`}</code>
 export default {
   port: 3000,
   messages: "satirical",
-  framework: "preact",
+  defaultIslandFramework: "solid",
   plugins: [],
   importMap: {},
 };`}</code>
@@ -363,14 +363,15 @@ export default {
 
 						<div>
 							<h3 className="font-mono text-xl text-secondary mb-2">
-								framework
+								defaultIslandFramework
 							</h3>
 							<p className="text-base-content">
-								<code>framework?: string</code> — default: <code>"preact"</code>
-								. The default framework for islands not inside a named framework
-								directory (e.g. <code>components/solid/</code>). Built-in
-								options: <code>"bare-jsx"</code>, <code>"preact"</code>,{" "}
-								<code>"solid"</code>.
+								<code>defaultIslandFramework?: string</code> — default:{" "}
+								<code>"preact"</code>. The framework used for islands not inside
+								a named framework directory (e.g. <code>components/solid/</code>
+								). Only affects islands — pages and layouts always use Preact.
+								Built-in options: <code>"preact"</code>, <code>"bare-jsx"</code>
+								, <code>"solid"</code>.
 							</p>
 						</div>
 
@@ -407,7 +408,7 @@ export default {
 					<div className="mt-8">
 						<p className="text-base-content mb-4">
 							This website's own config — Tailwind plugin, port 3000, satirical
-							messages, Preact default:
+							messages, Preact islands:
 						</p>
 						<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-2">
 							<code>{`import { tailwind } from "@vktrz/castro-tailwind";
@@ -416,7 +417,7 @@ export default {
   plugins: [tailwind({ input: "styles/app.css" })],
   port: 3000,
   messages: "satirical",
-  framework: "preact",
+  defaultIslandFramework: "preact",
 };`}</code>
 						</pre>
 						<p className="text-sm text-base-content/80">

@@ -12,7 +12,7 @@
  * @typedef {{
  * 	port?: number,
  * 	messages?: "satirical" | "serious",
- * 	framework?: string,
+ * 	defaultIslandFramework?: string,
  * 	plugins?: CastroPlugin[],
  * 	importMap?: Record<string, string>
  * }} CastroConfig
@@ -24,7 +24,7 @@ import { join } from "node:path";
 const defaults = {
 	port: 3000,
 	messages: "satirical",
-	framework: "bare-jsx",
+	defaultIslandFramework: "preact",
 	importMap: {},
 };
 

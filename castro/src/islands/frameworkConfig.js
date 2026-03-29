@@ -137,4 +137,4 @@ export function getFrameworkConfig(id) {
 // Pre-load the default framework from castro.config.js at startup.
 // This ensures the default config is always available, even if no
 // islands explicitly request it.
-await loadFrameworkConfig(config.framework);
+await loadFrameworkConfig(config.defaultIslandFramework);
