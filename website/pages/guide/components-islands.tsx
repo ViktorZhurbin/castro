@@ -294,7 +294,7 @@ export default function Index() {
 									</td>
 									<td>Simple widgets, learning reactivity</td>
 									<td>~2KB</td>
-									<td>No effect cleanup, fragments in conditionals break</td>
+									<td>No effect cleanup, no batching</td>
 								</tr>
 								<tr>
 									<td>
@@ -347,6 +347,48 @@ export default function Index() {
 						The framework directory name must match the framework's{" "}
 						<code>id</code> exactly: <code>solid/</code>, <code>bare-jsx/</code>
 						, <code>preact/</code>.
+					</Note>
+				</div>
+			</section>
+
+			<div className="divider max-w-4xl mx-auto" />
+
+			{/* Type checking */}
+			<section className="py-10 px-6 bg-base-100">
+				<div className="max-w-4xl mx-auto">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
+						TYPE CHECKING
+					</h2>
+					<p className="text-base-content mb-4">
+						Each framework has its own JSX type definitions. When you use a
+						non-default framework, TypeScript needs to know which types to
+						apply. Two things are needed:
+					</p>
+
+					<p className="text-base-content mb-3">
+						Add a <code>@jsxImportSource</code> comment as the first line of
+						each island file that uses a non-default framework:
+					</p>
+					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-4">
+						<code>{`/** @jsxImportSource @vktrz/castro/runtime/jsx/dom */
+import { createSignal } from "@vktrz/castro/signals";
+
+/** @jsxImportSource solid-js */
+import { createSignal } from "solid-js";`}</code>
+					</pre>
+					<p className="text-base-content mb-4 text-sm text-base-content/70">
+						This is a TypeScript feature, not a Castro invention. It tells the
+						type checker which JSX types to use for this file. The build plugin
+						handles the actual compilation regardless — the pragma only affects
+						type checking.
+					</p>
+
+					<Note>
+						Multi-framework type setup isn't the smoothest DX. Castro's goal is
+						to let you <em>choose</em> the right framework per island — mixing
+						multiple frameworks on one site is a side effect of that
+						flexibility, not the primary use case. Most projects will pick one
+						framework and never need any of this.
 					</Note>
 				</div>
 			</section>

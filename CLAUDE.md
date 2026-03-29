@@ -181,6 +181,7 @@ Key rules from `src/messages/README.md`:
 - **`renderSSR` accepts `Function`**, not `ComponentType`. Each framework config casts internally.
 - **Island CSS** tracked per-page via `pageState` in `marker.js`, not on the registry singleton. The runtime script is included when `usedIslands.size > 0`.
 - **Island imports must use relative paths**, not tsconfig `paths` aliases. `Bun.build`'s `packages: "external"` treats `@`-prefixed imports as scoped npm packages and externalizes them before path alias resolution runs, so the `islandMarkerPlugin` never intercepts them.
+- **Multi-framework type checking** requires per-file `/** @jsxImportSource */` pragmas for non-default frameworks (e.g. `/** @jsxImportSource @vktrz/castro/runtime/jsx/dom */` for bare-jsx, `/** @jsxImportSource solid-js */` for Solid). The pragma is the only mechanism `tsc` honors per-file — TypeScript uses the root tsconfig's JSX settings for transitively imported files regardless of any nested tsconfig. The `jsx-runtime.d.ts` in `castro/runtime/jsx/dom/` provides bare-jsx JSX types (`Signalish<T>`, `HTMLProps` with reactive attribute support).
 
 ## Testing
 
