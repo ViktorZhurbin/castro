@@ -266,6 +266,23 @@ test("bare-jsx island has JS bundle reference", async () => {
 	expect(html).toContain('import="/islands/bare-jsx/BareCounter');
 });
 
+// ------ bare-jsx: Fragment in reactive conditional ------
+// Exercises the stable anchor pattern in bindReactiveChild. Before the fix,
+// returning a Fragment from a reactive conditional broke on the second render
+// because DocumentFragment dissolves on insert, leaving the anchor dangling.
+
+test("bare-jsx fragment island renders SSR fragment children", async () => {
+	const html = await readHtml("bare.html");
+	// show() starts true → Fragment branch → both spans should appear in SSR
+	expect(html).toContain("Fragment A");
+	expect(html).toContain("Fragment B");
+});
+
+test("bare-jsx fragment island has island wrapper", async () => {
+	const html = await readHtml("bare.html");
+	expect(html).toContain('import="/islands/bare-jsx/BareFragmentToggle');
+});
+
 test("bare-jsx island has local runtime in import map (no CDN)", async () => {
 	const html = await readHtml("bare.html");
 	// bare-jsx externalizes its runtime and resolves it locally via import map —

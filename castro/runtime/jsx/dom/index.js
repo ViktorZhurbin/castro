@@ -93,43 +93,49 @@ function appendChild(parent, child) {
 }
 
 /**
- * Binds a reactive child to the DOM. Inserts a placeholder comment node,
- * then creates an effect that replaces it in-place on each signal change.
+ * Binds a reactive child to the DOM using a stable anchor pattern.
+ * A permanent comment node marks the insertion point — it never moves.
+ * On each signal change, old nodes are removed and new ones inserted
+ * before the anchor. This supports Fragments (which dissolve on insert)
+ * because we snapshot their childNodes before insertion.
  *
  * Reactive children in JSX:
  *   {count}                → signal getter returning text
  *   {show() && <X />}      → conditional returning node or false
  *   {a() ? <X /> : <Y />}  → ternary returning different nodes
- *
- * Limitation: reactive conditionals must return single root elements,
- * not Fragments — DocumentFragment dissolves on insert, breaking
- * subsequent replaceWith() calls.
+ *   {() => <><A /><B /></>} → fragment with multiple children
  *
  * @param {Node} parent
  * @param {() => any} child
  */
 function bindReactiveChild(parent, child) {
-	const placeholder = document.createComment("");
-	let current = /** @type {ChildNode} */ (placeholder);
-	parent.appendChild(placeholder);
+	const anchor = document.createComment("");
+	parent.appendChild(anchor);
+
+	/** @type {ChildNode[]} */
+	let currentNodes = [];
 
 	createEffect(() => {
+		for (const node of currentNodes) node.remove();
+
 		const val = child();
 
-		/** @type {Node} */
-		let next;
-		if (val instanceof Node) {
-			next = val;
+		/** @type {ChildNode[]} */
+		let newNodes;
+		if (val instanceof DocumentFragment) {
+			// Grab children before insertion empties the fragment
+			newNodes = /** @type {ChildNode[]} */ (Array.from(val.childNodes));
+		} else if (val instanceof Node) {
+			newNodes = [/** @type {ChildNode} */ (val)];
 		} else if (val != null && val !== false && val !== true) {
-			next = document.createTextNode(String(val));
+			newNodes = [document.createTextNode(String(val))];
 		} else {
-			// Falsy → comment node holds the position so the next
-			// truthy value can replaceWith() into the same slot
-			next = document.createComment("");
+			// Falsy → empty array; the anchor holds the position
+			newNodes = [];
 		}
 
-		current.replaceWith(next);
-		current = /** @type {ChildNode} */ (next);
+		for (const node of newNodes) anchor.parentNode.insertBefore(node, anchor);
+		currentNodes = newNodes;
 	});
 }
 

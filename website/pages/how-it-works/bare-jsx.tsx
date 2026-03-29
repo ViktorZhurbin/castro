@@ -119,14 +119,22 @@ for (const [key, value] of Object.entries(props)) {
   }
 }
 
-// Reactive children use a placeholder comment node
+// Reactive children use a stable anchor pattern
 function bindReactiveChild(parent, fn) {
-  let current = document.createComment("");
-  parent.appendChild(current);
+  const anchor = document.createComment("");  // permanent, never moves
+  parent.appendChild(anchor);
+  let currentNodes = [];
   createEffect(() => {
-    const node = toNode(fn());  // call fn, get new DOM node
-    current.replaceWith(node);
-    current = node;             // track current node for next update
+    currentNodes.forEach(n => n.remove());    // clean up old nodes
+    const val = fn();
+    const newNodes = val instanceof DocumentFragment
+      ? Array.from(val.childNodes)            // snapshot before fragment dissolves
+      : val instanceof Node ? [val]
+      : val != null && val !== false
+        ? [document.createTextNode(String(val))]
+        : [];                                 // falsy → anchor holds position
+    newNodes.forEach(n => anchor.parentNode.insertBefore(n, anchor));
+    currentNodes = newNodes;
   });
 }`}</code>
 					</pre>
@@ -255,35 +263,6 @@ setB(2);  // Effects run again
 							<p className="text-sm text-base-content/70">
 								Rarely a problem for islands. If it is, use Solid (batches by
 								default).
-							</p>
-						</div>
-
-						{/* Fragments in conditionals */}
-						<div>
-							<h3 className="font-bold text-lg text-base-content mb-2">
-								Fragments Don't Work with Reactive Conditionals
-							</h3>
-							<p className="text-base-content/80 mb-3">
-								Reactive children that return Fragments break on updates.
-							</p>
-							<pre className="bg-base-200 border-2 border-base-300 p-3 overflow-x-auto text-xs leading-relaxed mb-3">
-								<code>{`// ❌ BREAKS
-{() => condition ? <>
-  <div>A</div>
-  <div>B</div>
-</> : <div>C</div>}
-
-// ✓ WORKS
-{() => condition ? <div>
-  <div>A</div>
-  <div>B</div>
-</div> : <div>C</div>}`}</code>
-							</pre>
-							<p className="text-sm text-base-content/70">
-								Why: On update, the runtime calls <code>replaceWith()</code> on
-								the old node. Fragments are special—they transfer children to
-								the parent, so there's nothing to replace. Always return a
-								single root from reactive conditionals.
 							</p>
 						</div>
 
