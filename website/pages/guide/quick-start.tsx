@@ -203,15 +203,47 @@ becomes an HTML page.`}</code>
 
 			<div className="divider max-w-4xl mx-auto" />
 
-			{/* Add an island */}
+			{/* Static components */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
-						6. ADD AN ISLAND
+						6. ADD COMPONENTS
 					</h2>
 					<p className="text-base-content mb-4">
-						Any component named <code>*.island.tsx</code> is treated as an
-						island — compiled separately for both SSR and the browser.
+						Shared UI lives in <code>components/</code>. A regular{" "}
+						<code>.tsx</code> component is server-rendered at build time — no
+						JavaScript sent to the browser, no hydration, just HTML.
+					</p>
+					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-4">
+						<code>{`// components/Card.tsx
+export function Card({ title, body }: { title: string; body: string }) {
+  return (
+    <div class="card">
+      <h2>{title}</h2>
+      <p>{body}</p>
+    </div>
+  );
+}`}</code>
+					</pre>
+					<p className="text-base-content">
+						Import and use it in any page — it renders to static HTML, nothing
+						more.
+					</p>
+				</div>
+			</section>
+
+			<div className="divider max-w-4xl mx-auto" />
+
+			{/* Islands */}
+			<section className="py-10 px-6 bg-base-100">
+				<div className="max-w-4xl mx-auto">
+					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
+						7. ADD AN ISLAND
+					</h2>
+					<p className="text-base-content mb-6">
+						You only need an island when a component requires client-side
+						interactivity. Name it <code>*.island.tsx</code> — it gets
+						pre-rendered at build time and hydrated in the browser.
 					</p>
 					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-6">
 						<code>{`// components/Counter.island.tsx
@@ -226,15 +258,11 @@ export default function Counter({ initial = 0 }: { initial?: number }) {
   );
 }`}</code>
 					</pre>
-					<Note className="mb-6">
-						Islands must use a default export. Named exports are ignored — the
-						compiler reads only <code>module.default</code> for both SSR and
-						client hydration.
-					</Note>
 					<p className="text-base-content mb-4">
-						Use it in a page with a hydration directive:
+						Use it in a page with a directive — the directive controls when the
+						island's JavaScript loads:
 					</p>
-					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed">
+					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-4">
 						<code>{`import Counter from "../components/Counter.island.tsx";
 
 export default function Home() {
@@ -246,59 +274,15 @@ export default function Home() {
   );
 }`}</code>
 					</pre>
-				</div>
-			</section>
-
-			<div className="divider max-w-4xl mx-auto" />
-
-			{/* Directives */}
-			<section className="py-10 px-6 bg-base-100">
-				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
-						7. DIRECTIVES
-					</h2>
-					<p className="text-base-content mb-6">
-						Every island prop ending in a directive controls when the island
-						hydrates. Available directives:
+					<p className="text-base-content mb-2">
+						Three directives: <code>comrade:visible</code> (default — on
+						scroll), <code>comrade:patient</code> (on idle),{" "}
+						<code>comrade:eager</code> (immediately).
 					</p>
-					<ul className="space-y-3 mb-6">
-						<li className="flex gap-3 items-start">
-							<code className="badge badge-secondary shrink-0 mt-0.5">
-								comrade:visible
-							</code>
-							<span className="text-base-content">
-								Hydrate when the island scrolls into view (default — used when
-								no directive is specified).
-							</span>
-						</li>
-						<li className="flex gap-3 items-start">
-							<code className="badge badge-accent shrink-0 mt-0.5">
-								comrade:patient
-							</code>
-							<span className="text-base-content">
-								Hydrate after page load, when the browser is idle. Uses
-								requestIdleCallback for efficient scheduling.
-							</span>
-						</li>
-						<li className="flex gap-3 items-start">
-							<code className="badge badge-primary shrink-0 mt-0.5">
-								comrade:eager
-							</code>
-							<span className="text-base-content">
-								Hydrate immediately on page load.
-							</span>
-						</li>
-					</ul>
-					<p className="text-base-content mb-4">
-						If you don't specify a directive, <code>comrade:visible</code> is
-						used automatically — the island in section 6 above uses the default.
-					</p>
-					<p className="text-sm text-base-content/80">
-						See{" "}
-						<a href="/how-it-works/hydration" className="underline">
-							Hydration
-						</a>{" "}
-						for a deep-dive on how each directive works at runtime.
+					<p className="text-sm text-base-content/60">
+						<a href="/guide/directives" className="underline">
+							Directives guide →
+						</a>
 					</p>
 				</div>
 			</section>
@@ -332,6 +316,9 @@ bun run build    # production build → dist/`}</code>
 						WHAT'S NEXT
 					</h2>
 					<div className="flex flex-wrap gap-4">
+						<a href="/guide/directives" className="btn btn-outline btn-primary">
+							Directives →
+						</a>
 						<a
 							href="/guide/configuration"
 							className="btn btn-outline btn-primary"

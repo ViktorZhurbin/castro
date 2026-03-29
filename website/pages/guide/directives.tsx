@@ -61,10 +61,10 @@ export default function Directives() {
 								</tr>
 								<tr>
 									<td>
-										<code>comrade:visible</code>
+										<code>comrade:visible</code> (default)
 									</td>
 									<td>When scrolled into view</td>
-									<td>Most islands (this is the default)</td>
+									<td>Most islands</td>
 								</tr>
 							</tbody>
 						</table>
