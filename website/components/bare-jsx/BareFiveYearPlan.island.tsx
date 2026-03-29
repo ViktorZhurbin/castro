@@ -1,3 +1,4 @@
+/** @jsxImportSource @vktrz/castro/runtime/jsx/dom */
 import { createEffect, createSignal } from "@vktrz/castro/signals";
 
 export default function BareFiveYearPlan() {
@@ -56,7 +57,7 @@ export default function BareFiveYearPlan() {
 				{/* Progress bar */}
 				<progress
 					class="progress progress-primary w-full"
-					value={progress as unknown as number}
+					value={progress}
 					max="100"
 				/>
 			</div>

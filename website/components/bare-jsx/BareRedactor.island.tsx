@@ -1,3 +1,4 @@
+/** @jsxImportSource @vktrz/castro/runtime/jsx/dom */
 import { createSignal } from "@vktrz/castro/signals";
 
 export default function BareRedactor() {
@@ -6,11 +7,9 @@ export default function BareRedactor() {
 	return (
 		<div class="border-2 border-base-content bg-base-100">
 			{/* Header */}
-			{/* bare-jsx handles function props reactively via createEffect; Preact's JSX types don't recognize this pattern */}
 			<div
-				class={
-					(() =>
-						`bg-base-content text-base-100 px-4 py-2 flex items-center justify-between ${censored() ? "bg-error" : ""}`) as any
+				class={() =>
+					`bg-base-content text-base-100 px-4 py-2 flex items-center justify-between ${censored() ? "bg-error" : ""}`
 				}
 			>
 				<p class="font-display font-bold text-sm">FIELD REPORT № 1947</p>
@@ -67,9 +66,8 @@ export default function BareRedactor() {
 			{/* Control */}
 			<div class="border-t-2 border-base-content px-4 py-3">
 				<button
-					class={
-						(() =>
-							`btn w-full font-display btn-lg ${censored() ? "btn-error" : "btn-primary"}`) as any
+					class={() =>
+						`btn w-full font-display btn-lg ${censored() ? "btn-error" : "btn-primary"}`
 					}
 					onClick={() => setCensored(!censored())}
 				>

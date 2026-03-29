@@ -26,6 +26,9 @@
 			"types": "./runtime/jsx/dom/index.d.ts",
 			"default": "./runtime/jsx/dom/index.js"
 		},
+		"./runtime/jsx/dom/jsx-runtime": {
+			"types": "./runtime/jsx/dom/jsx-runtime.d.ts"
+		},
 		"./runtime/jsx/ssr": {
 			"types": "./runtime/jsx/ssr/index.d.ts",
 			"default": "./runtime/jsx/ssr/index.js"

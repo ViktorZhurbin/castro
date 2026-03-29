@@ -1,3 +1,4 @@
+/** @jsxImportSource @vktrz/castro/runtime/jsx/dom */
 import { createSignal } from "@vktrz/castro/signals";
 
 const HEADLINES = [
