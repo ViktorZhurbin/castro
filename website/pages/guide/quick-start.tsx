@@ -134,6 +134,12 @@ export default function DefaultLayout({ title, children }: Props) {
 }`}</code>
 					</pre>
 					<Note className="mt-4">
+						Layouts and pages always use Preact — it's Castro's rendering engine
+						at build time. The <code>defaultIslandFramework</code> config only
+						affects islands. Preact is never shipped to the browser unless you
+						have Preact islands.
+					</Note>
+					<Note className="mt-3">
 						Layouts must use a default export — the build pipeline loads{" "}
 						<code>layoutModule.default</code>. It receives <code>title</code>{" "}
 						(from page meta or filename), <code>children</code> (the page
@@ -245,19 +251,79 @@ export function Card({ title, body }: { title: string; body: string }) {
 						interactivity. Name it <code>*.island.tsx</code> — it gets
 						pre-rendered at build time and hydrated in the browser.
 					</p>
-					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-6">
-						<code>{`// components/Counter.island.tsx
+					{/* use daisyui tabs here. 1st tab showing code example for Preact, then bare-jsx, then Solid */}
+					<div className="tabs tabs-box">
+						<input
+							type="radio"
+							name="islands"
+							className="tab"
+							aria-label="Preact"
+							defaultChecked
+						/>
+						<div className="tab-content bg-base-100 border-base-300 p-4">
+							<pre className="overflow-x-auto text-xs leading-relaxed">
+								<code>{`// components/Counter.island.tsx
 import { useState } from "preact/hooks";
 
 export default function Counter({ initial = 0 }: { initial?: number }) {
   const [count, setCount] = useState(initial);
+
   return (
-    <button onClick={() => setCount(count + 1)}>
-      Count: {count}
+		<button onClick={() => setCount(count + 1)}>
+    	Count: {count}
     </button>
   );
 }`}</code>
-					</pre>
+							</pre>
+						</div>
+
+						<input
+							type="radio"
+							name="islands"
+							className="tab"
+							aria-label="bare-jsx"
+						/>
+						<div className="tab-content bg-base-100 border-base-300 p-4">
+							<pre className="overflow-x-auto text-xs leading-relaxed">
+								<code>{`// components/bare-jsx/BareCounter.island.tsx
+import { createSignal } from "@vktrz/castro/signals";
+
+export default function BareCounter({ initial = 0 }) {
+	const [count, setCount] = createSignal(initial);
+
+	return (
+		<button onClick={() => setCount((c) => c + 1)}>
+			Bare: {count}
+		</button>;
+}
+`}</code>
+							</pre>
+						</div>
+
+						<input
+							type="radio"
+							name="islands"
+							className="tab"
+							aria-label="Solid"
+						/>
+						<div className="tab-content bg-base-100 border-base-300 p-4">
+							<pre className="overflow-x-auto text-xs leading-relaxed">
+								<code>{`// components/solid/SolidCounter.island.tsx
+import { createSignal } from "solid-js";
+
+export default function SolidCounter(props) {
+	const [count, setCount] = createSignal(props.initial ?? 0);
+
+	return (
+		<button onClick={() => setCount((c) => c + 1)}>
+			Solid: {count()}
+		</button>
+	);
+}`}</code>
+							</pre>
+						</div>
+					</div>
+
 					<p className="text-base-content mb-4">
 						Use it in a page with a directive — the directive controls when the
 						island's JavaScript loads:
