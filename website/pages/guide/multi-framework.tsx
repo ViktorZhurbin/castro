@@ -330,11 +330,11 @@ export function myFrameworkPlugin() {
 			<section className="py-10 px-6 bg-base-200">
 				<div className="max-w-4xl mx-auto">
 					<div className="flex flex-wrap gap-4">
-						<a href="/guide/directives" className="btn btn-outline btn-primary">
-							← Directives
+						<a href="/guide/using-jsx" className="btn btn-outline btn-primary">
+							← Using JSX
 						</a>
 						<a href="/guide/plugins" className="btn btn-outline btn-primary">
-							Next: Plugins →
+							Plugins →
 						</a>
 					</div>
 				</div>

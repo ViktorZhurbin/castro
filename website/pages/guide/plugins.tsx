@@ -266,8 +266,11 @@ export function tailwind({ input }) {
 						>
 							← Multi-Framework
 						</a>
-						<a href="/how-it-works" className="btn btn-outline btn-primary">
-							How It Works →
+						<a
+							href="/how-it-works/bare-jsx"
+							className="btn btn-outline btn-primary"
+						>
+							bare-jsx Framework →
 						</a>
 					</div>
 				</div>

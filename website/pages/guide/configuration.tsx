@@ -108,8 +108,9 @@ export default {
 						(e.g. <code>components/solid/</code>).
 					</p>
 					<p className="text-base-content">
-						Built-in options: <code>"preact"</code>, <code>"solid"</code>.
-						Additional frameworks can be registered via plugins — see{" "}
+						Built-in options: <code>bare-jsx</code>, <code>"preact"</code>,{" "}
+						<code>"solid"</code>. Additional frameworks can be registered via
+						plugins — see{" "}
 						<a href="/guide/multi-framework" className="underline">
 							Multi-Framework
 						</a>
@@ -216,11 +217,8 @@ export default {
 						>
 							← Quick Start
 						</a>
-						<a
-							href="/guide/multi-framework"
-							className="btn btn-outline btn-primary"
-						>
-							Next: Multi-Framework →
+						<a href="/guide/using-jsx" className="btn btn-outline btn-primary">
+							Next: Using JSX →
 						</a>
 					</div>
 				</div>

@@ -21,6 +21,7 @@ const sidebarSections: Record<
 		links: [
 			{ href: "/how-it-works", label: "Build Pipeline" },
 			{ href: "/how-it-works/hydration", label: "Hydration" },
+			{ href: "/how-it-works/bare-jsx", label: "bare-jsx Framework" },
 		],
 	},
 	guide: {
@@ -28,6 +29,7 @@ const sidebarSections: Record<
 		links: [
 			{ href: "/guide/quick-start", label: "Quick Start" },
 			{ href: "/guide/configuration", label: "Configuration" },
+			{ href: "/guide/using-jsx", label: "Using JSX" },
 			{ href: "/guide/directives", label: "Directives" },
 			{ href: "/guide/multi-framework", label: "Multi-Framework" },
 			{ href: "/guide/plugins", label: "Plugins" },

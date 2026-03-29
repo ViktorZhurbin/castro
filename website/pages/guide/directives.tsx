@@ -208,11 +208,8 @@ export default function Directives() {
 			<section className="py-10 px-6 bg-base-200">
 				<div className="max-w-4xl mx-auto">
 					<div className="flex flex-wrap gap-4">
-						<a
-							href="/guide/configuration"
-							className="btn btn-outline btn-primary"
-						>
-							← Configuration
+						<a href="/guide/using-jsx" className="btn btn-outline btn-primary">
+							Next: Using JSX →
 						</a>
 						<a
 							href="/guide/multi-framework"
