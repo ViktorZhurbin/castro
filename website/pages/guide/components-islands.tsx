@@ -360,7 +360,8 @@ export default function Index() {
 						TYPE CHECKING
 					</h2>
 					<p className="text-base-content mb-4">
-						Each framework has its own JSX type definitions. When you use a
+						TypeScript only expects one JSX runtime per project, but each
+						framework has its own JSX type definitions. When you use a
 						non-default framework, TypeScript needs to know which types to
 						apply. Two things are needed:
 					</p>
