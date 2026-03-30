@@ -1,7 +1,6 @@
-import type { Children } from "./index.d.ts";
+import type { Children } from "./dom/index";
 
-// Re-exported with jsx-runtime function signatures for automatic transform compatibility.
-// The bare-jsx build plugin uses classic mode (createElement factory), so these are
+// The castro-jsx build plugin uses classic mode (createElement factory), so these are
 // only resolved by TypeScript — not imported at runtime.
 export declare function jsx(
 	type: string | ((props: Record<string, any>) => Node),
@@ -9,10 +8,10 @@ export declare function jsx(
 	key?: string,
 ): Node;
 export declare const jsxs: typeof jsx;
-export { Fragment } from "./index.d.ts";
+export { Fragment } from "./dom/index";
 
 /**
- * A value or a zero-argument getter — bare-jsx's reactive attribute pattern.
+ * A value or a zero-argument getter — castro-jsx's reactive attribute pattern.
  * The DOM runtime wraps function props in effects; plain values are set once.
  */
 export type Signalish<T> = T | (() => T);
@@ -24,7 +23,7 @@ type S<T> = Signalish<T>;
 type Handler<E extends Event = Event> = (event: E) => void;
 
 /**
- * Props accepted by any HTML element in bare-jsx.
+ * Props accepted by any HTML element in castro-jsx.
  * All attribute values accept either a plain value or a reactive getter function.
  * Event handler names follow `on<EventName>` convention (e.g. `onClick`, `onInput`).
  */

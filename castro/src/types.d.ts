@@ -24,7 +24,7 @@ export type ImportsMap = Record<string, string>;
 
 /** Passed to onAfterBuild — aggregated across all pages in the build. */
 export type BuildContext = {
-	/** Framework IDs that had at least one island rendered (e.g. "bare-jsx", "preact", "solid") */
+	/** Framework IDs that had at least one island rendered (e.g. "castro-jsx", "preact", "solid") */
 	usedFrameworks: Set<string>;
 };
 

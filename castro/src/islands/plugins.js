@@ -2,7 +2,6 @@ import { join } from "node:path";
 import { userPlugins } from "../config.js";
 import { OUTPUT_DIR } from "../constants.js";
 import { registerFramework } from "./frameworkConfig.js";
-import { BARE_JSX_RUNTIME } from "./frameworks/bare-jsx.js";
 
 /**
  * @import { CastroPlugin } from '../types.d.ts'
@@ -22,48 +21,8 @@ for (const plugin of userPlugins) {
  * Build pipeline and dev server iterate this merged list.
  * @type {CastroPlugin[]}
  */
-const internalPlugins = [castroIslandRuntime(), bareRuntimePlugin()];
+const internalPlugins = [castroIslandRuntime()];
 export const allPlugins = [...internalPlugins, ...userPlugins];
-
-/**
- * Bundles the bare-jsx runtime into dist for browser loading.
- *
- * bare-jsx islands externalize their runtime imports (signals, h, Fragment)
- * and resolve them via import map → /bare-jsx.{version}.js. Only writes
- * when at least one page actually used a bare-jsx island.
- *
- * @returns {CastroPlugin}
- */
-function bareRuntimePlugin() {
-	return {
-		name: "bare-jsx-runtime",
-
-		async onAfterBuild({ usedFrameworks }) {
-			if (!usedFrameworks.has("bare-jsx")) return;
-
-			const entrypoint = join(
-				import.meta.dir,
-				"..",
-				"..",
-				"runtime",
-				"jsx",
-				"dom",
-				"index.js",
-			);
-
-			const result = await Bun.build({
-				entrypoints: [entrypoint],
-				format: "esm",
-				target: "browser",
-				minify: true,
-			});
-
-			if (result.success && result.outputs[0]) {
-				await Bun.write(join(OUTPUT_DIR, BARE_JSX_RUNTIME), result.outputs[0]);
-			}
-		},
-	};
-}
 
 /**
  * Copies the <castro-island> custom element runtime to dist.

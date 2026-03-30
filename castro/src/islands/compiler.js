@@ -214,6 +214,7 @@ async function compileIslandSSR({ sourcePath, frameworkId }) {
 	} catch (e) {
 		const err = /** @type {Bun.ErrorLike} */ (e);
 
+		console.error(err);
 		throw new Error(messages.build.ssrCompileFailed(sourcePath, err.message));
 	}
 }

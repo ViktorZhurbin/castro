@@ -2,20 +2,20 @@ import type { PageMeta } from "@vktrz/castro";
 import { Note } from "../../components/Note.tsx";
 
 export const meta: PageMeta = {
-	title: "3. bare-jsx Runtime — Castro",
+	title: "3. castro-jsx Runtime — Castro",
 	layout: "docs",
-	path: "/how-it-works/bare-jsx",
+	path: "/how-it-works/castro-jsx",
 	section: "how-it-works",
 };
 
-export default function BareJsxPage() {
+export default function CastroJsxPage() {
 	return (
 		<>
 			{/* Header */}
 			<section className="py-12 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h1 className="font-display text-5xl md:text-7xl text-primary mb-4">
-						3. BARE-JSX RUNTIME
+						3. CASTRO-JSX RUNTIME
 					</h1>
 					<p className="text-base-content max-w-2xl">
 						Castro's built-in reactive framework. No compiler, no virtual DOM,
@@ -173,9 +173,9 @@ function bindReactiveChild(parent, fn) {
 					</h2>
 
 					<p className="text-base-content mb-4">
-						bare-jsx uses <strong>clear-and-remount</strong> hydration. The SSR
-						HTML is discarded, and the component re-runs client-side to build a
-						reactive DOM tree.
+						castro-jsx uses <strong>clear-and-remount</strong> hydration. The
+						SSR HTML is discarded, and the component re-runs client-side to
+						build a reactive DOM tree.
 					</p>
 
 					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-6">
@@ -194,7 +194,7 @@ container.appendChild(dom);  // Mount fresh reactive tree`}</code>
 
 					<p className="text-base-content mb-4">
 						<strong>Why:</strong> React/Preact walk the existing DOM and attach
-						listeners. bare-jsx discards it and rebuilds. This is simpler code
+						listeners. castro-jsx discards it and rebuilds. This is simpler code
 						(no diffing) but causes a brief visual flicker for complex islands.
 					</p>
 
@@ -205,9 +205,9 @@ container.appendChild(dom);  // Mount fresh reactive tree`}</code>
 					</p>
 
 					<Note>
-						This is a tradeoff. The entire bare-jsx runtime is ~2KB. Supporting
-						DOM-walking hydration (like React) would require a diffing
-						algorithm, adding 1-2KB.
+						This is a tradeoff. The entire castro-jsx runtime is ~2KB.
+						Supporting DOM-walking hydration (like React) would require a
+						diffing algorithm, adding 1-2KB.
 					</Note>
 				</div>
 			</section>
@@ -315,7 +315,7 @@ setB(2);  // Effects run again
 							<thead>
 								<tr>
 									<th>Feature</th>
-									<th>bare-jsx</th>
+									<th>castro-jsx</th>
 									<th>Solid</th>
 									<th>Preact</th>
 								</tr>

@@ -95,7 +95,7 @@ function Features() {
 				/>
 				<FeatureCard
 					title="MULTI-FRAMEWORK"
-					description="Preact, Solid, and bare-jsx on the same page. Extensible via plugins."
+					description="Preact, Solid, and castro-jsx on the same page. Extensible via plugins."
 					href="/guide/multi-framework"
 					color="secondary"
 				/>

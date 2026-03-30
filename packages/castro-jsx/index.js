@@ -1,42 +1,34 @@
 /**
- * bare-jsx Framework Configuration
+ * castro-jsx Plugin for Castro
  *
- * A minimal JSX + signals framework using Castro's built-in runtime.
- * Unlike Preact and Solid which load from CDN, bare-jsx ships its ~2KB runtime
- * inside your dist folder — no external servers, no third-party CDNs.
- * The runtime is built once and shared across all bare-jsx islands via import map,
- * same mechanism Preact and Solid use, just pointing to a local file.
+ * A minimal JSX + signals framework shipped as a standalone plugin.
+ * Unlike Preact and Solid which load from CDN, castro-jsx bundles its
+ * ~2KB runtime into your dist folder — no external servers, no third-party CDNs.
+ * The runtime is built once and shared across all castro-jsx islands via import map.
  *
- * This teaches how frameworks work by contrast: where Preact uses virtual DOM
- * diffing and Solid uses compiled reactive DOM operations, bare-jsx uses direct
- * DOM manipulation with reactive effects. The re-render hydration strategy
- * (clear and remount instead of walking existing DOM) makes the simplicity
- * vs. performance tradeoff visible.
+ * This demonstrates how the Castro plugin architecture enables third-party
+ * frameworks to integrate seamlessly with the core SSG.
  */
 
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
-/** Version-stamped filename for the bare-jsx runtime bundle. */
-export const BARE_JSX_RUNTIME = `bare-jsx.${
-	JSON.parse(
-		readFileSync(
-			join(dirname(import.meta.dir), "..", "..", "package.json"),
-			"utf8",
-		),
-	).version
-}.js`;
-
 /**
- * @import { FrameworkConfig } from "./types.d.ts"
+ * @import { CastroPlugin, FrameworkConfig } from "@vktrz/castro"
  */
 
-const RUNTIME_DIR = join(dirname(import.meta.dir), "..", "..", "runtime");
-const SIGNALS_DIR = join(RUNTIME_DIR, "signals");
-const JSX_DIR = join(RUNTIME_DIR, "jsx");
+const PACKAGE_ROOT_DIR = dirname(import.meta.filename);
+const SIGNALS_DIR = join(PACKAGE_ROOT_DIR, "signals");
+const JSX_DIR = join(PACKAGE_ROOT_DIR, "jsx");
+
+const version = JSON.parse(
+	readFileSync(join(PACKAGE_ROOT_DIR, "package.json"), "utf8"),
+).version;
+
+const CASTRO_JSX_RUNTIME = `castro-jsx.${version}.js`;
 
 /**
- * Bun.build plugin that wires up the bare-jsx runtime.
+ * Bun.build plugin that wires up the castro-jsx runtime.
  *
  * Injects createElement() and Fragment imports into .jsx/.tsx files. Classic JSX
  * transform compiles <div> to createElement("div", ...) but doesn't auto-inject
@@ -52,35 +44,36 @@ const JSX_DIR = join(RUNTIME_DIR, "jsx");
  * @param {"dom" | "ssr"} target
  * @returns {import("bun").BunPlugin}
  */
-function bareJsxPlugin(target) {
+function castroJsxPlugin(target) {
 	// Client builds use bare specifiers (resolved by import map in the browser).
 	// SSR builds use absolute paths (resolved by Bun at build time).
 	const runtimeImport =
-		target === "ssr"
-			? join(JSX_DIR, "ssr", "index.js")
-			: "@vktrz/castro/runtime/jsx/dom";
+		target === "ssr" ? join(JSX_DIR, "ssr", "index.js") : "@vktrz/castro-jsx";
 
 	return {
-		name: "bare-jsx",
+		name: "castro-jsx",
 		setup(build) {
 			if (target === "ssr") {
-				// SSR only: resolve @vktrz/castro imports to absolute paths
+				// SSR only: resolve @vktrz/castro-jsx imports to absolute paths
 				// so they get bundled. The SSR build runs in Bun where
 				// packages:"external" would otherwise externalize these —
 				// but SSR needs the code inlined since there's no import map
 				// in a Node/Bun environment.
-				build.onResolve({ filter: /^@vktrz\/castro/ }, ({ path }) => {
-					// Map package specifiers to absolute file paths in runtime/
-					if (path === "@vktrz/castro/signals") {
-						return { path: join(SIGNALS_DIR, "index.js") };
-					}
-					if (path === "@vktrz/castro/runtime/jsx/dom") {
+				build.onResolve({ filter: /^@vktrz\/castro-jsx/ }, ({ path }) => {
+					// Map package specifiers to absolute file paths
+					if (
+						path === "@vktrz/castro-jsx" ||
+						path === "@vktrz/castro-jsx/dom"
+					) {
 						return { path: join(JSX_DIR, "dom", "index.js") };
 					}
-					if (path === "@vktrz/castro/runtime/jsx/ssr") {
+					if (path === "@vktrz/castro-jsx/signals") {
+						return { path: join(SIGNALS_DIR, "index.js") };
+					}
+					if (path === "@vktrz/castro-jsx/ssr") {
 						return { path: join(JSX_DIR, "ssr", "index.js") };
 					}
-					// Let other @vktrz/castro imports (e.g. type imports) pass through
+					// Let other @vktrz/castro-jsx imports (e.g. type imports) pass through
 					return undefined;
 				});
 			}
@@ -110,28 +103,28 @@ function bareJsxPlugin(target) {
 }
 
 /** @type {FrameworkConfig} */
-export default {
-	id: "bare-jsx",
+const frameworkConfig = {
+	id: "castro-jsx",
 
 	/**
-	 * Bun.build settings for bare-jsx islands.
+	 * Bun.build settings for castro-jsx islands.
 	 * Uses classic JSX transform (explicit createElement() factory) instead of automatic
 	 * (which would look for a jsx-runtime module). Client builds externalize
 	 * the runtime — the browser loads it once via import map, shared across
-	 * all bare-jsx islands on the page.
+	 * all castro-jsx islands on the page.
 	 */
 	getBuildConfig: (target) => ({
 		jsx: { runtime: "classic", factory: "createElement", fragment: "Fragment" },
-		plugins: [bareJsxPlugin(target ?? "dom")],
+		plugins: [castroJsxPlugin(target ?? "dom")],
 		external:
 			target === "ssr"
 				? []
-				: ["@vktrz/castro/signals", "@vktrz/castro/runtime/jsx/dom"],
+				: ["@vktrz/castro-jsx", "@vktrz/castro-jsx/signals"],
 	}),
 
 	importMap: {
-		"@vktrz/castro/signals": `/${BARE_JSX_RUNTIME}`,
-		"@vktrz/castro/runtime/jsx/dom": `/${BARE_JSX_RUNTIME}`,
+		"@vktrz/castro-jsx": `/${CASTRO_JSX_RUNTIME}`,
+		"@vktrz/castro-jsx/signals": `/${CASTRO_JSX_RUNTIME}`,
 	},
 
 	/**
@@ -151,3 +144,36 @@ export default {
 		return result?.value ?? String(result);
 	},
 };
+
+/**
+ * Bundles the castro-jsx runtime into dist for browser loading.
+ *
+ * castro-jsx islands externalize their runtime imports (signals, h, Fragment)
+ * and resolve them via import map → /castro-jsx.{version}.js. Only writes
+ * when at least one page actually used a castro-jsx island.
+ *
+ * @returns {CastroPlugin}
+ */
+export function castroJsx() {
+	return {
+		name: "castro-jsx",
+		frameworkConfig,
+
+		async onAfterBuild({ usedFrameworks }) {
+			if (!usedFrameworks.has("castro-jsx")) return;
+
+			const entrypoint = join(JSX_DIR, "dom", "index.js");
+
+			const result = await Bun.build({
+				entrypoints: [entrypoint],
+				format: "esm",
+				target: "browser",
+				minify: true,
+			});
+
+			if (result.success && result.outputs[0]) {
+				await Bun.write(join("dist", CASTRO_JSX_RUNTIME), result.outputs[0]);
+			}
+		},
+	};
+}

@@ -267,10 +267,10 @@ export function tailwind({ input }) {
 							← Components & Islands
 						</a>
 						<a
-							href="/how-it-works/bare-jsx"
+							href="/how-it-works/castro-jsx"
 							className="btn btn-outline btn-primary"
 						>
-							bare-jsx Framework →
+							castro-jsx Framework →
 						</a>
 					</div>
 				</div>

@@ -251,7 +251,6 @@ export function Card({ title, body }: { title: string; body: string }) {
 						interactivity. Name it <code>*.island.tsx</code> — it gets
 						pre-rendered at build time and hydrated in the browser.
 					</p>
-					{/* use daisyui tabs here. 1st tab showing code example for Preact, then bare-jsx, then Solid */}
 					<div className="tabs tabs-box">
 						<input
 							type="radio"
@@ -281,19 +280,19 @@ export default function Counter({ initial = 0 }: { initial?: number }) {
 							type="radio"
 							name="islands"
 							className="tab"
-							aria-label="bare-jsx"
+							aria-label="castro-jsx"
 						/>
 						<div className="tab-content bg-base-100 border-base-300 p-4">
 							<pre className="overflow-x-auto text-xs leading-relaxed">
-								<code>{`// components/bare-jsx/BareCounter.island.tsx
-import { createSignal } from "@vktrz/castro/signals";
+								<code>{`// components/castro-jsx/CastroCounter.island.tsx
+import { createSignal } from "@vktrz/castro-jsx/signals";
 
-export default function BareCounter({ initial = 0 }) {
+export default function CastroCounter({ initial = 0 }) {
 	const [count, setCount] = createSignal(initial);
 
 	return (
 		<button onClick={() => setCount((c) => c + 1)}>
-			Bare: {count}
+			Castro: {count}
 		</button>;
 }
 `}</code>
@@ -436,8 +435,8 @@ export default {
 								<code>"preact"</code>. The framework used for islands not inside
 								a named framework directory (e.g. <code>components/solid/</code>
 								). Only affects islands — pages and layouts always use Preact.
-								Built-in options: <code>"preact"</code>, <code>"bare-jsx"</code>
-								, <code>"solid"</code>.
+								Built-in options: <code>"preact"</code>,{" "}
+								<code>"castro-jsx"</code>, <code>"solid"</code>.
 							</p>
 						</div>
 

@@ -1,5 +1,5 @@
 /**
- * Reactive primitives for Castro's bare-jsx framework.
+ * Reactive primitives for castro-jsx framework.
  *
  * These type signatures match the SolidJS API surface — familiar to anyone
  * who has used fine-grained reactivity.

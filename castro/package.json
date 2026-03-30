@@ -17,27 +17,11 @@
 	"exports": {
 		".": {
 			"types": "./src/types.d.ts"
-		},
-		"./signals": {
-			"types": "./runtime/signals/index.d.ts",
-			"default": "./runtime/signals/index.js"
-		},
-		"./runtime/jsx/dom": {
-			"types": "./runtime/jsx/dom/index.d.ts",
-			"default": "./runtime/jsx/dom/index.js"
-		},
-		"./runtime/jsx/dom/jsx-runtime": {
-			"types": "./runtime/jsx/dom/jsx-runtime.d.ts"
-		},
-		"./runtime/jsx/ssr": {
-			"types": "./runtime/jsx/ssr/index.d.ts",
-			"default": "./runtime/jsx/ssr/index.js"
 		}
 	},
 	"files": [
 		"bin/",
-		"src/",
-		"runtime/"
+		"src/"
 	],
 	"scripts": {
 		"knip": "knip",

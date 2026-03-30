@@ -10,6 +10,7 @@
 	"dependencies": {
 		"@preact/signals": "^2.8.1",
 		"@vktrz/castro": "workspace:*",
+		"@vktrz/castro-jsx": "workspace:*",
 		"preact": "^10",
 		"solid-js": "^1"
 	}

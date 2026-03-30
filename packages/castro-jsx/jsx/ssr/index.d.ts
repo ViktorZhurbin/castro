@@ -15,7 +15,7 @@ export type Child =
 	| (() => Child);
 export type Children = Child | Child[];
 
-/** A bare-jsx component function — receives props, returns an HtmlString. */
+/** A castro-jsx component function — receives props, returns an HtmlString. */
 export type Component = (props: Record<string, any>) => HtmlString;
 
 /** JSX factory — turns `<div class="x">` into an HTML string. */

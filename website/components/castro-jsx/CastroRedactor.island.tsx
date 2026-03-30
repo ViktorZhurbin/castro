@@ -1,7 +1,7 @@
-/** @jsxImportSource @vktrz/castro/runtime/jsx/dom */
-import { createSignal } from "@vktrz/castro/signals";
+/** @jsxImportSource @vktrz/castro-jsx */
+import { createSignal } from "@vktrz/castro-jsx/signals";
 
-export default function BareRedactor() {
+export default function CastroRedactor() {
 	const [censored, setCensored] = createSignal(false);
 
 	return (

@@ -1,7 +1,7 @@
 import type { PageMeta } from "@vktrz/castro";
-import BareFiveYearPlan from "../../components/bare-jsx/BareFiveYearPlan.island.tsx";
-import BarePropagandaRadio from "../../components/bare-jsx/BarePropagandaRadio.island.tsx";
-import BareRedactor from "../../components/bare-jsx/BareRedactor.island.tsx";
+import CastroFiveYearPlan from "../../components/castro-jsx/CastroFiveYearPlan.island.tsx";
+import CastroPropagandaRadio from "../../components/castro-jsx/CastroPropagandaRadio.island.tsx";
+import CastroRedactor from "../../components/castro-jsx/CastroRedactor.island.tsx";
 import { Note } from "../../components/Note.tsx";
 import PropagandaRadio from "../../components/PropagandaRadio.island.tsx";
 import SolidFiveYearPlan from "../../components/solid/SolidFiveYearPlan.island.tsx";
@@ -182,7 +182,7 @@ export default function Index() {
 						<code>{`<PropagandaRadio comrade:eager />`}</code>
 					</pre>
 					<div className="bg-base-200 p-4 border border-dashed border-base-300">
-						<BarePropagandaRadio comrade:eager />
+						<CastroPropagandaRadio comrade:eager />
 					</div>
 					<p className="text-xs text-base-content/80 mt-2">
 						The radio is already cycling headlines — JS loaded on page load, no
@@ -212,7 +212,7 @@ export default function Index() {
 						<code>{`<Redactor comrade:patient />`}</code>
 					</pre>
 					<div className="bg-base-200 p-4 border border-dashed border-base-300">
-						<BareRedactor comrade:patient />
+						<CastroRedactor comrade:patient />
 					</div>
 					<p className="text-xs text-base-content/80 mt-2">
 						Censorship activates after the browser settles.
@@ -254,7 +254,7 @@ export default function Index() {
 					<div style={{ minHeight: "400px" }} />
 
 					<div className="bg-base-200 p-4 border border-dashed border-base-300">
-						<BareFiveYearPlan comrade:visible />
+						<CastroFiveYearPlan comrade:visible />
 					</div>
 					<p className="text-xs text-base-content/80 mt-2">
 						The progress tracker only hydrated when you scrolled here. Check
@@ -272,7 +272,7 @@ export default function Index() {
 						MULTI-FRAMEWORK
 					</h2>
 					<p className="text-base-content mb-4">
-						Castro supports bare-jsx, Preact, and Solid out of the box. All
+						Castro supports castro-jsx, Preact, and Solid out of the box. All
 						three can appear on the same page. Pick the framework per island —
 						not per project.
 					</p>
@@ -290,7 +290,7 @@ export default function Index() {
 							<tbody>
 								<tr>
 									<td>
-										<code>bare-jsx</code>
+										<code>castro-jsx</code>
 									</td>
 									<td>Simple widgets, learning reactivity</td>
 									<td>~2KB</td>
@@ -338,15 +338,15 @@ export default function Index() {
 					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-4">
 						<code>{`components/
 ├── Counter.island.tsx          ← uses default framework
-├── bare-jsx/
-│   └── Counter.island.tsx     ← detected as bare-jsx
+├── castro-jsx/
+│   └── Counter.island.tsx     ← detected as castro-jsx
 └── solid/
     └── Counter.island.tsx     ← detected as Solid`}</code>
 					</pre>
 					<Note>
 						The framework directory name must match the framework's{" "}
-						<code>id</code> exactly: <code>solid/</code>, <code>bare-jsx/</code>
-						, <code>preact/</code>.
+						<code>id</code> exactly: <code>solid/</code>,{" "}
+						<code>castro-jsx/</code>, <code>preact/</code>.
 					</Note>
 				</div>
 			</section>
@@ -371,7 +371,7 @@ export default function Index() {
 						each island file that uses a non-default framework:
 					</p>
 					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-4">
-						<code>{`/** @jsxImportSource @vktrz/castro/runtime/jsx/dom */
+						<code>{`/** @jsxImportSource @vktrz/castro-jsx */
 import { createSignal } from "@vktrz/castro/signals";
 
 /** @jsxImportSource solid-js */
@@ -405,7 +405,7 @@ import { createSignal } from "solid-js";`}</code>
 					<p className="text-base-content mb-8">
 						Three islands below, three different frameworks. Castro handles
 						separate compilation and import maps automatically. Open DevTools
-						Network to see Preact, bare-jsx runtime, and Solid load
+						Network to see Preact, castro-jsx runtime, and Solid load
 						independently.
 					</p>
 
@@ -413,14 +413,14 @@ import { createSignal } from "solid-js";`}</code>
 						<div className="card card-border border-accent bg-base-100">
 							<div className="card-body">
 								<h3 className="card-title font-display text-2xl text-accent">
-									BARE-JSX
+									CASTRO-JSX
 								</h3>
 								<p className="text-sm text-base-content/80">
 									Castro's own runtime. Signals + direct DOM, no virtual DOM, no
 									CDN.
 								</p>
 								<div className="bg-base-200 p-4 border border-dashed border-base-300">
-									<BareRedactor />
+									<CastroRedactor />
 								</div>
 							</div>
 						</div>

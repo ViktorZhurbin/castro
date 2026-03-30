@@ -1,5 +1,5 @@
-/** @jsxImportSource @vktrz/castro/runtime/jsx/dom */
-import { createSignal } from "@vktrz/castro/signals";
+/** @jsxImportSource @vktrz/castro-jsx */
+import { createSignal } from "@vktrz/castro-jsx/signals";
 
 const HEADLINES = [
 	"Harvest exceeds expectations by 400%",
@@ -10,7 +10,7 @@ const HEADLINES = [
 	"Central Committee approves new CSS standard",
 ];
 
-export default function BarePropagandaRadio() {
+export default function CastroPropagandaRadio() {
 	const [index, setIndex] = createSignal(0);
 
 	function prev() {
@@ -21,7 +21,7 @@ export default function BarePropagandaRadio() {
 		setIndex((i) => (i + 1) % HEADLINES.length);
 	}
 
-	// bare-jsx component functions run once — no lifecycle hooks needed.
+	// castro-jsx component functions run once — no lifecycle hooks needed.
 	// The interval persists for the lifetime of the page.
 	setInterval(() => {
 		next();

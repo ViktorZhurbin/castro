@@ -1,4 +1,4 @@
-import { createSignal } from "@vktrz/castro/signals";
+import { createSignal } from "@vktrz/castro-jsx/signals";
 
 /**
  * Exercises the stable anchor pattern in bindReactiveChild.
@@ -6,7 +6,7 @@ import { createSignal } from "@vktrz/castro/signals";
  * the case that previously broke because DocumentFragment dissolves on insert,
  * leaving the old `current` pointer dangling.
  */
-export default function BareFragmentToggle() {
+export default function CastroFragmentToggle() {
 	const [show, setShow] = createSignal(true);
 
 	return (

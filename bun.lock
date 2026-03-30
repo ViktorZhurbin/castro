@@ -29,6 +29,13 @@
         "typescript": "^5.9.3",
       },
     },
+    "packages/castro-jsx": {
+      "name": "@vktrz/castro-jsx",
+      "version": "0.1.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+      },
+    },
     "packages/tailwind": {
       "name": "@vktrz/castro-tailwind",
       "version": "0.1.0",
@@ -45,6 +52,7 @@
       "dependencies": {
         "@preact/signals": "^2.8.1",
         "@vktrz/castro": "workspace:*",
+        "@vktrz/castro-jsx": "workspace:*",
         "preact": "^10",
         "solid-js": "^1",
       },
@@ -54,6 +62,7 @@
       "version": "1.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
+        "@vktrz/castro-jsx": "workspace:*",
         "@vktrz/castro-tailwind": "workspace:*",
         "daisyui": "^5.5.19",
         "preact": "^10.28.2",
@@ -255,6 +264,8 @@
     "@types/node": ["@types/node@25.2.1", "", { "dependencies": { "undici-types": "~7.16.0" } }, "sha512-CPrnr8voK8vC6eEtyRzvMpgp3VyVRhgclonE7qYi6P9sXwYb59ucfrnmFBTaP0yUi8Gk4yZg/LlTJULGxvTNsg=="],
 
     "@vktrz/castro": ["@vktrz/castro@workspace:castro"],
+
+    "@vktrz/castro-jsx": ["@vktrz/castro-jsx@workspace:packages/castro-jsx"],
 
     "@vktrz/castro-tailwind": ["@vktrz/castro-tailwind@workspace:packages/tailwind"],
 

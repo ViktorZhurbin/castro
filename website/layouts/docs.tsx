@@ -21,7 +21,7 @@ const sidebarSections: Record<
 		links: [
 			{ href: "/how-it-works", label: "1. Build Pipeline" },
 			{ href: "/how-it-works/hydration", label: "2. Island Hydration" },
-			{ href: "/how-it-works/bare-jsx", label: "3. bare-jsx Runtime" },
+			{ href: "/how-it-works/castro-jsx", label: "3. castro-jsx Runtime" },
 		],
 	},
 	guide: {

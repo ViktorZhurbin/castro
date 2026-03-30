@@ -243,65 +243,65 @@ test("solid-only page has island wrapper", async () => {
 	expect(html).toContain("<castro-island");
 });
 
-// ------ bare-jsx framework (signals + direct DOM) ------
+// ------ castro-jsx framework (signals + direct DOM) ------
 
-test("bare-jsx island renders SSR content", async () => {
-	const html = await readHtml("bare.html");
-	expect(html).toContain("Bare: 5");
+test("castro-jsx island renders SSR content", async () => {
+	const html = await readHtml("castro-jsx.html");
+	expect(html).toContain("Castro: 5");
 });
 
-test("bare-jsx island has island wrapper", async () => {
-	const html = await readHtml("bare.html");
+test("castro-jsx island has island wrapper", async () => {
+	const html = await readHtml("castro-jsx.html");
 	expect(html).toContain("<castro-island");
 	expect(html).toContain('directive="comrade:visible"');
 });
 
-test("bare-jsx island has island runtime", async () => {
-	const html = await readHtml("bare.html");
+test("castro-jsx island has island runtime", async () => {
+	const html = await readHtml("castro-jsx.html");
 	expect(html).toContain("castro-island.js");
 });
 
-test("bare-jsx island has JS bundle reference", async () => {
-	const html = await readHtml("bare.html");
-	expect(html).toContain('import="/islands/bare-jsx/BareCounter');
+test("castro-jsx island has JS bundle reference", async () => {
+	const html = await readHtml("castro-jsx.html");
+	expect(html).toContain('import="/islands/castro-jsx/CastroCounter');
 });
 
-// ------ bare-jsx: Fragment in reactive conditional ------
+// ------ castro-jsx: Fragment in reactive conditional ------
 // Exercises the stable anchor pattern in bindReactiveChild. Before the fix,
 // returning a Fragment from a reactive conditional broke on the second render
 // because DocumentFragment dissolves on insert, leaving the anchor dangling.
 
-test("bare-jsx fragment island renders SSR fragment children", async () => {
-	const html = await readHtml("bare.html");
+test("castro-jsx fragment island renders SSR fragment children", async () => {
+	const html = await readHtml("castro-jsx.html");
 	// show() starts true → Fragment branch → both spans should appear in SSR
 	expect(html).toContain("Fragment A");
 	expect(html).toContain("Fragment B");
 });
 
-test("bare-jsx fragment island has island wrapper", async () => {
-	const html = await readHtml("bare.html");
-	expect(html).toContain('import="/islands/bare-jsx/BareFragmentToggle');
+test("castro-jsx fragment island has island wrapper", async () => {
+	const html = await readHtml("castro-jsx.html");
+	expect(html).toContain('import="/islands/castro-jsx/CastroFragmentToggle');
 });
 
-test("bare-jsx island has local runtime in import map (no CDN)", async () => {
-	const html = await readHtml("bare.html");
-	// bare-jsx externalizes its runtime and resolves it locally via import map —
+test("castro-jsx island has local runtime in import map (no CDN)", async () => {
+	const html = await readHtml("castro-jsx.html");
+	// castro-jsx externalizes its runtime and resolves it locally via import map —
 	// no CDN entries like Preact/Solid use
-	expect(html).toContain('"@vktrz/castro/signals"');
-	expect(html).toContain('"@vktrz/castro/runtime/jsx/dom"');
-	expect(html).toMatch(/\/bare-jsx\.\d+\.\d+\.\d+\.js/);
+	expect(html).toContain('"@vktrz/castro-jsx"');
+	expect(html).toContain('"@vktrz/castro-jsx/signals"');
+	expect(html).toMatch(/\/castro-jsx\.\d+\.\d+\.\d+\.js/);
 	expect(html).not.toContain('"preact"');
 	expect(html).not.toContain('"solid-js"');
 });
 
 // ------ onAfterBuild: conditional asset writing ------
 
-test("bare-jsx runtime exists in dist with version stamp", async () => {
+test("castro-jsx runtime exists in dist with version stamp", async () => {
 	const files = await Array.fromAsync(
-		new Bun.Glob("bare-jsx.*.js").scan(distDir),
+		new Bun.Glob("castro-jsx.*.js").scan(distDir),
 	);
 	expect(files.length).toBe(1);
-	expect(files[0]).toMatch(/^bare-jsx\.\d+\.\d+\.\d+\.js$/);
+	expect(files[0]).toMatch(/^castro-jsx\.\d+\.\d+\.\d+\.js$/);
 });
 
 test("castro-island.js exists in dist (hydrated islands used)", async () => {

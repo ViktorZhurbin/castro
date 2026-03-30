@@ -297,10 +297,10 @@ const props = propsJson ? JSON.parse(propsJson) : {};
 							← Back to The Build Pipeline
 						</a>
 						<a
-							href="/how-it-works/bare-jsx"
+							href="/how-it-works/castro-jsx"
 							className="btn btn-outline btn-primary"
 						>
-							bare-jsx Framework →
+							castro-jsx Framework →
 						</a>
 					</div>
 				</div>

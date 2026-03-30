@@ -1,6 +1,6 @@
 # Castro
 
-Educational Static Site Generator (~1500 LOC) teaching island architecture. Communist satire wraps serious, well-commented code. Preact for page rendering, multiple frameworks (bare-jsx, Preact, Solid) for islands, Bun for everything else.
+Educational Static Site Generator (~1500 LOC) teaching island architecture. Communist satire wraps serious, well-commented code. Preact for page rendering, multiple frameworks (Preact, Solid) for islands, Bun for everything else. Framework plugins like castro-jsx extend this list.
 
 Comparable to:
 - Fresh, Marko (though way less advanced), early Astro (pre-marketplace era), Eleventy + is-land.
@@ -20,9 +20,9 @@ bun loc              # LOC count (core only, excludes messages/)
 ## Monorepo Layout
 
 - `castro/` — core SSG engine (the npm package `@vktrz/castro`)
-- `plugins/` — plugins (`@vktrz/castro-tailwind`)
+- `packages/` — packages and plugins (e.g., `@vktrz/castro-jsx`, `@vktrz/castro-tailwind`)
 - `website/` — demo playground that consumes castro
-- `test-site/` — minimal test site exercising bare-jsx, Preact, and Solid islands
+- `test-site/` — minimal test site exercising castro-jsx, Preact, and Solid islands
 
 ### Core Module Structure (`castro/src/`)
 
@@ -45,7 +45,7 @@ islands/
   registry.js           Singleton island store + SSR module preloading
   marker.js             Build-time island renderer
   frameworkConfig.js   Framework config loader (async load + sync cache)
-  frameworks/           Per-framework configs (bare-jsx.js, preact.js, solid.js, types.d.ts)
+  frameworks/           Built-in framework configs (preact.js, solid.js, types.d.ts)
   plugins.js            Plugin registry (internal + user plugins from config)
   hydration.js          Client-side <castro-island> custom element
 
@@ -73,28 +73,6 @@ types.d.ts              Shared types (IslandComponent, PageMeta, CastroPlugin, e
 jsx.d.ts                JSX namespace for custom directives
 ```
 
-### Runtime Structure (`castro/runtime/`)
-
-Framework runtimes that ship with Castro — code that runs in the browser or during SSR, as opposed to `src/` which runs during the build.
-
-```
-signals/
-  index.js      createSignal, createEffect
-  index.d.ts    Signal type declarations
-
-jsx/
-  dom/
-    index.js    Browser createElement() with fine-grained reactive DOM bindings
-    index.d.ts  createElement/Fragment types for the DOM entry point
-  ssr/
-    index.js    Server createElement() returning HTML strings (XSS-safe)
-    index.d.ts  createElement/Fragment/HtmlString types for the SSR entry point
-```
-
-Exported from `@vktrz/castro` as:
-- `@vktrz/castro/signals` — signals only (user-facing import for island components)
-- `@vktrz/castro/runtime/jsx/dom` — h, Fragment, signals (browser; injected by build plugin)
-- `@vktrz/castro/runtime/jsx/ssr` — h, Fragment, HtmlString (server; injected by build plugin)
 
 ## Architecture
 
@@ -175,23 +153,22 @@ Key rules from `src/messages/README.md`:
 ## Key Design Decisions
 
 - **Layouts receive `children` (VNode)**, not a pre-rendered `content` HTML string. The entire tree renders in a single `renderToString()` pass.
-- **Framework configs** are loaded per-island via `frameworkConfig.js` (async load + sync cache pattern). bare-jsx is the default framework; Preact and Solid are built-in alternatives. Plugins can register additional frameworks via `CastroPlugin.frameworkConfig`. Directory convention (`components/solid/`, `components/preact/`, `components/bare-jsx/`) auto-detects registered frameworks. Override the default with `defaultIslandFramework: "preact"` in `castro.config.js`. The config is named `defaultIslandFramework` (not `framework`) because it only affects islands — pages and layouts are always Preact.
-- **bare-jsx framework** ships its ~2KB runtime (`castro/runtime/`) inside the `@vktrz/castro` package — no CDN, no third-party dependencies. The runtime is built once by `bareRuntimePlugin` (via `onAfterBuild`) and served as `/bare-jsx.${packageVersion}.js`, shared across all bare islands via import map. Uses `Bun.Transpiler` in a build plugin to transform JSX with classic mode (`createElement()` factory), bypassing the project's tsconfig. Island components import signals from `@vktrz/castro/signals`; the build plugin injects `createElement`/`Fragment` from `@vktrz/castro/runtime/jsx/dom` (client) or `@vktrz/castro/runtime/jsx/ssr` (server) — two specifiers because they must resolve to different files in SSR (`signals.js` vs `jsx-ssr.js`). In the browser both map to `/bare-jsx.js` via import map. The `onResolve` hook in SSR builds maps these specifiers to absolute paths so they get bundled (not externalized). Re-render hydration (clear + mount) instead of DOM walking. Known limitations: no effect disposal, no batching.
+- **Framework configs** are loaded per-island via `frameworkConfig.js` (async load + sync cache pattern). Preact is the default framework; Solid is a built-in alternative. Plugins can register additional frameworks via `CastroPlugin.frameworkConfig` (e.g., `@vktrz/castro-jsx` registers the castro-jsx framework). Directory convention (`components/solid/`, `components/preact/`, `components/castro-jsx/`) auto-detects registered frameworks. Override the default with `defaultIslandFramework: "preact"` in `castro.config.js`. The config is named `defaultIslandFramework` (not `framework`) because it only affects islands — pages and layouts are always Preact.
 - **`IslandComponent.ssrModule`** typed as `{ default: Function }` (framework-agnostic). Pre-loaded by the registry, accessed synchronously by `renderMarker()`.
 - **`renderSSR` accepts `Function`**, not `ComponentType`. Each framework config casts internally.
 - **Island CSS** tracked per-page via `pageState` in `marker.js`, not on the registry singleton. The runtime script is included when `usedIslands.size > 0`.
 - **Island imports must use relative paths**, not tsconfig `paths` aliases. `Bun.build`'s `packages: "external"` treats `@`-prefixed imports as scoped npm packages and externalizes them before path alias resolution runs, so the `islandMarkerPlugin` never intercepts them.
-- **Multi-framework type checking** requires per-file `/** @jsxImportSource */` pragmas for non-default frameworks (e.g. `/** @jsxImportSource @vktrz/castro/runtime/jsx/dom */` for bare-jsx, `/** @jsxImportSource solid-js */` for Solid). The pragma is the only mechanism `tsc` honors per-file — TypeScript uses the root tsconfig's JSX settings for transitively imported files regardless of any nested tsconfig. The `jsx-runtime.d.ts` in `castro/runtime/jsx/dom/` provides bare-jsx JSX types (`Signalish<T>`, `HTMLProps` with reactive attribute support).
+- **Multi-framework type checking** requires per-file `/** @jsxImportSource */` pragmas for non-default frameworks (e.g. `/** @jsxImportSource @vktrz/castro-jsx */` for castro-jsx, `/** @jsxImportSource solid-js */` for Solid). The pragma is the only mechanism `tsc` honors per-file — TypeScript uses the root tsconfig's JSX settings for transitively imported files regardless of any nested tsconfig. Each framework package provides its own JSX type definitions (e.g., `castro-jsx` provides `Signalish<T>`, `HTMLProps`).
 
 ## Testing
 
-`test-site/` is a single test site that exercises the full build pipeline with bare-jsx, Preact, and Solid islands. Run with `bun test:sites`. Tests verify:
+`test-site/` is a single test site that exercises the full build pipeline with castro-jsx, Preact, and Solid islands. Run with `bun test:sites`. Tests verify:
 - Static pages (no islands)
 - All three directives (`comrade:visible`, `comrade:patient`, `comrade:eager`)
 - Component composition (islands in static components, static components in islands, islands in layouts)
 - CSS modules in static components and islands
 - Multi-framework pages (Preact + Solid islands on the same page)
-- bare-jsx framework (signals + direct DOM, no CDN dependencies)
+- castro-jsx framework plugin (signals + direct DOM, no CDN dependencies)
 - Solid-only pages (SSR without Preact islands)
 
 The test structure (pages, components, islands, layouts) mirrors a real site and serves as a reference for expected patterns.
@@ -199,7 +176,7 @@ The test structure (pages, components, islands, layouts) mirrors a real site and
 ## What NOT to Change
 
 - Code must stay educational and well-commented — every file should explain "why"
-- Keep core LOC under ~1600 (currently ~1540, includes bare-jsx runtime)
+- Keep core LOC under ~1600 (currently ~1500)
 - Satire belongs in messages/docs/CLI output only, never in the code logic itself
 - `website/dist/` and `test-site/dist/` are ephemeral, cleaned on every build
 - Island imports must use relative paths, not tsconfig aliases (documented in `compileJsx.js`)
@@ -218,13 +195,13 @@ Demo site that consumes castro. Uses Tailwind CSS v4 + DaisyUI v5 via `@vktrz/ca
 - `layouts/docs.tsx` — docs layout with DaisyUI drawer sidebar; section-aware via `sidebarSections` map keyed by `"how-it-works"` / `"guide"`
 - `components/Header.tsx` — sticky navbar; GUIDE and HOW IT WORKS links go active when `activePath` starts with `/guide` or `/how-it-works`
 - `components/PropagandaRadio.island.tsx` — Preact radio with cycling headlines (`comrade:eager`)
-- `components/bare-jsx/PropagandaRadio.island.tsx` — bare-jsx port of PropagandaRadio, used on the directives guide page
-- `components/bare-jsx/Redactor.island.tsx` — bare-jsx censorship toggle (`comrade:patient`)
-- `components/bare-jsx/FiveYearPlan.island.tsx` — bare-jsx port of FiveYearPlan, used on the directives guide page
+- `components/castro-jsx/BarePropagandaRadio.island.tsx` — castro-jsx port of PropagandaRadio, used on the directives guide page
+- `components/castro-jsx/BareRedactor.island.tsx` — castro-jsx censorship toggle (`comrade:patient`)
+- `components/castro-jsx/BareFiveYearPlan.island.tsx` — castro-jsx port of FiveYearPlan, used on the directives guide page
 - `components/solid/FiveYearPlan.island.tsx` — Solid progress tracker (`comrade:visible`)
 - `components/ThemeToggle.island.tsx` — `comrade:eager` island, DaisyUI swap + theme-controller
-- `pages/guide/directives.tsx` — prose + live demos for all three directives, one bare-jsx island per directive
-- `pages/guide/multi-framework.tsx` — side-by-side live demos of Preact, bare-jsx, and Solid islands
+- `pages/guide/directives.tsx` — prose + live demos for all three directives, one castro-jsx island per directive
+- `pages/guide/multi-framework.tsx` — side-by-side live demos of Preact, castro-jsx, and Solid islands
 
 **Docs pages** (`how-it-works/`, `guide/`): each exports a `meta` with `layout: "docs"`, `path: "<exact-url>"`, and `section: "<section-key>"`. The `path` field drives sidebar active highlighting and header active state — **update it if a page's URL changes**. The `section` field selects which sidebar group is shown (`"how-it-works"` or `"guide"`).
 

@@ -1,5 +1,7 @@
+import { castroJsx } from "@vktrz/castro-jsx";
+
 export default {
-	defaultIslandFramework: "preact",
+	plugins: [castroJsx()],
 	messages: "serious",
 	importMap: {
 		"custom-lib": "https://esm.sh/custom-lib",

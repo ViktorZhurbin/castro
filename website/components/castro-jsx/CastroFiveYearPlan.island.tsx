@@ -1,7 +1,7 @@
-/** @jsxImportSource @vktrz/castro/runtime/jsx/dom */
-import { createEffect, createSignal } from "@vktrz/castro/signals";
+/** @jsxImportSource @vktrz/castro-jsx */
+import { createEffect, createSignal } from "@vktrz/castro-jsx/signals";
 
-export default function BareFiveYearPlan() {
+export default function CastroFiveYearPlan() {
 	const [progress, setProgress] = createSignal(0);
 	const [quota, setQuota] = createSignal(1);
 	const [badge, setBadge] = createSignal<{

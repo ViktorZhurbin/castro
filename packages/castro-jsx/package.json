@@ -1,0 +1,37 @@
+{
+	"name": "@vktrz/castro-jsx",
+	"version": "0.1.0",
+	"type": "module",
+	"main": "index.js",
+	"types": "index.d.ts",
+	"exports": {
+		".": {
+			"types": "./index.d.ts",
+			"default": "./index.js"
+		},
+		"./signals": {
+			"types": "./signals/index.d.ts",
+			"default": "./signals/index.js"
+		},
+		"./dom": {
+			"types": "./jsx/dom/index.d.ts",
+			"default": "./jsx/dom/index.js"
+		},
+		"./ssr": {
+			"types": "./jsx/ssr/index.d.ts",
+			"default": "./jsx/ssr/index.js"
+		},
+		"./jsx-runtime": {
+			"types": "./jsx/jsx-runtime.d.ts"
+		}
+	},
+	"files": [
+		"index.js",
+		"index.d.ts",
+		"jsx/",
+		"signals/"
+	],
+	"dependencies": {
+		"@vktrz/castro": "workspace:*"
+	}
+}
