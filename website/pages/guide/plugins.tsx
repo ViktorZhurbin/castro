@@ -93,11 +93,24 @@ export default function Plugins() {
 								frameworkConfig
 							</h3>
 							<p className="text-base-content">
-								Registers a custom island framework. See{" "}
-								<a href="/guide/components-islands" className="underline">
-									Components & Islands
+								Registers a framework to use in islands.
+							</p>
+							<p className="text-sm text-base-content/80">
+								See{" "}
+								<a
+									href="https://github.com/ViktorZhurbin/castro/tree/main/castro/src/islands/frameworks"
+									className="underline"
+								>
+									frameworks/
 								</a>{" "}
-								for the full <code>FrameworkConfig</code> interface.
+								for built-in configs, and{" "}
+								<a
+									href="https://github.com/ViktorZhurbin/castro/tree/main/packages/castro-jsx"
+									className="underline"
+								>
+									castro-jsx
+								</a>{" "}
+								as an example of an external config.
 							</p>
 						</div>
 					</div>
@@ -120,6 +133,20 @@ export default function Plugins() {
 							className="underline"
 						>
 							types.d.ts
+						</a>{" "}
+						·{" "}
+						<a
+							href="https://github.com/ViktorZhurbin/castro/tree/main/castro/src/islands/frameworks"
+							className="underline"
+						>
+							frameworks/
+						</a>{" "}
+						·{" "}
+						<a
+							href="https://github.com/ViktorZhurbin/castro/tree/main/packages/castro-jsx"
+							className="underline"
+						>
+							castro-jsx/
 						</a>
 					</p>
 				</div>
@@ -138,77 +165,22 @@ export default function Plugins() {
 						<code>castro.config.js</code>:
 					</p>
 					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed">
-						<code>{`import { tailwind } from "@vktrz/castro-tailwind";
+						<code>{`import { castroJsx } from "@vktrz/castro-jsx";
+import { tailwind } from "@vktrz/castro-tailwind";
 
 export default {
-  plugins: [tailwind({ input: "styles/app.css" })],
+  plugins: [castroJsx(), tailwind({ input: "styles/app.css" })],
 };`}</code>
 					</pre>
-				</div>
-			</section>
-
-			<div className="divider max-w-4xl mx-auto" />
-
-			{/* Tailwind plugin walkthrough */}
-			<section className="py-10 px-6 bg-base-100">
-				<div className="max-w-4xl mx-auto">
-					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
-						3. FULL EXAMPLE: TAILWIND PLUGIN
-					</h2>
-					<p className="text-base-content mb-6">
-						The official Tailwind plugin (<code>@vktrz/castro-tailwind</code>)
-						is the canonical example of what a plugin can do. Here is the full
-						source, annotated:
-					</p>
-					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-4">
-						<code>{`import { basename, dirname, join } from "node:path";
-import tailwindcss from "@tailwindcss/postcss";
-import postcss from "postcss";
-
-export function tailwind({ input }) {
-  const inputs = Array.isArray(input) ? input : [input];
-
-  // Single processor — @tailwindcss/postcss handles incremental rebuilds
-  // internally via an LRU cache keyed on file path + mtime.
-  const processor = postcss([tailwindcss()]);
-
-  return {
-    name: "castro-tailwind",
-
-    // Tell the dev server to watch the CSS source directories.
-    // Changes trigger onPageBuild() + browser reload.
-    watchDirs: [...new Set(inputs.map((file) => dirname(file) || "."))],
-
-    async onPageBuild() {
-      // Process each input file through PostCSS + Tailwind,
-      // then write the compiled CSS to dist/.
-      for (const file of inputs) {
-        const source = await Bun.file(file).text();
-        const result = await processor.process(source, { from: file });
-        await Bun.write(join("dist", basename(file)), result.css);
-      }
-    },
-
-    getPageAssets() {
-      // Inject a <link> tag for each compiled CSS file.
-      return inputs.map((file) => ({
-        tag: "link",
-        attrs: { rel: "stylesheet", href: \`/\${basename(file)}\` },
-      }));
-    },
-  };
-}`}</code>
-					</pre>
-					<p className="text-sm text-base-content/80">
-						→{" "}
+					<p className="text-sm text-base-content/80 mt-4">
+						See{" "}
 						<a
-							href="https://github.com/ViktorZhurbin/castro/blob/main/plugins/tailwind/index.js"
-							target="_blank"
-							rel="noopener"
+							href="https://github.com/ViktorZhurbin/castro/tree/main/packages"
 							className="underline"
 						>
-							plugins/tailwind/index.js
-						</a>
+							packages/
+						</a>{" "}
+						for full plugin examples.
 					</p>
 				</div>
 			</section>
@@ -265,12 +237,6 @@ export function tailwind({ input }) {
 							className="btn btn-outline btn-primary"
 						>
 							← Components & Islands
-						</a>
-						<a
-							href="/how-it-works/castro-jsx"
-							className="btn btn-outline btn-primary"
-						>
-							castro-jsx Framework →
 						</a>
 					</div>
 				</div>

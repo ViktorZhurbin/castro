@@ -250,7 +250,7 @@ export function Card({ title, body }: { title: string; body: string }) {
 						interactivity. Name it <code>*.island.tsx</code> — it gets
 						pre-rendered at build time and hydrated in the browser.
 					</p>
-					<div className="tabs tabs-box">
+					<div className="tabs tabs-lift bg-base-200 mb-4">
 						<input
 							type="radio"
 							name="islands"
@@ -258,7 +258,7 @@ export function Card({ title, body }: { title: string; body: string }) {
 							aria-label="Preact"
 							defaultChecked
 						/>
-						<div className="tab-content bg-base-100 border-base-300 p-4">
+						<div className="tab-content bg-base-200 border-base-300 p-4">
 							<pre className="overflow-x-auto text-xs leading-relaxed">
 								<code>{`// components/Counter.island.tsx
 import { useState } from "preact/hooks";
@@ -279,32 +279,9 @@ export default function Counter({ initial = 0 }: { initial?: number }) {
 							type="radio"
 							name="islands"
 							className="tab"
-							aria-label="castro-jsx"
-						/>
-						<div className="tab-content bg-base-100 border-base-300 p-4">
-							<pre className="overflow-x-auto text-xs leading-relaxed">
-								<code>{`// components/castro-jsx/CastroCounter.island.tsx
-import { createSignal } from "@vktrz/castro-jsx/signals";
-
-export default function CastroCounter({ initial = 0 }) {
-	const [count, setCount] = createSignal(initial);
-
-	return (
-		<button onClick={() => setCount((c) => c + 1)}>
-			Castro: {count}
-		</button>;
-}
-`}</code>
-							</pre>
-						</div>
-
-						<input
-							type="radio"
-							name="islands"
-							className="tab"
 							aria-label="Solid"
 						/>
-						<div className="tab-content bg-base-100 border-base-300 p-4">
+						<div className="tab-content bg-base-200 border-base-300 p-4">
 							<pre className="overflow-x-auto text-xs leading-relaxed">
 								<code>{`// components/solid/SolidCounter.island.tsx
 import { createSignal } from "solid-js";
@@ -318,6 +295,29 @@ export default function SolidCounter(props) {
 		</button>
 	);
 }`}</code>
+							</pre>
+						</div>
+
+						<input
+							type="radio"
+							name="islands"
+							className="tab"
+							aria-label="castro-jsx"
+						/>
+						<div className="tab-content bg-base-200 border-base-300 p-4">
+							<pre className="overflow-x-auto text-xs leading-relaxed">
+								<code>{`// components/castro-jsx/CastroCounter.island.tsx
+import { createSignal } from "@vktrz/castro-jsx/signals";
+
+export default function CastroCounter({ initial = 0 }) {
+	const [count, setCount] = createSignal(initial);
+
+	return (
+		<button onClick={() => setCount((c) => c + 1)}>
+			Castro: {count}
+		</button>;
+}
+`}</code>
 							</pre>
 						</div>
 					</div>
@@ -339,11 +339,7 @@ export default function Home() {
 }`}</code>
 					</pre>
 					<p className="text-base-content mb-2">
-						Three directives: <code>comrade:visible</code> (default — on
-						scroll), <code>comrade:patient</code> (on idle),{" "}
-						<code>comrade:eager</code> (immediately).
-					</p>
-					<p className="text-sm text-base-content/80">
+						For details on islands, client directives and frameworks see{" "}
 						<a href="/guide/components-islands" className="underline">
 							Components & Islands →
 						</a>
@@ -445,19 +441,26 @@ export default {
 								<code>{"importMap?: Record<string, string>"}</code> — default:{" "}
 								<code>{"{}"}</code>. Additional entries merged into the{" "}
 								<code>{'<script type="importmap">'}</code> on every island page.
-								Any key is treated as external during island compilation — the
-								browser loads it from CDN instead of bundling.
 							</p>
-							<pre className="bg-base-200 border-2 border-base-300 p-4 overflow-x-auto text-xs leading-relaxed">
-								<code>{`importMap: { "my-lib": "https://esm.sh/my-lib@1.0.0" }`}</code>
+							<pre className="bg-base-200 border-2 border-base-300 text-sm p-4 overflow-x-auto leading-relaxed mb-4">
+								<code>{`importMap: {
+  "my-lib": "https://esm.sh/my-lib@1.0.0",
+  "preact": "https://some-cdn.sh/preact@10.0.0"
+}`}</code>
 							</pre>
+							<p className="text-base-content mb-3">
+								<code>{`import X from "my-lib"`}</code> will be treated as
+								external during island compilation — the browser loads it from
+								CDN instead of bundling. It also allows to override default CDN
+								links - for example, to use a different CDN for Preact.
+							</p>
 						</div>
 					</div>
 
 					<div className="mt-8">
 						<p className="text-base-content mb-4">
 							This website's own config — Tailwind plugin, port 3000, satirical
-							messages, Preact islands:
+							messages:
 						</p>
 						<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-2">
 							<code>{`import { tailwind } from "@vktrz/castro-tailwind";
