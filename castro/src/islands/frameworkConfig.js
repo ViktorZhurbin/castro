@@ -19,7 +19,6 @@
  * VNode tree synchronously, but framework configs may need async imports.
  */
 
-import { config } from "../config.js";
 import { messages } from "../messages/index.js";
 
 /**
@@ -134,7 +133,7 @@ export function getFrameworkConfig(id) {
 	return frameworkConfig;
 }
 
-// Pre-load the default framework from castro.config.js at startup.
+// Pre-load Preact (the default framework) at startup.
 // This ensures the default config is always available, even if no
 // islands explicitly request it.
-await loadFrameworkConfig(config.defaultIslandFramework);
+await loadFrameworkConfig("preact");

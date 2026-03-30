@@ -90,13 +90,13 @@ function Features() {
 				<FeatureCard
 					title="CLIENT DIRECTIVES"
 					description="Immediate, idle, or lazy. You choose per component."
-					href="/guide/directives"
+					href="/guide/components-islands"
 					color="accent"
 				/>
 				<FeatureCard
 					title="MULTI-FRAMEWORK"
-					description="Preact, Solid, and castro-jsx on the same page. Extensible via plugins."
-					href="/guide/multi-framework"
+					description="Preact built-in. Solid and other frameworks via plugins."
+					href="/guide/components-islands"
 					color="secondary"
 				/>
 				<FeatureCard

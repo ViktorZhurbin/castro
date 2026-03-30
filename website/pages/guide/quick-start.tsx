@@ -135,8 +135,7 @@ export default function DefaultLayout({ title, children }: Props) {
 					</pre>
 					<Note className="mt-4">
 						Layouts and pages always use Preact — it's Castro's rendering engine
-						at build time. The <code>defaultIslandFramework</code> config only
-						affects islands. Preact is never shipped to the browser unless you
+						at build time. Preact is never shipped to the browser unless you
 						have Preact islands.
 					</Note>
 					<Note className="mt-3">
@@ -389,7 +388,6 @@ bun run build    # production build → dist/`}</code>
 export default {
   port: 3000,
   messages: "satirical",
-  defaultIslandFramework: "solid",
   plugins: [],
   importMap: {},
 };`}</code>
@@ -423,20 +421,6 @@ export default {
 								<code>{'messages?: "satirical" | "serious"'}</code> — default:{" "}
 								<code>"satirical"</code>. Controls CLI output tone. Both contain
 								the same information.
-							</p>
-						</div>
-
-						<div>
-							<h3 className="font-mono text-xl text-secondary mb-2">
-								defaultIslandFramework
-							</h3>
-							<p className="text-base-content">
-								<code>defaultIslandFramework?: string</code> — default:{" "}
-								<code>"preact"</code>. The framework used for islands not inside
-								a named framework directory (e.g. <code>components/solid/</code>
-								). Only affects islands — pages and layouts always use Preact.
-								Built-in options: <code>"preact"</code>,{" "}
-								<code>"castro-jsx"</code>, <code>"solid"</code>.
 							</p>
 						</div>
 
@@ -482,7 +466,6 @@ export default {
   plugins: [tailwind({ input: "styles/app.css" })],
   port: 3000,
   messages: "satirical",
-  defaultIslandFramework: "preact",
 };`}</code>
 						</pre>
 						<p className="text-sm text-base-content/80">
