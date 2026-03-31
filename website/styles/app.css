@@ -57,6 +57,10 @@
 		@apply decoration-2 decoration-primary/50 hover:decoration-primary transition-colors;
 	}
 
+	.prose-castro .btn {
+		font-weight: 600;
+	}
+
 	.prose-castro .alert {
 		@apply block border-0 border-l-4 border-l-primary rounded-none mb-3;
 	}

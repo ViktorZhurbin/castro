@@ -39,7 +39,7 @@ const DocsLayout = (props: DocsLayoutProps) => {
 	const { title: sectionTitle, links } = sidebarSections[section];
 
 	return (
-		<html lang="en" className="scroll-pt-18 scroll-smooth">
+		<html lang="en" className="h-screen overflow-hidden scroll-smooth">
 			<head>
 				<meta charSet="UTF-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -56,11 +56,11 @@ const DocsLayout = (props: DocsLayoutProps) => {
 					href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&family=Bebas+Neue&display=swap"
 				/>
 			</head>
-			<body>
+			<body className="h-screen flex flex-col overflow-hidden">
 				<Header activePath={path} />
-				<div className="drawer lg:drawer-open">
+				<div className="drawer lg:drawer-open flex-1 overflow-hidden">
 					<input id="docs-drawer" type="checkbox" className="drawer-toggle" />
-					<div className="drawer-content">
+					<div className="drawer-content flex flex-col overflow-y-auto scroll-pt-8 scroll-smooth">
 						<label
 							htmlFor="docs-drawer"
 							className="btn btn-ghost btn-sm lg:hidden m-4"
@@ -82,7 +82,9 @@ const DocsLayout = (props: DocsLayoutProps) => {
 							</svg>
 							Menu
 						</label>
-						<main>{children}</main>
+
+						<main className="flex-1">{children}</main>
+
 						<Footer />
 					</div>
 					<div className="drawer-side z-40">
