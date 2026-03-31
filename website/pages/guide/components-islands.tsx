@@ -77,9 +77,13 @@ export default function Index() {
 					<p className="text-base-content mb-4">
 						Add the <code>.island</code> suffix to make a component interactive.
 						Islands are server-rendered at build time, and their JavaScript
-						ships to the browser for hydration:
+						ships to the browser for hydration.
 					</p>
-					<pre className="bg-base-200 border-2 border-base-300 p-4 overflow-x-auto text-sm leading-relaxed mb-4">
+					<Note>
+						Island imports must use relative paths, not tsconfig path aliases (
+						<code>../components/Counter.island.tsx</code>).
+					</Note>
+					<pre className="bg-base-200 border-2 border-base-300 p-4 overflow-x-auto text-sm leading-relaxed mb-4 mt-4">
 						<code>{`// components/Counter.island.tsx
 import { useState } from "preact/hooks";
 
@@ -94,6 +98,8 @@ export default function Counter({ initial = 0 }) {
 }
 
 // pages/index.tsx
+
+// NOTE: Island imports must use relative paths
 import Counter from "../components/Counter.island.tsx";
 
 export default function Index() {
