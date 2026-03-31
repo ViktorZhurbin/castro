@@ -1,8 +1,6 @@
 import type { PageMeta } from "@vktrz/castro";
-import CastroRedactor from "../../components/castro-jsx/CastroRedactor.island.tsx";
 import { Note } from "../../components/Note.tsx";
 import PropagandaRadio from "../../components/PropagandaRadio.island.tsx";
-import SolidFiveYearPlan from "../../components/solid/SolidFiveYearPlan.island.tsx";
 
 export const meta: PageMeta = {
 	title: "Components & Islands — Castro Guide",
@@ -184,17 +182,24 @@ export default function Page() {
 
 			<div className="divider max-w-4xl mx-auto" />
 
-			{/* Section 4: Multi-Framework */}
+			{/* Section 4: Multi-Framework (Advanced) */}
 			<section className="py-10 px-6 bg-base-100">
 				<div className="max-w-4xl mx-auto">
 					<h2 className="font-display text-3xl md:text-4xl text-secondary mb-6">
-						MULTI-FRAMEWORK
+						ADVANCED: ALTERNATIVE FRAMEWORKS
 					</h2>
+
 					<p className="text-base-content mb-4">
-						Castro ships with Preact built-in. You can use other frameworks
-						(Solid, castro-jsx, etc.) via plugins and directory convention.
-						Place islands in a framework-specific subdirectory to use that
-						framework:
+						Castro uses Preact for all static components and islands by default.
+						However, the island architecture is extensible. For advanced use
+						cases, you can author islands in other frameworks (like Solid) via
+						plugins.
+					</p>
+
+					<p className="text-base-content mb-4">
+						Frameworks are applied automatically using a directory convention.
+						Place the island in a subdirectory matching the framework's
+						registered ID:
 					</p>
 
 					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-6">
@@ -203,90 +208,28 @@ export default function Page() {
 ├── solid/
 │   └── Counter.island.tsx          ← Solid (built-in support)
 └── castro-jsx/
-    └── Button.island.tsx           ← castro-jsx (external package)`}</code>
+    └── Button.island.tsx           ← castro-jsx (via plugin)`}</code>
 					</pre>
 
-					<p className="text-base-content mb-4">
-						Different frameworks on the same page is fine. Each loads
-						independently. To add a new framework, check the{" "}
-						<a href="/guide/plugins" className="link link-primary">
+					<Note className="mb-6">
+						Because TypeScript only expects one JSX runtime per project,
+						non-Preact islands require a{" "}
+						<code>{`/** @jsxImportSource <framework> */`}</code> pragma at the
+						top of the file so the type checker knows which JSX types to apply.
+						<br />
+						<br />
+						For Solid, this would be:{" "}
+						<code>{`/** @jsxImportSource solid-js */`}</code>
+					</Note>
+
+					<p className="text-base-content">
+						To learn how to add and configure custom framework runtimes, read
+						the{" "}
+						<a href="/guide/plugins" className="link link-primary font-bold">
 							Plugins
 						</a>{" "}
 						guide.
 					</p>
-
-					<p className="text-base-content mb-6">
-						Below are islands using different frameworks on the same page:
-					</p>
-
-					{/* Multi-framework demo */}
-					<div className="flex flex-col gap-6 mb-8">
-						<div className="card card-border border-secondary bg-base-100">
-							<div className="card-body">
-								<h3 className="card-title font-display text-xl text-secondary">
-									PREACT
-								</h3>
-								<div className="bg-base-200 p-4 border border-dashed border-base-300">
-									<PropagandaRadio />
-								</div>
-							</div>
-						</div>
-
-						<div className="card card-border border-accent bg-base-100">
-							<div className="card-body">
-								<h3 className="card-title font-display text-xl text-accent">
-									SOLID
-								</h3>
-								<div className="bg-base-200 p-4 border border-dashed border-base-300">
-									<SolidFiveYearPlan />
-								</div>
-							</div>
-						</div>
-
-						<div className="card card-border border-accent bg-base-100">
-							<div className="card-body">
-								<h3 className="card-title font-display text-xl text-accent">
-									castro-jsx
-								</h3>
-								<div className="bg-base-200 p-4 border border-dashed border-base-300">
-									<CastroRedactor />
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<Note>
-						The directory convention is automatic. Place islands in{" "}
-						<code>components/solid/</code> and they'll use Solid. No config
-						needed. The framework ID must match the directory name exactly:{" "}
-						<code>solid/</code>, <code>preact/</code>, etc.
-					</Note>
-
-					{/* Type checking */}
-					<h3 className="font-display text-xl md:text-2xl text-secondary mb-6 mt-8">
-						TYPE CHECKING
-					</h3>
-					<p className="text-base-content mb-4">
-						TypeScript only expects one JSX runtime per project, but each
-						framework has its own JSX type definitions. For a framework other
-						than Preact, TypeScript needs to know which types to apply. Add a{" "}
-						<code>@jsxImportSource</code> comment as the first line of each such
-						island:
-					</p>
-
-					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-4">
-						<code>{`// For castro-jsx islands
-/** @jsxImportSource @vktrz/castro-jsx */
-
-// For Solid.js islands
-/** @jsxImportSource solid-js */`}</code>
-					</pre>
-					<Note>
-						This is a TypeScript feature, not a Castro invention. It tells the
-						type checker which JSX types to use for this file. The build plugin
-						handles the actual compilation regardless — the comment only affects
-						type checking.
-					</Note>
 				</div>
 			</section>
 		</>

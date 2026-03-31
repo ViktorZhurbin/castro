@@ -1,16 +1,15 @@
-/** @jsxImportSource solid-js */
-import { createEffect, createSignal, Show } from "solid-js";
+import { useEffect, useState } from "preact/hooks";
 
-export default function SolidFiveYearPlan() {
-	const [progress, setProgress] = createSignal(0);
-	const [quota, setQuota] = createSignal(1);
-	const [badge, setBadge] = createSignal<{
+export default function FiveYearPlan() {
+	const [progress, setProgress] = useState(0);
+	const [quota, setQuota] = useState(1);
+	const [badge, setBadge] = useState<{
 		text: string;
 		style: string;
 	} | null>(null);
 
-	createEffect(() => {
-		const p = progress();
+	useEffect(() => {
+		const p = progress;
 
 		if (p >= 50) {
 			setBadge({ text: "Record Output!", style: "badge-success" });
@@ -21,7 +20,7 @@ export default function SolidFiveYearPlan() {
 	});
 
 	function work() {
-		const next = progress() + 5;
+		const next = progress + 5;
 
 		if (next >= 100) {
 			setQuota((q) => q + 1);
@@ -36,7 +35,7 @@ export default function SolidFiveYearPlan() {
 			{/* Header */}
 			<div class="bg-base-content text-base-100 px-4 py-2 flex items-center justify-between">
 				<p class="font-display font-bold text-sm">FIVE-YEAR PLAN</p>
-				<p class="text-xs font-mono">QUOTA #{quota()}</p>
+				<p class="text-xs font-mono">QUOTA #{quota}</p>
 			</div>
 
 			{/* Content */}
@@ -45,18 +44,16 @@ export default function SolidFiveYearPlan() {
 				<div class="flex items-baseline justify-between">
 					<p class="font-display text-sm font-bold">TRACTOR PRODUCTION</p>
 					<p class="font-mono text-2xl font-bold">
-						{progress().toString().padStart(3, " ")}%
+						{progress.toString().padStart(3, " ")}%
 					</p>
 					{/* Badge */}
-					<Show when={badge()}>
-						{(b) => <div class={`badge ${b().style}`}>{b().text}</div>}
-					</Show>
+					{badge && <div class={`badge ${badge.style}`}>{badge.text}</div>}
 				</div>
 
 				{/* Progress bar */}
 				<progress
 					class="progress progress-primary w-full"
-					value={progress()}
+					value={progress}
 					max="100"
 				/>
 			</div>

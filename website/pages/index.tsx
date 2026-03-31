@@ -94,22 +94,16 @@ function Features() {
 					color="accent"
 				/>
 				<FeatureCard
-					title="MULTI-FRAMEWORK"
-					description="Preact built-in. Solid and other frameworks via plugins."
-					href="/guide/components-islands"
-					color="secondary"
-				/>
-				<FeatureCard
 					title="BUN-NATIVE"
 					description="Built on Bun from the ground up. No webpack, no vite, no config files."
 					href="/guide/quick-start"
-					color="accent"
+					color="primary"
 				/>
 				<FeatureCard
 					title="PLUGIN SYSTEM"
 					description="Tailwind CSS, custom frameworks, asset injection."
 					href="/guide/plugins"
-					color="primary"
+					color="secondary"
 				/>
 			</div>
 		</section>

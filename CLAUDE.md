@@ -201,7 +201,6 @@ Demo site that consumes castro. Uses Tailwind CSS v4 + DaisyUI v5 via `@vktrz/ca
 - `components/solid/FiveYearPlan.island.tsx` — Solid progress tracker (`comrade:visible`)
 - `components/ThemeToggle.island.tsx` — `comrade:eager` island, DaisyUI swap + theme-controller
 - `pages/guide/directives.tsx` — prose + live demos for all three directives, one castro-jsx island per directive
-- `pages/guide/multi-framework.tsx` — side-by-side live demos of Preact, castro-jsx, and Solid islands
 
 **Docs pages** (`how-it-works/`, `guide/`): each exports a `meta` with `layout: "docs"`, `path: "<exact-url>"`, and `section: "<section-key>"`. The `path` field drives sidebar active highlighting and header active state — **update it if a page's URL changes**. The `section` field selects which sidebar group is shown (`"how-it-works"` or `"guide"`).
 

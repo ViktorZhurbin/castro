@@ -250,17 +250,8 @@ export function Card({ title, body }: { title: string; body: string }) {
 						interactivity. Name it <code>*.island.tsx</code> — it gets
 						pre-rendered at build time and hydrated in the browser.
 					</p>
-					<div className="tabs tabs-lift bg-base-200 mb-4">
-						<input
-							type="radio"
-							name="islands"
-							className="tab"
-							aria-label="Preact"
-							defaultChecked
-						/>
-						<div className="tab-content bg-base-200 border-base-300 p-4">
-							<pre className="overflow-x-auto text-xs leading-relaxed">
-								<code>{`// components/Counter.island.tsx
+					<pre className="bg-base-200 border-2 border-base-300 p-5 overflow-x-auto text-sm leading-relaxed mb-4">
+						<code>{`// components/Counter.island.tsx
 import { useState } from "preact/hooks";
 
 export default function Counter({ initial = 0 }: { initial?: number }) {
@@ -272,55 +263,7 @@ export default function Counter({ initial = 0 }: { initial?: number }) {
     </button>
   );
 }`}</code>
-							</pre>
-						</div>
-
-						<input
-							type="radio"
-							name="islands"
-							className="tab"
-							aria-label="Solid"
-						/>
-						<div className="tab-content bg-base-200 border-base-300 p-4">
-							<pre className="overflow-x-auto text-xs leading-relaxed">
-								<code>{`// components/solid/SolidCounter.island.tsx
-import { createSignal } from "solid-js";
-
-export default function SolidCounter(props) {
-	const [count, setCount] = createSignal(props.initial ?? 0);
-
-	return (
-		<button onClick={() => setCount((c) => c + 1)}>
-			Solid: {count()}
-		</button>
-	);
-}`}</code>
-							</pre>
-						</div>
-
-						<input
-							type="radio"
-							name="islands"
-							className="tab"
-							aria-label="castro-jsx"
-						/>
-						<div className="tab-content bg-base-200 border-base-300 p-4">
-							<pre className="overflow-x-auto text-xs leading-relaxed">
-								<code>{`// components/castro-jsx/CastroCounter.island.tsx
-import { createSignal } from "@vktrz/castro-jsx/signals";
-
-export default function CastroCounter({ initial = 0 }) {
-	const [count, setCount] = createSignal(initial);
-
-	return (
-		<button onClick={() => setCount((c) => c + 1)}>
-			Castro: {count}
-		</button>;
-}
-`}</code>
-							</pre>
-						</div>
-					</div>
+					</pre>
 
 					<p className="text-base-content mb-4">
 						Use it in a page with a directive — the directive controls when the

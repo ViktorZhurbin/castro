@@ -62,7 +62,6 @@
       "version": "1.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
-        "@vktrz/castro-jsx": "workspace:*",
         "@vktrz/castro-tailwind": "workspace:*",
         "daisyui": "^5.5.19",
         "preact": "^10.28.2",

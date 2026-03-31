@@ -2,7 +2,7 @@
 
 *Educational Static Site Generator (~1500 LOC) that teaches island architecture.*
 
-Communist satire wraps serious, well-commented code. Preact for rendering, multiple frameworks for islands, Bun for everything else.
+Communist satire wraps serious, well-commented code. Preact for rendering, Bun for everything else.
 
 > [!NOTE]
 > Requires [Bun](https://bun.sh) 1.3.8+
