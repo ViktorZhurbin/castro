@@ -12,7 +12,7 @@ const DefaultLayout = (props: Props) => {
 	const { title, children } = props;
 
 	return (
-		<html lang="en">
+		<html lang="en" className="h-screen overflow-hidden scroll-smooth">
 			<head>
 				<meta charSet="UTF-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -29,9 +29,9 @@ const DefaultLayout = (props: Props) => {
 					rel="stylesheet"
 				/>
 			</head>
-			<body>
+			<body className="h-screen flex flex-col overflow-hidden">
 				<Header />
-				<main>
+				<main className="flex-1 overflow-y-auto">
 					{children}
 
 					<Footer />
