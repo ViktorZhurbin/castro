@@ -5,7 +5,7 @@ export const Header = ({ activePath }: { activePath?: string }) => {
 	const isGuide = activePath?.startsWith("/guide");
 
 	return (
-		<header className="navbar sticky top-0 z-50 bg-base-100 border-b-2 border-primary min-h-12 px-6">
+		<header className="navbar sticky top-0 z-50 bg-base-100 border-b border-base-content/40 min-h-12 px-6">
 			<div className="navbar-start">
 				<a href="/" className="btn btn-ghost btn-sm gap-1" aria-label="Home">
 					<span className="font-display text-xl text-primary leading-none">

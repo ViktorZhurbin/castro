@@ -1,6 +1,7 @@
 import type { VNode } from "preact";
 import { Footer } from "../components/Footer.tsx";
 import { Header } from "../components/Header.tsx";
+import { MobileMenuButton } from "../components/MobileMenuButton.tsx";
 import { ThemeScript } from "../components/ThemeScript.tsx";
 
 export interface DocsLayoutProps {
@@ -36,8 +37,6 @@ const sidebarSections: Record<
 const DocsLayout = (props: DocsLayoutProps) => {
 	const { title, path, section = "guide", children } = props;
 
-	const { title: sectionTitle, links } = sidebarSections[section];
-
 	return (
 		<html lang="en" className="h-screen overflow-hidden scroll-smooth">
 			<head>
@@ -56,63 +55,86 @@ const DocsLayout = (props: DocsLayoutProps) => {
 					href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&family=Bebas+Neue&display=swap"
 				/>
 			</head>
+
 			<body className="h-screen flex flex-col overflow-hidden">
 				<Header activePath={path} />
-				<div className="drawer lg:drawer-open flex-1 overflow-hidden">
-					<input id="docs-drawer" type="checkbox" className="drawer-toggle" />
-					<div className="drawer-content flex flex-col overflow-y-auto scroll-pt-8 scroll-smooth">
-						<label
-							htmlFor="docs-drawer"
-							className="btn btn-ghost btn-sm lg:hidden m-4"
-							aria-label="Open sidebar"
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								className="h-5 w-5"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M4 6h16M4 12h16M4 18h16"
-								/>
-							</svg>
-							Menu
-						</label>
 
-						<main className="flex-1">{children}</main>
-
-						<Footer />
-					</div>
-					<div className="drawer-side z-40">
-						<label
-							htmlFor="docs-drawer"
-							aria-label="Close sidebar"
-							className="drawer-overlay"
-						/>
-						<ul className="menu bg-base-200 min-h-full w-56 p-4 pt-6">
-							<li className="menu-title font-display text-primary">
-								{sectionTitle}
-							</li>
-							{links.map((link) => (
-								<li key={link.href}>
-									<a
-										href={link.href}
-										className={path === link.href ? "menu-active" : ""}
-									>
-										{link.label}
-									</a>
-								</li>
-							))}
-						</ul>
-					</div>
-				</div>
+				<DocsDrawer path={path} section={section}>
+					{children}
+				</DocsDrawer>
 			</body>
 		</html>
 	);
 };
 
 export default DocsLayout;
+
+// Layout-specific components below
+
+function DocsDrawer({
+	path,
+	section,
+	children,
+}: {
+	path?: string;
+	section: SectionKey;
+	children: VNode;
+}) {
+	const { title: sectionTitle, links } = sidebarSections[section];
+
+	return (
+		<div className="flex-1 flex flex-col overflow-hidden">
+			<div className="bg-base-100 border-b border-base-content/30 flex justify-between items-center lg:hidden px-4 py-2">
+				<MobileMenuButton htmlFor="docs-drawer" ariaLabel="Open sidebar" />
+				{/* Future: right TOC drawer toggle goes here */}
+			</div>
+
+			<div className="drawer lg:drawer-open flex-1 overflow-hidden">
+				<input id="docs-drawer" type="checkbox" className="drawer-toggle" />
+				<div className="drawer-content flex flex-col overflow-y-auto scroll-pt-8 scroll-smooth">
+					<main className="flex-1">{children}</main>
+
+					<Footer />
+				</div>
+				<DocsSidebar
+					sectionTitle={sectionTitle}
+					links={links}
+					activePath={path}
+				/>
+			</div>
+		</div>
+	);
+}
+
+function DocsSidebar({
+	sectionTitle,
+	links,
+	activePath,
+}: {
+	sectionTitle: string;
+	links: { href: string; label: string }[];
+	activePath?: string;
+}) {
+	return (
+		<div className="drawer-side z-40">
+			<label
+				htmlFor="docs-drawer"
+				aria-label="Close sidebar"
+				className="drawer-overlay"
+			/>
+			<ul className="menu bg-base-200 min-h-full w-56 p-4 pt-6">
+				<li className="menu-title font-display text-primary">{sectionTitle}</li>
+				{links.map((link) => (
+					<li key={link.href}>
+						<a
+							href={link.href}
+							className={activePath === link.href ? "menu-active" : ""}
+						>
+							{link.label}
+						</a>
+					</li>
+				))}
+			</ul>
+		</div>
+	);
+}
