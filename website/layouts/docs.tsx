@@ -3,7 +3,7 @@ import { Footer } from "../components/Footer.tsx";
 import { Header } from "../components/Header.tsx";
 import { ThemeScript } from "../components/ThemeScript.tsx";
 
-interface Props {
+export interface DocsLayoutProps {
 	title: string;
 	path?: string;
 	section?: SectionKey;
@@ -33,13 +33,13 @@ const sidebarSections: Record<
 	},
 };
 
-const DocsLayout = (props: Props) => {
+const DocsLayout = (props: DocsLayoutProps) => {
 	const { title, path, section = "guide", children } = props;
 
 	const { title: sectionTitle, links } = sidebarSections[section];
 
 	return (
-		<html lang="en">
+		<html lang="en" className="scroll-pt-18 scroll-smooth">
 			<head>
 				<meta charSet="UTF-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />

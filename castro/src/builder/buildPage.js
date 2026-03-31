@@ -76,7 +76,8 @@ async function buildMarkdownPage(sourceFilePath, outputFilePath) {
 	const validatedMeta = validateMeta(meta, sourceFilePath);
 
 	// Convert markdown to HTML
-	const contentHtml = Bun.markdown.html(markdown);
+	// TODO: remove hard-coded options, and pass them through config instead
+	const contentHtml = Bun.markdown.html(markdown, { headings: true });
 
 	// Use shared rendering pipeline
 	await renderPage({
