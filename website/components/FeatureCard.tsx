@@ -37,7 +37,7 @@ export const FeatureCard = ({
 				<h3 className={`card-title font-display text-2xl ${textColor[color]}`}>
 					{title}
 				</h3>
-				<p className="text-base-content/80">{description}</p>
+				<p>{description}</p>
 			</div>
 		</a>
 	);

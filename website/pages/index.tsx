@@ -39,17 +39,14 @@ function Hero() {
 						<a href="/guide/quick-start" className="btn btn-lg btn-primary">
 							GET STARTED
 						</a>
-						<a
-							href="/how-it-works"
-							className="btn btn-lg btn-outline btn-primary"
-						>
+						<a href="/how-it-works" className="btn btn-lg btn-secondary">
 							HOW IT WORKS
 						</a>
 						<a
 							href="https://github.com/ViktorZhurbin/castro"
 							target="_blank"
 							rel="noopener"
-							className="btn btn-lg btn-ghost"
+							className="btn btn-lg btn-outline"
 						>
 							VIEW SOURCE
 						</a>
@@ -67,7 +64,7 @@ function Features() {
 				<h2 className="font-display text-5xl md:text-6xl text-secondary">
 					WHAT THE PARTY OFFERS
 				</h2>
-				<p className="max-w-xl mt-4 text-base-content">
+				<p className="mt-4">
 					A working Static Site Generator in ~1500 lines of well-commented code.
 					Learn island architecture by reading the source.
 				</p>
@@ -112,12 +109,12 @@ function Features() {
 
 function HowItWorks() {
 	return (
-		<section className="py-24 px-6 bg-base-200">
+		<section className="flex flex-col py-24 px-6 bg-base-200">
 			<div className="text-center mb-16">
 				<h2 className="font-display text-5xl md:text-6xl text-accent">
 					HOW THE REVOLUTION WORKS
 				</h2>
-				<p className="max-w-xl mx-auto mt-4 text-base-content/80">
+				<p className="max-w-xl mx-auto mt-4">
 					Island architecture explained. No magic, just smart progressive
 					enhancement.
 				</p>
@@ -127,7 +124,7 @@ function HowItWorks() {
 				<li className="step step-primary" data-content="1">
 					<div className="text-left py-4">
 						<h3 className="font-display text-2xl text-secondary">BUILD TIME</h3>
-						<p className="text-base-content/80 mt-1">
+						<p className="mt-1">
 							Castro compiles your pages and renders all islands to static HTML.
 							Every component gets server-side rendered at build time, creating
 							instant visual content.
@@ -139,7 +136,7 @@ function HowItWorks() {
 						<h3 className="font-display text-2xl text-secondary">
 							BROWSER RECEIVES HTML
 						</h3>
-						<p className="text-base-content/80 mt-1">
+						<p className="mt-1">
 							Pure HTML arrives first. Your page is visible immediately. No
 							waiting for JavaScript bundles. Islands are wrapped in{" "}
 							<code>{"<castro-island>"}</code> custom elements.
@@ -151,7 +148,7 @@ function HowItWorks() {
 						<h3 className="font-display text-2xl text-secondary">
 							SELECTIVE HYDRATION
 						</h3>
-						<p className="text-base-content/80 mt-1">
+						<p className="mt-1">
 							JavaScript loads based on your directive.{" "}
 							<code>comrade:eager</code> hydrates immediately.{" "}
 							<code>comrade:patient</code> waits for idle time.{" "}
@@ -164,7 +161,7 @@ function HowItWorks() {
 						<h3 className="font-display text-2xl text-secondary">
 							INTERACTIVE ISLANDS
 						</h3>
-						<p className="text-base-content/80 mt-1">
+						<p className="mt-1">
 							Components become interactive exactly when needed. Fast initial
 							load, progressive enhancement, minimal JavaScript. This is island
 							architecture.

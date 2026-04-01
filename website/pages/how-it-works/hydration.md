@@ -30,7 +30,7 @@ The browser loads `castro-island.js` and registers a `<castro-island>` custom el
     <div class="card card-bordered border-primary bg-base-200 p-4">
       <div class="flex items-center mb-2 gap-2">
         <span class="badge badge-primary">comrade:visible</span>
-        <span class="badge badge-sm badge-neutral badge-dash">default</span>
+        <span class="badge badge-sm badge-dash">default</span>
       </div>
       <p class="text-sm text-base-content/80">Wait for the element to enter the viewport via <code>IntersectionObserver</code> (with a 100px buffer). Then hydrate.</p>
     </div>

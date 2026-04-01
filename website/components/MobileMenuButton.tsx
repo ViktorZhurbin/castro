@@ -4,11 +4,15 @@ interface MobileMenuButtonProps {
 	className?: string;
 }
 
-export function MobileMenuButton({ htmlFor, ariaLabel, className }: MobileMenuButtonProps) {
+export function MobileMenuButton({
+	htmlFor,
+	ariaLabel,
+	className,
+}: MobileMenuButtonProps) {
 	return (
 		<label
 			htmlFor={htmlFor}
-			className={`btn btn-ghost btn-sm lg:hidden ${className || ""}`}
+			className={`btn btn-ghost btn-sm font-medium lg:hidden ${className || ""}`}
 			aria-label={ariaLabel}
 		>
 			<svg

@@ -5,7 +5,7 @@ import { ThemeScript } from "./ThemeScript.tsx";
 interface PageShellProps {
 	title: string;
 	activePath?: string;
-	children: VNode;
+	children: VNode | VNode[];
 }
 
 export function PageShell({ title, activePath, children }: PageShellProps) {

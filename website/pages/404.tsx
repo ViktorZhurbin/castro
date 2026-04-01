@@ -6,7 +6,7 @@ export const meta = {
 
 export default function NotFound() {
 	return (
-		<div className="hero min-h-[calc(100vh-3rem)] bg-base-200 text-base-content">
+		<div className="hero flex-1 bg-base-200">
 			<div className="hero-content text-center">
 				<div className="max-w-lg">
 					<div className="w-32 h-32 mx-auto mb-10 text-primary">
@@ -17,7 +17,7 @@ export default function NotFound() {
 					<h2 className="font-display text-4xl mb-8 text-secondary">
 						PAGE NOT FOUND
 					</h2>
-					<p className="text-lg font-bold mb-10 text-base-content">
+					<p className="text-lg font-bold mb-10">
 						This page has been redacted by the Ministry of Truth.
 						<br />
 						It never existed.

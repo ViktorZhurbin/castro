@@ -115,6 +115,24 @@
 	}
 }
 
+
+@layer components {
+	.font-display {
+		letter-spacing: 0.05em;
+	}
+
+	[data-theme="castro-dark"] .btn-ghost.btn-active {
+		--btn-bg: var(--color-base-300);
+		--btn-fg: var(--color-primary);
+	}
+
+	[data-theme="castro-dark"] .menu {
+		--menu-active-bg: var(--color-base-300);
+		--menu-active-fg: var(--color-primary);
+	}
+}
+
+/* Keeping outside of layers to override tailwindcss/typography styles. This way both normal pages and pages with ".prose" will have the same classes */
 h1,
 h2,
 h3,
@@ -154,26 +172,8 @@ pre {
 	@apply rounded-none;
 }
 
-.font-display {
-	letter-spacing: 0.05em;
-}
 
-.btn {
-	@apply font-semibold;
-}
 
 .alert {
 	@apply block border-0 border-l-4 border-l-primary rounded-none mb-3;
 }
-
-[data-theme="castro-dark"] .btn-ghost.btn-active {
-	--btn-bg: var(--color-base-300);
-	--btn-fg: var(--color-primary);
-}
-
-[data-theme="castro-dark"] .menu {
-	--menu-active-bg: var(--color-base-300);
-	--menu-active-fg: var(--color-primary);
-}
-
-
