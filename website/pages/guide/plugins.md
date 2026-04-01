@@ -1,6 +1,6 @@
 ---
 title: Plugins — Castro Guide
-layout: docs-markdown
+layout: docs
 path: /guide/plugins
 section: guide
 ---

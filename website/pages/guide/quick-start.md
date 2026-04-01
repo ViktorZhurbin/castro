@@ -1,6 +1,6 @@
 ---
 title: Quick Start — Castro Guide
-layout: docs-markdown
+layout: docs
 path: /guide/quick-start
 section: guide
 ---

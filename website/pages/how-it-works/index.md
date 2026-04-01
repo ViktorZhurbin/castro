@@ -1,6 +1,6 @@
 ---
 title: 1. Build Pipeline — Castro
-layout: docs-markdown
+layout: docs
 path: /how-it-works
 section: how-it-works
 ---

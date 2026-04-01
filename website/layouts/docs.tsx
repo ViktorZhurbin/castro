@@ -69,8 +69,11 @@ function DocsDrawer({
 
 			<div className="drawer lg:drawer-open flex-1 overflow-hidden">
 				<input id="docs-drawer" type="checkbox" className="drawer-toggle" />
-				<div className="drawer-content flex flex-col overflow-y-auto scroll-pt-8 scroll-smooth">
-					<main className="flex-1">{children}</main>
+
+				<div className="drawer-content flex flex-col overflow-y-auto scroll-pt-6 lg:scroll-pt-18 scroll-smooth">
+					<main className="flex-1 prose prose-castro py-12 px-6 max-w-3xl">
+						{children}
+					</main>
 
 					<Footer />
 				</div>

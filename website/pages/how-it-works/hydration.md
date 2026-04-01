@@ -1,6 +1,6 @@
 ---
 title: Island Hydration — Castro
-layout: docs-markdown
+layout: docs
 path: /how-it-works/hydration
 section: how-it-works
 ---
