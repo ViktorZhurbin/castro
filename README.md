@@ -22,7 +22,7 @@ bun castro build  # → dist/
 
 ## Documentation
 
-**[castro-web.pages.dev](https://castro-web.pages.dev)** — quick start, configuration, plugins, build pipeline, hydration.
+**[castro.vktrz.workers.dev](https://castro.vktrz.workers.dev)** — quick start, configuration, plugins, build pipeline, hydration.
 
 **Learn by reading code:** every file in `castro/src/` has comments explaining the implementation.
 
