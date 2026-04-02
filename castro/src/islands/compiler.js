@@ -20,6 +20,7 @@ import { basename, dirname, extname, resolve } from "node:path";
 import { styleText } from "node:util";
 import { config as castroConfig } from "../config.js";
 import { messages } from "../messages/index.js";
+import { getProjectDependencies } from "../utils/dependencies.js";
 import { getFrameworkConfig } from "./frameworkConfig.js";
 
 /**
@@ -110,11 +111,20 @@ async function compileIslandClient({ sourcePath, outputDir, frameworkId }) {
 
 	const buildConfig = frameworkConfig.getBuildConfig();
 
-	// User import map entries become externals so Bun doesn't bundle them —
-	// the browser resolves them via the import map at runtime instead.
-	// Only applies to client builds; SSR bundles from node_modules.
-	const userExternals = Object.keys(castroConfig.importMap);
-	const external = [...(buildConfig.external ?? []), ...userExternals];
+	// Calculate externals: framework defaults + user config dependencies + import map keys.
+	// We strip trailing slashes from import map keys so Bun can treat them as package names.
+	const userImportMapKeys = Object.keys(castroConfig.importMap).map((key) =>
+		key.endsWith("/") ? key.slice(0, -1) : key,
+	);
+
+	const external = [
+		...new Set([
+			...(buildConfig.external ?? []),
+			...(frameworkConfig.clientDependencies ?? []),
+			...(castroConfig.clientDependencies ?? []),
+			...userImportMapKeys,
+		]),
+	];
 
 	// Path must be absolute and in the same directory as the island source,
 	// so the relative import ('./${basename}') resolves to the real file
@@ -189,11 +199,10 @@ async function compileIslandSSR({ sourcePath, frameworkId }) {
 			entrypoints: [sourcePath],
 			format: "esm",
 			target: "bun",
-			// Externalize all packages — SSR runs in Bun, so node_modules
-			// are resolved at runtime, not bundled. Same approach as page
-			// compilation in compileJsx.js. Framework getBuildConfig() only
-			// needs to specify externals for the client (browser) build.
-			packages: "external",
+			// Externalizes all NPM package imports found in package.json.
+			// This enables native support for tsconfig `paths` aliases (e.g., @components/*),
+			// as Bun will resolve local paths that are NOT in the dependencies list.
+			external: getProjectDependencies(),
 			define: {
 				"process.env.NODE_ENV": JSON.stringify("production"),
 			},

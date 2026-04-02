@@ -13,7 +13,8 @@
  * 	port?: number,
  * 	messages?: "satirical" | "serious",
  * 	plugins?: CastroPlugin[],
- * 	importMap?: Record<string, string>
+ * 	importMap?: Record<string, string>,
+ * 	clientDependencies?: string[]
  * }} CastroConfig
  */
 
@@ -24,6 +25,7 @@ const defaults = {
 	port: 3000,
 	messages: "satirical",
 	importMap: {},
+	clientDependencies: [],
 };
 
 /** @type {CastroConfig} */

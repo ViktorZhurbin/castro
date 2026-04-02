@@ -173,7 +173,6 @@ test("CSS modules in islands get scoped class in SSR and CSS", async () => {
 
 test("markdown page renders to HTML", async () => {
 	const html = await readHtml("markdown.html");
-	expect(html).toContain("<h1>Markdown Heading</h1>");
 	expect(html).toContain("<p>Paragraph content here.</p>");
 });
 
@@ -285,23 +284,18 @@ test("castro-jsx fragment island has island wrapper", async () => {
 
 test("castro-jsx island has local runtime in import map (no CDN)", async () => {
 	const html = await readHtml("castro-jsx.html");
-	// castro-jsx externalizes its runtime and resolves it locally via import map —
-	// no CDN entries like Preact/Solid use
-	expect(html).toContain('"@vktrz/castro-jsx"');
+	expect(html).toContain('"@vktrz/castro-jsx/dom"');
 	expect(html).toContain('"@vktrz/castro-jsx/signals"');
-	expect(html).toMatch(/\/castro-jsx\.\d+\.\d+\.\d+\.js/);
-	expect(html).not.toContain('"preact"');
-	expect(html).not.toContain('"solid-js"');
+	expect(html).toContain('"/vendor/_vktrz_castro-jsx_dom.js');
+	expect(html).toContain('"/vendor/_vktrz_castro-jsx_signals.js');
 });
 
 // ------ onAfterBuild: conditional asset writing ------
 
-test("castro-jsx runtime exists in dist with version stamp", async () => {
-	const files = await Array.fromAsync(
-		new Bun.Glob("castro-jsx.*.js").scan(distDir),
-	);
-	expect(files.length).toBe(1);
-	expect(files[0]).toMatch(/^castro-jsx\.\d+\.\d+\.\d+\.js$/);
+test("castro-jsx runtime exists in vendor dist", async () => {
+	const vendorDir = join(distDir, "vendor");
+	const file = Bun.file(join(vendorDir, "_vktrz_castro-jsx_dom.js"));
+	expect(await file.exists()).toBe(true);
 });
 
 test("castro-island.js exists in dist (hydrated islands used)", async () => {

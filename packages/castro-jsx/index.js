@@ -2,30 +2,14 @@
  * castro-jsx Plugin for Castro
  *
  * A minimal JSX + signals framework shipped as a standalone plugin.
- * Unlike Preact and Solid which load from CDN, castro-jsx bundles its
- * ~2KB runtime into your dist folder — no external servers, no third-party CDNs.
- * The runtime is built once and shared across all castro-jsx islands via import map.
  *
  * This demonstrates how the Castro plugin architecture enables third-party
  * frameworks to integrate seamlessly with the core SSG.
  */
 
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-
 /**
  * @import { CastroPlugin, FrameworkConfig } from "@vktrz/castro"
  */
-
-const PACKAGE_ROOT_DIR = dirname(import.meta.filename);
-const SIGNALS_DIR = join(PACKAGE_ROOT_DIR, "signals");
-const JSX_DIR = join(PACKAGE_ROOT_DIR, "jsx");
-
-const version = JSON.parse(
-	readFileSync(join(PACKAGE_ROOT_DIR, "package.json"), "utf8"),
-).version;
-
-const CASTRO_JSX_RUNTIME = `castro-jsx.${version}.js`;
 
 /**
  * Bun.build plugin that wires up the castro-jsx runtime.
@@ -41,48 +25,19 @@ const CASTRO_JSX_RUNTIME = `castro-jsx.${version}.js`;
  * layer. The transpiler lets us compile with classic `createElement()` factory
  * directly — same pattern Solid uses with Babel.
  *
- * @param {"dom" | "ssr"} target
+ * @param {"dom" | "ssr" | undefined} target
  * @returns {import("bun").BunPlugin}
  */
-function castroJsxPlugin(target) {
-	// Client builds use bare specifiers (resolved by import map in the browser).
-	// SSR builds use absolute paths (resolved by Bun at build time).
-	const runtimeImport =
-		target === "ssr" ? join(JSX_DIR, "ssr", "index.js") : "@vktrz/castro-jsx";
-
+function castroJsxPlugin(target = "dom") {
 	return {
 		name: "castro-jsx",
 		setup(build) {
-			if (target === "ssr") {
-				// SSR only: resolve @vktrz/castro-jsx imports to absolute paths
-				// so they get bundled. The SSR build runs in Bun where
-				// packages:"external" would otherwise externalize these —
-				// but SSR needs the code inlined since there's no import map
-				// in a Node/Bun environment.
-				build.onResolve({ filter: /^@vktrz\/castro-jsx/ }, ({ path }) => {
-					// Map package specifiers to absolute file paths
-					if (
-						path === "@vktrz/castro-jsx" ||
-						path === "@vktrz/castro-jsx/dom"
-					) {
-						return { path: join(JSX_DIR, "dom", "index.js") };
-					}
-					if (path === "@vktrz/castro-jsx/signals") {
-						return { path: join(SIGNALS_DIR, "index.js") };
-					}
-					if (path === "@vktrz/castro-jsx/ssr") {
-						return { path: join(JSX_DIR, "ssr", "index.js") };
-					}
-					// Let other @vktrz/castro-jsx imports (e.g. type imports) pass through
-					return undefined;
-				});
-			}
-
 			// Transform JSX using Bun's transpiler with our createElement() factory.
 			// Returns plain JS (loader: "js") so Bun's built-in JSX
 			// transform doesn't re-process it with the project's tsconfig.
 			build.onLoad({ filter: /\.[jt]sx$/ }, async ({ path }) => {
 				const source = await Bun.file(path).text();
+
 				const transpiler = new Bun.Transpiler({
 					loader: path.endsWith(".tsx") ? "tsx" : "jsx",
 					tsconfig: JSON.stringify({
@@ -93,8 +48,9 @@ function castroJsxPlugin(target) {
 						},
 					}),
 				});
+
 				const code = transpiler.transformSync(
-					`import { createElement, Fragment } from "${runtimeImport}";\n${source}`,
+					`import { createElement, Fragment } from "@vktrz/castro-jsx/${target}";\n${source}`,
 				);
 				return { contents: code, loader: "js" };
 			});
@@ -115,17 +71,10 @@ const frameworkConfig = {
 	 */
 	getBuildConfig: (target) => ({
 		jsx: { runtime: "classic", factory: "createElement", fragment: "Fragment" },
-		plugins: [castroJsxPlugin(target ?? "dom")],
-		external:
-			target === "ssr"
-				? []
-				: ["@vktrz/castro-jsx", "@vktrz/castro-jsx/signals"],
+		plugins: [castroJsxPlugin(target)],
 	}),
 
-	importMap: {
-		"@vktrz/castro-jsx": `/${CASTRO_JSX_RUNTIME}`,
-		"@vktrz/castro-jsx/signals": `/${CASTRO_JSX_RUNTIME}`,
-	},
+	clientDependencies: ["@vktrz/castro-jsx/dom", "@vktrz/castro-jsx/signals"],
 
 	/**
 	 * Client-side hydration: clear SSR HTML and mount fresh reactive DOM.
@@ -146,11 +95,7 @@ const frameworkConfig = {
 };
 
 /**
- * Bundles the castro-jsx runtime into dist for browser loading.
- *
- * castro-jsx islands externalize their runtime imports (signals, h, Fragment)
- * and resolve them via import map → /castro-jsx.{version}.js. Only writes
- * when at least one page actually used a castro-jsx island.
+ * Register the castro-jsx framework.
  *
  * @returns {CastroPlugin}
  */
@@ -158,22 +103,5 @@ export function castroJsx() {
 	return {
 		name: "castro-jsx",
 		frameworkConfig,
-
-		async onAfterBuild({ usedFrameworks }) {
-			if (!usedFrameworks.has("castro-jsx")) return;
-
-			const entrypoint = join(JSX_DIR, "dom", "index.js");
-
-			const result = await Bun.build({
-				entrypoints: [entrypoint],
-				format: "esm",
-				target: "browser",
-				minify: true,
-			});
-
-			if (result.success && result.outputs[0]) {
-				await Bun.write(join("dist", CASTRO_JSX_RUNTIME), result.outputs[0]);
-			}
-		},
 	};
 }
