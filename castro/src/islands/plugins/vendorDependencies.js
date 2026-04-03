@@ -1,7 +1,7 @@
-import { mkdir } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { config } from "../../config.js";
 import { OUTPUT_DIR } from "../../constants.js";
+import { resolveTempDir } from "../../utils/cache.js";
 import { getSafePkgName } from "../../utils/dependencies.js";
 import { getFrameworkConfig } from "../frameworkConfig.js";
 
@@ -20,27 +20,22 @@ export function vendorDependencies() {
 		name: "vendor-dependencies",
 
 		async onAfterBuild({ usedFrameworks }) {
+			const configDeps = config.clientDependencies || [];
+			const frameworkDeps = [...usedFrameworks].flatMap(
+				(id) => getFrameworkConfig(id).clientDependencies || [],
+			);
+
+			if (!configDeps.length && !frameworkDeps.length) return;
+
+			const allClientDeps = new Set([...configDeps, ...frameworkDeps]);
+
 			/** @type { string[] } */
 			const entrypoints = [];
 
 			/** @type { Record<string, string> } */
 			const files = {};
 
-			// Define a fake root directory for our virtual files.
-			// This ensures Bun's outdir structure perfectly mirrors the package names.
-			const virtualRoot = resolve(process.cwd(), ".castro-vendor");
-			await mkdir(virtualRoot, { recursive: true });
-
-			const frameworkDeps = [...usedFrameworks].flatMap(
-				(id) => getFrameworkConfig(id).clientDependencies || [],
-			);
-
-			const allClientDeps = new Set([
-				...(config.clientDependencies || []),
-				...frameworkDeps,
-			]);
-
-			if (allClientDeps.size === 0) return;
+			const virtualRoot = resolveTempDir("vendor-dependencies");
 
 			// Create virtual entry points
 			for (const pkg of allClientDeps) {
@@ -62,6 +57,9 @@ export function vendorDependencies() {
 				target: "browser",
 				splitting: true, // Extracts shared logic into chunks
 				minify: true,
+				define: {
+					"process.env.NODE_ENV": JSON.stringify("production"),
+				},
 			});
 
 			if (!result.success) {
