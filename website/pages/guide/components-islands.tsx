@@ -1,5 +1,5 @@
+import PropagandaRadio from "@components/PropagandaRadio.island.tsx";
 import type { PageMeta } from "@vktrz/castro";
-import PropagandaRadio from "../../components/PropagandaRadio.island.tsx";
 
 export const meta: PageMeta = {
 	title: "Components & Islands — Castro Guide",
@@ -88,8 +88,8 @@ export default function Counter({ initial = 0 }) {
 
 // pages/index.tsx
 
-// Path aliases (e.g. @components/*) are supported
-import Counter from "../components/Counter.island.tsx";
+// tsconfig path aliases are supported
+import Counter from "@components/Counter.island.tsx";
 
 export default function Index() {
   return <Counter initial={5} />;

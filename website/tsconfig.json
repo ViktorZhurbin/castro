@@ -33,9 +33,7 @@
 		// Path mappings (optional, for convenience)
 		"baseUrl": ".",
 		"paths": {
-			"@components/*": ["components/*"],
-			"@islands/*": ["islands/*"],
-			"@layouts/*": ["layouts/*"]
+			"@components/*": ["components/*"]
 		}
 	},
 	"include": ["components/**/*", "islands/**/*", "layouts/**/*", "pages/**/*"],

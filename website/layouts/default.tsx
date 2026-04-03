@@ -1,6 +1,6 @@
+import { Footer } from "@components/Footer.tsx";
+import { PageShell } from "@components/PageShell.tsx";
 import type { VNode } from "preact";
-import { Footer } from "../components/Footer.tsx";
-import { PageShell } from "../components/PageShell.tsx";
 
 interface Props {
 	title: string;
