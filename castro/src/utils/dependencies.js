@@ -1,6 +1,3 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
-
 /** @type {string[] | null} */
 let _depsCache = null;
 
@@ -9,14 +6,13 @@ let _depsCache = null;
  * Includes dependencies, devDependencies, and peerDependencies.
  * Results are cached for the duration of the build.
  *
- * @returns {string[]} List of package names
+ * @returns {Promise<string[]>} List of package names
  */
-export function getProjectDependencies() {
+export async function getProjectDependencies() {
 	if (_depsCache) return _depsCache;
 
 	try {
-		const pkgPath = join(process.cwd(), "package.json");
-		const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
+		const pkg = await Bun.file("package.json").json();
 
 		_depsCache = Object.keys({
 			...pkg.dependencies,
@@ -34,8 +30,6 @@ export function getProjectDependencies() {
  * Flattens package names
  * @example "preact/hooks" -> "preact_hooks", "@vktrz/castro-jsx/dom" -> "_vktrz_castro-jsx_dom"
  *
- * @param {string} pkgName
+ * @param {string} name
  */
-export function getSafePkgName(pkgName) {
-	return pkgName.replace(/[@/]/g, "_");
-}
+export const getSafePkgName = (name) => name.replace(/[@/]/g, "_");

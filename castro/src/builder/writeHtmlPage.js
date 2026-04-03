@@ -80,7 +80,7 @@ async function resolvePageContext({ usedIslands, pageCssAssets = [] }) {
 			try {
 				// Resolve the actual installed package.json to get the version.
 				// pkgRoot is the part before the first slash (e.g., "preact" from "preact/hooks").
-				// Handles scoped packages like @vktrz/castro-jsx.
+				// Handles scoped packages like @preact/signals or @vktrz/castro-jsx.
 				const pkgRoot = dep.startsWith("@")
 					? dep.split("/").slice(0, 2).join("/")
 					: dep.split("/")[0];

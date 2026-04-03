@@ -26,7 +26,7 @@ export async function compileJSX(sourcePath) {
 		// Externalizes all NPM package imports found in package.json.
 		// This enables native support for tsconfig `paths` aliases (e.g., @components/*),
 		// as Bun will resolve local paths that are NOT in the dependencies list.
-		external: getProjectDependencies(),
+		external: await getProjectDependencies(),
 		format: "esm",
 		// Pages and layouts compile to Preact VNodes (not HTML strings directly).
 		// The final renderToString() call in renderPage.js converts the complete

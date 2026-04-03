@@ -202,7 +202,7 @@ async function compileIslandSSR({ sourcePath, frameworkId }) {
 			// Externalizes all NPM package imports found in package.json.
 			// This enables native support for tsconfig `paths` aliases (e.g., @components/*),
 			// as Bun will resolve local paths that are NOT in the dependencies list.
-			external: getProjectDependencies(),
+			external: await getProjectDependencies(),
 			define: {
 				"process.env.NODE_ENV": JSON.stringify("production"),
 			},
