@@ -1,4 +1,4 @@
-import ThemeToggle from "./ThemeToggle.island.tsx";
+import ThemeToggle from "./castro-jsx/ThemeToggle.island.tsx";
 
 export const Header = ({ activePath }: { activePath?: string }) => {
 	const isHowItWorks = activePath?.startsWith("/how-it-works");

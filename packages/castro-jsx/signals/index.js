@@ -73,12 +73,37 @@ export function createSignal(initialValue) {
 }
 
 /**
+ * Runs a function exactly once after the component mounts.
+ *
+ * @param {() => void} fn
+ */
+export function onMount(fn) {
+	if (typeof window === "undefined") return;
+
+	// queueMicrotask ensures this runs AFTER the current synchronous
+	// rendering phase completes, meaning the DOM is fully attached.
+	queueMicrotask(() => {
+		// Run completely outside the reactive tracking system
+		const prev = listener;
+		listener = null;
+		try {
+			fn();
+		} finally {
+			listener = prev;
+		}
+	});
+}
+
+/**
  * Creates a reactive effect that re-runs when its dependencies change.
  * Runs immediately to establish initial subscriptions.
  *
  * @param {() => void} fn
  */
 export function createEffect(fn) {
+	// SSR doesn't have reactivity or DOM updates
+	if (typeof window === "undefined") return;
+
 	/** @type {Effect} */
 	const effect = {
 		dependencies: new Set(),
