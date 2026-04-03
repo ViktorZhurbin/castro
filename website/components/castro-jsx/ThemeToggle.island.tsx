@@ -1,23 +1,25 @@
-import { useEffect, useState } from "preact/hooks";
-import { DARK, LIGHT, STORAGE_KEY } from "../lib/theme.ts";
+/** @jsxImportSource @vktrz/castro-jsx */
+import { createSignal, onMount } from "@vktrz/castro-jsx/signals";
+import { DARK, LIGHT, STORAGE_KEY } from "../../lib/theme.ts";
 
-export const ThemeToggle = () => {
-	const [dark, setDark] = useState(false);
+export default function ThemeToggle() {
+	const [dark, setDark] = createSignal(false);
 
-	useEffect(() => {
+	onMount(() => {
 		const saved = localStorage.getItem(STORAGE_KEY);
+
 		setDark(saved === DARK);
-	}, []);
+	});
 
 	const toggle = () => {
-		const next = dark ? LIGHT : DARK;
-		setDark(!dark);
+		const next = dark() ? LIGHT : DARK;
+		setDark(!dark());
 		document.documentElement.setAttribute("data-theme", next);
 		localStorage.setItem(STORAGE_KEY, next);
 	};
 
 	return (
-		<label className="swap swap-rotate btn btn-ghost btn-circle btn-sm">
+		<label class="swap swap-rotate btn btn-ghost btn-circle btn-sm">
 			<input
 				type="checkbox"
 				checked={dark}
@@ -26,7 +28,7 @@ export const ThemeToggle = () => {
 			/>
 			{/* Sun — shown when light (swap-off = unchecked state) */}
 			<svg
-				className="swap-off w-5 h-5 fill-current"
+				class="swap-off w-5 h-5 fill-current"
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 0 24 24"
 			>
@@ -34,7 +36,7 @@ export const ThemeToggle = () => {
 			</svg>
 			{/* Moon — shown when dark (swap-on = checked state) */}
 			<svg
-				className="swap-on w-5 h-5 fill-current"
+				class="swap-on w-5 h-5 fill-current"
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 0 24 24"
 			>
@@ -42,6 +44,4 @@ export const ThemeToggle = () => {
 			</svg>
 		</label>
 	);
-};
-
-export default ThemeToggle;
+}

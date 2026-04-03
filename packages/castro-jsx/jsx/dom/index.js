@@ -13,6 +13,30 @@
 
 import { createEffect } from "../../signals/index.js";
 
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+const SVG_TAGS = new Set([
+	"svg",
+	"path",
+	"g",
+	"circle",
+	"rect",
+	"line",
+	"polyline",
+	"polygon",
+	"defs",
+	"linearGradient",
+	"radialGradient",
+	"stop",
+	"clipPath",
+	"pattern",
+	"mask",
+	"use",
+	"text",
+	"tspan",
+	"ellipse",
+]);
+
 /**
  * Sets or removes an attribute on a DOM element.
  * Boolean `true` → bare attribute (`disabled`), falsy → remove.
@@ -47,7 +71,9 @@ export function createElement(tag, props, ...children) {
 		});
 	}
 
-	const element = document.createElement(tag);
+	const element = SVG_TAGS.has(tag)
+		? document.createElementNS(SVG_NS, tag)
+		: document.createElement(tag);
 
 	// Event handlers must be checked first — `onClick` is a function
 	// but should addEventListener, not create a reactive effect.
