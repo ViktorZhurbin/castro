@@ -18,6 +18,7 @@ type CastroPlugin = {
   name: string;
   getPageAssets?: (params?: { hasIslands?: boolean }) => Asset[];
   onPageBuild?: () => Promise<void>;
+  onAfterBuild?: (context: { usedFrameworks: Set<string> }) => Promise<void>;
   watchDirs?: string[];
   frameworkConfig?: FrameworkConfig;
 };
@@ -34,6 +35,10 @@ Called once per page render. Returns an array of `Asset` objects to inject into 
 ### `onPageBuild`
 
 Called before pages are built. In dev mode, runs on every file change (page, layout, or component). Use this for preprocessing steps like compiling CSS, copying static assets, or generating data files.
+
+### `onAfterBuild`
+
+Runs after all pages are built. Receives build context for conditional work. Use it to inject assets.
 
 ### `watchDirs`
 

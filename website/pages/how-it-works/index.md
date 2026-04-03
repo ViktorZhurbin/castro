@@ -98,7 +98,7 @@ export default function Page() {
 <html>
   <head>
     <script type="importmap">
-      { "imports": { "preact": "https://esm.sh/preact", ... } }
+      { "imports": { "date-fns": "/vendor/date-fns.js", ... } }
     </script>
     <script type="module" src="/castro-island.js"></script>
   </head>
@@ -129,6 +129,9 @@ dist/
 ├── index.html              ← static HTML with <castro-island> wrappers
 ├── islands/
 │   └── Counter-a1b2.js     ← client bundle, loaded on demand
+├── vendor/
+│   ├── preact.js           ← shared framework code
+│   └── chunk-xyz.js        ← shared logic
 ├── castro-island.js        ← hydration runtime (only if needed)
 └── app.css                 ← styles
 ```
