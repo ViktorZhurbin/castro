@@ -209,6 +209,7 @@ export default {
   port: 3000,
   messages: "satirical",
   plugins: [],
+  clientDependencies: [],
   importMap: {},
 };
 ```
@@ -227,18 +228,24 @@ export default {
 
 `plugins?: CastroPlugin[]` — default: `[]`. Plugins hook into the build pipeline to inject assets, run processors, and register custom island frameworks. See [Plugins](https://www.google.com/search?q=/guide/plugins).
 
+### `clientDependencies`
+
+`clientDependencies?: string []` — default: `[]`. An list of NPM packages to be pre-bundled and shared across all islands.
+
+Use it when you have multiple islands using the same package. For example, if you use "date-fns" in multiple islands, by default "date-fns" will be bundled into each island. Adding `clientDependencies: ["date-fns"]` in config extracts it into a single, shared `/vendor/date-fns.js` file.
+
+Only works for exact paths. When you need an unknown number subpaths from the same package, you can use `importMap`.
+
 ### `importMap`
 
-`importMap?: Record<string, string>` — default: `{}`. Additional entries merged into the `<script type="importmap">` on every island page.
+`importMap?: Record<string, string>` — default: `{}`. An "escape hatch" specifically for wildcard routing when adding dozens of subpaths to `clientDependencies` is impractical. Example:
 
 ```javascript
 importMap: {
-  "my-lib": "https://esm.sh/my-lib@1.0.0",
-  "preact": "https://some-cdn.sh/preact@10.0.0"
+  // Allows to use @mui/material/Button, @mui/material/Popper, etc without having to specify each subpath in `clientDependencies`
+  "@mui/material/": "https://esm.sh/@mui/material/"
 }
 ```
-
-`import X from "my-lib"` will be treated as external during island compilation — the browser loads it from CDN instead of bundling. It also allows to override default CDN links - for example, to use a different CDN for Preact.
 
 -----
 

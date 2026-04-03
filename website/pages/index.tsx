@@ -1,6 +1,6 @@
+import { FeatureCard } from "@components/FeatureCard.tsx";
+import { StarIcon } from "@components/icons/StarIcon.tsx";
 import type { PageMeta } from "@vktrz/castro";
-import { FeatureCard } from "../components/FeatureCard.tsx";
-import { StarIcon } from "../components/icons/StarIcon.tsx";
 
 export const meta: PageMeta = { title: "Castro - The People's Framework" };
 

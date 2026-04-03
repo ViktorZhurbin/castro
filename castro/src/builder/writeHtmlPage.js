@@ -7,11 +7,15 @@
  * 3. Writes the file to disk
  */
 
+import { createRequire } from "node:module";
 import { join } from "node:path";
 import { config as castroConfig } from "../config.js";
 import { getFrameworkConfig } from "../islands/frameworkConfig.js";
 import { allPlugins } from "../islands/plugins.js";
 import { islands } from "../islands/registry.js";
+import { getSafePkgName } from "../utils/dependencies.js";
+
+const require = createRequire(import.meta.url);
 
 /**
  * @import { Asset, ImportsMap } from '../types.js'
@@ -48,12 +52,8 @@ async function resolvePageContext({ usedIslands, pageCssAssets = [] }) {
 	const assets = [...pageCssAssets];
 	const hasIslands = usedIslands.size > 0;
 
-	// Import maps and head assets: aggregate from the framework configs of
-	// islands used on this page. Each framework declares its own CDN URLs
-	// (e.g., Preact needs preact/hooks, Solid needs solid-js/web) and may
-	// provide head assets (e.g., Solid's hydration coordination script).
-	// Only frameworks actually used on this page get included.
 	if (hasIslands) {
+		const clientDeps = new Set(castroConfig.clientDependencies || []);
 		const frameworks = new Set();
 
 		for (const id of usedIslands) {
@@ -64,15 +64,35 @@ async function resolvePageContext({ usedIslands, pageCssAssets = [] }) {
 		for (const name of frameworks) {
 			const fwConfig = getFrameworkConfig(name);
 
-			Object.assign(importMap, fwConfig.importMap);
+			for (const dep of fwConfig.clientDependencies) {
+				clientDeps.add(dep);
+			}
 
 			if (fwConfig.headAssets) {
 				assets.push(...fwConfig.headAssets);
 			}
 		}
 
-		// User import map entries override framework defaults (e.g., swap CDN)
-		// and add new entries (e.g., shared libs like three.js or lodash-es).
+		// 2. Generate local vendor entries with version-based cache busting
+		for (const dep of clientDeps) {
+			const safeName = getSafePkgName(dep);
+
+			try {
+				// Resolve the actual installed package.json to get the version.
+				// pkgRoot is the part before the first slash (e.g., "preact" from "preact/hooks").
+				// Handles scoped packages like @preact/signals or @vktrz/castro-jsx.
+				const pkgRoot = dep.startsWith("@")
+					? dep.split("/").slice(0, 2).join("/")
+					: dep.split("/")[0];
+				const version = require(`${pkgRoot}/package.json`).version;
+
+				importMap[dep] = `/vendor/${safeName}.js?v=${version}`;
+			} catch {
+				importMap[dep] = `/vendor/${safeName}.js`;
+			}
+		}
+
+		// 3. User explicit import map entries override everything (advanced escape hatch)
 		Object.assign(importMap, castroConfig.importMap);
 	}
 

@@ -22,18 +22,12 @@ export default {
 	/**
 	 * Bun.build settings for compiling Preact components.
 	 * Uses automatic JSX transform so components don't need `import { h }`.
-	 * Marks Preact packages as external — they're loaded via import map in the browser.
 	 */
 	getBuildConfig: () => ({
 		jsx: { runtime: "automatic", importSource: "preact" },
-		external: ["preact", "preact/hooks", "preact/jsx-runtime"],
 	}),
 
-	importMap: {
-		preact: "https://esm.sh/preact",
-		"preact/hooks": "https://esm.sh/preact/hooks",
-		"preact/jsx-runtime": "https://esm.sh/preact/jsx-runtime",
-	},
+	clientDependencies: ["preact", "preact/hooks", "preact/jsx-runtime"],
 
 	hydrateFnString: `
 		const { h, hydrate } = await import("preact");

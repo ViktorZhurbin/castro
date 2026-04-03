@@ -1,5 +1,5 @@
+import PropagandaRadio from "@components/PropagandaRadio.island.tsx";
 import type { PageMeta } from "@vktrz/castro";
-import PropagandaRadio from "../../components/PropagandaRadio.island.tsx";
 
 export const meta: PageMeta = {
 	title: "Components & Islands — Castro Guide",
@@ -72,10 +72,6 @@ export default function Index() {
 						Islands are server-rendered at build time, and their JavaScript
 						ships to the browser for hydration.
 					</p>
-					<aside className="alert">
-						Island imports must use relative paths, not tsconfig path aliases (
-						<code>../components/Counter.island.tsx</code>).
-					</aside>
 					<pre>
 						<code>{`// components/Counter.island.tsx
 import { useState } from "preact/hooks";
@@ -92,8 +88,8 @@ export default function Counter({ initial = 0 }) {
 
 // pages/index.tsx
 
-// NOTE: Island imports must use relative paths
-import Counter from "../components/Counter.island.tsx";
+// tsconfig path aliases are supported
+import Counter from "@components/Counter.island.tsx";
 
 export default function Index() {
   return <Counter initial={5} />;

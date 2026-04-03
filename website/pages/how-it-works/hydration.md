@@ -51,7 +51,7 @@ The browser loads `castro-island.js` and registers a `<castro-island>` custom el
 
 ## THE IMPORT
 
-When it's time to hydrate, the element does `await import(this.getAttribute("import"))` to load its client bundle. The bundle contains a bare `import("preact")` — no URL. The import map, injected into the page's `<head>` by the build pipeline, is what tells the browser where to fetch it. The framework loads from the CDN and is cached across all islands on the page.
+When it's time to hydrate, the element does `await import(this.getAttribute("import"))` to load its client bundle. The bundle contains a bare `import("preact")` — no URL. The import map, injected into the page's `<head>` by the build pipeline, is what tells the browser where to fetch it. The framework files are bundled in `/dist/vendor/` and re-used across all islands.
 
 ### ISLAND BUNDLE
 
@@ -71,20 +71,25 @@ Generated at compile time. The `import("preact")` call is a bare specifier — i
 
 ### IMPORT MAP
 
+Injected into every page that uses islands. Framework defaults are merged with any entries from `importMap` in your config (user entries win on conflict).
+
 ```html
 <script type="importmap">
 {
   "imports": {
-    "preact":
-      "https://esm.sh/preact",
-    "preact/hooks":
-      "https://esm.sh/preact/hooks"
+    <!-- Bundled from node_modules into /dist/vendor/ at build time -->
+    <!-- Defined by frameworks and by user through config.clientDependencies -->
+    "preact": "/vendor/preact.js?v=10.28.3",
+    "preact/hooks": "/vendor/preact_hooks.js?v=10.28.3",
+    "date-fns": "/vendor/date-fns.js?v=2.30.0",
+
+    <!-- Loaded from CDN -->
+    <!-- from config.importMap -->
+    "@mui/material/": "https://esm.sh/@mui/material/"
   }
 }
 </script>
 ```
-
-Injected into every page that uses islands. Framework defaults are merged with any entries from `importMap` in your config (user entries win on conflict). The browser resolves bare specifiers to CDN URLs.
 
 → [compiler.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/compiler.js) · [writeHtmlPage.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/builder/writeHtmlPage.js)
 
@@ -124,7 +129,7 @@ this.setAttribute("ready", "");
 HTML arrives
   → <castro-island> connects to DOM
     → directive decides timing
-      → JS imports on demand (framework from CDN)
+      → JS imports on demand
         → hydrate() attaches to existing DOM
           → interactive
 ```

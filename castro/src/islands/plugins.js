@@ -1,7 +1,7 @@
-import { join } from "node:path";
 import { userPlugins } from "../config.js";
-import { OUTPUT_DIR } from "../constants.js";
 import { registerFramework } from "./frameworkConfig.js";
+import { castroIslandRuntime } from "./plugins/castroIslandRuntime.js";
+import { vendorDependencies } from "./plugins/vendorDependencies.js";
 
 /**
  * @import { CastroPlugin } from '../types.d.ts'
@@ -21,39 +21,6 @@ for (const plugin of userPlugins) {
  * Build pipeline and dev server iterate this merged list.
  * @type {CastroPlugin[]}
  */
-const internalPlugins = [castroIslandRuntime()];
+const internalPlugins = [castroIslandRuntime(), vendorDependencies()];
+
 export const allPlugins = [...internalPlugins, ...userPlugins];
-
-/**
- * Copies the <castro-island> custom element runtime to dist.
- * Only writes when at least one page needs client-side hydration.
- *
- * @returns {CastroPlugin}
- */
-function castroIslandRuntime() {
-	return {
-		name: "castro-island-runtime",
-
-		getPageAssets(params = {}) {
-			if (params.hasIslands) {
-				return [
-					{
-						tag: "script",
-						attrs: { type: "module", src: "/castro-island.js" },
-					},
-				];
-			}
-
-			return [];
-		},
-
-		async onAfterBuild({ usedFrameworks }) {
-			if (!usedFrameworks.size) return;
-
-			await Bun.write(
-				join(OUTPUT_DIR, "castro-island.js"),
-				Bun.file(join(import.meta.dir, "./hydration.js")),
-			);
-		},
-	};
-}

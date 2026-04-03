@@ -36,7 +36,7 @@ const loadedConfigs = new Map();
 const REQUIRED_FIELDS = [
 	"id",
 	"getBuildConfig",
-	"importMap",
+	"clientDependencies",
 	"hydrateFnString",
 	"renderSSR",
 ];

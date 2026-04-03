@@ -5,7 +5,7 @@
  * export a default object matching this shape.
  */
 
-import type { Asset, ImportsMap } from "../../types.d.ts";
+import type { Asset } from "../../types.d.ts";
 
 /**
  * Defines how islands are compiled, rendered (SSR), and hydrated.
@@ -17,8 +17,11 @@ export type FrameworkConfig = {
 	/** Bun.build configuration for compiling components */
 	getBuildConfig: (target?: "ssr") => Partial<Bun.BuildConfig>;
 
-	/** CDN URLs for browser-side module loading via import map */
-	importMap: ImportsMap;
+	/**
+	 * Shared dependencies to be vendored and added to the browser import map.
+	 * E.g. ["preact", "preact/hooks"]
+	 */
+	clientDependencies: string[];
 
 	/**
 	 * Assets injected into <head> for pages using this framework.

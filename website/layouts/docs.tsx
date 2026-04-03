@@ -1,7 +1,7 @@
+import { Footer } from "@components/Footer.tsx";
+import { MobileMenuButton } from "@components/MobileMenuButton.tsx";
+import { PageShell } from "@components/PageShell.tsx";
 import type { VNode } from "preact";
-import { Footer } from "../components/Footer.tsx";
-import { MobileMenuButton } from "../components/MobileMenuButton.tsx";
-import { PageShell } from "../components/PageShell.tsx";
 
 export interface DocsLayoutProps {
 	title: string;

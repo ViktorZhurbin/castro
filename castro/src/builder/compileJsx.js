@@ -5,6 +5,7 @@ import {
 } from "../islands/buildPlugins.js";
 import { messages } from "../messages/index.js";
 import { getModule } from "../utils/cache.js";
+import { getProjectDependencies } from "../utils/dependencies.js";
 
 /**
  * Compile JSX/TSX to JavaScript and import the module
@@ -22,11 +23,10 @@ export async function compileJSX(sourcePath) {
 	const result = await Bun.build({
 		entrypoints: [absoluteSourcePath],
 		target: "bun",
-		// Externalizes all bare package imports (node_modules).
-		// Side effect: tsconfig `paths` aliases like @components/* get treated as
-		// scoped npm packages and externalized before resolution, so island imports
-		// must use relative paths for islandMarkerPlugin to intercept them.
-		packages: "external",
+		// Externalizes all NPM package imports found in package.json.
+		// This enables native support for tsconfig `paths` aliases (e.g., @components/*),
+		// as Bun will resolve local paths that are NOT in the dependencies list.
+		external: await getProjectDependencies(),
 		format: "esm",
 		// Pages and layouts compile to Preact VNodes (not HTML strings directly).
 		// The final renderToString() call in renderPage.js converts the complete

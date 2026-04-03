@@ -57,15 +57,11 @@ export default {
 
 	getBuildConfig: (target) => ({
 		plugins: [solidBabelPlugin(target ?? "dom")],
-		external: ["solid-js", "solid-js/web"],
 	}),
 
 	headAssets: [generateHydrationScript()],
 
-	importMap: {
-		"solid-js": "https://esm.sh/solid-js",
-		"solid-js/web": "https://esm.sh/solid-js/web",
-	},
+	clientDependencies: ["solid-js", "solid-js/web"],
 
 	hydrateFnString: `
 		const { hydrate } = await import("solid-js/web");
