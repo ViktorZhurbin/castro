@@ -1,10 +1,3 @@
-export {
-	Accessor,
-	createEffect,
-	createSignal,
-	Setter,
-} from "../../signals/index.d.ts";
-
 /** A valid child in castro-jsx: DOM nodes, primitives, or reactive functions. */
 export type Child =
 	| Node

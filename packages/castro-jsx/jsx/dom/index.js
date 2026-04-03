@@ -13,9 +13,6 @@
 
 import { createEffect } from "../../signals/index.js";
 
-// Re-exported to bundle JSX runtime AND signals in a single file.
-export { createEffect, createSignal } from "../../signals/index.js";
-
 /**
  * Sets or removes an attribute on a DOM element.
  * Boolean `true` → bare attribute (`disabled`), falsy → remove.

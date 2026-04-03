@@ -17,4 +17,6 @@ export function createSignal<T>(
 	initialValue: T,
 ): [get: Accessor<T>, set: Setter<T>];
 
+export function onMount(fn: () => void): void;
+p;
 export function createEffect(fn: () => void): void;
