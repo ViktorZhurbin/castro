@@ -1,6 +1,6 @@
 export const Footer = () => {
 	return (
-		<footer class="footer footer-center footer-horizontal sm:footer-vertical bg-base-300 py-8 px-6 border-t-2 border-primary">
+		<footer class="footer footer-center footer-horizontal sm:footer-vertical bg-base-300 py-8 px-6 pb-16 border-t-2 border-primary">
 			<div>
 				<p class="font-display text-3xl text-secondary">
 					WORKERS OF THE WEB, UNITE!
