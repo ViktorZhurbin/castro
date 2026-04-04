@@ -126,31 +126,35 @@ async function getLiveReloadAsset() {
  * @param {{ assets: Asset[]; importMap: ImportsMap }} options
  */
 function injectAssets(html, { assets, importMap }) {
-	let output = html;
-
 	const tags = [
 		generateImportMap(importMap),
 		...assets.map(generateAssetTag),
 	].filter(Boolean);
 
-	if (tags.length > 0) {
-		// Inject before </head> so CSS is render-blocking (prevents flash of
-		// unstyled content). Fall back to </body> for layouts without a <head>.
-		const injection = tags.join("\n");
-		const headEnd = output.indexOf("</head>");
-		const bodyEnd = output.indexOf("</body>");
-		const insertAt = headEnd !== -1 ? headEnd : bodyEnd;
+	if (tags.length === 0) return ensureDoctype(html);
 
-		if (insertAt !== -1) {
-			output = output.slice(0, insertAt) + injection + output.slice(insertAt);
-		}
-	}
+	// Inject before </head> so CSS is render-blocking (prevents flash of
+	// unstyled content). Fall back to </body> for layouts without a <head>.
+	const injection = tags.join("\n");
 
-	if (!output.trimStart().toLowerCase().startsWith("<!doctype")) {
-		output = `<!DOCTYPE html>\n${output}`;
-	}
+	const output = html.replace(
+		// Matches </head> OR </body> (case-insensitive).
+		/<\/head>|<\/body>/i,
+		// Inserts injection before the matched tag.
+		(match) => `${injection}\n${match}`,
+	);
 
-	return output;
+	return ensureDoctype(output);
+}
+
+/**
+ * @param {string} html
+ * @returns {string}
+ */
+function ensureDoctype(html) {
+	return html.trimStart().toLowerCase().startsWith("<!doctype")
+		? html
+		: `<!DOCTYPE html>\n${html}`;
 }
 
 // ============================================================================

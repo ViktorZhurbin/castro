@@ -135,7 +135,7 @@ const nonFrameworkDirs = new Set();
  * @returns {Promise<string>} Framework id
  */
 async function detectFramework(relativePath) {
-	const firstSegment = relativePath.split("/")[0];
+	const [firstSegment] = relativePath.split("/");
 
 	// Root-level files (no subdirectory) have the filename as firstSegment —
 	// no point trying to load "Counter.island.tsx" as a framework.
