@@ -1,7 +1,8 @@
 import { castroJsx } from "@vktrz/castro-jsx";
+import { castroSolid } from "@vktrz/castro-solid";
 
 export default {
-	plugins: [castroJsx()],
+	plugins: [castroJsx(), castroSolid()],
 	messages: "serious",
 	importMap: {
 		"custom-lib": "https://esm.sh/custom-lib",

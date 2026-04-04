@@ -16,15 +16,10 @@
         "castro": "./bin/castro",
       },
       "dependencies": {
-        "@babel/core": "^7",
-        "@babel/preset-typescript": "^7.28.5",
-        "babel-preset-solid": "^1.9.10",
         "preact": "^10",
         "preact-render-to-string": "^6.5.12",
-        "solid-js": "^1",
       },
       "devDependencies": {
-        "@types/babel__core": "^7.20.5",
         "@types/bun": "^1.3.8",
         "knip": "^5.83.0",
         "typescript": "^5.9.3",
@@ -35,6 +30,21 @@
       "version": "0.1.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
+      },
+    },
+    "packages/castro-solid": {
+      "name": "@vktrz/castro-solid",
+      "version": "0.1.0",
+      "dependencies": {
+        "@babel/core": "^7",
+        "@babel/preset-typescript": "^7.28.5",
+        "@vktrz/castro": "workspace:*",
+        "babel-preset-solid": "^1.9.10",
+        "solid-js": "^1",
+      },
+      "devDependencies": {
+        "@types/babel__core": "^7.20.5",
+        "@types/bun": "^1.3.8",
       },
     },
     "packages/tailwind": {
@@ -54,6 +64,7 @@
         "@preact/signals": "^2.8.1",
         "@vktrz/castro": "workspace:*",
         "@vktrz/castro-jsx": "workspace:*",
+        "@vktrz/castro-solid": "workspace:*",
         "preact": "^10",
         "solid-js": "^1",
       },
@@ -269,6 +280,8 @@
     "@vktrz/castro": ["@vktrz/castro@workspace:castro"],
 
     "@vktrz/castro-jsx": ["@vktrz/castro-jsx@workspace:packages/castro-jsx"],
+
+    "@vktrz/castro-solid": ["@vktrz/castro-solid@workspace:packages/castro-solid"],
 
     "@vktrz/castro-tailwind": ["@vktrz/castro-tailwind@workspace:packages/tailwind"],
 

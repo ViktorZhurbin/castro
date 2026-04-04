@@ -20,9 +20,9 @@ bun loc              # LOC count (core only, excludes messages/)
 ## Monorepo Layout
 
 - `castro/` — core SSG engine (the npm package `@vktrz/castro`)
-- `packages/` — packages and plugins (e.g., `@vktrz/castro-jsx`, `@vktrz/castro-tailwind`)
+- `packages/` — packages and plugins (e.g., `@vktrz/castro-jsx`, `@vktrz/castro-solid`, `@vktrz/castro-tailwind`)
 - `website/` — demo playground that consumes castro
-- `test-site/` — minimal test site exercising castro-jsx, Preact, and Solid islands
+- `test-site/` — minimal test site exercising castro-jsx, Solid (via plugin), Preact, and signal libraries
 
 ### Core Module Structure (`castro/src/`)
 

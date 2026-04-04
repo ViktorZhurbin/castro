@@ -1,13 +1,13 @@
 /**
- * Solid Framework Configuration
+ * castro-solid Plugin for Castro
  *
- * Dynamically imported by frameworkConfig.js when a Solid island is
- * discovered. Bun has no native Solid JSX support, so we use Babel
- * with babel-preset-solid to transform JSX at build time.
+ * Solid.js framework support for Castro islands.
+ * Bun has no native Solid JSX support, so we use Babel with babel-preset-solid
+ * to transform JSX at build time. The Babel transform is build-time-only;
+ * client bundles don't include it.
  *
- * The Babel transform differs between client and SSR:
- * - Client ("dom"): generates fine-grained reactive DOM operations
- * - SSR ("ssr"): generates string concatenation for renderToString
+ * This demonstrates how the Castro plugin architecture enables third-party
+ * frameworks to integrate seamlessly with the core SSG.
  */
 
 import * as babel from "@babel/core";
@@ -16,7 +16,7 @@ import solidPreset from "babel-preset-solid";
 import { generateHydrationScript, renderToString } from "solid-js/web";
 
 /**
- * @import { FrameworkConfig } from "./types.d.ts"
+ * @import { CastroPlugin, FrameworkConfig } from "@vktrz/castro"
  */
 
 /**
@@ -25,8 +25,12 @@ import { generateHydrationScript, renderToString } from "solid-js/web";
  * Babel and its presets are lazy-imported on first use so the cost
  * is only paid when a Solid island actually needs compilation.
  *
+ * The Babel transform differs between client and SSR:
+ * - Client ("dom"): generates fine-grained reactive DOM operations
+ * - SSR ("ssr"): generates string concatenation for renderToString
+ *
  * @param {"dom" | "ssr"} generate - Solid output mode
- * @returns {Bun.BunPlugin}
+ * @returns {import("bun").BunPlugin}
  */
 function solidBabelPlugin(generate) {
 	return {
@@ -52,7 +56,7 @@ function solidBabelPlugin(generate) {
 }
 
 /** @type {FrameworkConfig} */
-export default {
+const frameworkConfig = {
 	id: "solid",
 
 	getBuildConfig: (target) => ({
@@ -70,3 +74,15 @@ export default {
 
 	renderSSR: (Component, props) => renderToString(() => Component(props)),
 };
+
+/**
+ * Register the Solid framework.
+ *
+ * @returns {CastroPlugin}
+ */
+export function castroSolid() {
+	return {
+		name: "castro-solid",
+		frameworkConfig,
+	};
+}
