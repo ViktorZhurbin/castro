@@ -98,7 +98,7 @@ export default function Page() {
 <html>
   <head>
     <script type="importmap">
-      { "imports": { "date-fns": "/vendor/date-fns.js", ... } }
+      { "imports": { "date-fns": "/vendor/date-fns.js?v=3.6.0", ... } }
     </script>
     <script type="module" src="/castro-island.js"></script>
   </head>

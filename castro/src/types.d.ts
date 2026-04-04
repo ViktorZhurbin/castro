@@ -30,7 +30,10 @@ export type BuildContext = {
 
 export type CastroPlugin = {
 	name: string;
+	/** Adds HTML assets to the page. Called per-page for all pages. */
 	getPageAssets?: (params?: { hasIslands?: boolean }) => Asset[];
+	/** Adds entries to the page's import map. Called per-page for all pages. */
+	getImportMap?: (context: { usedFrameworks: Set<string> }) => ImportsMap;
 	/** Runs before pages are built. Use for pre-build work (e.g. CSS compilation). */
 	onPageBuild?: () => Promise<void>;
 	/** Runs after all pages are built. Receives build context for conditional work. */

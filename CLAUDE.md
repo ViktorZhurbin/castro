@@ -105,17 +105,18 @@ Old approach used `options.vnode` hook (runtime monkey-patch). Current approach:
 By default, framework dependencies are automatically vendored to `/dist/vendor/` via the `vendorDependencies` plugin:
 1. Each framework declares `clientDependencies` (e.g., Preact declares `["preact", "preact/hooks", "preact/jsx-runtime"]`)
 2. User can add custom `clientDependencies` in `castro.config.js`
-3. Import map is auto-generated: `{ "preact": "/vendor/vendor-preact.js?v=10.28.3", ... }` with version query strings for cache busting
-4. User `importMap` entries override auto-generated entries, allowing CDN swaps when needed
+3. Plugin `getImportMap` hooks generate per-page entries: `{ "preact": "/vendor/preact.js?v=10.28.3", ... }` with version query strings for cache busting
+4. User `importMap` entries (from `castro.config.js`) override plugin-generated entries on pages with islands, allowing CDN swaps or custom versioning. Static pages have no import map.
 
-Any import map key is automatically treated as external during island client compilation — Bun won't bundle it.
+Any import map key is automatically treated as external during island client compilation — Bun won't bundle it. Plugins use `getImportMap` to contribute entries based on which frameworks are actually used on each page.
 
 ### User Plugins
 
 `castro.config.js` accepts a `plugins` array of `CastroPlugin` objects. User plugins are merged with internal plugins (island runtime, Preact islands) and participate in the same build lifecycle:
+- `getPageAssets(params)` — called per-page. Injects `<link>`/`<style>`/`<script>` tags. Receives `{ hasIslands }` so plugins can conditionally inject only on pages with islands.
+- `getImportMap(context)` — called only on pages with islands. Plugins contribute import map entries (e.g., vendored dependencies). Receives `{ usedFrameworks }` so entries are based on which frameworks are actually used on that page.
 - `onPageBuild()` — runs before pages are built (and on every page save in dev for user plugins)
-- `onAfterBuild(context)` — runs after all pages are built. Receives `{ usedFrameworks: Set<string> }` so plugins can conditionally write assets (e.g., only copy a runtime if the framework was actually used)
-- `getPageAssets()` — injects `<link>`/`<style>`/`<script>` tags into every page
+- `onAfterBuild(context)` — runs after all pages are built. Receives `{ usedFrameworks: Set<string> }` so plugins can conditionally write assets (e.g., only bundle dependencies if the framework was actually used)
 - `frameworkConfig` — optional `FrameworkConfig` object to register a custom framework for islands
 - `watchDirs` — directories to watch in dev mode; changes trigger `onPageBuild()` + reload
 

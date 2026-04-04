@@ -7,20 +7,16 @@
  * 3. Writes the file to disk
  */
 
-import { createRequire } from "node:module";
 import { join } from "node:path";
 import { config as castroConfig } from "../config.js";
 import { getFrameworkConfig } from "../islands/frameworkConfig.js";
 import { allPlugins } from "../islands/plugins.js";
 import { islands } from "../islands/registry.js";
-import { getSafePkgName } from "../utils/dependencies.js";
-
-const require = createRequire(import.meta.url);
 
 /**
  * @import { Asset, ImportsMap } from '../types.js'
  *
- * @typedef {{ pageCssAssets?: Asset[]; usedIslands: Set<string>; }} Options
+ * @typedef {{ pageCssAssets?: Asset[]; usedIslands: Set<string>; usedFrameworks: Set<string>; }} Options
  */
 
 /**
@@ -46,61 +42,43 @@ export async function writeHtmlPage(rawHtml, outputPath, options) {
 /**
  * @param {Options} options
  */
-async function resolvePageContext({ usedIslands, pageCssAssets = [] }) {
-	/** @type {ImportsMap} */
-	const importMap = {};
-	const assets = [...pageCssAssets];
+async function resolvePageContext({
+	usedIslands,
+	usedFrameworks,
+	pageCssAssets = [],
+}) {
 	const hasIslands = usedIslands.size > 0;
+	const assets = [...pageCssAssets];
 
-	if (hasIslands) {
-		const clientDeps = new Set(castroConfig.clientDependencies || []);
-		const frameworks = new Set();
+	for (const id of usedFrameworks) {
+		const config = getFrameworkConfig(id);
 
-		for (const id of usedIslands) {
-			const island = islands.getIsland(id);
-			if (island) frameworks.add(island.frameworkId);
+		if (config.headAssets) {
+			assets.push(...config.headAssets);
 		}
-
-		for (const name of frameworks) {
-			const fwConfig = getFrameworkConfig(name);
-
-			for (const dep of fwConfig.clientDependencies) {
-				clientDeps.add(dep);
-			}
-
-			if (fwConfig.headAssets) {
-				assets.push(...fwConfig.headAssets);
-			}
-		}
-
-		// 2. Generate local vendor entries with version-based cache busting
-		for (const dep of clientDeps) {
-			const safeName = getSafePkgName(dep);
-
-			try {
-				// Resolve the actual installed package.json to get the version.
-				// pkgRoot is the part before the first slash (e.g., "preact" from "preact/hooks").
-				// Handles scoped packages like @preact/signals or @vktrz/castro-jsx.
-				const pkgRoot = dep.startsWith("@")
-					? dep.split("/").slice(0, 2).join("/")
-					: dep.split("/")[0];
-				const version = require(`${pkgRoot}/package.json`).version;
-
-				importMap[dep] = `/vendor/${safeName}.js?v=${version}`;
-			} catch {
-				importMap[dep] = `/vendor/${safeName}.js`;
-			}
-		}
-
-		// 3. User explicit import map entries override everything (advanced escape hatch)
-		Object.assign(importMap, castroConfig.importMap);
 	}
 
-	// Plugin assets: island runtime script, CSS links, etc.
+	/** @type {ImportsMap} */
+	const importMap = {};
+
 	for (const plugin of allPlugins) {
+		// Plugin assets: island runtime script, CSS links, etc.
 		if (plugin.getPageAssets) {
 			assets.push(...plugin.getPageAssets({ hasIslands }));
 		}
+
+		// Import maps are only needed on pages with islands — no point building them
+		// for static pages. Plugins add entries based on usedFrameworks.
+		if (hasIslands && plugin.getImportMap) {
+			const pluginImportMap = plugin.getImportMap({ usedFrameworks });
+
+			Object.assign(importMap, pluginImportMap);
+		}
+	}
+
+	if (hasIslands) {
+		// User importMap entries override plugin-generated ones.
+		Object.assign(importMap, castroConfig.importMap);
 	}
 
 	// Island CSS: only for islands actually rendered on this page
@@ -108,7 +86,10 @@ async function resolvePageContext({ usedIslands, pageCssAssets = [] }) {
 	if (usedIslands.size && cssManifest.size) {
 		for (const id of usedIslands) {
 			const css = cssManifest.get(id);
-			if (css) assets.push({ tag: "style", content: css });
+
+			if (css) {
+				assets.push({ tag: "style", content: css });
+			}
 		}
 	}
 

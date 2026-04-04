@@ -17,6 +17,7 @@ Plugins hook into Castro's build pipeline to inject assets, process files, and r
 type CastroPlugin = {
   name: string;
   getPageAssets?: (params?: { hasIslands?: boolean }) => Asset[];
+  getImportMap?: (context: { usedFrameworks: Set<string> }) => ImportsMap;
   onPageBuild?: () => Promise<void>;
   onAfterBuild?: (context: { usedFrameworks: Set<string> }) => Promise<void>;
   watchDirs?: string[];
@@ -30,7 +31,11 @@ type CastroPlugin = {
 
 ### `getPageAssets`
 
-Called once per page render. Returns an array of `Asset` objects to inject into the page's `<head>`. Receives `hasIslands` so plugins can conditionally inject assets only on pages that use islands — see [Hydration](/how-it-works/hydration) for how Castro decides which pages need client JS.
+Called once per page. Returns an array of `Asset` objects to inject into the page's `<head>`. Receives `hasIslands` so plugins can conditionally inject assets only on pages that use islands — see [Hydration](/how-it-works/hydration) for how Castro decides which pages need client JS.
+
+### `getImportMap`
+
+Called once per page that has islands. Returns an `ImportsMap` object mapping import specifiers to URLs. Plugins use this to dynamically generate entries based on which frameworks are actually used. For example, the `vendorDependencies` plugin uses this to map framework package names to vendored URLs with cache-busting query strings.
 
 ### `onPageBuild`
 
@@ -38,7 +43,7 @@ Called before pages are built. In dev mode, runs on every file change (page, lay
 
 ### `onAfterBuild`
 
-Runs after all pages are built. Receives build context for conditional work. Use it to inject assets.
+Runs after all pages are built. Receives build context for conditional work. Use it for post-build tasks like bundling files to disk (e.g., vendoring dependencies).
 
 ### `watchDirs`
 

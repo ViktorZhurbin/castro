@@ -77,6 +77,7 @@ export async function renderPage({
 
 	await writeHtmlPage(finalHtml, outputFilePath, {
 		usedIslands: pageState.usedIslands,
+		usedFrameworks: pageState.usedFrameworks,
 		pageCssAssets: pageAndLayoutCssAssets,
 	});
 }

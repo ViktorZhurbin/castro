@@ -230,7 +230,7 @@ export default {
 
 ### `clientDependencies`
 
-`clientDependencies?: string []` — default: `[]`. An list of NPM packages to be pre-bundled and shared across all islands.
+`clientDependencies?: string[]` — default: `[]`. A list of NPM packages to be pre-bundled and shared across all islands. Note that frameworks automatically vendor their own dependencies — see [Plugins](/guide/plugins) for details on how dependency vendoring works.
 
 Use it when you have multiple islands using the same package. For example, if you use "date-fns" in multiple islands, by default "date-fns" will be bundled into each island. Adding `clientDependencies: ["date-fns"]` in config extracts it into a single, shared `/vendor/date-fns.js` file.
 
@@ -238,14 +238,15 @@ Only works for exact paths. When you need an unknown number subpaths from the sa
 
 ### `importMap`
 
-`importMap?: Record<string, string>` — default: `{}`. An "escape hatch" specifically for wildcard routing when adding dozens of subpaths to `clientDependencies` is impractical. Example:
+`importMap?: Record<string, string>` — default: `{}`. A map of import specifiers to URLs. Use it to override plugin-generated import map entries — for example, swapping a vendored URL for a CDN, or providing custom versions of packages. When you need wildcard routing for subpaths like `@mui/material/Button`, `@mui/material/Popper`, etc., you can add them here:
 
 ```javascript
 importMap: {
-  // Allows to use @mui/material/Button, @mui/material/Popper, etc without having to specify each subpath in `clientDependencies`
   "@mui/material/": "https://esm.sh/@mui/material/"
 }
 ```
+
+User-provided entries override plugin-generated entries on pages with islands. They have no effect on purely static pages.
 
 -----
 

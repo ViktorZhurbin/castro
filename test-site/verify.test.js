@@ -209,6 +209,27 @@ test("mixed page has Solid SSR content", async () => {
 	expect(html).toContain("Solid:");
 });
 
+// ------ Import map generation ------
+
+test("static pages have no import map script tag", async () => {
+	const html = await readHtml("static.html");
+	expect(html).not.toContain('type="importmap"');
+});
+
+test("pages with islands have import map script tag", async () => {
+	const html = await readHtml("mixed.html");
+	expect(html).toContain('type="importmap"');
+});
+
+test("plugin getImportMap contributes vendor entries", async () => {
+	const html = await readHtml("mixed.html");
+	// vendorDependencies plugin should add Preact and Solid to import map
+	expect(html).toContain('"preact":');
+	expect(html).toContain('"solid-js":');
+	// Check they're vendored URLs (not CDN)
+	expect(html).toContain('"/vendor/');
+});
+
 // ------ User import map ------
 
 test("user import map entries appear in pages with islands", async () => {
