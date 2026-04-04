@@ -45,7 +45,7 @@ islands/
   registry.js           Singleton island store + SSR module preloading
   marker.js             Build-time island renderer
   frameworkConfig.js   Framework config loader (async load + sync cache)
-  frameworks/           Built-in framework configs (preact.js, solid.js, types.d.ts)
+  frameworks/           Built-in framework configs (preact.js, types.d.ts)
   plugins.js            Plugin registry (internal + user plugins from config)
   hydration.js          Client-side <castro-island> custom element
 
@@ -160,13 +160,19 @@ Key rules from `src/messages/README.md`:
 
 ## Key Design Decisions
 
+- **Preact is permanently the page/layout rendering engine.** Pages and layouts always use Preact for SSR and VNode tree construction. Preact is a build-time dependency only — never shipped to the browser for static pages. It's used in exactly four places: JSX transform in `compileJsx.js`, `renderToString` in `renderPage.js`, `h()` for island markers, and `h()` for markdown wrapping. Other frameworks (castro-jsx, Solid) are limited to islands; their SSR returns HTML strings, not VNodes, which Castro's single-pass `renderToString()` architecture requires.
+- **Multi-framework is a plugin-level capability, not a headline feature.** Islands can use different frameworks, but they can't nest, share state across frameworks, or avoid TypeScript pragmas. This is extensibility, not first-class micro-frontends.
 - **Layouts receive `children` (VNode)**, not a pre-rendered `content` HTML string. The entire tree renders in a single `renderToString()` pass.
-- **Framework configs** are loaded per-island via `frameworkConfig.js` (async load + sync cache pattern). Preact is the default framework; Solid is a built-in alternative. Plugins can register additional frameworks via `CastroPlugin.frameworkConfig` (e.g., `@vktrz/castro-jsx` registers the castro-jsx framework). Directory convention (`components/solid/`, `components/preact/`, `components/castro-jsx/`) auto-detects registered frameworks. Islands not in a subdirectory default to Preact. Pages and layouts always use Preact. Each framework declares `clientDependencies` (browser-side packages to vendor) rather than hardcoded CDN URLs.
+- **Framework configs** are loaded per-island via `frameworkConfig.js` (async load + sync cache pattern). Preact is the default framework. Plugins can register additional frameworks via `CastroPlugin.frameworkConfig` (e.g., `@vktrz/castro-jsx`, `@vktrz/castro-solid`). Directory convention (`components/solid/`, `components/castro-jsx/`) auto-detects registered frameworks. Islands not in a subdirectory default to Preact. Each framework declares `clientDependencies` (browser-side packages to vendor) rather than hardcoded CDN URLs.
 - **`IslandComponent.ssrModule`** typed as `{ default: Function }` (framework-agnostic). Pre-loaded by the registry, accessed synchronously by `renderMarker()`.
 - **`renderSSR` accepts `Function`**, not `ComponentType`. Each framework config casts internally.
 - **Island CSS** tracked per-page via `pageState` in `marker.js`, not on the registry singleton. The runtime script is included when `usedIslands.size > 0`.
-- **tsconfig.json path aliases** are now supported natively. `getProjectDependencies()` reads `package.json` and passes all dependency keys to `external`, allowing aliases to resolve correctly before Bun's module loader processes them.
-- **Multi-framework type checking** requires per-file `/** @jsxImportSource */` pragmas for non-default frameworks (e.g. `/** @jsxImportSource @vktrz/castro-jsx */` for castro-jsx, `/** @jsxImportSource solid-js */` for Solid). The pragma is the only mechanism `tsc` honors per-file — TypeScript uses the root tsconfig's JSX settings for transitively imported files regardless of any nested tsconfig. Each framework package provides its own JSX type definitions (e.g., `castro-jsx` provides `Signalish<T>`, `HTMLProps`).
+- **Dependency vendoring via `clientDependencies` and auto-generated import maps.** Framework dependencies are vendored to `/dist/vendor/` by the `vendorDependencies` plugin. Each framework declares `clientDependencies` (e.g., Preact declares `["preact", "preact/hooks", "preact/jsx-runtime"]`). The plugin uses `Bun.build` with `splitting: true` to avoid duplicate code in vendored files. Import maps are auto-generated per-page with version-based cache busting (`?v=${version}` query strings), driven by installed package versions. User `importMap` entries override plugin-generated entries, allowing CDN swaps on pages with islands. Any import map key is automatically externalized during island client compilation.
+- **Island imports must use relative paths**, not tsconfig aliases. The `islandMarkerPlugin` intercepts imports at the AST level; tsconfig path aliases resolve after Bun's AST walk, so aliased imports don't trigger island detection. This limitation is documented for users.
+- **tsconfig.json path aliases** are supported natively in page imports. `getProjectDependencies()` reads `package.json` and passes all dependency keys to Bun's `external`, allowing aliases to resolve correctly before Bun's module loader processes them.
+- **Multi-framework type checking** requires per-file `/** @jsxImportSource */` pragmas for non-default frameworks (e.g. `/** @jsxImportSource @vktrz/castro-jsx */` for castro-jsx, `/** @jsxImportSource solid-js */` for Solid). The pragma is the only mechanism `tsc` honors per-file — TypeScript uses the root tsconfig's JSX settings for transitively imported files regardless of any nested tsconfig. Each framework package provides its own JSX type definitions. Preact's `Signalish<T>` and castro-jsx's `Signalish<T>` are incompatible types by design (object with `.value` vs plain getter function).
+- **Three hydration directives: `comrade:eager`, `comrade:patient`, `comrade:visible` (default).** `comrade:eager` hydrates immediately. `comrade:visible` hydrates on intersection. `comrade:patient` uses `requestIdleCallback` with load-event gating (waiting for idle during initial page load is counterproductive) and Safari fallback.
+- **Plugin hooks include `onAfterBuild(context)` and `getImportMap(context)`.** Both receive `{ usedFrameworks: Set<string> }` so plugins can conditionally write assets based on which frameworks are actually used. This prevents bundling unused frameworks and unused island runtime scripts.
 
 ## Testing
 
@@ -201,14 +207,6 @@ Demo site that consumes castro. Uses Tailwind CSS v4 + DaisyUI v5 via `@vktrz/ca
 - `styles/app.css` — Tailwind + DaisyUI config, both custom theme definitions, `font-display`/`font-sans` theme
 - `layouts/default.tsx` — HTML shell, Google Fonts (Bebas Neue + Barlow), ThemeToggle island
 - `layouts/docs.tsx` — docs layout with DaisyUI drawer sidebar; section-aware via `sidebarSections` map keyed by `"how-it-works"` / `"guide"`
-- `components/Header.tsx` — sticky navbar; GUIDE and HOW IT WORKS links go active when `activePath` starts with `/guide` or `/how-it-works`
-- `components/PropagandaRadio.island.tsx` — Preact radio with cycling headlines (`comrade:eager`)
-- `components/castro-jsx/BarePropagandaRadio.island.tsx` — castro-jsx port of PropagandaRadio, used on the directives guide page
-- `components/castro-jsx/BareRedactor.island.tsx` — castro-jsx censorship toggle (`comrade:patient`)
-- `components/castro-jsx/BareFiveYearPlan.island.tsx` — castro-jsx port of FiveYearPlan, used on the directives guide page
-- `components/solid/FiveYearPlan.island.tsx` — Solid progress tracker (`comrade:visible`)
-- `components/ThemeToggle.island.tsx` — `comrade:eager` island, DaisyUI swap + theme-controller
-- `pages/guide/directives.tsx` — prose + live demos for all three directives, one castro-jsx island per directive
 
 **Docs pages** (`how-it-works/`, `guide/`): each exports a `meta` with `layout: "docs"`, `path: "<exact-url>"`, and `section: "<section-key>"`. The `path` field drives sidebar active highlighting and header active state — **update it if a page's URL changes**. The `section` field selects which sidebar group is shown (`"how-it-works"` or `"guide"`).
 
