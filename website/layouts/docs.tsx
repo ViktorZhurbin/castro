@@ -61,17 +61,17 @@ function DocsDrawer({
 	const { title: sectionTitle, links } = sidebarSections[section];
 
 	return (
-		<div className="flex-1 flex flex-col overflow-hidden">
-			<div className="bg-base-100 border-b border-base-content/30 flex justify-between items-center lg:hidden px-4 py-2">
+		<div class="flex-1 flex flex-col overflow-hidden">
+			<div class="bg-base-100 border-b border-base-content/30 flex justify-between items-center lg:hidden px-4 py-2">
 				<MobileMenuButton htmlFor="docs-drawer" ariaLabel="Open sidebar" />
 				{/* Future: right TOC drawer toggle goes here */}
 			</div>
 
-			<div className="drawer lg:drawer-open flex-1 overflow-hidden">
-				<input id="docs-drawer" type="checkbox" className="drawer-toggle" />
+			<div class="drawer lg:drawer-open flex-1 overflow-hidden">
+				<input id="docs-drawer" type="checkbox" class="drawer-toggle" />
 
-				<div className="drawer-content flex flex-col overflow-y-auto scroll-pt-6 lg:scroll-pt-18 scroll-smooth">
-					<main className="flex-1 prose prose-castro py-12 px-6 max-w-3xl">
+				<div class="drawer-content flex flex-col overflow-y-auto scroll-pt-6 lg:scroll-pt-18 scroll-smooth">
+					<main class="flex-1 prose prose-castro py-12 px-6 max-w-3xl">
 						{children}
 					</main>
 
@@ -97,19 +97,19 @@ function DocsSidebar({
 	activePath?: string;
 }) {
 	return (
-		<div className="drawer-side z-40">
+		<div class="drawer-side z-40">
 			<label
 				htmlFor="docs-drawer"
 				aria-label="Close sidebar"
-				className="drawer-overlay"
+				class="drawer-overlay"
 			/>
-			<ul className="menu bg-base-200 min-h-full w-56 p-4 pt-6">
-				<li className="menu-title font-display text-primary">{sectionTitle}</li>
+			<ul class="menu bg-base-200 min-h-full w-56 p-4 pt-6">
+				<li class="menu-title font-display text-primary">{sectionTitle}</li>
 				{links.map((link) => (
 					<li key={link.href}>
 						<a
 							href={link.href}
-							className={activePath === link.href ? "menu-active" : ""}
+							class={activePath === link.href ? "menu-active" : ""}
 						>
 							{link.label}
 						</a>

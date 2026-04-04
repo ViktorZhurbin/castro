@@ -31,10 +31,10 @@ export const FeatureCard = ({
 		<a
 			href={href}
 			{...linkProps}
-			className={`card card-border border-base-300 bg-base-100 ${borderColor[color]} transition-colors`}
+			class={`card card-border border-base-300 bg-base-100 ${borderColor[color]} transition-colors`}
 		>
-			<div className="card-body">
-				<h3 className={`card-title font-display text-2xl ${textColor[color]}`}>
+			<div class="card-body">
+				<h3 class={`card-title font-display text-2xl ${textColor[color]}`}>
 					{title}
 				</h3>
 				<p>{description}</p>

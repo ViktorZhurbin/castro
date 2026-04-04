@@ -24,7 +24,7 @@ export default function ComponentsIslands() {
 				</div>
 			</section>
 
-			<div className="divider" />
+			<div class="divider" />
 
 			{/* Section 1: Static Components */}
 			<section>
@@ -53,7 +53,7 @@ export default function Index() {
   return <Card title="Hello">World</Card>;
 }`}</code>
 					</pre>
-					<aside className="alert">
+					<aside class="alert">
 						Static components are server-rendered at build time and delivered as
 						plain HTML. Only <code>.island.tsx</code> files send JavaScript to
 						the browser.
@@ -61,7 +61,7 @@ export default function Index() {
 				</div>
 			</section>
 
-			<div className="divider" />
+			<div class="divider" />
 
 			{/* Section 2: Islands */}
 			<section>
@@ -97,7 +97,7 @@ export default function Index() {
 				</div>
 			</section>
 
-			<div className="divider" />
+			<div class="divider" />
 
 			{/* Section 3: Directives */}
 			<section>
@@ -162,7 +162,7 @@ export default function Page() {
 				</div>
 			</section>
 
-			<div className="divider" />
+			<div class="divider" />
 
 			{/* Section 4: Multi-Framework (Advanced) */}
 			<section>
@@ -191,7 +191,7 @@ export default function Page() {
     └── Button.island.tsx           ← castro-jsx (via plugin)`}</code>
 					</pre>
 
-					<aside className="alert">
+					<aside class="alert">
 						Because TypeScript only expects one JSX runtime per project,
 						non-Preact islands require a{" "}
 						<code>{`/** @jsxImportSource <framework> */`}</code> pragma at the
@@ -208,13 +208,13 @@ export default function Page() {
 					</p>
 				</div>
 
-				<div className="divider" />
+				<div class="divider" />
 
-				<div className="flex flex-wrap gap-4">
-					<a href="/guide/quick-start" className="btn btn-outline btn-primary">
+				<div class="flex flex-wrap gap-4">
+					<a href="/guide/quick-start" class="btn btn-outline btn-primary">
 						← Quick Start
 					</a>
-					<a href="/guide/plugins" className="btn btn-outline btn-primary">
+					<a href="/guide/plugins" class="btn btn-outline btn-primary">
 						Plugins →
 					</a>
 				</div>

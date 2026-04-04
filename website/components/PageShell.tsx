@@ -10,7 +10,7 @@ interface PageShellProps {
 
 export function PageShell({ title, activePath, children }: PageShellProps) {
 	return (
-		<html lang="en" className="h-screen overflow-hidden scroll-smooth">
+		<html lang="en" class="h-screen overflow-hidden scroll-smooth">
 			<head>
 				<meta charSet="UTF-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -27,7 +27,7 @@ export function PageShell({ title, activePath, children }: PageShellProps) {
 					rel="stylesheet"
 				/>
 			</head>
-			<body className="h-screen flex flex-col overflow-hidden">
+			<body class="h-screen flex flex-col overflow-hidden">
 				<Header activePath={activePath} />
 				{children}
 			</body>

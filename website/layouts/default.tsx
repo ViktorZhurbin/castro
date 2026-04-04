@@ -12,7 +12,7 @@ const DefaultLayout = (props: Props) => {
 
 	return (
 		<PageShell title={title}>
-			<main className="flex flex-col flex-1 overflow-y-auto">
+			<main class="flex flex-col flex-1 overflow-y-auto">
 				{children}
 
 				<Footer />

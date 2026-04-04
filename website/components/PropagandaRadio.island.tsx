@@ -28,39 +28,39 @@ export default function PropagandaRadio() {
 	}, []);
 
 	return (
-		<div className="border-2 border-base-content bg-base-100">
+		<div class="border-2 border-base-content bg-base-100">
 			{/* Header */}
-			<div className="bg-base-content text-base-100 px-4 py-2 flex items-center justify-between">
-				<p className="font-display font-bold text-sm">STATE RADIO</p>
-				<span className="badge badge-error animate-pulse text-xs font-bold">
+			<div class="bg-base-content text-base-100 px-4 py-2 flex items-center justify-between">
+				<p class="font-display font-bold text-sm">STATE RADIO</p>
+				<span class="badge badge-error animate-pulse text-xs font-bold">
 					ON AIR
 				</span>
 			</div>
 
 			{/* Headline */}
-			<div className="p-6">
-				<p className="font-display text-2xl leading-tight min-h-24 flex items-center">
+			<div class="p-6">
+				<p class="font-display text-2xl leading-tight min-h-24 flex items-center">
 					{`"${HEADLINES[index]}"`}
 				</p>
 			</div>
 
 			{/* Controls */}
-			<div className="border-t-2 border-base-content px-4 py-3 space-y-2">
-				<div className="flex gap-2">
+			<div class="border-t-2 border-base-content px-4 py-3 space-y-2">
+				<div class="flex gap-2">
 					<button
-						className="btn btn-primary btn-lg flex-1 font-display"
+						class="btn btn-primary btn-lg flex-1 font-display"
 						onClick={prev}
 					>
 						◀ PREV
 					</button>
 					<button
-						className="btn btn-primary btn-lg flex-1 font-display"
+						class="btn btn-primary btn-lg flex-1 font-display"
 						onClick={next}
 					>
 						NEXT ▶
 					</button>
 				</div>
-				<div className="text-center text-sm font-mono font-bold">
+				<div class="text-center text-sm font-mono font-bold">
 					{`${String(index + 1).padStart(2, "0")} / ${String(HEADLINES.length).padStart(2, "0")}`}
 				</div>
 			</div>
