@@ -1,4 +1,4 @@
-import PropagandaRadio from "@components/PropagandaRadio.island.tsx";
+import Redactor from "@components/Redactor.island.tsx";
 import type { PageMeta } from "@vktrz/castro";
 
 export const meta: PageMeta = {
@@ -88,8 +88,7 @@ export default function Counter({ initial = 0 }) {
 
 // pages/index.tsx
 
-// tsconfig path aliases are supported
-import Counter from "@components/Counter.island.tsx";
+import Counter from "../components/Counter.island.tsx";
 
 export default function Index() {
   return <Counter initial={5} />;
@@ -105,63 +104,61 @@ export default function Index() {
 				<div>
 					<h2>CLIENT DIRECTIVES</h2>
 					<p>
-						Islands hydrate on demand via directives — attributes that control
-						when the island's JavaScript loads:
+						These are special attributes that control when the island's
+						JavaScript loads. Use directives to decide how your islands hydrate.
 					</p>
 
-					{/* Directives Table */}
-					<table>
-						<thead>
-							<tr>
-								<th>Directive</th>
-								<th>When to Use</th>
-								<th>Example</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>
-									<code>comrade:eager</code>
-								</td>
-								<td>Load immediately, block rendering</td>
-								<td>Critical UI, above the fold, user input expected</td>
-							</tr>
-							<tr>
-								<td>
-									<code>comrade:patient</code>
-								</td>
-								<td>Load after the browser settles</td>
-								<td>Important but not critical, moderate interactivity</td>
-							</tr>
-							<tr>
-								<td>
-									<code>comrade:visible</code>
-								</td>
-								<td>Load when scrolled into view</td>
-								<td>Below the fold, expensive to render, lazy loading</td>
-							</tr>
-						</tbody>
-					</table>
+					<h3>
+						<code>comrade:eager</code>
+					</h3>
 
+					<blockquote>"Some comrades wait. This one doesn't."</blockquote>
 					<p>
-						Use directives to decide how your islands hydrate. Here's an island
-						that hydrates immediately:
+						<b>What it does:</b> Load immediately, block rendering
 					</p>
+					<p>
+						<b>When to use:</b> Critical UI, above the fold, user input expected
+					</p>
+
+					<h3>
+						<code>comrade:patient</code>
+					</h3>
+					<blockquote>"I'll hydrate when everyone else is done"</blockquote>
+					<p>
+						<b>What it does:</b> Load after the browser settles
+					</p>
+					<p>
+						<b>When to use:</b> Important but not critical, moderate
+						interactivity
+					</p>
+
+					<h3 class="flex gap-2 items-center">
+						<code>comrade:visible</code>
+						<span class="badge badge-dash badge-accent leading-none">
+							default
+						</span>
+					</h3>
+					<blockquote>"Only work when the people are watching"</blockquote>
+					<p>
+						<b>What it does:</b> Load when scrolled into view
+					</p>
+					<p>
+						<b>When to use:</b> Below the fold, expensive to render, lazy
+						loading
+					</p>
+
+					<h3>Example</h3>
+					<p>Here's an island that hydrates when in viewport:</p>
+
+					<Redactor />
 
 					<pre>
-						<code>{`import PropagandaRadio from "../components/PropagandaRadio.island.tsx";
+						<code>{`import Redactor from "../components/Redactor.island.tsx";
 
 export default function Page() {
-  return <PropagandaRadio comrade:eager />;
+  return <Redactor />; // uses the default "comrade:visible"
 }`}</code>
 					</pre>
-
-					<p>
-						Here's the island in action — JS loaded immediately due to{" "}
-						<code>comrade:eager</code> directive:
-					</p>
-
-					<PropagandaRadio comrade:eager />
 				</div>
 			</section>
 
@@ -189,7 +186,7 @@ export default function Page() {
 						<code>{`components/
 ├── Counter.island.tsx              ← Preact (default)
 ├── solid/
-│   └── Counter.island.tsx          ← Solid (built-in support)
+│   └── Counter.island.tsx          ← Solid (via plugin)
 └── castro-jsx/
     └── Button.island.tsx           ← castro-jsx (via plugin)`}</code>
 					</pre>
