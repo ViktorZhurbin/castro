@@ -184,7 +184,7 @@ export default function Home() {
 }
 ```
 
-For details on islands, client directives and frameworks see [Components & Islands →](https://www.google.com/search?q=/guide/components-islands)
+For details on islands, client directives and frameworks see [Components & Islands →](/guide/components-islands)
 
 -----
 
@@ -226,7 +226,7 @@ export default {
 
 ### `plugins`
 
-`plugins?: CastroPlugin[]` — default: `[]`. Plugins hook into the build pipeline to inject assets, run processors, and register custom island frameworks. See [Plugins](https://www.google.com/search?q=/guide/plugins).
+`plugins?: CastroPlugin[]` — default: `[]`. Plugins hook into the build pipeline to inject assets, run processors, and register custom island frameworks. See [Plugins](/guide/plugins).
 
 ### `clientDependencies`
 
