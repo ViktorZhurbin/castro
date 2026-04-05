@@ -54,8 +54,7 @@ export type IslandComponent = {
 	ssrCode: string;
 	/** Which framework this island uses */
 	frameworkId: string;
-	// biome-ignore lint/complexity/noBannedTypes: framework-agnostic callable
-	ssrModule?: { default: Function };
+	ssrModule?: { default: AnyFunction };
 };
 
 export type PageMeta = {
@@ -63,3 +62,5 @@ export type PageMeta = {
 	title?: string;
 	[key: string]: unknown;
 };
+
+export type AnyFunction = (...args: never) => unknown;

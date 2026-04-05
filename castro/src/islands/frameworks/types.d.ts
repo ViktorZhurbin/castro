@@ -5,7 +5,7 @@
  * export a default object matching this shape.
  */
 
-import type { Asset } from "../../types.d.ts";
+import type { AnyFunction, Asset } from "../../types.d.ts";
 
 /**
  * Defines how islands are compiled, rendered (SSR), and hydrated.
@@ -48,6 +48,6 @@ export type FrameworkConfig = {
 	 * Called at build time by marker.js to generate static HTML for the island.
 	 */
 
-	// biome-ignore lint/complexity/noBannedTypes: to keep it framework agnostic
-	renderSSR: (Component: Function, props: Record<string, unknown>) => string;
+	// AnyFunction to keep it framework agnostic
+	renderSSR: (Component: AnyFunction, props: Record<string, unknown>) => string;
 };
