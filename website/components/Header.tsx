@@ -1,5 +1,5 @@
-import ThemeToggle from "./castro-jsx/ThemeToggle.island.tsx";
 import { StarIcon } from "./icons/StarIcon.tsx";
+import ThemeToggle from "./ThemeToggle.tsx";
 
 export const Header = ({ activePath }: { activePath?: string }) => {
 	const isHowItWorks = activePath?.startsWith("/how-it-works");
