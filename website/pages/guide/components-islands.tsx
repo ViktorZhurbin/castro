@@ -221,7 +221,65 @@ export default function ThemeToggle() {
 
 			<div class="divider" />
 
-			{/* Section 5: Multi-Framework (Advanced) */}
+			{/* Section 5: Vanilla Islands */}
+			<section>
+				<div>
+					<h2>VANILLA ISLANDS</h2>
+					<p>
+						Sometimes you want Castro's island lifecycle — directives, prop
+						serialization, lazy loading — but not a framework runtime. Vanilla
+						islands let you write JSX for the server render and plain JavaScript
+						for the client. Nothing else ships.
+					</p>
+					<p>
+						Place the island in a <code>vanilla/</code> subdirectory and export
+						a named <code>hydrate</code> function alongside the default
+						component:
+					</p>
+					<pre>
+						<code>{`// components/vanilla/Chart.island.tsx
+
+// 1. Server-side (JSX): rendered at build time, zero JS shipped
+export default function Chart(props: { data: number[] }) {
+  return (
+    <div class="chart-container">
+      <canvas class="chart-canvas" />
+    </div>
+  );
+}
+
+// 2. Client-side (plain JS): only this ships to the browser
+export function hydrate(container: HTMLElement, props: { data: number[] }) {
+  const canvas = container.querySelector(".chart-canvas") as HTMLCanvasElement;
+  // mount your D3 chart, Three.js scene, etc.
+}`}</code>
+					</pre>
+					<p>Use it like any other island — all directives work:</p>
+					<pre>
+						<code>{`import Chart from "../components/vanilla/Chart.island.tsx";
+
+export default function Page() {
+  return <Chart data={[1, 2, 3]} comrade:visible />;
+}`}</code>
+					</pre>
+					<aside class="alert">
+						The <code>hydrate</code> export receives the{" "}
+						<code>{"<castro-island>"}</code> element as its container, not an
+						inner wrapper. Query selectors work normally against it.
+					</aside>
+					<p>
+						Vanilla islands are the right choice when you're wiring up a
+						third-party library (D3, Three.js, Matter.js) or handling a
+						localized interaction that doesn't need reactive state. You get the
+						full island lifecycle — lazy loading, serialized props, CSS — while
+						the client bundle stays pure JavaScript.
+					</p>
+				</div>
+			</section>
+
+			<div class="divider" />
+
+			{/* Section 6: Multi-Framework (Advanced) */}
 			<section>
 				<div>
 					<h2>ADVANCED: ALTERNATIVE FRAMEWORKS</h2>
@@ -242,6 +300,8 @@ export default function ThemeToggle() {
 					<pre>
 						<code>{`components/
 ├── Counter.island.tsx              ← Preact (default)
+├── vanilla/
+│   └── Chart.island.tsx            ← Vanilla JS (built-in)
 ├── solid/
 │   └── Counter.island.tsx          ← Solid (via plugin)
 └── castro-jsx/

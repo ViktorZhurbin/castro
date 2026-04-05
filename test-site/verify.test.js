@@ -323,3 +323,32 @@ test("castro-island.js exists in dist (hydrated islands used)", async () => {
 	const file = Bun.file(join(distDir, "castro-island.js"));
 	expect(await file.exists()).toBe(true);
 });
+
+// ------ Vanilla island (zero framework runtime) ------
+
+test("vanilla island renders SSR content", async () => {
+	const html = await readHtml("vanilla.html");
+	expect(html).toContain("Vanilla: 10");
+});
+
+test("vanilla island has island wrapper", async () => {
+	const html = await readHtml("vanilla.html");
+	expect(html).toContain("<castro-island");
+	expect(html).toContain('directive="comrade:eager"');
+});
+
+test("vanilla island has island runtime", async () => {
+	const html = await readHtml("vanilla.html");
+	expect(html).toContain("castro-island.js");
+});
+
+test("vanilla island has JS bundle reference", async () => {
+	const html = await readHtml("vanilla.html");
+	expect(html).toContain('import="/islands/vanilla/VanillaCounter');
+});
+
+test("vanilla island has no Preact in import map", async () => {
+	const html = await readHtml("vanilla.html");
+	// Vanilla page shouldn't vendor Preact since it's not used at runtime
+	expect(html).not.toContain('"preact":');
+});

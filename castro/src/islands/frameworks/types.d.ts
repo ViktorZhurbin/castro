@@ -31,13 +31,22 @@ export type FrameworkConfig = {
 	headAssets?: Asset[];
 
 	/**
+	 * Custom import statement for the virtual entry point.
+	 * By default, compiler.js generates `import Component from './${basename}'`.
+	 * Frameworks that don't need the full default export (e.g., vanilla) can
+	 * override this to import only what hydrateFnString needs, enabling
+	 * tree-shaking of unused SSR code.
+	 */
+	virtualEntryImport?: (basename: string) => string;
+
+	/**
 	 * Client-side hydration code string.
 	 *
 	 * Injected into the compiled island bundle by compiler.js.
 	 * Runs in the browser when the island's <castro-island> triggers hydration.
 	 *
 	 * Variables available at runtime (provided by the virtual entry wrapper):
-	 * - Component: the imported island component function
+	 * - Component: the imported island component function (if using default import)
 	 * - props: deserialized from data-props attribute
 	 * - container: the <castro-island> DOM element
 	 */

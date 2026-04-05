@@ -45,7 +45,7 @@ islands/
   registry.js           Singleton island store + SSR module preloading
   marker.js             Build-time island renderer
   frameworkConfig.js   Framework config loader (async load + sync cache)
-  frameworks/           Built-in framework configs (preact.js, types.d.ts)
+  frameworks/           Built-in framework configs (preact.js, vanilla.js, types.d.ts)
   plugins.js            Plugin registry (internal + user plugins from config)
   hydration.js          Client-side <castro-island> custom element
 
@@ -175,12 +175,13 @@ Key rules from `src/messages/README.md`:
 - **tsconfig.json path aliases** are supported natively in page imports. `getProjectDependencies()` reads `package.json` and passes all dependency keys to Bun's `external`, allowing aliases to resolve correctly before Bun's module loader processes them.
 - **Multi-framework type checking** requires per-file `/** @jsxImportSource */` pragmas for non-default frameworks (e.g. `/** @jsxImportSource @vktrz/castro-jsx */` for castro-jsx, `/** @jsxImportSource solid-js */` for Solid). The pragma is the only mechanism `tsc` honors per-file — TypeScript uses the root tsconfig's JSX settings for transitively imported files regardless of any nested tsconfig. Each framework package provides its own JSX type definitions. Preact's `Signalish<T>` and castro-jsx's `Signalish<T>` are incompatible types by design (object with `.value` vs plain getter function).
 - **`ClientScript` for zero-framework client behavior.** Some interactivity doesn't need a framework runtime — theme init, scroll handlers, DOM queries. `ClientScript` accepts a plain function and optional JSON-serializable args, serializes them as an inline IIFE `<script>`, and ships nothing else. The function is written in TypeScript and type-checked normally; only serialization happens at build time. This is the escape hatch between "static component" and "full island."
+- **Vanilla islands for island lifecycle without framework runtime.** A "vanilla" framework config provides the full island experience (directives, prop serialization, lazy loading) but ships zero client dependencies. The island's default export is Preact JSX for SSR; the named `hydrate` export is plain JavaScript for hydration. The virtual entry only imports `hydrate`, enabling tree-shaking of the SSR code and its Preact dependency. Perfect for D3 charts, Three.js canvases, or localized interactivity that doesn't need reactivity. Implemented via optional `virtualEntryImport` on `FrameworkConfig` — frameworks can customize which exports the client bundle imports.
 - **Three hydration directives: `comrade:eager`, `comrade:patient`, `comrade:visible` (default).** `comrade:eager` hydrates immediately. `comrade:visible` hydrates on intersection. `comrade:patient` uses `requestIdleCallback` with load-event gating (waiting for idle during initial page load is counterproductive) and Safari fallback.
 - **Plugin hooks include `onAfterBuild(context)` and `getImportMap(context)`.** Both receive `{ usedFrameworks: Set<string> }` so plugins can conditionally write assets based on which frameworks are actually used. This prevents bundling unused frameworks and unused island runtime scripts.
 
 ## Testing
 
-`test-site/` is a single test site that exercises the full build pipeline with castro-jsx, Preact, and Solid islands. Run with `bun test:sites`. Tests verify:
+`test-site/` is a single test site that exercises the full build pipeline with castro-jsx, Preact, Solid, and vanilla islands. Run with `bun test:sites`. Tests verify:
 - Static pages (no islands)
 - All three directives (`comrade:visible`, `comrade:patient`, `comrade:eager`)
 - Component composition (islands in static components, static components in islands, islands in layouts)
@@ -188,6 +189,7 @@ Key rules from `src/messages/README.md`:
 - Multi-framework pages (Preact + Solid islands on the same page)
 - castro-jsx framework plugin (signals + direct DOM, no CDN dependencies)
 - Solid-only pages (SSR without Preact islands)
+- Vanilla islands (island lifecycle without framework runtime; tree-shaken Preact)
 
 The test structure (pages, components, islands, layouts) mirrors a real site and serves as a reference for expected patterns.
 
