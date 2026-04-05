@@ -26,6 +26,11 @@ import { islands } from "./registry.js";
  * Per-page island tracking. Reset before each page render.
  * - usedIslands: all rendered islands (determines CSS injection and runtime injection)
  * - usedFrameworks: framework IDs encountered (determines which runtimes to emit)
+ *
+ * Safe as a module-level singleton because renderToString() is synchronous
+ * and buildAll.js processes pages sequentially. Parallelizing page builds
+ * (e.g. Promise.all) would cause race conditions here — pages would overwrite
+ * each other's state. Fix would be AsyncLocalStorage or passing state explicitly.
  */
 export const pageState = {
 	/** @type {Set<string>} */
