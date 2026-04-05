@@ -36,6 +36,12 @@
 			"@components/*": ["components/*"]
 		}
 	},
-	"include": ["components/**/*", "islands/**/*", "layouts/**/*", "pages/**/*"],
+	"include": [
+		"components/**/*",
+		"islands/**/*",
+		"layouts/**/*",
+		"pages/**/*",
+		"lib/**/*"
+	],
 	"exclude": ["node_modules", "dist"]
 }

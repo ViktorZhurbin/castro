@@ -18,13 +18,13 @@ const borderColor = {
 	accent: "hover:border-accent",
 };
 
-export const FeatureCard = ({
+export function FeatureCard({
 	title,
 	description,
 	href,
 	external,
 	color = "primary",
-}: FeatureCardProps) => {
+}: FeatureCardProps) {
 	const linkProps = external ? { target: "_blank", rel: "noopener" } : {};
 
 	return (
@@ -41,4 +41,4 @@ export const FeatureCard = ({
 			</div>
 		</a>
 	);
-};
+}

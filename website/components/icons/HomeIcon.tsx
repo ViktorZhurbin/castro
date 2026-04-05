@@ -1,6 +1,6 @@
 import type { SvgProps } from "./types";
 
-export const HomeIcon = (props: SvgProps) => {
+export function HomeIcon(props: SvgProps) {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -18,4 +18,4 @@ export const HomeIcon = (props: SvgProps) => {
 			<path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
 		</svg>
 	);
-};
+}

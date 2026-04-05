@@ -2,7 +2,7 @@ import { MenuIcon } from "./icons/MenuIcon.tsx";
 import { StarIcon } from "./icons/StarIcon.tsx";
 import ThemeToggle from "./ThemeToggle.tsx";
 
-export const Header = ({ activePath }: { activePath?: string }) => {
+export function Header({ activePath }: { activePath?: string }) {
 	const isHowItWorks = activePath?.startsWith("/how-it-works");
 	const isGuide = activePath?.startsWith("/guide");
 	const isReference = activePath?.startsWith("/reference");
@@ -64,4 +64,4 @@ export const Header = ({ activePath }: { activePath?: string }) => {
 			</div>
 		</header>
 	);
-};
+}

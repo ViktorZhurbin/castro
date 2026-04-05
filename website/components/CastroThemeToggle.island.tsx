@@ -1,6 +1,6 @@
 /** @jsxImportSource @vktrz/castro-jsx */
 import { createSignal, onMount } from "@vktrz/castro-jsx/signals";
-import { DARK, LIGHT, STORAGE_KEY } from "../../lib/theme.ts";
+import { DARK, LIGHT, STORAGE_KEY } from "../lib/theme.ts";
 
 export default function ThemeToggle() {
 	const [dark, setDark] = createSignal(false);
