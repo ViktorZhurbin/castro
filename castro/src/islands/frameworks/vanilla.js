@@ -36,6 +36,13 @@ export default {
 	clientDependencies: [],
 
 	/**
+	 * Vanilla islands are detected by the explicit `hydrate` export.
+	 * This is the structural fingerprint that distinguishes vanilla from
+	 * other frameworks — no framework runtime, just a hydrate function.
+	 */
+	detectExports: ["hydrate"],
+
+	/**
 	 * Only import the hydrate function; the default export (JSX) is
 	 * unused by the client. Bun's tree-shaking eliminates the SSR code
 	 * and its JSX imports, resulting in pure vanilla JavaScript.

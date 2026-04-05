@@ -1,5 +1,5 @@
 import Counter from "../components/Counter.island.tsx";
-import SolidCounter from "../components/solid/SolidCounter.island.tsx";
+import SolidCounter from "../components/SolidCounter.island.tsx";
 
 export const meta = { title: "Mixed" };
 

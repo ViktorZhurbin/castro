@@ -90,6 +90,9 @@ export const satirical = {
 		frameworkConfigInvalid: (pluginName, missing) =>
 			`❌ Plugin "${pluginName}" submitted incomplete papers.\n` +
 			`   Missing: ${missing}`,
+		frameworkConfigNoDetection: (pluginName) =>
+			`❌ Plugin "${pluginName}" framework lacks detection mechanism.\n` +
+			`   Frameworks must declare detectImports, detectExports, or both.`,
 		frameworkLoadFailed: (name, err) =>
 			`❌ Framework "${name}" collapsed during initialization.\n` + `   ${err}`,
 	},

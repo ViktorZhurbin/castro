@@ -232,12 +232,12 @@ export default function ThemeToggle() {
 						for the client. Nothing else ships.
 					</p>
 					<p>
-						Place the island in a <code>vanilla/</code> subdirectory and export
-						a named <code>hydrate</code> function alongside the default
-						component:
+						Castro detects vanilla islands by their <code>hydrate</code> export
+						signature. Write a default component for server-side JSX rendering,
+						and a named <code>hydrate</code> function for client-side behavior:
 					</p>
 					<pre>
-						<code>{`// components/vanilla/Chart.island.tsx
+						<code>{`// components/Chart.island.tsx
 
 // 1. Server-side (JSX): rendered at build time, zero JS shipped
 export default function Chart(props: { data: number[] }) {
@@ -256,7 +256,7 @@ export function hydrate(container: HTMLElement, props: { data: number[] }) {
 					</pre>
 					<p>Use it like any other island — all directives work:</p>
 					<pre>
-						<code>{`import Chart from "../components/vanilla/Chart.island.tsx";
+						<code>{`import Chart from "../components/Chart.island.tsx";
 
 export default function Page() {
   return <Chart data={[1, 2, 3]} comrade:visible />;
@@ -292,20 +292,36 @@ export default function Page() {
 					</p>
 
 					<p>
-						Frameworks are applied automatically using a directory convention.
-						Place the island in a subdirectory matching the framework's
-						registered ID:
+						Frameworks are detected automatically using AST scanning. Castro
+						looks for:
+					</p>
+
+					<ol>
+						<li>
+							<strong>Export signatures:</strong> If an island exports specific
+							names (e.g., <code>hydrate</code> for vanilla), it uses that
+							framework.
+						</li>
+						<li>
+							<strong>Import statements:</strong> If an island imports a
+							framework package (e.g., <code>solid-js</code> or{" "}
+							<code>@vktrz/castro-jsx</code>), it uses that framework.
+						</li>
+						<li>
+							<strong>Default:</strong> Falls back to Preact.
+						</li>
+					</ol>
+
+					<p>
+						All islands go in your <code>components/</code> directory:
 					</p>
 
 					<pre>
 						<code>{`components/
-├── Counter.island.tsx              ← Preact (default)
-├── vanilla/
-│   └── Chart.island.tsx            ← Vanilla JS (built-in)
-├── solid/
-│   └── Counter.island.tsx          ← Solid (via plugin)
-└── castro-jsx/
-    └── Button.island.tsx           ← castro-jsx (via plugin)`}</code>
+├── Counter.island.tsx                    ← Preact (default)
+├── Chart.island.tsx                      ← Vanilla (detected via hydrate export)
+├── SolidWidget.island.tsx                ← Solid (detected via solid-js import)
+└── CastroButton.island.tsx               ← castro-jsx (detected via @vktrz/castro-jsx import)`}</code>
 					</pre>
 
 					<aside class="alert">

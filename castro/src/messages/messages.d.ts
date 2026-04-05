@@ -49,6 +49,7 @@ export interface Messages {
 		cacheWriteFailed: (path: string, err: string) => string;
 		frameworkUnsupported: (name: string) => string;
 		frameworkConfigInvalid: (pluginName: string, missing: string) => string;
+		frameworkConfigNoDetection: (pluginName: string) => string;
 		frameworkLoadFailed: (name: string, err: string) => string;
 	};
 

@@ -29,6 +29,8 @@ export default {
 
 	clientDependencies: ["preact", "preact/hooks", "preact/jsx-runtime"],
 
+	detectImports: ["preact"],
+
 	hydrateFnString: `
 		const { h, hydrate } = await import("preact");
 		hydrate(h(Component, props), container);

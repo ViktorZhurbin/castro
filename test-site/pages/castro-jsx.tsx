@@ -1,5 +1,5 @@
-import CastroCounter from "../components/castro-jsx/CastroCounter.island.tsx";
-import CastroFragmentToggle from "../components/castro-jsx/CastroFragmentToggle.island.tsx";
+import CastroCounter from "../components/CastroCounter.island.tsx";
+import CastroFragmentToggle from "../components/CastroFragmentToggle.island.tsx";
 
 export const meta = { title: "Castro" };
 
