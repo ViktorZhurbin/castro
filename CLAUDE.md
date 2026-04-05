@@ -63,6 +63,9 @@ messages/
   index.js              Exports active preset based on config
   README.md             Message writing guidelines
 
+components/
+  ClientScript.tsx      Serializes a function as an inline IIFE script (zero framework runtime)
+
 utils/
   dependencies.js       Reads package.json for accurate Bun.build `external` arrays
   cache.js              Module caching with content-hashed filenames
@@ -171,6 +174,7 @@ Key rules from `src/messages/README.md`:
 - **Island imports must use relative paths**, not tsconfig aliases. The `islandMarkerPlugin` intercepts imports at the AST level; tsconfig path aliases resolve after Bun's AST walk, so aliased imports don't trigger island detection. This limitation is documented for users.
 - **tsconfig.json path aliases** are supported natively in page imports. `getProjectDependencies()` reads `package.json` and passes all dependency keys to Bun's `external`, allowing aliases to resolve correctly before Bun's module loader processes them.
 - **Multi-framework type checking** requires per-file `/** @jsxImportSource */` pragmas for non-default frameworks (e.g. `/** @jsxImportSource @vktrz/castro-jsx */` for castro-jsx, `/** @jsxImportSource solid-js */` for Solid). The pragma is the only mechanism `tsc` honors per-file — TypeScript uses the root tsconfig's JSX settings for transitively imported files regardless of any nested tsconfig. Each framework package provides its own JSX type definitions. Preact's `Signalish<T>` and castro-jsx's `Signalish<T>` are incompatible types by design (object with `.value` vs plain getter function).
+- **`ClientScript` for zero-framework client behavior.** Some interactivity doesn't need a framework runtime — theme init, scroll handlers, DOM queries. `ClientScript` accepts a plain function and optional JSON-serializable args, serializes them as an inline IIFE `<script>`, and ships nothing else. The function is written in TypeScript and type-checked normally; only serialization happens at build time. This is the escape hatch between "static component" and "full island."
 - **Three hydration directives: `comrade:eager`, `comrade:patient`, `comrade:visible` (default).** `comrade:eager` hydrates immediately. `comrade:visible` hydrates on intersection. `comrade:patient` uses `requestIdleCallback` with load-event gating (waiting for idle during initial page load is counterproductive) and Safari fallback.
 - **Plugin hooks include `onAfterBuild(context)` and `getImportMap(context)`.** Both receive `{ usedFrameworks: Set<string> }` so plugins can conditionally write assets based on which frameworks are actually used. This prevents bundling unused frameworks and unused island runtime scripts.
 

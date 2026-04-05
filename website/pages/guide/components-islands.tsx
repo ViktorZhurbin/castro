@@ -164,7 +164,64 @@ export default function Page() {
 
 			<div class="divider" />
 
-			{/* Section 4: Multi-Framework (Advanced) */}
+			{/* Section 4: ClientScript */}
+			<section>
+				<div>
+					<h2>
+						<code>ClientScript</code>: ISLANDS WITHOUT A RUNTIME
+					</h2>
+					<p>
+						Not every interactive element needs a framework. Theme toggles,
+						scroll handlers, and DOM queries ship zero framework bytes — just a
+						plain function serialized as an inline <code>{"<script>"}</code>.
+					</p>
+					<p>
+						<code>ClientScript</code> accepts a function and optional
+						JSON-serializable arguments. It serializes them as an IIFE at build
+						time — no bundler, no hydration, no runtime:
+					</p>
+					<pre>
+						<code>{`import { ClientScript } from "@vktrz/castro";
+
+function initToggle(storageKey: string, dark: string, light: string) {
+  const checkbox = document.querySelector("#toggle input") as HTMLInputElement;
+  if (!checkbox) return;
+
+  checkbox.checked = document.documentElement.getAttribute("data-theme") === dark;
+
+  checkbox.addEventListener("change", (e) => {
+    const next = (e.target as HTMLInputElement).checked ? dark : light;
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem(storageKey, next);
+  });
+}
+
+export default function ThemeToggle() {
+  return (
+    <>
+      <label id="toggle">...</label>
+      <ClientScript fn={initToggle} args={["theme", "dark", "light"]} />
+    </>
+  );
+}`}</code>
+					</pre>
+					<p>
+						The function is written and type-checked as normal TypeScript. It's
+						only serialized via <code>.toString()</code> when the page renders.
+						Args must be JSON-serializable — functions and symbols throw at
+						build time.
+					</p>
+					<aside class="alert">
+						Use <code>ClientScript</code> when you need to touch the DOM but
+						don't need reactive state. It's the middle ground between a fully
+						static component and a full island with a framework runtime.
+					</aside>
+				</div>
+			</section>
+
+			<div class="divider" />
+
+			{/* Section 5: Multi-Framework (Advanced) */}
 			<section>
 				<div>
 					<h2>ADVANCED: ALTERNATIVE FRAMEWORKS</h2>
