@@ -15,12 +15,12 @@ export default function ThemeToggle() {
 				<MoonIcon className="swap-on" />
 			</label>
 
-			<ClientScript fn={initTheme} args={[STORAGE_KEY, DARK, LIGHT]} />
+			<ClientScript fn={initState} args={[STORAGE_KEY, DARK, LIGHT]} />
 		</>
 	);
 }
 
-function initTheme(storageKey: string, dark: string, light: string) {
+function initState(storageKey: string, dark: string, light: string) {
 	const checkbox = document.querySelector(
 		"#theme-toggle input",
 	) as HTMLInputElement | null;

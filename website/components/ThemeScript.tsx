@@ -1,19 +1,20 @@
+import { ClientScript } from "@vktrz/castro";
 import { DARK, LIGHT, STORAGE_KEY } from "../lib/theme.ts";
 
-type LightTheme = typeof LIGHT;
-type DarkTheme = typeof DARK;
-type Theme = LightTheme | DarkTheme;
+export function ThemeScript() {
+	return <ClientScript fn={themeInit} args={[STORAGE_KEY, DARK, LIGHT]} />;
+}
 
 /**
  * Runs before first paint to prevent theme flash.
  * Written as a real function for readability and type checking,
  * serialized via .toString() for the inline script.
  */
-function themeInit(storageKey: string, light: LightTheme, dark: DarkTheme) {
+function themeInit(storageKey: string, dark: string, light: string) {
 	try {
 		const storedTheme = localStorage.getItem(storageKey);
-		let theme: Theme;
 
+		let theme: string;
 		if (storedTheme === light || storedTheme === dark) {
 			theme = storedTheme;
 		} else if (window.matchMedia("(prefers-color-scheme:dark)").matches) {
@@ -25,10 +26,4 @@ function themeInit(storageKey: string, light: LightTheme, dark: DarkTheme) {
 		document.documentElement.setAttribute("data-theme", theme);
 		localStorage.setItem(storageKey, theme);
 	} catch (_) {}
-}
-
-const script = `(${themeInit.toString()})("${STORAGE_KEY}","${LIGHT}","${DARK}")`;
-
-export function ThemeScript() {
-	return <script dangerouslySetInnerHTML={{ __html: script }} />;
 }
