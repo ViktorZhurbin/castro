@@ -1,4 +1,5 @@
-import VanillaCounter from "../components/vanilla/VanillaCounter.island.tsx";
+import VanillaButton from "../components/VanillaButton.island.tsx";
+import VanillaCounter from "../components/VanillaCounter.island.tsx";
 
 export const meta = { title: "Vanilla Island Test" };
 
@@ -8,6 +9,7 @@ export default function VanillaTest() {
 			<h1>Vanilla Island Test</h1>
 			<p>Pure JavaScript hydration, zero framework runtime.</p>
 			<VanillaCounter initial={10} comrade:eager />
+			<VanillaButton label="Export-detected" comrade:visible />
 		</div>
 	);
 }

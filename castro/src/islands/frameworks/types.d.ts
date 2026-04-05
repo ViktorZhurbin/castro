@@ -24,6 +24,24 @@ export type FrameworkConfig = {
 	clientDependencies: string[];
 
 	/**
+	 * Exported names to scan for automatic framework detection.
+	 * E.g. ["hydrate"] means any island exporting a `hydrate` function
+	 * will use this framework.
+	 *
+	 * Checked before detectImports.
+	 */
+	detectExports?: string[];
+
+	/**
+	 * Package names to scan imports for automatic framework detection.
+	 * E.g. ["solid-js"] means any island importing "solid-js" or "solid-js/web"
+	 * will use this framework.
+	 *
+	 * Checked after detectExports.
+	 */
+	detectImports?: string[];
+
+	/**
 	 * Assets injected into <head> for pages using this framework.
 	 * E.g. Solid's hydration coordination script.
 	 * Only included on pages that actually render islands from this framework.

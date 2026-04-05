@@ -90,6 +90,9 @@ export const serious = {
 		frameworkConfigInvalid: (pluginName, missing) =>
 			`❌ Plugin "${pluginName}" provides an invalid frameworkConfig.\n` +
 			`   Missing: ${missing}`,
+		frameworkConfigNoDetection: (pluginName) =>
+			`❌ Plugin "${pluginName}" framework config is missing detection.\n` +
+			`   Frameworks must declare detectImports, detectExports, or both.`,
 		frameworkLoadFailed: (name, err) =>
 			`❌ Failed to load framework "${name}".\n` + `   ${err}`,
 	},

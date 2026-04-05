@@ -76,6 +76,8 @@ const frameworkConfig = {
 
 	clientDependencies: ["@vktrz/castro-jsx/dom", "@vktrz/castro-jsx/signals"],
 
+	detectImports: ["@vktrz/castro-jsx"],
+
 	/**
 	 * Client-side hydration: clear SSR HTML and mount fresh reactive DOM.
 	 * Simpler than Preact's hydrate() (which walks existing DOM) or Solid's

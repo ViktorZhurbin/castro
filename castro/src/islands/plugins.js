@@ -8,8 +8,8 @@ import { vendorDependencies } from "./plugins/vendorDependencies.js";
  */
 
 // Register any frameworks provided by user plugins.
-// Must happen before island discovery so framework configs are
-// available when registry.js calls loadFrameworkConfig().
+// Must happen before island discovery so all framework detection arrays
+// are available when registry.js scans islands for AST-based detection.
 for (const plugin of userPlugins) {
 	if (plugin.frameworkConfig) {
 		registerFramework(plugin.frameworkConfig, plugin.name);

@@ -67,6 +67,8 @@ const frameworkConfig = {
 
 	clientDependencies: ["solid-js", "solid-js/web"],
 
+	detectImports: ["solid-js"],
+
 	hydrateFnString: `
 		const { hydrate } = await import("solid-js/web");
 		hydrate(() => Component(props), container);

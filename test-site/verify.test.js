@@ -283,7 +283,7 @@ test("castro-jsx island has island runtime", async () => {
 
 test("castro-jsx island has JS bundle reference", async () => {
 	const html = await readHtml("castro-jsx.html");
-	expect(html).toContain('import="/islands/castro-jsx/CastroCounter');
+	expect(html).toContain('import="/islands/CastroCounter');
 });
 
 // ------ castro-jsx: Fragment in reactive conditional ------
@@ -300,7 +300,7 @@ test("castro-jsx fragment island renders SSR fragment children", async () => {
 
 test("castro-jsx fragment island has island wrapper", async () => {
 	const html = await readHtml("castro-jsx.html");
-	expect(html).toContain('import="/islands/castro-jsx/CastroFragmentToggle');
+	expect(html).toContain('import="/islands/CastroFragmentToggle');
 });
 
 test("castro-jsx island has local runtime in import map (no CDN)", async () => {
@@ -344,11 +344,18 @@ test("vanilla island has island runtime", async () => {
 
 test("vanilla island has JS bundle reference", async () => {
 	const html = await readHtml("vanilla.html");
-	expect(html).toContain('import="/islands/vanilla/VanillaCounter');
+	expect(html).toContain('import="/islands/VanillaCounter');
 });
 
-test("vanilla island has no Preact in import map", async () => {
+test("vanilla island detected via export (hydrate function)", async () => {
 	const html = await readHtml("vanilla.html");
-	// Vanilla page shouldn't vendor Preact since it's not used at runtime
+	// VanillaButton has no folder prefix — auto-detected by its `export function hydrate`
+	expect(html).toContain('import="/islands/VanillaButton.island-');
+});
+
+test("vanilla-only page has no framework deps in import map", async () => {
+	const html = await readHtml("vanilla.html");
+	// Both vanilla islands have clientDependencies: [] — no framework should be vendored
 	expect(html).not.toContain('"preact":');
+	expect(html).not.toContain('"solid-js":');
 });

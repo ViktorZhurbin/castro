@@ -17,7 +17,13 @@ import {
 import { getModule } from "../utils/cache.js";
 import { getIslandId } from "../utils/ids.js";
 import { compileIsland } from "./compiler.js";
-import { isKnownFramework, loadFrameworkConfig } from "./frameworkConfig.js";
+import { getLoadedFrameworkConfigss } from "./frameworkConfig.js";
+
+/**
+ * Transpiler for scanning imports and exports from component source files.
+ * Reused across all island compilations for efficiency.
+ */
+const transpiler = new Bun.Transpiler({ loader: "tsx" });
 
 /**
  * @import { IslandComponent } from '../types.js'
@@ -63,10 +69,8 @@ class IslandsRegistry {
 		for await (const relativePath of islandGlob.scan(COMPONENTS_DIR)) {
 			const sourcePath = join(COMPONENTS_DIR, relativePath);
 
-			// Determine which framework this island uses and ensure its config is loaded.
-			// Convention: islands in components/solid/ use "solid", etc.
-			// Falls back to the default from castro.config.js.
-			const frameworkId = await detectFramework(relativePath);
+			// Determine which framework this island uses.
+			const frameworkId = await detectFramework(sourcePath);
 
 			// Preserve directory nesting in output (e.g., ui/Button → islands/ui/Button)
 			const relativeDir = dirname(relativePath);
@@ -108,63 +112,56 @@ class IslandsRegistry {
 	}
 }
 
-/**
- * Tracks directory names that don't match any framework, so we don't
- * retry failed dynamic imports for every island in that directory.
- * @type {Set<string>}
- */
-const nonFrameworkDirs = new Set();
+export const islands = new IslandsRegistry();
 
 /**
- * Detect and load the framework for an island based on its directory path.
+ * Detect the framework for an island.
  *
- * Convention: if the first directory segment inside components/ matches
- * a known or loadable framework, use it. Otherwise fall back to the
- * project default from castro.config.js.
+ * Scans the file's AST for imports and exports, then checks each loaded
+ * framework's detection arrays. Detection order:
  *
- * Must be async because the framework might not be cached yet — if a
- * directory name matches a built-in framework file (e.g. "solid"), we
- * need to dynamically import it to confirm it's valid.
+ * 1. Export signature: explicit exports like `hydrate` are the strongest
+ *    signal — they override any import-based match. A vanilla island that
+ *    imports "preact" for SSR props must still be treated as vanilla.
+ * 2. Import scanning: package-level import matching (e.g., "solid-js").
+ * 3. Default: Preact.
  *
- * Examples:
- *   "solid/Counter.island.tsx"  → "solid"
- *   "ui/Button.island.tsx"      → default from config
- *   "Counter.island.tsx"        → default from config
+ * All frameworks must declare at least one detection method (detectImports
+ * or detectExports) so AST-based detection always succeeds.
  *
- * @param {string} relativePath - Path relative to components directory
+ * @param {string} sourcePath - Absolute path to the island source file
  * @returns {Promise<string>} Framework id
  */
-async function detectFramework(relativePath) {
-	const [firstSegment] = relativePath.split("/");
+async function detectFramework(sourcePath) {
+	const code = await Bun.file(sourcePath).text();
+	const scanned = transpiler.scan(code);
+	const fwConfigs = getLoadedFrameworkConfigss();
 
-	// Root-level files (no subdirectory) have the filename as firstSegment —
-	// no point trying to load "Counter.island.tsx" as a framework.
-	if (firstSegment.includes(".")) {
-		return "preact";
+	// Exports first: an explicit `export function hydrate` is the strongest signal.
+	// A vanilla island may import "preact" for SSR types — the hydrate export should win.
+	for (const fwConfig of fwConfigs) {
+		if (fwConfig.detectExports?.some((exp) => scanned.exports.includes(exp))) {
+			return fwConfig.id;
+		}
 	}
 
-	// Already loaded — either the default framework (pre-loaded at startup
-	// by frameworkConfig.js), a prior island on this page, or a plugin-provided config
-	if (isKnownFramework(firstSegment)) {
-		return firstSegment;
+	// Imports second: match package-level prefixes.
+	// E.g., "solid-js/web" matches the "solid-js" detector.
+	const importPaths = scanned.imports.map((i) => i.path);
+
+	for (const fwConfig of fwConfigs) {
+		if (!fwConfig.detectImports) continue;
+
+		const matched = fwConfig.detectImports.some((detector) =>
+			importPaths.some(
+				(importPath) =>
+					importPath === detector || importPath.startsWith(`${detector}/`),
+			),
+		);
+
+		if (matched) return fwConfig.id;
 	}
 
-	// Already tried and failed — skip the dynamic import
-	if (nonFrameworkDirs.has(firstSegment)) {
-		return "preact";
-	}
-
-	// Try loading as a built-in framework. If components/solid/ exists and
-	// frameworks/solid.js exists, this succeeds and caches the config.
-	// If not (e.g. components/ui/), the import fails silently and we
-	// fall back to the default.
-	try {
-		await loadFrameworkConfig(firstSegment);
-		return firstSegment;
-	} catch {
-		nonFrameworkDirs.add(firstSegment);
-		return "preact";
-	}
+	// Default to Preact
+	return "preact";
 }
-
-export const islands = new IslandsRegistry();
