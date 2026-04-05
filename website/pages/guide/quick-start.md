@@ -59,6 +59,10 @@ my-site/
 
 Layouts wrap your page content. The default layout is loaded automatically. Create `layouts/default.tsx`:
 
+<aside class="alert">
+  Layouts must use a default export.
+</aside>
+
 ```tsx
 import type { VNode } from "preact";
 
@@ -87,10 +91,6 @@ export default function DefaultLayout({ title, children }: Props) {
   Layouts and pages always use Preact — it's Castro's rendering engine at build time. Preact is never shipped to the browser unless you have Preact islands.
 </aside>
 
-<aside class="alert">
-  Layouts must use a default export — the build pipeline loads <code>layoutModule.default</code>. It receives <code>title</code> (from page meta or filename), <code>children</code> (the page content), and any other fields from the page's <code>meta</code> export — all spread in by the build pipeline.
-</aside>
-
 -----
 
 ## CREATE A PAGE
@@ -98,7 +98,11 @@ export default function DefaultLayout({ title, children }: Props) {
 Pages live in `pages/`. Both `.tsx` and `.md` files are supported.
 
 <aside class="alert">
-  Pages require a default export (the component function). The named <code>meta</code> export is optional — it sets <code>title</code>, <code>layout</code>, and any custom fields passed to the layout.
+  Pages require a default export (the component function).
+</aside>
+
+<aside class="alert">
+  The named <code>meta</code> export is optional — it sets <code>title</code>, <code>layout</code>, and any custom fields passed to the layout.
 </aside>
 
 ### TSX PAGE
@@ -153,6 +157,10 @@ Import and use it in any page — it renders to static HTML, nothing more.
 ## ADD AN ISLAND
 
 You only need an island when a component requires client-side interactivity. Name it `*.island.tsx` — it gets pre-rendered at build time and hydrated in the browser.
+
+<aside class="alert">
+  Islands require a default export (the component function).
+</aside>
 
 ```tsx
 // components/Counter.island.tsx
