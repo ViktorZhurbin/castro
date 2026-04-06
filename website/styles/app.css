@@ -42,26 +42,29 @@
 	prefersdark: false;
 	color-scheme: light;
 
-	--color-base-100: oklch(93% 0.012 80);
+	--color-base-100: oklch(93% 0.012 80); /* Unbleached paper/cream */
 	--color-base-200: oklch(89% 0.015 77);
 	--color-base-300: oklch(86% 0.017 79);
-	--color-base-content: oklch(22% 0 0);
-	--color-primary: oklch(53% 0.2 20);
-	--color-primary-content: oklch(93% 0.03 74);
-	--color-secondary: oklch(48% 0.14 70);
-	--color-secondary-content: oklch(93% 0.03 74);
-	--color-accent: oklch(40% 0.16 29);
-	--color-accent-content: oklch(93% 0.03 74);
-	--color-neutral: oklch(22% 0 0);
-	--color-neutral-content: oklch(93% 0.03 74);
-	--color-info: oklch(54% 0.095 258);
-	--color-info-content: oklch(93% 0.03 74);
-	--color-success: oklch(48% 0.08 162);
-	--color-success-content: oklch(93% 0.03 74);
-	--color-warning: oklch(55% 0.14 65);
-	--color-warning-content: oklch(93% 0.03 74);
-	--color-error: oklch(50% 0.2 28);
-	--color-error-content: oklch(93% 0.03 74);
+	--color-base-content: oklch(15% 0 0);
+
+	--color-primary: oklch(53% 0.2 20); /* True Soviet Red */
+	--color-primary-content: oklch(98% 0 0);
+	--color-secondary: oklch(25% 0.02 250); /* Industrial Iron */
+	--color-secondary-content: oklch(98% 0 0);
+	--color-accent: oklch(75% 0.18 80); /* Propaganda Gold */
+	--color-accent-content: oklch(15% 0 0);
+	--color-neutral: oklch(15% 0 0); /* Stark Black */
+	--color-neutral-content: oklch(98% 0 0);
+
+    /* Deepened semantic colors for contrast against cream */
+	--color-info: oklch(50% 0.12 250);
+	--color-info-content: oklch(98% 0 0);
+	--color-success: oklch(48% 0.12 150);
+	--color-success-content: oklch(98% 0 0);
+	--color-warning: oklch(65% 0.18 65); /* Burnt orange/gold */
+	--color-warning-content: oklch(15% 0 0);
+	--color-error: oklch(53% 0.2 20);
+	--color-error-content: oklch(98% 0 0);
 
 	--radius-selector: 0rem;
 	--radius-field: 0rem;
@@ -79,26 +82,31 @@
 	prefersdark: true;
 	color-scheme: dark;
 
-	--color-base-100: oklch(22% 0.006 56);
+	--color-base-100: oklch(22% 0.006 56); /* Dark charcoal */
 	--color-base-200: oklch(26% 0.006 56);
 	--color-base-300: oklch(29% 0.007 48);
 	--color-base-content: oklch(91% 0.016 74);
-	--color-primary: oklch(84% 0.17 78);
-	--color-primary-content: oklch(22% 0.006 56);
-	--color-secondary: oklch(65% 0.2 22);
-	--color-secondary-content: oklch(22% 0.006 56);
-	--color-accent: oklch(60% 0.17 10);
-	--color-accent-content: oklch(91% 0.016 74);
-	--color-neutral: oklch(18% 0.004 48);
-	--color-neutral-content: oklch(91% 0.016 74);
-	--color-info: oklch(64% 0.07 250);
-	--color-info-content: oklch(91% 0.016 74);
-	--color-success: oklch(63% 0.11 157);
-	--color-success-content: oklch(91% 0.016 74);
-	--color-warning: oklch(78% 0.15 85);
-	--color-warning-content: oklch(22% 0.006 56);
-	--color-error: oklch(63% 0.19 28);
-	--color-error-content: oklch(91% 0.016 74);
+
+	--color-primary: oklch(80% 0.17 80); /* Gold */
+	--color-primary-content: oklch(15% 0 0); /* Black text on gold */
+	--color-secondary: oklch(55% 0.22 25); /* True Soviet Red */
+	--color-secondary-content: oklch(98% 0 0);
+	--color-accent: oklch(70% 0.02 250); /* Concrete Grey */
+	--color-accent-content: oklch(15% 0 0);
+
+    /* Raised neutral lightness to 35% so it doesn't vanish into the 22% background */
+	--color-neutral: oklch(35% 0.01 250);
+	--color-neutral-content: oklch(98% 0 0);
+
+    /* Lighter semantic colors in dark mode require dark content text to pass AA */
+	--color-info: oklch(70% 0.12 250);
+	--color-info-content: oklch(15% 0 0);
+	--color-success: oklch(70% 0.15 150);
+	--color-success-content: oklch(15% 0 0);
+	--color-warning: oklch(80% 0.15 85);
+	--color-warning-content: oklch(15% 0 0);
+	--color-error: oklch(65% 0.2 28);
+	--color-error-content: oklch(15% 0 0);
 
 	--radius-selector: 0rem;
 	--radius-field: 0rem;
@@ -179,6 +187,7 @@ pre {
 	@apply rounded-none;
 }
 
-.alert {
+/* Apply the primary border ONLY to default variant */
+.alert:not([class*="alert-"]) {
 	@apply block border-0 border-l-4 border-l-primary rounded-none mb-3;
 }
