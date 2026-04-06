@@ -36,7 +36,7 @@ The browser loads `castro-island.js` and registers a `<castro-island>` custom el
     </div>
     <div class="card card-bordered border-accent bg-base-200 p-4">
       <span class="badge badge-accent mb-2">comrade:patient</span>
-      <p class="text-sm text-base-content/80">Wait for the browser to be idle via <code>requestIdleCallback</code>. Then hydrate.</p>
+      <p class="text-sm text-base-content/80">Wait for page load, then wait for the browser to be idle via <code>requestIdleCallback</code>. Falls back to immediate hydration on Safari &lt;119.</p>
     </div>
     <div class="card card-bordered border-accent bg-base-200 p-4">
       <span class="badge badge-accent mb-2">comrade:eager</span>
@@ -55,19 +55,36 @@ When it's time to hydrate, the element does `await import(this.getAttribute("imp
 
 ### ISLAND BUNDLE
 
+Castro generates a virtual entry per island at compile time. The format depends on the framework.
+
+**Preact island** — imports the component, wraps it in Preact's `hydrate()`:
+
 ```javascript
-// Counter-a1b2.js
-import Component from './Counter.tsx';
+// virtual entry for Counter.island.tsx
+import Component from './Counter.island.tsx';
 
-export default async (container, props) => {
-  const { h, hydrate }
-    = await import("preact");
-
+export default async (container, props = {}) => {
+  const { h, hydrate } = await import("preact");
   hydrate(h(Component, props), container);
 };
 ```
 
-Generated at compile time. The `import("preact")` call is a bare specifier — it doesn't bundle Preact.
+The `import("preact")` call is a bare specifier — resolved by the import map, not bundled.
+
+**Vanilla island** — imports only the named `hydrate` export. The default export (JSX) is never referenced, so Bun's tree-shaking eliminates the SSR code and its Preact dependency entirely:
+
+```javascript
+// virtual entry for Chart.island.tsx
+import { hydrate } from './Chart.island.tsx';
+
+export default async (container, props = {}) => {
+  if (hydrate) {
+    hydrate(container, props);
+  }
+};
+```
+
+Zero framework bytes shipped.
 
 ### IMPORT MAP
 
@@ -130,7 +147,7 @@ HTML arrives
   → <castro-island> connects to DOM
     → directive decides timing
       → JS imports on demand
-        → hydrate() attaches to existing DOM
+        → framework hydrate() or vanilla hydrate(container, props)
           → interactive
 ```
 
