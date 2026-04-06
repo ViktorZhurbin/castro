@@ -1,5 +1,5 @@
 ---
-title: Plugins — Castro Guide
+title: Plugins - Castro Guide
 layout: docs
 path: /guide/plugins
 section: guide
@@ -7,7 +7,9 @@ section: guide
 
 # PLUGINS
 
-Plugins hook into Castro's build pipeline to inject assets, process files, and register new island frameworks. For the complete plugin API reference, see [Plugin API →](/reference/plugin-api).
+The Party approves extensions. Plugins hook into Castro's build pipeline to inject assets, process files, and register new island frameworks - keeping the core small while the ecosystem grows.
+
+For the complete plugin API reference, see [Plugin API →](/reference/plugin-api).
 
 
 ## Using a Plugin

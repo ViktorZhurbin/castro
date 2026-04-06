@@ -1,4 +1,4 @@
-export const meta = { title: "About — Castro" };
+export const meta = { title: "About - Castro" };
 
 export default function About() {
 	return (
@@ -11,18 +11,17 @@ export default function About() {
 				</h2>
 
 				<p class="mb-6">
-					Existing static site generators felt like they were either too
-					implicit or too heavy. The gap between "I want a fast static site" and
-					"I want to understand how island architecture actually works" had no
-					good answer — so Castro started as a learning project that became a
-					working framework.
+					Castro started as a learning project that became a working framework.
+					Existing static site generators were either too implicit or too heavy
+					- the gap between "I want a fast static site" and "I want to
+					understand how island architecture actually works" had no good answer.
 				</p>
 
 				<p class="mb-10">
 					Every design decision traces back to a specific frustration. JSX and
 					TypeScript everywhere, because implicit template magic obscures what's
-					happening. ~1,300 lines total, because a codebase you can read in an
-					afternoon teaches more than one you have to trust.
+					happening. Small enough to read in an afternoon, because a codebase
+					you can understand beats one you can only trust.
 				</p>
 
 				<p class="mb-10">

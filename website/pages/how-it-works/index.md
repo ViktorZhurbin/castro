@@ -1,5 +1,5 @@
 ---
-title: 1. Build Pipeline — Castro
+title: Build Pipeline - Castro
 layout: docs
 path: /how-it-works
 section: how-it-works
@@ -7,13 +7,12 @@ section: how-it-works
 
 # THE BUILD PIPELINE
 
-Castro compiles your pages and islands at build time. Three mechanisms turn your source files into fast, partially-hydrated HTML.
+Castro's build pipeline has three moving parts. Understanding all three is understanding island architecture - not just how Castro works, but why it works the way it does.
 
----
 
 ## THE DUAL COMPILATION
 
-Islands compile before any pages are processed. Each `.island.tsx` file goes through `Bun.build` twice — once for the server (producing an SSR module that's pre-loaded into a registry) and once for the browser (producing a hashed JS bundle written to `dist/islands/`). The server needs a Bun module; the browser needs an ES module. Same source, two targets.
+Islands compile before any pages are processed. Each `.island.tsx` file goes through `Bun.build` twice - once for the server (producing an SSR module that's pre-loaded into a registry) and once for the browser (producing a hashed JS bundle written to `dist/islands/`). The server needs a Bun module; the browser needs an ES module. Same source, two targets.
 
 <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-center">
   <div class="card card-bordered border-base-300 bg-base-200 p-6 text-center">
@@ -42,14 +41,13 @@ Islands compile before any pages are processed. Each `.island.tsx` file goes thr
 → [compiler.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/compiler.js) · [registry.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/registry.js)
 
 <aside class="alert">
-  Islands can import CSS too. The build extracts each island's styles and injects them per-page — only CSS for islands actually rendered on a given page gets included.
+  Islands can import CSS too. The build extracts each island's styles and injects them per-page - only CSS for islands actually rendered on a given page gets included.
 </aside>
 
----
 
 ## THE INTERCEPTION
 
-When `Bun.build` compiles your page, the `islandMarkerPlugin` intercepts every `.island.tsx` import. Instead of bundling the real component, it swaps in a lightweight stub that calls `renderMarker()`. Your page never ships the interactive component code — just a function that knows how to look it up at render time.
+When `Bun.build` compiles your page, the `islandMarkerPlugin` intercepts every `.island.tsx` import. Instead of bundling the real component, it swaps in a lightweight stub that calls `renderMarker()`. Your page never ships the interactive component code. The Party has already arranged for it to be delivered separately, on demand.
 
 ### WHAT YOU WRITE
 
@@ -83,15 +81,11 @@ export default function Page() {
 
 → [buildPlugins.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/buildPlugins.js)
 
----
 
 ## THE ASSEMBLY
 
-`renderToString()` traverses the entire component tree in one synchronous pass — page, layout, and all. When it hits a marker stub, `renderMarker()` looks up the pre-loaded SSR module, renders the island to HTML, and wraps it in a `<castro-island>` element. The HTML block below is what that produces — the browser receives it before any JavaScript loads.
+`renderToString()` traverses the entire component tree in one synchronous pass - page, layout, and all. When it hits a marker stub, `renderMarker()` looks up the pre-loaded SSR module, renders the island to HTML, and wraps it in a `<castro-island>` element. HTML ships instantly. JavaScript loads on demand.
 
-<aside class="alert">
-  The <code>&lt;castro-island&gt;</code> custom element wraps server-rendered HTML. The <code>import</code> attribute points to the client JS bundle. The <code>directive</code> attribute controls when it hydrates.
-</aside>
 
 ```html
 <!DOCTYPE html>
@@ -118,25 +112,13 @@ export default function Page() {
 </html>
 ```
 
+<aside class="alert">
+  The <code>&lt;castro-island&gt;</code> custom element wraps server-rendered HTML. The <code>import</code> attribute points to the client JS bundle. The <code>directive</code> attribute controls when it hydrates.
+</aside>
+
 → [marker.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/marker.js) · [renderPage.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/builder/renderPage.js)
 
----
-
-## EXAMPLE OUTPUT
-
-```
-dist/
-├── index.html              ← static HTML with <castro-island> wrappers
-├── islands/
-│   └── Counter-a1b2.js     ← client bundle, loaded on demand
-├── vendor/
-│   ├── preact.js           ← shared framework code
-│   └── chunk-xyz.js        ← shared logic
-├── castro-island.js        ← hydration runtime (only if needed)
-└── app.css                 ← styles
-```
-
-HTML ships instantly. JavaScript loads on demand.
+-----
 
 <div class="flex flex-wrap gap-4">
   <a href="/how-it-works/hydration" class="btn btn-outline btn-primary">

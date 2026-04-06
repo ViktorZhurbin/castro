@@ -1,7 +1,7 @@
 import Redactor from "@components/Redactor.island.tsx";
 
 export const meta = {
-	title: "Components & Islands — Castro Guide",
+	title: "Components & Islands - Castro Guide",
 	layout: "docs",
 	path: "/guide/components-islands",
 	section: "guide",
@@ -14,7 +14,7 @@ export default function ComponentsIslands() {
 			<section>
 				<h1>COMPONENTS & ISLANDS</h1>
 				<p>
-					Every component in Castro starts as static HTML — rendered at build
+					Every component in Castro starts as static HTML - rendered at build
 					time, shipped to the browser as plain markup, zero JavaScript. You add
 					interactivity by choosing how far up the spectrum to go.
 				</p>
@@ -71,10 +71,10 @@ export default function ComponentsIslands() {
 
 			{/* ─── LEVEL 1: STATIC COMPONENTS ─────────────────────────── */}
 			<section>
-				<h2>LEVEL 1 — STATIC COMPONENTS</h2>
+				<h2>LEVEL 1 - STATIC COMPONENTS</h2>
 				<p>
 					Pages, layouts, and components are plain <code>.tsx</code> files.
-					Write regular JSX — no special setup required. No JS ships to the
+					Write regular JSX - no special setup required. No JS ships to the
 					browser:
 				</p>
 				<pre>
@@ -105,11 +105,11 @@ export default function Index() {
 			{/* ─── LEVEL 2: CLIENTSCRIPT ───────────────────────────────── */}
 			<section>
 				<h2>
-					LEVEL 2 — <code>ClientScript</code>
+					LEVEL 2 - <code>ClientScript</code>
 				</h2>
 				<p>
 					Not every interactive element needs a framework. Theme toggles, scroll
-					handlers, and DOM queries ship zero framework bytes —{" "}
+					handlers, and DOM queries ship zero framework bytes -{" "}
 					<code>ClientScript</code> serializes a plain function as an inline{" "}
 					<code>{"<script>"}</code> IIFE. No bundler, no hydration, no runtime.
 				</p>
@@ -141,13 +141,13 @@ export default function ThemeToggle() {
 				<p>
 					The function is written and type-checked as normal TypeScript. It's
 					only serialized via <code>.toString()</code> when the page renders.
-					Args must be JSON-serializable — functions and symbols throw at build
+					Args must be JSON-serializable - functions and symbols throw at build
 					time.
 				</p>
 				<aside class="alert">
 					Function arguments must come through <code>args</code>.{" "}
 					<code>ClientScript</code> can't close over variables from the
-					surrounding module — it runs in a separate browser scope.
+					surrounding module - it runs in a separate browser scope.
 				</aside>
 			</section>
 
@@ -160,7 +160,7 @@ export default function ThemeToggle() {
 				</p>
 				<p>
 					At build time, an island is server-rendered exactly like a Level 1
-					component — producing static HTML with zero JavaScript. But in the
+					component - producing static HTML with zero JavaScript. But in the
 					browser, it hydrates in place, attaching to the existing HTML. You
 					dictate exactly <b>when</b> this happens using a client directive.
 				</p>
@@ -169,18 +169,18 @@ export default function ThemeToggle() {
 			{/* ─── LEVEL 3: VANILLA ISLANDS ────────────────────────────── */}
 			<section>
 				<div>
-					<h2>LEVEL 3 — VANILLA ISLANDS</h2>
+					<h2>LEVEL 3 - VANILLA ISLANDS</h2>
 					<p>
 						The lifecycle above applies to all islands. Vanilla islands are a
-						specific case: full lifecycle — prop serialization, lazy loading,
-						directives — with zero framework runtime. The default export is
+						specific case: full lifecycle - prop serialization, lazy loading,
+						directives - with zero framework runtime. The default export is
 						Preact JSX for the server render; the named <code>hydrate</code>{" "}
 						export is plain JavaScript for the browser. Nothing else ships:
 					</p>
 					<pre>
 						<code>{`// components/Chart.island.tsx
 
-// Rendered at build time — zero JS shipped
+// Rendered at build time - zero JS shipped
 export default function Chart(props: { data: number[] }) {
   return (
     <div class="chart-container">
@@ -214,10 +214,10 @@ export default function Page() {
 			{/* ─── LEVEL 4: PREACT ISLANDS ─────────────────────────── */}
 			<section>
 				<div>
-					<h2>LEVEL 4 — PREACT ISLANDS</h2>
+					<h2>LEVEL 4 - PREACT ISLANDS</h2>
 					<p>
-						Preact islands work the same way — server-rendered at build time,
-						hydrated on the client — except the framework runtime ships to the
+						Preact islands work the same way - server-rendered at build time,
+						hydrated on the client - except the framework runtime ships to the
 						browser too. Use them when you need reactive state.
 					</p>
 					<pre>
@@ -264,7 +264,7 @@ export default function Index() {
 
 				<p>
 					Hydrates when the element enters the viewport. The right default for
-					most islands — JavaScript loads only when the user actually reaches
+					most islands - JavaScript loads only when the user actually reaches
 					the component.
 				</p>
 
@@ -276,7 +276,7 @@ export default function Index() {
 
 				<p>
 					Hydrates after the browser goes idle. For important but non-critical
-					UI — loaded early, doesn't block anything.
+					UI - loaded early, doesn't block anything.
 				</p>
 
 				<h3>
@@ -314,7 +314,7 @@ export default function Page() {
 			<section>
 				<h2>ALTERNATIVE FRAMEWORKS</h2>
 				<p>
-					The plugin system lets you register other frameworks — Castro detects
+					The plugin system lets you register other frameworks - Castro detects
 					which one to use per island by scanning imports and export signatures
 					at build time.
 				</p>

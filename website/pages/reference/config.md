@@ -1,5 +1,5 @@
 ---
-title: Configuration — Castro Reference
+title: Configuration - Castro Reference
 layout: docs
 path: /reference/config
 section: reference
@@ -26,23 +26,23 @@ export default {
 
 ## `port`
 
-`port?: number` — default: `3000`
+`port?: number` - default: `3000`
 
-The port the dev server listens on.
+The port the dev server listens on. 3000 is the default. The Party has no strong feelings about this.
 
 ---
 
 ## `messages`
 
-`messages?: "satirical" | "serious"` — default: `"satirical"`
+`messages?: "satirical" | "serious"` - default: `"satirical"`
 
-Controls CLI output tone. Both contain the same information — satirical wraps it in communist bureaucracy humor, serious sticks to facts.
+Controls CLI output tone. "satirical" wraps build output in communist bureaucracy humor. "serious" delivers the same information without the ideology. Both are equally correct. Only one is more fun.
 
 ---
 
 ## `plugins`
 
-`plugins?: CastroPlugin[]` — default: `[]`
+`plugins?: CastroPlugin[]` - default: `[]`
 
 Plugins hook into the build pipeline to inject assets, run processors, and register custom island frameworks. See [Plugin API →](/reference/plugin-api).
 
@@ -50,7 +50,7 @@ Plugins hook into the build pipeline to inject assets, run processors, and regis
 
 ## `clientDependencies`
 
-`clientDependencies?: string[]` — default: `[]`
+`clientDependencies?: string[]` - default: `[]`
 
 A list of NPM packages to be pre-bundled and shared across all islands.
 
@@ -65,15 +65,15 @@ export default {
 };
 ```
 
-Now `date-fns` is bundled once and shared. Works for exact package names only — if you need subpath routing (e.g., `@mui/material/Button`, `@mui/material/Popper`), use `importMap` instead.
+Now `date-fns` is bundled once and shared. Works for exact package names only - if you need subpath routing (e.g., `@mui/material/Button`, `@mui/material/Popper`), use `importMap` instead.
 
 ---
 
 ## `importMap`
 
-`importMap?: Record<string, string>` — default: `{}`
+`importMap?: Record<string, string>` - default: `{}`
 
-A map of import specifiers to URLs. Use it to override plugin-generated import map entries — for example, swapping a vendored URL for a CDN, or providing custom versions of packages.
+A map of import specifiers to URLs. Use it to override plugin-generated import map entries - for example, swapping a vendored URL for a CDN, or providing custom versions of packages.
 
 When you need wildcard routing for subpaths like `@mui/material/Button`, `@mui/material/Popper`, etc., add them here:
 

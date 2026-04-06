@@ -1,5 +1,5 @@
 ---
-title: Plugin API — Castro Reference
+title: Plugin API - Castro Reference
 layout: docs
 path: /reference/plugin-api
 section: reference
@@ -86,7 +86,8 @@ Example: if your plugin compiles CSS from a custom `src/` directory, add `watchD
 
 ### `frameworkConfig`
 
-Registers a framework to use in islands. The framework config defines how Castro compiles and hydrates components for that framework.
+Registers a framework to use in islands. This is how Castro's plugin architecture
+earns its keep - the same interface that ships Preact is available to anyone.
 
 ```typescript
 frameworkConfig?: FrameworkConfig

@@ -1,5 +1,5 @@
 ---
-title: Quick Start — Castro Guide
+title: Quick Start - Castro Guide
 layout: docs
 path: /guide/quick-start
 section: guide
@@ -38,7 +38,7 @@ Add the build and dev scripts to `package.json`:
 
 ## 2. PROJECT STRUCTURE
 
-Castro follows a convention-over-configuration structure. There is no required config file — create the directories and start building.
+Castro follows a convention-over-configuration structure. There is no required config file - create the directories and start building.
 
 ```text
 my-site/
@@ -53,7 +53,7 @@ my-site/
 Layouts wrap your page content in standard HTML. `layouts/default.tsx` is the default layout.
 
 <aside class="alert">
-  Layouts and pages use Preact — Castro's engine for build-time rendering. No Preact ships to the browser unless you explicitly deploy an island. Layouts must use a <code>default export</code>.
+  Layouts and pages use Preact - Castro's engine for build-time rendering. No Preact ships to the browser unless you explicitly deploy an island. Layouts must use a <code>default export</code>.
 </aside>
 
 ```tsx
@@ -88,7 +88,7 @@ Pages live in `pages/`. Both `.tsx` and `.md` files are supported.
   JSX pages require a <code>default export</code> for the component.
   <br />
   <br />
-  The named <code>meta</code> export is optional — it allows to set page title, use a non-default layout, and pass any custom props to the layout.
+  The named <code>meta</code> export is optional - it allows to set page title, use a non-default layout, and pass any custom props to the layout.
 </aside>
 
 ### TSX PAGE
@@ -140,7 +140,7 @@ export function Card({ title, body }: { title: string; body: string }) {
 
 ## 6. ADD AN ISLAND
 
-You only need an island when a component requires client-side interactivity. Name it `*.island.tsx` — it gets pre-rendered at build time and hydrated in the browser.
+You only need an island when a component requires client-side interactivity. Name it `*.island.tsx` - it gets pre-rendered at build time and hydrated in the browser.
 
 ```tsx
 // components/Counter.island.tsx
@@ -157,7 +157,7 @@ export default function Counter({ initial = 0 }: { initial?: number }) {
 }
 ```
 
-Use it in a page with a directive — the directive controls when the island's JavaScript loads:
+Use it in a page with a directive - the directive controls when the island's JavaScript loads:
 
 ```tsx
 import Counter from "../components/Counter.island.tsx";
