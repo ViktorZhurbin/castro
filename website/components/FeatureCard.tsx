@@ -6,16 +6,10 @@ interface FeatureCardProps {
 	color?: "primary" | "secondary" | "accent";
 }
 
-const textColor = {
-	primary: "text-primary",
-	secondary: "text-secondary",
-	accent: "text-accent",
-};
-
-const borderColor = {
-	primary: "hover:border-primary",
-	secondary: "hover:border-secondary",
-	accent: "hover:border-accent",
+const topBorderColor = {
+	primary: "border-t-primary",
+	secondary: "border-t-secondary",
+	accent: "border-t-accent",
 };
 
 export function FeatureCard({
@@ -29,15 +23,15 @@ export function FeatureCard({
 
 	return (
 		<a
-			href={href}
 			{...linkProps}
-			class={`card card-border border-base-300 bg-base-100 ${borderColor[color]} transition-colors`}
+			href={href}
+			class={`card bg-base-100 border-2 border-base-300 border-t-8 ${topBorderColor[color]} hover:border-base-content transition-colors rounded-none`}
 		>
 			<div class="card-body">
-				<h3 class={`card-title font-display text-2xl ${textColor[color]}`}>
+				<h3 class="card-title font-display text-2xl text-base-content">
 					{title}
 				</h3>
-				<p>{description}</p>
+				<p class="text-base-content/80">{description}</p>
 			</div>
 		</a>
 	);
