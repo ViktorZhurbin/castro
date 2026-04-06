@@ -1,8 +1,7 @@
 import { FeatureCard } from "@components/FeatureCard.tsx";
 import { StarIcon } from "@components/icons/StarIcon.tsx";
-import type { PageMeta } from "@vktrz/castro";
 
-export const meta: PageMeta = { title: "Castro - The People's Framework" };
+export const meta = { title: "Castro - The People's Framework" };
 
 export default function Home() {
 	return (

@@ -1,6 +1,4 @@
-import type { PageMeta } from "@vktrz/castro";
-
-export const meta: PageMeta = { title: "About — Castro" };
+export const meta = { title: "About — Castro" };
 
 export default function About() {
 	return (
