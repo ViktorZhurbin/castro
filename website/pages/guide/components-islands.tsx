@@ -13,18 +13,16 @@ export default function ComponentsIslands() {
 		<>
 			{/* ─── HEADER ─────────────────────────────────────────────── */}
 			<section>
-				<div>
-					<h1>COMPONENTS & ISLANDS</h1>
-					<p>
-						Every component in Castro starts as static HTML — rendered at build
-						time, shipped to the browser as plain markup, zero JavaScript. You
-						add interactivity by choosing how far up the spectrum to go.
-					</p>
-					<p>
-						Four levels. Each adds capability and ships more JavaScript. The
-						right choice is the lowest level that meets your needs.
-					</p>
-				</div>
+				<h1>COMPONENTS & ISLANDS</h1>
+				<p>
+					Every component in Castro starts as static HTML — rendered at build
+					time, shipped to the browser as plain markup, zero JavaScript. You add
+					interactivity by choosing how far up the spectrum to go.
+				</p>
+				<p>
+					Four levels. Each adds capability and ships more JavaScript. The right
+					choice is the lowest level that meets your needs.
+				</p>
 
 				{/* Spectrum summary table */}
 				<div class="overflow-x-auto">
@@ -74,15 +72,14 @@ export default function ComponentsIslands() {
 
 			{/* ─── LEVEL 1: STATIC COMPONENTS ─────────────────────────── */}
 			<section>
-				<div>
-					<h2>LEVEL 1 — STATIC COMPONENTS</h2>
-					<p>
-						Pages, layouts, and components are plain <code>.tsx</code> files.
-						Write regular JSX — no special setup required. No JS ships to the
-						browser:
-					</p>
-					<pre>
-						<code>{`// components/Card.tsx
+				<h2>LEVEL 1 — STATIC COMPONENTS</h2>
+				<p>
+					Pages, layouts, and components are plain <code>.tsx</code> files.
+					Write regular JSX — no special setup required. No JS ships to the
+					browser:
+				</p>
+				<pre>
+					<code>{`// components/Card.tsx
 export function Card({ title, children }) {
   return (
     <div class="card">
@@ -98,30 +95,27 @@ import { Card } from "../components/Card.tsx";
 export default function Index() {
   return <Card title="Hello">World</Card>;
 }`}</code>
-					</pre>
-					<aside class="alert">
-						Static components are rendered at build time and delivered as plain
-						HTML. Only <code>.island.tsx</code> files send JavaScript to the
-						browser.
-					</aside>
-				</div>
+				</pre>
+				<aside class="alert">
+					Static components are rendered at build time and delivered as plain
+					HTML. Only <code>.island.tsx</code> files send JavaScript to the
+					browser.
+				</aside>
 			</section>
 
 			{/* ─── LEVEL 2: CLIENTSCRIPT ───────────────────────────────── */}
 			<section>
-				<div>
-					<h2>
-						LEVEL 2 — <code>ClientScript</code>
-					</h2>
-					<p>
-						Not every interactive element needs a framework. Theme toggles,
-						scroll handlers, and DOM queries ship zero framework bytes —{" "}
-						<code>ClientScript</code> serializes a plain function as an inline{" "}
-						<code>{"<script>"}</code> IIFE. No bundler, no hydration, no
-						runtime.
-					</p>
-					<pre>
-						<code>{`import { ClientScript } from "@vktrz/castro";
+				<h2>
+					LEVEL 2 — <code>ClientScript</code>
+				</h2>
+				<p>
+					Not every interactive element needs a framework. Theme toggles, scroll
+					handlers, and DOM queries ship zero framework bytes —{" "}
+					<code>ClientScript</code> serializes a plain function as an inline{" "}
+					<code>{"<script>"}</code> IIFE. No bundler, no hydration, no runtime.
+				</p>
+				<pre>
+					<code>{`import { ClientScript } from "@vktrz/castro";
 
 function initToggle(storageKey: string, dark: string, light: string) {
   const checkbox = document.querySelector("#toggle input") as HTMLInputElement;
@@ -144,19 +138,18 @@ export default function ThemeToggle() {
     </>
   );
 }`}</code>
-					</pre>
-					<p>
-						The function is written and type-checked as normal TypeScript. It's
-						only serialized via <code>.toString()</code> when the page renders.
-						Args must be JSON-serializable — functions and symbols throw at
-						build time.
-					</p>
-					<aside class="alert">
-						Function arguments must come through <code>args</code>.{" "}
-						<code>ClientScript</code> can't close over variables from the
-						surrounding module — it runs in a separate browser scope.
-					</aside>
-				</div>
+				</pre>
+				<p>
+					The function is written and type-checked as normal TypeScript. It's
+					only serialized via <code>.toString()</code> when the page renders.
+					Args must be JSON-serializable — functions and symbols throw at build
+					time.
+				</p>
+				<aside class="alert">
+					Function arguments must come through <code>args</code>.{" "}
+					<code>ClientScript</code> can't close over variables from the
+					surrounding module — it runs in a separate browser scope.
+				</aside>
 			</section>
 
 			{/* ─── ISLANDS BRIDGE ──────────────────────────────────────── */}
@@ -249,119 +242,115 @@ export default function Index() {
   return <Counter initial={5} />;
 }`}</code>
 					</pre>
+				</div>
+			</section>
 
-					{/* ─── CLIENT DIRECTIVES ─────────────────────────── */}
-					<h2>CLIENT DIRECTIVES</h2>
-					<p>
-						You have the components. Now you must orchestrate them. Castro
-						provides three directives to control exactly when an island's
-						JavaScript is fetched and executed.
-					</p>
+			{/* ─── CLIENT DIRECTIVES ─────────────────────────── */}
+			<section>
+				<h2>CLIENT DIRECTIVES</h2>
+				<p>
+					You have the components. Now you must orchestrate them. Castro
+					provides three directives to control exactly when an island's
+					JavaScript is fetched and executed.
+				</p>
 
-					<h3 class="flex gap-2 items-center">
-						<code>comrade:visible</code>
-						<span class="badge badge-dash badge-accent leading-none">
-							default
-						</span>
-					</h3>
+				<h3 class="flex gap-2 items-center">
+					<code>comrade:visible</code>
+					<span class="badge badge-dash badge-accent leading-none">
+						default
+					</span>
+				</h3>
 
-					<blockquote>"Only work when the people are watching."</blockquote>
+				<blockquote>"Only work when the people are watching."</blockquote>
 
-					<p>
-						Hydrates when the element enters the viewport. The mandatory default
-						for most islands — JavaScript loads only when the user actually
-						reaches the component.
-					</p>
+				<p>
+					Hydrates when the element enters the viewport. The right default for
+					most islands — JavaScript loads only when the user actually reaches
+					the component.
+				</p>
 
-					<h3>
-						<code>comrade:patient</code>
-					</h3>
+				<h3>
+					<code>comrade:patient</code>
+				</h3>
 
-					<blockquote>
-						"Serves the collective once the essential work is complete."
-					</blockquote>
+				<blockquote>"I'll hydrate when everyone else is done."</blockquote>
 
-					<p>
-						Hydrates after the browser goes idle. For important but non-critical
-						UI — loaded early, doesn't block anything.
-					</p>
+				<p>
+					Hydrates after the browser goes idle. For important but non-critical
+					UI — loaded early, doesn't block anything.
+				</p>
 
-					<h3>
-						<code>comrade:eager</code>
-					</h3>
+				<h3>
+					<code>comrade:eager</code>
+				</h3>
 
-					<blockquote>"Some comrades wait. This one doesn't."</blockquote>
+				<blockquote>"Some comrades wait. This one doesn't."</blockquote>
 
-					<p>
-						Hydrates immediately when the element connects to the DOM. Use for
-						critical UI above the fold where interactivity is a state
-						requirement.
-					</p>
+				<p>
+					Hydrates immediately when the element connects to the DOM. Use for
+					critical UI above the fold where interactivity is a state requirement.
+				</p>
 
-					<h3>LIVE DEMONSTRATION</h3>
-					<p>
-						Open your DevTools network tab. Scroll this component into view.
-						Before hydration, it is pure, state-approved HTML. Upon
-						intersection, the <code>comrade:visible</code> directive executes,
-						the Preact runtime is distributed, and the component becomes
-						interactive.
-					</p>
+				<h3>LIVE DEMONSTRATION</h3>
+				<p>
+					Open your DevTools network tab. Scroll this component into view.
+					Before hydration, it is pure, state-approved HTML. Upon intersection,
+					the <code>comrade:visible</code> directive executes, the Preact
+					runtime is distributed, and the component becomes interactive.
+				</p>
 
-					<Redactor />
+				<Redactor />
 
-					<pre>
-						<code>{`import Redactor from "../components/Redactor.island.tsx";
+				<pre>
+					<code>{`import Redactor from "../components/Redactor.island.tsx";
 
 export default function Page() {
   // No directive = comrade:visible by default
   return <Redactor />;
 }`}</code>
-					</pre>
-				</div>
+				</pre>
 			</section>
 
 			{/* ─── ALTERNATIVE FRAMEWORKS ──────────────────────────────── */}
 			<section>
-				<div>
-					<h2>ALTERNATIVE FRAMEWORKS</h2>
-					<p>
-						The plugin system lets you register other frameworks — Castro
-						detects which one to use per island by scanning imports and export
-						signatures at build time.
-					</p>
+				<h2>ALTERNATIVE FRAMEWORKS</h2>
+				<p>
+					The plugin system lets you register other frameworks — Castro detects
+					which one to use per island by scanning imports and export signatures
+					at build time.
+				</p>
 
-					<p>
-						Register framework plugins in <code>castro.config.js</code>:
-					</p>
-					<pre>
-						<code>{`// castro.config.js
+				<p>
+					Register framework plugins in <code>castro.config.js</code>:
+				</p>
+				<pre>
+					<code>{`// castro.config.js
 import { castroSolid } from "@vktrz/castro-solid";
 
 export default {
   plugins: [castroSolid()],
 };`}</code>
-					</pre>
-					<aside class="alert">
-						TypeScript expects one JSX runtime per project. Non-Preact islands
-						need a <code>{`/** @jsxImportSource <framework> */`}</code> pragma
-						at the top of the file.
-					</aside>
-					<p>Then create islands using that framework:</p>
-					<pre>
-						<code>{`/** @jsxImportSource solid-js */
+				</pre>
+				<aside class="alert">
+					TypeScript expects one JSX runtime per project. Non-Preact islands
+					need a <code>{`/** @jsxImportSource <framework> */`}</code> pragma at
+					the top of the file.
+				</aside>
+				<p>Then create islands using that framework:</p>
+				<pre>
+					<code>{`/** @jsxImportSource solid-js */
 import { createSignal } from "solid-js";
 
 export default function Counter() {
   const [count, setCount] = createSignal(0);
   return <button onClick={() => setCount(count() + 1)}>Count: {count()}</button>;
 }`}</code>
-					</pre>
+				</pre>
 
-					<p>
-						For building your own framework plugin, see{" "}
-						<a href="/guide/plugins">Plugins →</a>
-					</p>
-				</div>
+				<p>
+					For building your own framework plugin, see{" "}
+					<a href="/guide/plugins">Plugins →</a>
+				</p>
 
 				<div class="flex flex-wrap gap-4">
 					<a href="/guide/quick-start" class="btn btn-outline btn-primary">
