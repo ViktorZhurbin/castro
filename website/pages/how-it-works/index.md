@@ -118,6 +118,26 @@ export default function Page() {
 
 → [marker.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/marker.js) · [renderPage.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/builder/renderPage.js)
 
+
+## THE EXCEPTION
+
+Not all interactivity goes through the island pipeline.`ClientScript` bypasses
+it entirely — a plain function serialized via `.toString()` and injected as an
+inline `<script>` IIFE at render time. No bundle, no hydration, no custom element.
+```jsx
+// At build time, this:
+<ClientScript fn={initToggle} args={["theme", "dark", "light"]} />
+
+// Becomes this in the HTML:
+<script>(function initToggle(storageKey, dark, light) {
+  // ... your function body
+})("theme", "dark", "light")</script>
+```
+
+It's the right tool when you need to touch the DOM but don't need reactive
+state — and it's a useful reminder that the island pipeline is opt-in, not
+mandatory.
+
 -----
 
 <div class="flex flex-wrap gap-4">

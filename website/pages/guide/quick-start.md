@@ -178,19 +178,7 @@ For details on islands, directives, and alternative frameworks see [Components &
 
 ## 7. CONFIGURATION (OPTIONAL)
 
-Castro functions without a config file. When you need to adjust the port or add plugins, create `castro.config.js` at the project root:
-
-```javascript
-import { tailwind } from "@vktrz/castro-tailwind";
-
-export default {
-  port: 4123,
-  messages: "serious",
-  plugins: [tailwind({ input: "styles/app.css" })],
-};
-```
-
-Full reference: [Configuration →](/reference/config)
+Castro works without config. When you need it, see [Configuration →](/reference/config)
 
 ## 8. RUN IT
 
