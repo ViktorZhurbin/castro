@@ -69,7 +69,7 @@ function DocsDrawer({
 
 	return (
 		<div class="flex-1 flex flex-col overflow-hidden">
-			<div class="bg-base-100 border-b border-base-content/30 flex justify-between items-center lg:hidden px-4 py-2">
+			<div class="bg-base-100 border-b border-base-content/30 flex justify-between items-center lg:hidden p-2">
 				<MobileMenuButton htmlFor="docs-drawer" ariaLabel="Open sidebar" />
 				{/* Future: right TOC drawer toggle goes here */}
 			</div>
