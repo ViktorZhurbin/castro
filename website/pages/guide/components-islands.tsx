@@ -1,7 +1,6 @@
 import Redactor from "@components/Redactor.island.tsx";
-import type { PageMeta } from "@vktrz/castro";
 
-export const meta: PageMeta = {
+export const meta = {
 	title: "Components & Islands — Castro Guide",
 	layout: "docs",
 	path: "/guide/components-islands",
