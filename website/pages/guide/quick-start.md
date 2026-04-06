@@ -207,73 +207,6 @@ The dev server watches for file changes and reloads the browser automatically. T
 
 -----
 
-## CONFIGURATION
-
-Castro works without any config file. When you need to customize behavior, create `castro.config.js` at your project root.
-
-```javascript
-// castro.config.js
-export default {
-  port: 3000,
-  messages: "satirical",
-  plugins: [],
-  clientDependencies: [],
-  importMap: {},
-};
-```
-
-→ [config.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/config.js)
-
-### `port`
-
-`port?: number` — default: `3000`. The port the dev server listens on.
-
-### `messages`
-
-`messages?: "satirical" | "serious"` — default: `"satirical"`. Controls CLI output tone. Both contain the same information.
-
-### `plugins`
-
-`plugins?: CastroPlugin[]` — default: `[]`. Plugins hook into the build pipeline to inject assets, run processors, and register custom island frameworks. See [Plugins](/guide/plugins).
-
-### `clientDependencies`
-
-`clientDependencies?: string[]` — default: `[]`. A list of NPM packages to be pre-bundled and shared across all islands. Note that frameworks automatically vendor their own dependencies — see [Plugins](/guide/plugins) for details on how dependency vendoring works.
-
-Use it when you have multiple islands using the same package. For example, if you use "date-fns" in multiple islands, by default "date-fns" will be bundled into each island. Adding `clientDependencies: ["date-fns"]` in config extracts it into a single, shared `/vendor/date-fns.js` file.
-
-Only works for exact paths. When you need an unknown number subpaths from the same package, you can use `importMap`.
-
-### `importMap`
-
-`importMap?: Record<string, string>` — default: `{}`. A map of import specifiers to URLs. Use it to override plugin-generated import map entries — for example, swapping a vendored URL for a CDN, or providing custom versions of packages. When you need wildcard routing for subpaths like `@mui/material/Button`, `@mui/material/Popper`, etc., you can add them here:
-
-```javascript
-importMap: {
-  "@mui/material/": "https://esm.sh/@mui/material/"
-}
-```
-
-User-provided entries override plugin-generated entries on pages with islands. They have no effect on purely static pages.
-
------
-
-Example config — Tailwind plugin, port 4123, serious messages:
-
-```javascript
-import { tailwind } from "@vktrz/castro-tailwind";
-
-export default {
-  plugins: [tailwind({ input: "styles/app.css" })],
-  port: 4123,
-  messages: "serious",
-};
-```
-
-→ [website/castro.config.js](https://github.com/ViktorZhurbin/castro/blob/main/website/castro.config.js)
-
------
-
 ## WHAT'S NEXT
 
 <div class="flex flex-wrap gap-4">
@@ -283,7 +216,7 @@ export default {
   >
     Components & Islands →
   </a>
-  <a href="/guide/plugins" class="btn btn-outline btn-primary">
-    Plugins →
+  <a href="/reference/config" class="btn btn-outline btn-primary">
+    Configuration →
   </a>
 </div>

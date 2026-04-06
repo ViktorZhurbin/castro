@@ -10,7 +10,7 @@ export interface DocsLayoutProps {
 	children: VNode;
 }
 
-type SectionKey = "how-it-works" | "guide";
+type SectionKey = "how-it-works" | "guide" | "reference";
 
 const sidebarSections: Record<
 	SectionKey,
@@ -29,6 +29,13 @@ const sidebarSections: Record<
 			{ href: "/guide/quick-start", label: "Quick Start" },
 			{ href: "/guide/components-islands", label: "Components & Islands" },
 			{ href: "/guide/plugins", label: "Plugins" },
+		],
+	},
+	reference: {
+		title: "REFERENCE",
+		links: [
+			{ href: "/reference/config", label: "Configuration" },
+			{ href: "/reference/plugin-api", label: "Plugin API" },
 		],
 	},
 };
