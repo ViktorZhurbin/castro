@@ -258,15 +258,15 @@ User-provided entries override plugin-generated entries on pages with islands. T
 
 -----
 
-This website's own config — Tailwind plugin, port 3000, satirical messages:
+Example config — Tailwind plugin, port 4123, serious messages:
 
 ```javascript
 import { tailwind } from "@vktrz/castro-tailwind";
 
 export default {
   plugins: [tailwind({ input: "styles/app.css" })],
-  port: 3000,
-  messages: "satirical",
+  port: 4123,
+  messages: "serious",
 };
 ```
 
