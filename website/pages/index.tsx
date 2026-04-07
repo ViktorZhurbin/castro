@@ -57,7 +57,7 @@ function Hero() {
 function Features() {
 	return (
 		<section class="py-24 px-6 bg-base-100">
-			<div class="max-w-5xl mx-auto mb-16">
+			<div class="max-w-5xl mx-auto text-center mb-16">
 				<h2 class="font-display text-5xl md:text-6xl text-base-content">
 					WHAT THE PARTY OFFERS
 				</h2>

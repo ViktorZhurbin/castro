@@ -253,7 +253,7 @@ export default function Index() {
 					JavaScript is fetched and executed.
 				</p>
 
-				<h3 class="flex gap-2 items-center">
+				<h3 class="flex gap-2 items-center flex-wrap">
 					<code>comrade:visible</code>
 					<span class="badge badge-dash badge-accent leading-none">
 						default
@@ -368,10 +368,10 @@ export default function Counter() {
 				</p>
 
 				<div class="flex flex-wrap gap-4">
-					<a href="/guide/quick-start" class="btn btn-outline btn-primary">
+					<a href="/guide/quick-start" class="btn-doc-next">
 						← Quick Start
 					</a>
-					<a href="/guide/plugins" class="btn btn-outline btn-primary">
+					<a href="/guide/plugins" class="btn-doc-next">
 						Plugins →
 					</a>
 				</div>

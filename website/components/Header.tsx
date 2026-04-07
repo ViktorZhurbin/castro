@@ -14,23 +14,27 @@ export function Header({ activePath }: { activePath?: string }) {
 	];
 
 	return (
-		<header class="navbar sticky top-0 z-50 bg-base-100 border-b border-base-content/40 min-h-12">
+		<header class="navbar sticky top-0 z-50 bg-base-100 border-b-2 border-base-content min-h-12 px-4">
 			<div class="flex items-center flex-1 justify-start gap-2">
 				<a
 					href="/"
-					class="btn btn-square btn-primary btn-ghost btn-sm"
+					class="btn btn-ghost btn-square btn-sm rounded-none text-primary hover:bg-primary/10"
 					aria-label="Home"
 				>
 					<StarIcon />
 				</a>
 
 				{/* Desktop nav */}
-				<nav class="hidden sm:flex items-center">
+				<nav class="hidden sm:flex items-center gap-1 ml-2">
 					{navLinks.map((link) => (
 						<a
 							key={link.href}
 							href={link.href}
-							class={`btn btn-ghost btn-sm font-display text-sm ${link.active ? "btn-active" : ""}`}
+							class={`btn btn-sm font-display text-lg rounded-none border-none shadow-none border-b-2 transition-none ${
+								link.active
+									? "bg-primary text-primary-content border-b-primary"
+									: "bg-transparent text-base-content border-b-transparent hover:border-b-base-content hover:bg-transparent"
+							}`}
 						>
 							{link.label}
 						</a>
@@ -40,17 +44,22 @@ export function Header({ activePath }: { activePath?: string }) {
 				{/* Mobile dropdown */}
 				<details class="dropdown sm:hidden">
 					<summary
-						class="btn btn-ghost btn-square btn-sm"
+						class="btn btn-ghost btn-square btn-sm rounded-none"
 						aria-label="Open menu"
 					>
 						<MenuIcon />
 					</summary>
-					<ul class="dropdown-content menu bg-base-100 border border-base-content/20 rounded-box z-50 w-48 p-2 shadow-md mt-1">
+					{/* Heavy borders for the dropdown menu */}
+					<ul class="dropdown-content bg-base-100 border-4 border-base-content rounded-none z-50 w-48 p-2 shadow-none mt-2 flex flex-col gap-1">
 						{navLinks.map((link) => (
 							<li key={link.href}>
 								<a
 									href={link.href}
-									class={`font-display text-sm ${link.active ? "menu-active" : ""}`}
+									class={`block px-4 py-2 font-display text-lg ${
+										link.active
+											? "bg-primary text-primary-content"
+											: "hover:bg-base-content hover:text-base-100"
+									}`}
 								>
 									{link.label}
 								</a>

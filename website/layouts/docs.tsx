@@ -1,5 +1,5 @@
 import { Footer } from "@components/Footer.tsx";
-import { MobileMenuButton } from "@components/MobileMenuButton.tsx";
+import { MenuIcon } from "@components/icons/MenuIcon";
 import { PageShell } from "@components/PageShell.tsx";
 import type { VNode } from "preact";
 
@@ -42,12 +42,50 @@ const sidebarSections: Record<
 
 const DocsLayout = (props: DocsLayoutProps) => {
 	const { title, path, section = "guide", children } = props;
+	const { title: sectionTitle, links } = sidebarSections[section];
 
 	return (
 		<PageShell title={title} activePath={path}>
-			<DocsDrawer path={path} section={section}>
-				{children}
-			</DocsDrawer>
+			{/* Mobile: DaisyUI drawer overlay */}
+			<div class="drawer lg:hidden flex-1 overflow-hidden">
+					<input id="docs-drawer" type="checkbox" class="drawer-toggle" />
+
+					<div class="drawer-content flex flex-col overflow-hidden">
+						{/* Mobile toggle bar — must be inside drawer-content per DaisyUI */}
+						<div class="bg-base-100 border-b-2 border-base-content flex items-center px-4 py-2">
+							<label
+								htmlFor="docs-drawer"
+								class="btn btn-ghost btn-square btn-sm"
+								aria-label="Open sidebar"
+							>
+								<MenuIcon />
+							</label>
+						</div>
+
+						<DocsContent>{children}</DocsContent>
+					</div>
+
+					{/* Mobile sidebar overlay */}
+					<div class="drawer-side z-60 border-r-2 border-base-content">
+						<label
+							htmlFor="docs-drawer"
+							aria-label="Close sidebar"
+							class="drawer-overlay"
+						/>
+						<div class="bg-base-200 min-h-full w-64 flex flex-col">
+							<SidebarNav sectionTitle={sectionTitle} links={links} activePath={path} />
+						</div>
+					</div>
+				</div>
+
+			{/* Desktop: simple flex layout, sidebar always visible */}
+			<div class="hidden lg:flex flex-1 overflow-hidden">
+				<aside class="shrink-0 w-64 bg-base-200 border-r-2 border-base-content overflow-y-auto flex flex-col">
+					<SidebarNav sectionTitle={sectionTitle} links={links} activePath={path} />
+				</aside>
+
+				<DocsContent>{children}</DocsContent>
+			</div>
 		</PageShell>
 	);
 };
@@ -56,45 +94,18 @@ export default DocsLayout;
 
 // Layout-specific components below
 
-function DocsDrawer({
-	path,
-	section,
-	children,
-}: {
-	path?: string;
-	section: SectionKey;
-	children: VNode;
-}) {
-	const { title: sectionTitle, links } = sidebarSections[section];
-
+function DocsContent({ children }: { children: VNode }) {
 	return (
-		<div class="flex-1 flex flex-col overflow-hidden">
-			<div class="bg-base-100 border-b border-base-content/30 flex justify-between items-center lg:hidden p-2">
-				<MobileMenuButton htmlFor="docs-drawer" ariaLabel="Open sidebar" />
-				{/* Future: right TOC drawer toggle goes here */}
-			</div>
-
-			<div class="drawer lg:drawer-open flex-1 overflow-hidden">
-				<input id="docs-drawer" type="checkbox" class="drawer-toggle" />
-
-				<div class="drawer-content flex flex-col overflow-y-auto scroll-pt-6 lg:scroll-pt-18 scroll-smooth">
-					<main class="flex-1 prose prose-castro py-12 px-6 max-w-3xl">
-						{children}
-					</main>
-
-					<Footer />
-				</div>
-				<DocsSidebar
-					sectionTitle={sectionTitle}
-					links={links}
-					activePath={path}
-				/>
-			</div>
+		<div class="flex flex-col flex-1 overflow-y-auto">
+			<main class="flex-1 prose prose-castro py-12 px-6 max-w-3xl">
+				{children}
+			</main>
+			<Footer />
 		</div>
 	);
 }
 
-function DocsSidebar({
+function SidebarNav({
 	sectionTitle,
 	links,
 	activePath,
@@ -104,25 +115,31 @@ function DocsSidebar({
 	activePath?: string;
 }) {
 	return (
-		<div class="drawer-side z-40">
-			<label
-				htmlFor="docs-drawer"
-				aria-label="Close sidebar"
-				class="drawer-overlay"
-			/>
-			<ul class="menu bg-base-200 min-h-full w-56 p-4 pt-6">
-				<li class="menu-title font-display text-primary">{sectionTitle}</li>
-				{links.map((link) => (
-					<li key={link.href}>
+		<>
+			<div class="px-6 py-4 bg-primary text-primary-content border-b-2 border-base-content">
+				<h2 class="font-display text-4xl m-0 tracking-wider leading-none">
+					{sectionTitle}
+				</h2>
+			</div>
+
+			<nav class="flex flex-col">
+				{links.map((link) => {
+					const isActive = activePath === link.href;
+					return (
 						<a
+							key={link.href}
 							href={link.href}
-							class={activePath === link.href ? "menu-active" : ""}
+							class={`px-6 py-3 font-bold border-l-4 transition-none ${
+								isActive
+									? "border-primary bg-base-content text-base-100"
+									: "border-transparent hover:border-base-content hover:bg-base-300 text-base-content"
+							}`}
 						>
 							{link.label}
 						</a>
-					</li>
-				))}
-			</ul>
-		</div>
+					);
+				})}
+			</nav>
+		</>
 	);
 }

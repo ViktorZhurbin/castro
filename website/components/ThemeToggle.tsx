@@ -6,12 +6,10 @@ export default function ThemeToggle() {
 		<>
 			<label
 				id="theme-toggle"
-				class="swap swap-rotate btn btn-ghost btn-circle btn-sm"
+				class="swap swap-rotate btn btn-square btn-ghost btn-sm"
 			>
 				<input type="checkbox" aria-label="Toggle dark mode" />
-				{/* swap-off = unchecked state */}
 				<SunIcon className="swap-off" />
-				{/* swap-on = checked state */}
 				<MoonIcon className="swap-on" />
 			</label>
 

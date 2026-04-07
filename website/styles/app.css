@@ -149,6 +149,20 @@
 		--menu-active-bg: var(--color-base-300);
 		--menu-active-fg: var(--color-primary);
 	}
+
+	/* "What's next" navigation buttons used at the bottom of docs pages */
+	.btn-doc-next {
+		--btn-bg: var(--color-base-200);
+		--btn-fg: var(--color-base-content);
+		--btn-border: var(--color-base-content);
+		@apply btn btn-lg font-display text-2xl border-b-4;
+
+		&:hover {
+			--btn-bg: var(--color-primary);
+			--btn-fg: var(--color-primary-content);
+			--btn-border: var(--color-primary);
+		}
+	}
 }
 
 /* Keeping outside of layers to override tailwindcss/typography styles. This way both normal pages and pages with ".prose" will have the same classes */
@@ -193,5 +207,5 @@ pre {
 
 /* Apply the primary border ONLY to default variant */
 .alert:not([class*="alert-"]) {
-	@apply block border-0 border-l-4 border-l-primary rounded-none mb-3;
+	@apply block border-0 border-l-4 border-l-primary mb-3;
 }
