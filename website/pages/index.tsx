@@ -144,8 +144,7 @@ function HowItWorks() {
 						<p class="text-base-content/80">
 							Pure HTML arrives first. Your page is visible immediately. No
 							waiting for JavaScript bundles. Islands are wrapped in{" "}
-							<code>{"<castro-island>"}</code> custom
-							elements.
+							<code>{"<castro-island>"}</code> custom elements.
 						</p>
 					</div>
 				</div>
@@ -156,11 +155,9 @@ function HowItWorks() {
 						<h3 class="step-block-title">SELECTIVE HYDRATION</h3>
 						<p class="text-base-content/80">
 							JavaScript loads based on your directive.{" "}
-							<code>comrade:eager</code> hydrates
-							immediately. <code>comrade:patient</code>{" "}
-							waits for idle time.{" "}
-							<code>comrade:visible</code> waits for
-							viewport intersection.
+							<code>comrade:eager</code> hydrates immediately.{" "}
+							<code>comrade:patient</code> waits for idle time.{" "}
+							<code>comrade:visible</code> waits for viewport intersection.
 						</p>
 					</div>
 				</div>

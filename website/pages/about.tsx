@@ -4,11 +4,9 @@ export default function About() {
 	return (
 		<section class="flex-1 py-24 px-6 bg-base-200">
 			<div class="max-w-3xl mx-auto">
-				<h1 class="font-display text-5xl md:text-7xl text-primary">ABOUT</h1>
-				<div class="divider divider-primary max-w-xs" />
-				<h2 class="font-display text-2xl md:text-3xl text-secondary mb-8">
-					WHY IT EXISTS
-				</h2>
+				<h1>ABOUT</h1>
+				<div class="border-t-4 border-primary max-w-xs mb-8" />
+				<h2 class="mb-8">WHY IT EXISTS</h2>
 
 				<p class="mb-6">
 					Castro started as a learning project that became a working framework.
@@ -33,11 +31,11 @@ export default function About() {
 						href="https://github.com/ViktorZhurbin/castro"
 						target="_blank"
 						rel="noopener"
-						class="btn btn-lg btn-primary"
+						class="c-btn c-btn-primary"
 					>
 						VIEW SOURCE
 					</a>
-					<a href="/how-it-works" class="btn btn-lg btn-outline btn-primary">
+					<a href="/how-it-works" class="c-btn c-btn-neutral">
 						HOW IT WORKS
 					</a>
 				</div>

@@ -65,7 +65,7 @@
 	--color-neutral: oklch(15% 0 0); /* Stark Black */
 	--color-neutral-content: oklch(98% 0 0);
 
-    /* Deepened semantic colors for contrast against cream */
+	/* Deepened semantic colors for contrast against cream */
 	--color-info: oklch(50% 0.12 250);
 	--color-info-content: oklch(98% 0 0);
 	--color-success: oklch(48% 0.12 150);
@@ -103,11 +103,11 @@
 	--color-accent: oklch(70% 0.02 250); /* Concrete Grey */
 	--color-accent-content: oklch(15% 0 0);
 
-    /* Raised neutral lightness to 35% so it doesn't vanish into the 22% background */
+	/* Raised neutral lightness to 35% so it doesn't vanish into the 22% background */
 	--color-neutral: oklch(35% 0.01 250);
 	--color-neutral-content: oklch(98% 0 0);
 
-    /* Lighter semantic colors in dark mode require dark content text to pass AA */
+	/* Lighter semantic colors in dark mode require dark content text to pass AA */
 	--color-info: oklch(70% 0.12 250);
 	--color-info-content: oklch(15% 0 0);
 	--color-success: oklch(70% 0.15 150);
