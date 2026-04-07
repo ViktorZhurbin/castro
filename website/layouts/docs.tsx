@@ -55,8 +55,9 @@ const DocsLayout = (props: DocsLayoutProps) => {
 					<div class="bg-base-100 border-b-2 border-base-content flex items-center px-4 py-2">
 						<label
 							htmlFor="docs-drawer"
-							class="btn btn-ghost btn-square btn-sm"
+							class="btn btn-ghost btn-square btn-sm tooltip tooltip-right"
 							aria-label="Open sidebar"
+							data-tip="Open sidebar"
 						>
 							<MenuIcon />
 						</label>
@@ -124,7 +125,7 @@ function SidebarNav({
 }) {
 	return (
 		<>
-			<div class="px-6 py-4 bg-primary text-primary-content border-b-2 border-base-content">
+			<div class="px-6 py-4 bg-base text-base-content border-b-2 border-base-content">
 				<h2 class="font-display text-4xl m-0 tracking-wider leading-none">
 					{sectionTitle}
 				</h2>
