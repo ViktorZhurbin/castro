@@ -30,7 +30,7 @@ export function Header({ activePath }: { activePath?: string }) {
 						<a
 							key={link.href}
 							href={link.href}
-							class={`btn btn-sm font-display text-lg border-none shadow-none border-b-2 transition-none ${
+							class={`btn btn-sm font-display text-lg border-none shadow-none border-b-2 ${
 								link.active
 									? "bg-primary text-primary-content border-b-primary"
 									: "bg-transparent text-base-content border-b-transparent hover:border-b-base-content hover:bg-transparent"

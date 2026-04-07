@@ -48,40 +48,48 @@ const DocsLayout = (props: DocsLayoutProps) => {
 		<PageShell title={title} activePath={path}>
 			{/* Mobile: DaisyUI drawer overlay */}
 			<div class="drawer lg:hidden flex-1 overflow-hidden">
-					<input id="docs-drawer" type="checkbox" class="drawer-toggle" />
+				<input id="docs-drawer" type="checkbox" class="drawer-toggle" />
 
-					<div class="drawer-content flex flex-col overflow-hidden">
-						{/* Mobile toggle bar — must be inside drawer-content per DaisyUI */}
-						<div class="bg-base-100 border-b-2 border-base-content flex items-center px-4 py-2">
-							<label
-								htmlFor="docs-drawer"
-								class="btn btn-ghost btn-square btn-sm"
-								aria-label="Open sidebar"
-							>
-								<MenuIcon />
-							</label>
-						</div>
-
-						<DocsContent>{children}</DocsContent>
-					</div>
-
-					{/* Mobile sidebar overlay */}
-					<div class="drawer-side z-60 border-r-2 border-base-content">
+				<div class="drawer-content flex flex-col overflow-hidden">
+					{/* Mobile toggle bar — must be inside drawer-content per DaisyUI */}
+					<div class="bg-base-100 border-b-2 border-base-content flex items-center px-4 py-2">
 						<label
 							htmlFor="docs-drawer"
-							aria-label="Close sidebar"
-							class="drawer-overlay"
+							class="btn btn-ghost btn-square btn-sm"
+							aria-label="Open sidebar"
+						>
+							<MenuIcon />
+						</label>
+					</div>
+
+					<DocsContent>{children}</DocsContent>
+				</div>
+
+				{/* Mobile sidebar overlay */}
+				<div class="drawer-side z-60 border-r-2 border-base-content">
+					<label
+						htmlFor="docs-drawer"
+						aria-label="Close sidebar"
+						class="drawer-overlay"
+					/>
+					<div class="bg-base-200 min-h-full w-64 flex flex-col">
+						<SidebarNav
+							sectionTitle={sectionTitle}
+							links={links}
+							activePath={path}
 						/>
-						<div class="bg-base-200 min-h-full w-64 flex flex-col">
-							<SidebarNav sectionTitle={sectionTitle} links={links} activePath={path} />
-						</div>
 					</div>
 				</div>
+			</div>
 
 			{/* Desktop: simple flex layout, sidebar always visible */}
 			<div class="hidden lg:flex flex-1 overflow-hidden">
 				<aside class="shrink-0 w-64 bg-base-200 border-r-2 border-base-content overflow-y-auto flex flex-col">
-					<SidebarNav sectionTitle={sectionTitle} links={links} activePath={path} />
+					<SidebarNav
+						sectionTitle={sectionTitle}
+						links={links}
+						activePath={path}
+					/>
 				</aside>
 
 				<DocsContent>{children}</DocsContent>
@@ -129,7 +137,7 @@ function SidebarNav({
 						<a
 							key={link.href}
 							href={link.href}
-							class={`px-6 py-3 font-bold border-l-4 transition-none ${
+							class={`px-6 py-3 font-bold border-l-4 ${
 								isActive
 									? "border-primary bg-base-content text-base-100"
 									: "border-transparent hover:border-base-content hover:bg-base-300 text-base-content"
