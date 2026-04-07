@@ -18,7 +18,7 @@ export function Header({ activePath }: { activePath?: string }) {
 			<div class="flex items-center flex-1 justify-start gap-2">
 				<a
 					href="/"
-					class="btn btn-ghost btn-square btn-sm rounded-none text-primary hover:bg-primary/10"
+					class="btn btn-ghost btn-square btn-sm text-primary hover:bg-primary/10"
 					aria-label="Home"
 				>
 					<StarIcon />
@@ -30,7 +30,7 @@ export function Header({ activePath }: { activePath?: string }) {
 						<a
 							key={link.href}
 							href={link.href}
-							class={`btn btn-sm font-display text-lg rounded-none border-none shadow-none border-b-2 transition-none ${
+							class={`btn btn-sm font-display text-lg border-none shadow-none border-b-2 transition-none ${
 								link.active
 									? "bg-primary text-primary-content border-b-primary"
 									: "bg-transparent text-base-content border-b-transparent hover:border-b-base-content hover:bg-transparent"
@@ -44,13 +44,13 @@ export function Header({ activePath }: { activePath?: string }) {
 				{/* Mobile dropdown */}
 				<details class="dropdown sm:hidden">
 					<summary
-						class="btn btn-ghost btn-square btn-sm rounded-none"
+						class="btn btn-ghost btn-square btn-sm"
 						aria-label="Open menu"
 					>
 						<MenuIcon />
 					</summary>
 					{/* Heavy borders for the dropdown menu */}
-					<ul class="dropdown-content bg-base-100 border-4 border-base-content rounded-none z-50 w-48 p-2 shadow-none mt-2 flex flex-col gap-1">
+					<ul class="dropdown-content bg-base-100 border-4 border-base-content z-50 w-48 p-2 shadow-none mt-2 flex flex-col gap-1">
 						{navLinks.map((link) => (
 							<li key={link.href}>
 								<a

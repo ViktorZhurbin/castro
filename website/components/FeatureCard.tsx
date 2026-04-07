@@ -25,7 +25,7 @@ export function FeatureCard({
 		<a
 			{...linkProps}
 			href={href}
-			class={`card bg-base-100 border-2 border-base-300 border-t-8 ${topBorderColor[color]} hover:border-base-content transition-colors rounded-none`}
+			class={`card bg-base-100 border-2 border-base-content border-t-8 ${topBorderColor[color]} hover:bg-base-200 transition-colors`}
 		>
 			<div class="card-body">
 				<h3 class="card-title font-display text-2xl text-base-content">

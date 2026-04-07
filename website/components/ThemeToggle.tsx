@@ -6,7 +6,7 @@ export default function ThemeToggle() {
 		<>
 			<label
 				id="theme-toggle"
-				class="swap swap-rotate btn btn-square btn-ghost btn-sm"
+				class="swap swap-flip btn btn-square btn-ghost btn-sm"
 			>
 				<input type="checkbox" aria-label="Toggle dark mode" />
 				<SunIcon className="swap-off" />

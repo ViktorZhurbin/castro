@@ -60,7 +60,7 @@ Don't reach for `text-success` to make something feel positive, or `text-warning
 
 ## Layout & Structure
 
-- Zero border radius everywhere — the theme variables handle this, but always use `rounded-none` on DaisyUI components that override it (buttons, cards, badges)
+- Zero border radius everywhere — the theme variables handle this.
 - Heavy borders over shadows — `border-2` or `border-t-8` conveys structure; `shadow-*` conveys SaaS softness
 - `btn-neutral` (stark black/charcoal) as the secondary CTA — not `btn-outline`, which reads as "ghost" and gets lost
 - Default alerts (no semantic class) get a thick `border-l-primary` left border via `app.css`. Semantic alerts (`alert-success`, `alert-warning`, etc.) use DaisyUI's built-in styling unchanged.
