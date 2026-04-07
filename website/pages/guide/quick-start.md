@@ -192,6 +192,6 @@ The dev server watches for changes and reloads automatically. The build produces
 ## WHAT'S NEXT
 
 <div class="flex flex-wrap gap-4 mt-6">
-  <a href="/guide/components-islands" class="btn-doc-next">COMPONENTS & ISLANDS →</a>
-  <a href="/reference/config" class="btn-doc-next">CONFIGURATION →</a>
+  <a href="/guide/components-islands" class="not-prose c-btn c-btn-base">COMPONENTS & ISLANDS →</a>
+  <a href="/reference/config" class="not-prose c-btn c-btn-base">CONFIGURATION →</a>
 </div>

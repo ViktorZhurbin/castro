@@ -131,7 +131,7 @@ type Asset =
 ```
 
 <div class="flex flex-wrap gap-4">
-  <a href="/reference/config" class="btn-doc-next">
+  <a href="/reference/config" class="not-prose c-btn c-btn-base">
     ← Configuration
   </a>
 </div>

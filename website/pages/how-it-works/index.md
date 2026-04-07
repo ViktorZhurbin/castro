@@ -141,10 +141,10 @@ mandatory.
 -----
 
 <div class="flex flex-wrap gap-4">
-  <a href="/how-it-works/hydration" class="btn-doc-next">
+  <a href="/how-it-works/hydration" class="not-prose c-btn c-btn-base">
     Next: Hydration →
   </a>
-  <a href="/guide/quick-start" class="btn-doc-next">
+  <a href="/guide/quick-start" class="not-prose c-btn c-btn-base">
     Quick Start Guide →
   </a>
 </div>

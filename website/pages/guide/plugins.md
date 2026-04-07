@@ -68,10 +68,10 @@ That's the full plugin. For complete plugin examples see [packages/](https://git
 -----
 
 <div class="flex flex-wrap gap-4">
-  <a href="/guide/components-islands" class="btn-doc-next">
+  <a href="/guide/components-islands" class="not-prose c-btn c-btn-base">
     ← Components & Islands
   </a>
-  <a href="/reference/plugin-api" class="btn-doc-next">
+  <a href="/reference/plugin-api" class="not-prose c-btn c-btn-base">
     Plugin API →
   </a>
 </div>
