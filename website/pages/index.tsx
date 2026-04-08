@@ -1,4 +1,3 @@
-import { FeatureCard } from "@components/FeatureCard.tsx";
 import { StarIcon } from "@components/icons/StarIcon.tsx";
 
 export const meta = { title: "Castro - The People's Framework" };
@@ -9,7 +8,31 @@ export default function Home() {
 			<Hero />
 			<Features />
 			<HowItWorks />
+			<section class="py-16 px-6 bg-base-100 text-center">
+				<CTAButtons />
+			</section>
 		</>
+	);
+}
+
+function CTAButtons() {
+	return (
+		<div class="flex flex-wrap gap-4 justify-center">
+			<a href="/guide/quick-start" class="c-btn c-btn-primary">
+				GET STARTED
+			</a>
+			<a href="/how-it-works" class="c-btn c-btn-neutral">
+				HOW IT WORKS
+			</a>
+			<a
+				href="https://github.com/ViktorZhurbin/castro"
+				target="_blank"
+				rel="noopener"
+				class="c-btn c-btn-base"
+			>
+				VIEW SOURCE
+			</a>
+		</div>
 	);
 }
 
@@ -34,22 +57,7 @@ function Hero() {
 					<p class="italic text-sm mb-10 text-base-content/80">
 						"The satire is optional. The knowledge is real."
 					</p>
-					<div class="flex flex-wrap gap-4 justify-center">
-						<a href="/guide/quick-start" class="c-btn c-btn-primary">
-							GET STARTED
-						</a>
-						<a href="/how-it-works" class="c-btn c-btn-neutral">
-							HOW IT WORKS
-						</a>
-						<a
-							href="https://github.com/ViktorZhurbin/castro"
-							target="_blank"
-							rel="noopener"
-							class="c-btn c-btn-base"
-						>
-							VIEW SOURCE
-						</a>
-					</div>
+					<CTAButtons />
 				</div>
 			</div>
 		</div>
@@ -60,55 +68,131 @@ function Features() {
 	return (
 		<section class="py-24 px-6 bg-base-100">
 			<div class="max-w-5xl mx-auto text-center mb-16">
-				<h2 class="font-display text-5xl md:text-6xl text-base-content">
-					WHAT THE PARTY OFFERS
-				</h2>
+				<h1 class="font-display">WHAT THE PARTY OFFERS</h1>
 				<p class="mt-4">
-					Everything you need. Nothing you don't. Each piece is small enough to
-					read, understand, and replace.
+					A working static site generator you can read in an afternoon and
+					understand completely.
 				</p>
 			</div>
 
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-				<FeatureCard
-					title="ISLAND ARCHITECTURE"
-					description="Static HTML by default. JavaScript only where you need it."
-					href="/how-it-works"
-					color="primary"
-				/>
-				<FeatureCard
-					title="READABLE BY DESIGN"
-					description="The entire engine fits in your head. Every file explains why."
-					href="https://github.com/ViktorZhurbin/castro/tree/main/castro/src"
-					external
-					color="secondary"
-				/>
-				<FeatureCard
-					title="CLIENT DIRECTIVES"
-					description="Immediate, idle, or lazy. You choose per component."
-					href="/guide/components-islands"
-					color="accent"
-				/>
+			<div class="max-w-4xl mx-auto text-center">
+				<h2 class="font-display mb-6">THE INTERACTIVITY SPECTRUM</h2>
+				<p class="text-center mb-4">
+					Each level adds capability and ships more JavaScript. The right choice
+					is the lowest level that meets your needs.
+				</p>
+				<div class="flex flex-wrap gap-4 justify-center">
+					<SpectrumCard
+						level="01"
+						title="STATIC"
+						js="0 bytes"
+						body="JSX rendered to HTML at build time."
+						color="primary"
+					/>
+					<SpectrumCard
+						level="02"
+						title="CLIENT SCRIPT"
+						js="one function"
+						body="DOM access without a framework runtime."
+						color="secondary"
+					/>
+					<SpectrumCard
+						level="03"
+						title="VANILLA ISLAND"
+						js="your code only"
+						body="Full island lifecycle, no framework cost."
+						color="accent"
+					/>
+					<SpectrumCard
+						level="04"
+						title="FRAMEWORK ISLAND"
+						js="your code + runtime"
+						body="Reactive state when you need it."
+						color="primary"
+					/>
+				</div>
+			</div>
+
+			<div class="divider max-w-5xl mx-auto mt-14 mb-7 font-display text-base-content/60 tracking-widest">
+				ALSO INCLUDED
+			</div>
+
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mt-16">
 				<FeatureCard
 					title="BUN-NATIVE"
-					description="Built on Bun from the ground up. No webpack, no vite, no config files."
-					href="/guide/quick-start"
-					color="primary"
+					description="No Webpack, no Vite. Built on Bun's build pipeline from the ground up."
+					color="secondary"
 				/>
 				<FeatureCard
 					title="PLUGIN SYSTEM"
-					description="Tailwind CSS, custom frameworks, asset injection."
-					href="/guide/plugins"
-					color="secondary"
+					description="Tailwind, custom frameworks, asset injection. The core stays small."
+					color="accent"
 				/>
 				<FeatureCard
-					title="INTERACTIVITY SPECTRUM"
-					description="Static component, ClientScript, vanilla island, framework island. Choose your level."
-					href="/guide/components-islands"
-					color="accent"
+					title="READABLE BY DESIGN"
+					description="Every file explains why. Read the source, understand the system."
+					color="primary"
 				/>
 			</div>
 		</section>
+	);
+}
+
+interface FeatureCardProps {
+	title: string;
+	description: string;
+	color?: "primary" | "secondary" | "accent";
+}
+
+const leftBorderColor = {
+	primary: "border-l-primary",
+	secondary: "border-l-secondary",
+	accent: "border-l-accent",
+};
+
+function FeatureCard({
+	title,
+	description,
+	color = "primary",
+}: FeatureCardProps) {
+	return (
+		<div
+			class={`bg-base-100 border border-base-content/20 border-l-4 ${leftBorderColor[color]} p-6`}
+		>
+			<h3 class="font-display text-2xl text-base-content mb-2">{title}</h3>
+			<p>{description}</p>
+		</div>
+	);
+}
+
+interface SpectrumCardProps {
+	level: string;
+	title: string;
+	js: string;
+	body: string;
+	color: "primary" | "secondary" | "accent";
+}
+
+const topBorderColor = {
+	primary: "border-t-primary",
+	secondary: "border-t-secondary",
+	accent: "border-t-accent",
+};
+
+function SpectrumCard({ level, title, js, body, color }: SpectrumCardProps) {
+	return (
+		<div
+			class={`w-53 bg-base-200 border-2 border-t-8 ${topBorderColor[color]} p-5 flex flex-col gap-3`}
+		>
+			<span class="font-display text-base-content/60 text-2xl">{level}</span>
+			<h3>{title}</h3>
+			<span
+				class={`font-mono text-xs font-bold uppercase tracking-wider border px-2 py-1`}
+			>
+				js: {js}
+			</span>
+			<p>{body}</p>
+		</div>
 	);
 }
 
@@ -117,11 +201,11 @@ function HowItWorks() {
 		<section class="flex flex-col py-24 px-6 bg-base-200">
 			<div class="text-center mb-16">
 				<h2 class="font-display text-5xl md:text-6xl text-primary">
-					HOW THE REVOLUTION WORKS
+					HOW IT WORKS AT RUNTIME
 				</h2>
 				<p class="max-w-xl mx-auto mt-4 text-base-content/80 text-lg">
-					Island architecture explained. No magic, just smart progressive
-					enhancement.
+					Island architecture in four steps. No magic, just HTML-first
+					progressive enhancement.
 				</p>
 			</div>
 
@@ -129,10 +213,12 @@ function HowItWorks() {
 				<div class="c-step">
 					<div class="c-step-number">1</div>
 					<div class="c-step-content">
-						<h3 class="c-step-title">BUILD TIME</h3>
+						<h3 class="c-step-title">BROWSER RECEIVES HTML</h3>
 						<p class="text-base-content/80">
-							Castro compiles your pages and renders all islands to HTML before
-							anything reaches the browser.
+							Castro renders everything to HTML at build time. Pure HTML arrives
+							first — your page is visible immediately, no JavaScript required.
+							Islands are wrapped in <code>{"<castro-island>"}</code> custom
+							elements.
 						</p>
 					</div>
 				</div>
@@ -140,11 +226,13 @@ function HowItWorks() {
 				<div class="c-step">
 					<div class="c-step-number">2</div>
 					<div class="c-step-content">
-						<h3 class="c-step-title">BROWSER RECEIVES HTML</h3>
+						<h3 class="c-step-title">SELECTIVE HYDRATION</h3>
 						<p class="text-base-content/80">
-							Pure HTML arrives first. Your page is visible immediately. No
-							waiting for JavaScript bundles. Islands are wrapped in{" "}
-							<code>{"<castro-island>"}</code> custom elements.
+							JavaScript loads only for islands that need it, based on your
+							directive. <code>comrade:eager</code> hydrates immediately.{" "}
+							<code>comrade:patient</code> waits for idle time.{" "}
+							<code>comrade:visible</code> waits until the island enters the
+							viewport.
 						</p>
 					</div>
 				</div>
@@ -152,12 +240,10 @@ function HowItWorks() {
 				<div class="c-step">
 					<div class="c-step-number">3</div>
 					<div class="c-step-content">
-						<h3 class="c-step-title">SELECTIVE HYDRATION</h3>
+						<h3 class="c-step-title">ISLANDS ACTIVATE</h3>
 						<p class="text-base-content/80">
-							JavaScript loads based on your directive.{" "}
-							<code>comrade:eager</code> hydrates immediately.{" "}
-							<code>comrade:patient</code> waits for idle time.{" "}
-							<code>comrade:visible</code> waits for viewport intersection.
+							Each island hydrates independently. The rest of the page never
+							waits. Static content stays static.
 						</p>
 					</div>
 				</div>
@@ -165,10 +251,11 @@ function HowItWorks() {
 				<div class="c-step">
 					<div class="c-step-number">4</div>
 					<div class="c-step-content">
-						<h3 class="c-step-title">INTERACTIVE ISLANDS</h3>
+						<h3 class="c-step-title">YOU SHIPPED LESS JAVASCRIPT</h3>
 						<p class="text-base-content/80">
-							Components become interactive exactly when needed. That's island
-							architecture — the rest of the page never waits for them.
+							Only the code your islands need reaches the browser. No framework
+							runtime on static pages. No bundling what isn't used. That's the
+							point.
 						</p>
 					</div>
 				</div>
