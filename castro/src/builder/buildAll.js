@@ -62,6 +62,11 @@ export async function buildAll() {
 
 	try {
 		for await (const sourcePath of pageGlob.scan(PAGES_DIR)) {
+			// Skip files/folders prefixed with `_` (private convention, e.g. _drafts/, _partial.tsx)
+			if (sourcePath.split("/").some((segment) => segment.startsWith("_"))) {
+				continue;
+			}
+
 			const outputPath = sourcePath.replace(/\.(md|[jt]sx)$/, ".html");
 
 			// Example: both foo.md and foo.jsx try to be foo.html
