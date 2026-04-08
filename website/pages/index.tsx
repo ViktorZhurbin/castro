@@ -126,10 +126,10 @@ function HowItWorks() {
 			</div>
 
 			<div class="max-w-3xl mx-auto flex flex-col gap-6">
-				<div class="step-block">
-					<div class="step-block-number">1</div>
-					<div class="step-block-content">
-						<h3 class="step-block-title">BUILD TIME</h3>
+				<div class="c-step">
+					<div class="c-step-number">1</div>
+					<div class="c-step-content">
+						<h3 class="c-step-title">BUILD TIME</h3>
 						<p class="text-base-content/80">
 							Castro compiles your pages and renders all islands to HTML before
 							anything reaches the browser.
@@ -137,10 +137,10 @@ function HowItWorks() {
 					</div>
 				</div>
 
-				<div class="step-block">
-					<div class="step-block-number">2</div>
-					<div class="step-block-content">
-						<h3 class="step-block-title">BROWSER RECEIVES HTML</h3>
+				<div class="c-step">
+					<div class="c-step-number">2</div>
+					<div class="c-step-content">
+						<h3 class="c-step-title">BROWSER RECEIVES HTML</h3>
 						<p class="text-base-content/80">
 							Pure HTML arrives first. Your page is visible immediately. No
 							waiting for JavaScript bundles. Islands are wrapped in{" "}
@@ -149,10 +149,10 @@ function HowItWorks() {
 					</div>
 				</div>
 
-				<div class="step-block">
-					<div class="step-block-number">3</div>
-					<div class="step-block-content">
-						<h3 class="step-block-title">SELECTIVE HYDRATION</h3>
+				<div class="c-step">
+					<div class="c-step-number">3</div>
+					<div class="c-step-content">
+						<h3 class="c-step-title">SELECTIVE HYDRATION</h3>
 						<p class="text-base-content/80">
 							JavaScript loads based on your directive.{" "}
 							<code>comrade:eager</code> hydrates immediately.{" "}
@@ -162,10 +162,10 @@ function HowItWorks() {
 					</div>
 				</div>
 
-				<div class="step-block">
-					<div class="step-block-number">4</div>
-					<div class="step-block-content">
-						<h3 class="step-block-title">INTERACTIVE ISLANDS</h3>
+				<div class="c-step">
+					<div class="c-step-number">4</div>
+					<div class="c-step-content">
+						<h3 class="c-step-title">INTERACTIVE ISLANDS</h3>
 						<p class="text-base-content/80">
 							Components become interactive exactly when needed. That's island
 							architecture — the rest of the page never waits for them.

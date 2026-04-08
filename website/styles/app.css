@@ -75,12 +75,19 @@
 	--color-error: oklch(53% 0.2 20);
 	--color-error-content: oklch(98% 0 0);
 
+	 /* border radius */
 	--radius-selector: 0rem;
 	--radius-field: 0rem;
 	--radius-box: 0rem;
+
+	/* base sizes */
 	--size-selector: 0.25rem;
 	--size-field: 0.25rem;
+
+	/* border size */
 	--border: 2px;
+
+	/* effects */
 	--depth: 1;
 	--noise: 0;
 }
@@ -149,17 +156,17 @@
 		letter-spacing: 0.05em;
 	}
 
-	/* Constructivist step blocks (replaces DaisyUI .steps) */
-	.step-block {
+	/* Constructivist step blocks */
+	.c-step {
 		@apply flex border-2 border-base-content bg-base-100;
 	}
-	.step-block-number {
+	.c-step-number {
 		@apply bg-primary text-primary-content font-display text-5xl md:text-6xl flex items-center justify-center w-20 md:w-28 shrink-0 border-r-2 border-base-content;
 	}
-	.step-block-content {
+	.c-step-content {
 		@apply p-6 md:p-8;
 	}
-	.step-block-title {
+	.c-step-title {
 		@apply font-display text-3xl text-base-content leading-none mb-2;
 	}
 
