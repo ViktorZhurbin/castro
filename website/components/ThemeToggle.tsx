@@ -4,12 +4,13 @@ import { DARK, LIGHT, STORAGE_KEY } from "../lib/theme.ts";
 export default function ThemeToggle() {
 	return (
 		<>
-			<label
-				id="theme-toggle"
-				class="swap btn btn-square btn-ghost btn-sm tooltip tooltip-left"
-				data-tip="Toggle theme"
-			>
-				<input type="checkbox" aria-label="Toggle dark mode" />
+			<label id="theme-toggle" class="swap btn btn-square btn-ghost btn-sm ">
+				<input
+					type="checkbox"
+					aria-label="Toggle theme"
+					class="tooltip tooltip-left font-medium"
+					data-tip="Toggle theme"
+				/>
 				<SunIcon className="swap-off" />
 				<MoonIcon className="swap-on" />
 			</label>
