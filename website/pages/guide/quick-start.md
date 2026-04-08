@@ -11,11 +11,8 @@ Mobilize a static site with interactive islands in under three minutes. Follow t
 
 ## PREREQUISITES
 
-Castro runs on [Bun](https://bun.sh) 1.3.8+. It uses Bun's build pipeline, markdown parser, YAML parser, and dev server. Node will not work here. The old ways have failed.
+Castro runs on Bun 1.3.8+, so you'd need to [install](https://bun.sh) it. It uses Bun's build pipeline, markdown parser, YAML parser, and dev server. Node will not work here. The old ways have failed.
 
-```bash
-curl -fsSL https://bun.sh/install | bash  # takes ~10 seconds
-```
 
 ## 1. INSTALLATION
 
