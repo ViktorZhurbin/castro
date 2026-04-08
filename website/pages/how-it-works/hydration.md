@@ -15,7 +15,7 @@ The build pipeline produces static HTML with `<castro-island>` wrappers. Now the
 The browser loads `castro-island.js` and registers a `<castro-island>` custom element. When one connects to the DOM, `connectedCallback()` reads the `directive` attribute and decides what happens next.
 
 <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-center mb-8">
-  <div class="card card-bordered border-base-300 bg-base-200 p-6 text-center">
+  <div class="card card-border border-base-content bg-base-200 p-6 text-center">
     <span class="badge badge-primary mb-3 mx-auto">connectedCallback()</span>
     <p class="text-sm text-base-content/80">Fires when the element enters the DOM. Reads the <code>directive</code> attribute.</p>
   </div>
@@ -26,18 +26,18 @@ The browser loads `castro-island.js` and registers a `<castro-island>` custom el
   </div>
 
   <div class="flex flex-col gap-4">
-    <div class="card card-bordered border-primary bg-base-200 p-4">
+    <div class="card card-dash border-base-content bg-base-200 p-4">
       <div class="flex items-center mb-2 gap-2">
         <span class="badge badge-primary">comrade:visible</span>
         <span class="badge badge-sm badge-dash">default</span>
       </div>
       <p class="text-sm text-base-content/80">Wait for the element to enter the viewport via <code>IntersectionObserver</code> (with a 100px buffer). Then hydrate.</p>
     </div>
-    <div class="card card-bordered border-accent bg-base-200 p-4">
+    <div class="card card-dash border-base-content bg-base-200 p-4">
       <span class="badge badge-accent mb-2">comrade:patient</span>
       <p class="text-sm text-base-content/80">Wait for page load, then wait for the browser to be idle via <code>requestIdleCallback</code>. Falls back to immediate hydration on Safari &lt;119.</p>
     </div>
-    <div class="card card-bordered border-accent bg-base-200 p-4">
+    <div class="card card-dash border-base-content bg-base-200 p-4">
       <span class="badge badge-accent mb-2">comrade:eager</span>
       <p class="text-sm text-base-content/80">Hydrate immediately. No waiting. JS loads as soon as the element connects.</p>
     </div>

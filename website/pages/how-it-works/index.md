@@ -15,7 +15,7 @@ Castro's build pipeline has three moving parts. Understanding all three is under
 Islands compile before any pages are processed. Each `.island.tsx` file goes through `Bun.build` twice - once for the server (producing an SSR module that's pre-loaded into a registry) and once for the browser (producing a hashed JS bundle written to `dist/islands/`). The server needs a Bun module; the browser needs an ES module. Same source, two targets.
 
 <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-center">
-  <div class="card card-bordered border-base-300 bg-base-200 p-6 text-center">
+  <div class="card card-border border-base-content bg-base-200 p-6 text-center">
     <span class="badge badge-primary mb-3 mx-auto">Counter.island.tsx</span>
     <p class="text-sm text-base-content/80">Your island source file</p>
   </div>
@@ -27,11 +27,11 @@ Islands compile before any pages are processed. Each `.island.tsx` file goes thr
   </div>
 
   <div class="flex flex-col gap-4">
-    <div class="card card-bordered border-primary bg-base-200 p-5">
+    <div class="card card-dash border-base-content bg-base-200 p-5">
       <span class="badge badge-secondary mb-2">SSR Module</span>
       <p class="text-sm text-base-content/80">Runs at build time. Renders the island to HTML on the server. Stored in-memory, and accessed during page rendering.</p>
     </div>
-    <div class="card card-bordered border-primary bg-base-200 p-5">
+    <div class="card card-dash border-base-content bg-base-200 p-5">
       <span class="badge badge-accent mb-2">Counter-a1b2.js</span>
       <p class="text-sm text-base-content/80">Client bundle. Put into <code>dist/islands/</code>. Loaded by the browser on demand.</p>
     </div>
