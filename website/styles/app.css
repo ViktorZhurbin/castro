@@ -205,6 +205,10 @@
 	}
 }
 
+* {
+	scrollbar-width: thin;
+}
+
 /* Keeping outside of layers to override tailwindcss/typography styles. This way both normal pages and pages with "prose" will have the same classes */
 h1,
 h2,

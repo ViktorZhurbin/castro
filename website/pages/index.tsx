@@ -38,7 +38,7 @@ function CTAButtons() {
 
 function Hero() {
 	return (
-		<div class="sm:min-h-[calc(100vh-3rem)] bg-base-200">
+		<div class="hero sm:min-h-[calc(100vh-3rem)] bg-base-200">
 			<div class="hero-content text-center px-6">
 				<div class="max-w-3xl">
 					<div class="w-32 h-32 mx-auto mb-10 text-primary">

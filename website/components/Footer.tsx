@@ -1,6 +1,6 @@
 export function Footer() {
 	return (
-		<footer class="bg-base-300 py-12 px-6 border-t-4 border-primary">
+		<footer class="bg-base-300 pb-20 md:pb-12 pt-12 px-6 border-t-4 border-primary">
 			<div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
 				{/* Slogan locked hard left */}
 				<div>

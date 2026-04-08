@@ -52,7 +52,7 @@ const DocsLayout = (props: DocsLayoutProps) => {
 
 				<div class="drawer-content flex flex-col overflow-hidden">
 					{/* Mobile toggle bar — must be inside drawer-content per DaisyUI */}
-					<div class="bg-base-100 border-b-2 border-base-content flex items-center px-4 py-2">
+					<div class="bg-base-100 border-b-2 border-base-content flex items-center px-4">
 						<label
 							htmlFor="docs-drawer"
 							class="btn btn-ghost btn-square btn-sm tooltip tooltip-right font-medium"
