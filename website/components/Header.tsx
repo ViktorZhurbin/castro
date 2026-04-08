@@ -42,8 +42,7 @@ export function Header({ activePath }: { activePath?: string }) {
 				{/* Mobile dropdown */}
 				<details class="dropdown sm:hidden">
 					<summary
-						class="tooltip tooltip-right font-medium btn btn-ghost btn-square btn-sm"
-						data-tip="Open menu"
+						class="btn btn-ghost btn-square btn-sm"
 						aria-label="Open menu"
 					>
 						<MoreIcon />

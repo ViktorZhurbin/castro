@@ -55,9 +55,8 @@ const DocsLayout = (props: DocsLayoutProps) => {
 					<div class="bg-base-100 border-b-2 border-base-content flex items-center px-4">
 						<label
 							htmlFor="docs-drawer"
-							class="btn btn-ghost btn-square btn-sm tooltip tooltip-right font-medium"
+							class="btn btn-ghost btn-square btn-sm"
 							aria-label="Open sidebar"
-							data-tip="Open sidebar"
 						>
 							<MenuIcon />
 						</label>
