@@ -1,30 +1,38 @@
 export function Footer() {
 	return (
-		<footer class="footer footer-center footer-horizontal sm:footer-vertical bg-base-300 py-8 px-6 pb-16 border-t-2 border-primary">
-			<div>
-				<p class="font-display text-3xl text-base-content">
-					WORKERS OF THE WEB, UNITE!
-				</p>
-				<p class="font-display text-xl text-base-content/80">
-					SEIZE THE MEANS OF RENDERING.
-				</p>
+		<footer class="bg-base-300 py-12 px-6 border-t-4 border-primary">
+			<div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+				{/* Slogan locked hard left */}
+				<div>
+					<p class="font-display text-4xl md:text-5xl text-base-content leading-none">
+						WORKERS OF THE WEB, UNITE!
+					</p>
+					<p class="font-display text-xl md:text-2xl text-base-content/70 mt-2 leading-none">
+						SEIZE THE MEANS OF RENDERING.
+					</p>
+				</div>
+
+				{/* Utilities anchored right */}
+				<div class="flex flex-col md:items-end gap-4">
+					<nav class="flex gap-6 text-sm font-bold uppercase tracking-wide">
+						<a href="/about" class="hover:text-primary transition-colors">
+							About
+						</a>
+						<a
+							href="https://github.com/ViktorZhurbin/castro"
+							target="_blank"
+							rel="noopener"
+							class="hover:text-primary transition-colors"
+						>
+							GitHub
+						</a>
+					</nav>
+					<p class="text-base-content/60 text-xs font-medium md:text-right">
+						Built with Castro <br class="hidden md:block" />
+						The People's Framework
+					</p>
+				</div>
 			</div>
-			<nav class="flex gap-8 text-sm font-bold uppercase tracking-wide">
-				<a href="/about" class="link link-hover">
-					About
-				</a>
-				<a
-					href="https://github.com/ViktorZhurbin/castro"
-					target="_blank"
-					rel="noopener"
-					class="link link-hover"
-				>
-					GitHub
-				</a>
-			</nav>
-			<p class="text-base-content/80 text-xs">
-				Built with Castro | The People's Framework
-			</p>
 		</footer>
 	);
 }

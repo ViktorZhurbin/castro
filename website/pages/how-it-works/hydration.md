@@ -147,7 +147,7 @@ HTML arrives
 That's island architecture: static HTML by default, JavaScript delivered exactly when each component needs it.
 
 <div class="flex flex-wrap gap-4">
-  <a href="/how-it-works" class="btn btn-outline btn-primary">
+  <a href="/how-it-works" class="not-prose c-btn c-btn-base">
     ← Back to The Build Pipeline
   </a>
 </div>

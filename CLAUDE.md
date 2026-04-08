@@ -218,6 +218,12 @@ Demo site that consumes castro. Uses Tailwind CSS v4 + DaisyUI v5 via `@vktrz/ca
 
 **Reference Documentation**: `.claude/docs/` contains tool and framework references with a consistent naming pattern: `{tool}-{concept}.md` (e.g., `bun-bundler.md`, `bun-server.md`, `daisyui-llms.md`) and concept-specific files (e.g., `web-components.md`, `preact-render-to-string.md`). When working with a specific library, search by tool prefix or concept name.
 
+**Design guidelines**: `website/DESIGN.md` — full rules for the Soviet Constructivist aesthetic. Read this before making any UI changes. Short version:
+- Apply color **structurally** (borders, backgrounds), not **typographically** (text). Gold on cream fails contrast; a gold border-top on a card does not.
+- `text-secondary` and `text-accent` are banned on headings/body — they fail WCAG AA and break the aesthetic. Use `text-primary` or `text-base-content` only.
+- Zero border radius everywhere. Heavy borders over shadows. `btn-neutral` as the secondary CTA.
+- Do not default to "gentle SaaS" patterns: no soft gradients, no rounded cards, no pastel badges and soft buttons, no hover-lift shadows.
+
 ## Maintaining This File
 
 If your changes affect anything documented above (file structure, commands, architecture, design decisions), update this file as part of the same change. This file is the primary context source for AI-assisted development.

@@ -25,7 +25,9 @@ function Hero() {
 					<p class="font-display text-3xl md:text-5xl mt-2 mb-6">
 						THE PEOPLE'S FRAMEWORK
 					</p>
-					<div class="divider divider-primary max-w-xs mx-auto" />
+
+					<hr class="border-0 border-t-8 border-primary w-32 mx-auto my-10" />
+
 					<p class="text-lg font-bold mb-1">
 						Your Five-Year Plan to Learn Island Architecture
 					</p>
@@ -33,17 +35,17 @@ function Hero() {
 						"The satire is optional. The knowledge is real."
 					</p>
 					<div class="flex flex-wrap gap-4 justify-center">
-						<a href="/guide/quick-start" class="btn btn-lg btn-primary">
+						<a href="/guide/quick-start" class="c-btn c-btn-primary">
 							GET STARTED
 						</a>
-						<a href="/how-it-works" class="btn btn-lg btn-neutral">
+						<a href="/how-it-works" class="c-btn c-btn-neutral">
 							HOW IT WORKS
 						</a>
 						<a
 							href="https://github.com/ViktorZhurbin/castro"
 							target="_blank"
 							rel="noopener"
-							class="btn btn-lg btn-outline"
+							class="c-btn c-btn-base"
 						>
 							VIEW SOURCE
 						</a>
@@ -57,7 +59,7 @@ function Hero() {
 function Features() {
 	return (
 		<section class="py-24 px-6 bg-base-100">
-			<div class="max-w-5xl mx-auto mb-16">
+			<div class="max-w-5xl mx-auto text-center mb-16">
 				<h2 class="font-display text-5xl md:text-6xl text-base-content">
 					WHAT THE PARTY OFFERS
 				</h2>
@@ -117,59 +119,60 @@ function HowItWorks() {
 				<h2 class="font-display text-5xl md:text-6xl text-primary">
 					HOW THE REVOLUTION WORKS
 				</h2>
-				<p class="max-w-xl mx-auto mt-4">
+				<p class="max-w-xl mx-auto mt-4 text-base-content/80 text-lg">
 					Island architecture explained. No magic, just smart progressive
 					enhancement.
 				</p>
 			</div>
 
-			<ul class="steps steps-vertical max-w-3xl mx-auto">
-				<li class="step step-primary" data-content="1">
-					<div class="text-left py-4">
-						<h3 class="font-display text-2xl text-base-content">BUILD TIME</h3>
-						<p class="mt-1">
+			<div class="max-w-3xl mx-auto flex flex-col gap-6">
+				<div class="c-step">
+					<div class="c-step-number">1</div>
+					<div class="c-step-content">
+						<h3 class="c-step-title">BUILD TIME</h3>
+						<p class="text-base-content/80">
 							Castro compiles your pages and renders all islands to HTML before
 							anything reaches the browser.
 						</p>
 					</div>
-				</li>
-				<li class="step step-primary" data-content="2">
-					<div class="text-left py-4">
-						<h3 class="font-display text-2xl text-base-content">
-							BROWSER RECEIVES HTML
-						</h3>
-						<p class="mt-1">
+				</div>
+
+				<div class="c-step">
+					<div class="c-step-number">2</div>
+					<div class="c-step-content">
+						<h3 class="c-step-title">BROWSER RECEIVES HTML</h3>
+						<p class="text-base-content/80">
 							Pure HTML arrives first. Your page is visible immediately. No
 							waiting for JavaScript bundles. Islands are wrapped in{" "}
 							<code>{"<castro-island>"}</code> custom elements.
 						</p>
 					</div>
-				</li>
-				<li class="step step-primary" data-content="3">
-					<div class="text-left py-4">
-						<h3 class="font-display text-2xl text-base-content">
-							SELECTIVE HYDRATION
-						</h3>
-						<p class="mt-1">
+				</div>
+
+				<div class="c-step">
+					<div class="c-step-number">3</div>
+					<div class="c-step-content">
+						<h3 class="c-step-title">SELECTIVE HYDRATION</h3>
+						<p class="text-base-content/80">
 							JavaScript loads based on your directive.{" "}
 							<code>comrade:eager</code> hydrates immediately.{" "}
 							<code>comrade:patient</code> waits for idle time.{" "}
 							<code>comrade:visible</code> waits for viewport intersection.
 						</p>
 					</div>
-				</li>
-				<li class="step step-primary" data-content="4">
-					<div class="text-left py-4">
-						<h3 class="font-display text-2xl text-base-content">
-							INTERACTIVE ISLANDS
-						</h3>
-						<p class="mt-1">
+				</div>
+
+				<div class="c-step">
+					<div class="c-step-number">4</div>
+					<div class="c-step-content">
+						<h3 class="c-step-title">INTERACTIVE ISLANDS</h3>
+						<p class="text-base-content/80">
 							Components become interactive exactly when needed. That's island
 							architecture — the rest of the page never waits for them.
 						</p>
 					</div>
-				</li>
-			</ul>
+				</div>
+			</div>
 		</section>
 	);
 }
