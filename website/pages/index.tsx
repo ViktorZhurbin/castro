@@ -8,9 +8,6 @@ export default function Home() {
 			<Hero />
 			<Features />
 			<HowItWorks />
-			<section class="py-16 px-6 bg-base-100 text-center">
-				<CTAButtons />
-			</section>
 		</>
 	);
 }
@@ -44,7 +41,7 @@ function Hero() {
 					<div class="w-32 h-32 mx-auto mb-10 text-primary">
 						<StarIcon />
 					</div>
-					<h1 class="font-display text-8xl md:text-9xl text-primary">CASTRO</h1>
+					<h1 class="font-display">CASTRO</h1>
 					<p class="font-display text-3xl md:text-5xl mt-2 mb-6">
 						THE PEOPLE'S FRAMEWORK
 					</p>
@@ -68,7 +65,7 @@ function Features() {
 	return (
 		<section class="py-24 px-6 bg-base-100">
 			<div class="max-w-5xl mx-auto text-center mb-16">
-				<h1 class="font-display">WHAT THE PARTY OFFERS</h1>
+				<h2 class="font-display text-primary">WHAT THE PARTY OFFERS</h2>
 				<p class="mt-4">
 					A working static site generator you can read in an afternoon and
 					understand completely.
@@ -76,12 +73,12 @@ function Features() {
 			</div>
 
 			<div class="max-w-4xl mx-auto text-center">
-				<h2 class="font-display mb-6">THE INTERACTIVITY SPECTRUM</h2>
+				<h3 class="font-display mb-6">THE INTERACTIVITY SPECTRUM</h3>
 				<p class="text-center mb-4">
 					Each level adds capability and ships more JavaScript. The right choice
 					is the lowest level that meets your needs.
 				</p>
-				<div class="flex flex-wrap gap-4 justify-center">
+				<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
 					<SpectrumCard
 						level="01"
 						title="STATIC"
@@ -113,11 +110,11 @@ function Features() {
 				</div>
 			</div>
 
-			<div class="divider max-w-5xl mx-auto mt-14 mb-7 font-display text-base-content/60 tracking-widest">
+			<div class="divider max-w-5xl mx-auto my-14 font-display text-lg text-base-content/80 tracking-widest">
 				ALSO INCLUDED
 			</div>
 
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mt-16">
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
 				<FeatureCard
 					title="BUN-NATIVE"
 					description="No Webpack, no Vite. Built on Bun's build pipeline from the ground up."
@@ -157,9 +154,9 @@ function FeatureCard({
 }: FeatureCardProps) {
 	return (
 		<div
-			class={`bg-base-100 border border-base-content/20 border-l-4 ${leftBorderColor[color]} p-6`}
+			class={`bg-base-100 border-2 border-l-6 ${leftBorderColor[color]} p-6`}
 		>
-			<h3 class="font-display text-2xl text-base-content mb-2">{title}</h3>
+			<p class="font-display text-2xl mb-2">{title}</p>
 			<p>{description}</p>
 		</div>
 	);
@@ -182,10 +179,10 @@ const topBorderColor = {
 function SpectrumCard({ level, title, js, body, color }: SpectrumCardProps) {
 	return (
 		<div
-			class={`w-53 bg-base-200 border-2 border-t-8 ${topBorderColor[color]} p-5 flex flex-col gap-3`}
+			class={`bg-base-200 border-2 border-t-8 ${topBorderColor[color]} p-5 flex flex-col gap-3`}
 		>
-			<span class="font-display text-base-content/60 text-2xl">{level}</span>
-			<h3>{title}</h3>
+			<span class="font-display text-base-content/70 text-2xl">{level}</span>
+			<p class="text-2xl font-display">{title}</p>
 			<span
 				class={`font-mono text-xs font-bold uppercase tracking-wider border px-2 py-1`}
 			>
@@ -200,9 +197,7 @@ function HowItWorks() {
 	return (
 		<section class="flex flex-col py-24 px-6 bg-base-200">
 			<div class="text-center mb-16">
-				<h2 class="font-display text-5xl md:text-6xl text-primary">
-					HOW IT WORKS AT RUNTIME
-				</h2>
+				<h2 class="font-display text-primary">HOW IT WORKS AT RUNTIME</h2>
 				<p class="max-w-xl mx-auto mt-4 text-base-content/80 text-lg">
 					Island architecture in four steps. No magic, just HTML-first
 					progressive enhancement.
@@ -259,6 +254,10 @@ function HowItWorks() {
 						</p>
 					</div>
 				</div>
+			</div>
+
+			<div class="pt-16">
+				<CTAButtons />
 			</div>
 		</section>
 	);

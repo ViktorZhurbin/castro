@@ -27,7 +27,7 @@ export function Footer() {
 							GitHub
 						</a>
 					</nav>
-					<p class="text-base-content/60 text-xs font-medium md:text-right">
+					<p class="text-base-content/70 text-xs font-medium md:text-right">
 						Built with Castro <br class="hidden md:block" />
 						The People's Framework
 					</p>
