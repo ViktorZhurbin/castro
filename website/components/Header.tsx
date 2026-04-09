@@ -14,7 +14,7 @@ export function Header({ activePath }: { activePath?: string }) {
 	];
 
 	return (
-		<header class="navbar sticky top-0 z-50 bg-base-100 border-b-2 border-neutral min-h-12 px-4 py-0">
+		<header class="navbar sticky top-0 z-1 bg-base-100 border-b-2 border-neutral min-h-12 px-4 py-0">
 			<div class="flex items-center flex-1 justify-start gap-2">
 				<a href="/" class="c-btn-square c-btn-square-primary" aria-label="Home">
 					<StarIcon />

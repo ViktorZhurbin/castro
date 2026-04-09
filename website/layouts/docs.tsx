@@ -44,39 +44,46 @@ export default function DocsLayout(props: DocsLayoutProps) {
 
 	return (
 		<PageShell title={title} activePath={path}>
-			<div class="drawer lg:drawer-open flex-1 overflow-hidden">
-				<input id="docs-drawer" type="checkbox" class="drawer-toggle" />
+			{/* Main flex container safely locks to the viewport height left by the header */}
+			<div class="flex flex-1 overflow-hidden relative">
+				{/* Hidden checkbox controls the mobile sidebar state via Tailwind 'peer' */}
+				<input id="docs-drawer" type="checkbox" class="peer hidden" />
 
-				<div class="drawer-content flex flex-col overflow-hidden">
-					{/* Mobile-only toggle bar */}
-					<div class="lg:hidden bg-base-100 border-b-2 border-neutral flex items-center px-4">
+				{/* Mobile Overlay: Solid stark block, clicking it resets the checkbox */}
+				<label
+					htmlFor="docs-drawer"
+					aria-label="Close sidebar"
+					class="fixed inset-0 bg-neutral/80 z-20 hidden peer-checked:block lg:hidden cursor-pointer"
+				/>
+
+				{/* Sidebar: Fixed pop-over on mobile, static structural block on desktop */}
+				<aside
+					class={`fixed inset-y-0 left-0 z-30 w-64 bg-base-200 border-r-4 border-neutral hidden peer-checked:flex flex-col lg:border-r-2 lg:static lg:flex lg:shrink-0`}
+				>
+					<div class="flex-1 overflow-y-auto">
+						<SidebarNav activePath={path} />
+					</div>
+				</aside>
+
+				{/* Content Container: Isolated scrolling context */}
+				<div class="flex-1 flex flex-col min-w-0 overflow-y-auto bg-base-100 scroll-pt-16 lg:scroll-pt-8">
+					{/* Mobile toggle bar (sticky) */}
+					<div class="lg:hidden sticky top-0 z-10 bg-base-100 border-b-2 border-neutral flex items-center px-4 py-1">
 						<label
 							htmlFor="docs-drawer"
-							class="btn btn-ghost btn-square btn-sm"
+							class="c-btn-square c-btn-square-base btn-xs"
 							aria-label="Open sidebar"
 						>
 							<MenuIcon />
 						</label>
 					</div>
 
-					<div class="flex flex-col flex-1 overflow-y-auto">
-						<main class="flex-1 prose prose-castro py-12 px-6 max-w-3xl snap-start">
-							{children}
-						</main>
-						<Footer />
-					</div>
-				</div>
+					{/* Main document flow */}
+					<main class="flex-1 prose prose-castro py-12 px-6 max-w-3xl snap-start">
+						{children}
+					</main>
 
-				<div class="drawer-side z-60 border-r-2 border-neutral">
-					{/* Overlay closes drawer on mobile; hidden on desktop via drawer-open */}
-					<label
-						htmlFor="docs-drawer"
-						aria-label="Close sidebar"
-						class="drawer-overlay"
-					/>
-					<div class="bg-base-200 min-h-full w-64 border-6 border-neutral lg:border-none transition-none">
-						<SidebarNav activePath={path} />
-					</div>
+					<Footer />
 				</div>
 			</div>
 		</PageShell>
@@ -89,7 +96,7 @@ function SidebarNav(props: { activePath?: string }) {
 	return (
 		<div class="flex flex-col py-2 divide-y-2 divide-neutral">
 			{Object.values(sidebarSections).map(({ title, links }) => (
-				<div class="px-4 py-6">
+				<div class="px-4 py-6" key={title}>
 					<h3 class="mb-2">{title}</h3>
 
 					<nav class="flex flex-col">
@@ -103,7 +110,7 @@ function SidebarNav(props: { activePath?: string }) {
 									class={`px-3 py-1 border-l-4 ${
 										isActive
 											? "border-primary bg-neutral text-neutral-content"
-											: "border-transparent text-base-content hover:bg-neutral hover:text-neutral-content "
+											: "border-transparent text-base-content hover:bg-neutral hover:text-neutral-content"
 									}`}
 								>
 									{link.label}
