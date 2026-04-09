@@ -148,7 +148,7 @@
 
 /* DaisyUI component overrides + custom components */
 @utility btn {
-	transition: none;
+	@apply transition-none shadow-none;
 }
 
 @layer components {
@@ -170,26 +170,35 @@
 		@apply font-display text-3xl text-base-content leading-none mb-2;
 	}
 
-	/** Base Constructivist Button
-   * Anchors the size, heavy borders, and zero-shadow */
+	/** Base Constructivist Button */
   .c-btn {
-    @apply btn btn-lg border-2 border-neutral border-b-4 shadow-none;
+    @apply btn btn-lg border-2 border-neutral border-b-4;
   }
 
   /* Red/Gold block -> flips to high-contrast inverse on hover */
   .c-btn-primary {
-    @apply bg-primary text-primary-content border-neutral hover:bg-base-content hover:text-base-100 hover:border-neutral;
+    @apply bg-primary text-primary-content hover:bg-base-content hover:text-base-100 hover:border-neutral;
   }
 
   /* Black/Concrete block -> floods with Primary color on hover */
   .c-btn-neutral {
-    @apply bg-base-content text-base-100 border-neutral hover:bg-primary hover:text-primary-content hover:border-primary;
+    @apply bg-base-content text-base-100 hover:bg-primary hover:text-primary-content hover:border-primary;
   }
 
   /* Paper/Background block -> fills with Black/Concrete on hover */
   .c-btn-base {
-    @apply bg-base-100 text-base-content border-neutral hover:bg-base-content hover:text-base-100 hover:border-neutral;
+    @apply bg-base-100 text-base-content hover:bg-base-content hover:text-base-100 hover:border-neutral;
   }
+
+	.c-btn-square {
+		@apply btn btn-square btn-sm border-transparent bg-transparent;
+	}
+	.c-btn-square-primary {
+		@apply text-primary hover:bg-primary hover:text-primary-content;
+	}
+	.c-btn-square-base {
+		@apply border-2 border-transparent hover:border-neutral;
+	}
 }
 
 * {

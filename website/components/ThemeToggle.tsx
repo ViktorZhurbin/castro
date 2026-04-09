@@ -1,10 +1,10 @@
 import { ClientScript } from "@vktrz/castro";
 import { DARK, LIGHT, STORAGE_KEY } from "../lib/theme.ts";
 
-export default function ThemeToggle() {
+export function ThemeToggle() {
 	return (
 		<>
-			<label id="theme-toggle" class="swap btn btn-square btn-ghost btn-sm ">
+			<label id="theme-toggle" class="swap c-btn-square c-btn-square-base">
 				<input
 					class="w-full h-full"
 					type="checkbox"

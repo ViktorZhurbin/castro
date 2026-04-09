@@ -1,6 +1,6 @@
 import { MoreIcon } from "./icons/MoreIcon.tsx";
 import { StarIcon } from "./icons/StarIcon.tsx";
-import ThemeToggle from "./ThemeToggle.tsx";
+import { ThemeToggle } from "./ThemeToggle.tsx";
 
 export function Header({ activePath }: { activePath?: string }) {
 	const isHowItWorks = activePath?.startsWith("/how-it-works");
@@ -14,24 +14,22 @@ export function Header({ activePath }: { activePath?: string }) {
 	];
 
 	return (
-		<header class="navbar sticky top-0 z-50 bg-base-100 border-b-2 border-neutral min-h-12 px-4">
+		<header class="navbar sticky top-0 z-50 bg-base-100 border-b-2 border-neutral min-h-12 px-4 py-0">
 			<div class="flex items-center flex-1 justify-start gap-2">
-				<a
-					href="/"
-					class="btn btn-ghost btn-square btn-sm text-primary"
-					aria-label="Home"
-				>
+				<a href="/" class="c-btn-square c-btn-square-primary" aria-label="Home">
 					<StarIcon />
 				</a>
 
 				{/* Desktop nav */}
-				<nav class="hidden sm:flex items-center gap-1 ml-2">
+				<nav class="hidden sm:flex items-center gap-6 ml-6">
 					{navLinks.map((link) => (
 						<a
 							key={link.href}
 							href={link.href}
-							class={`btn btn-sm font-display text-lg ${
-								link.active ? "btn-primary" : "btn-ghost"
+							class={`font-display text-xl transition-none border-b-4 ${
+								link.active
+									? "border-primary text-primary"
+									: "border-transparent text-base-content hover:border-neutral"
 							}`}
 						>
 							{link.label}
@@ -42,7 +40,7 @@ export function Header({ activePath }: { activePath?: string }) {
 				{/* Mobile dropdown */}
 				<details class="dropdown sm:hidden">
 					<summary
-						class="btn btn-ghost btn-square btn-sm"
+						class="c-btn-square c-btn-square-base"
 						aria-label="Open menu"
 					>
 						<MoreIcon />
