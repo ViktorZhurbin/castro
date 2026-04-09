@@ -144,7 +144,7 @@ HTML arrives
           → interactive
 ```
 
-That's island architecture: static HTML by default, JavaScript delivered exactly when each component needs it.
+That's island architecture: static HTML by default, JavaScript delivered exactly when each component needs it. Islands hydrate independently and in parallel. A heavy island below the fold never blocks a critical one above it. The directive controls timing; isolation handles the rest.
 
 <div class="flex flex-wrap gap-4">
   <a href="/how-it-works" class="not-prose c-btn c-btn-base">

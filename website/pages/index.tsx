@@ -237,8 +237,8 @@ function HowItWorks() {
 					<div class="c-step-content">
 						<h3 class="c-step-title">ISLANDS ACTIVATE</h3>
 						<p class="text-base-content/80">
-							Each island hydrates independently. The rest of the page never
-							waits. Static content stays static.
+							Each island hydrates independently. A heavy island below the fold
+							never delays a critical one above it. Static content stays static.
 						</p>
 					</div>
 				</div>
