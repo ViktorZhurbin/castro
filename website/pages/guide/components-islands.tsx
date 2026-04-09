@@ -4,7 +4,6 @@ export const meta = {
 	title: "Components & Islands - Castro Guide",
 	layout: "docs",
 	path: "/guide/components-islands",
-	section: "guide",
 };
 
 export default function ComponentsIslands() {

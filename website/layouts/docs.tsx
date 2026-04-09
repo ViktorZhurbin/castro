@@ -6,7 +6,6 @@ import type { ComponentChildren } from "preact";
 export interface DocsLayoutProps {
 	title: string;
 	path?: string;
-	section?: SectionKey;
 	children: ComponentChildren;
 }
 
@@ -16,19 +15,19 @@ const sidebarSections: Record<
 	SectionKey,
 	{ title: string; links: { href: string; label: string }[] }
 > = {
-	"how-it-works": {
-		title: "HOW IT WORKS",
-		links: [
-			{ href: "/how-it-works", label: "1. Build Pipeline" },
-			{ href: "/how-it-works/hydration", label: "2. Island Hydration" },
-		],
-	},
 	guide: {
 		title: "GUIDE",
 		links: [
 			{ href: "/guide/quick-start", label: "Quick Start" },
 			{ href: "/guide/components-islands", label: "Components & Islands" },
 			{ href: "/guide/plugins", label: "Plugins" },
+		],
+	},
+	"how-it-works": {
+		title: "HOW IT WORKS",
+		links: [
+			{ href: "/how-it-works", label: "1. Build Pipeline" },
+			{ href: "/how-it-works/hydration", label: "2. Island Hydration" },
 		],
 	},
 	reference: {
@@ -40,9 +39,8 @@ const sidebarSections: Record<
 	},
 };
 
-const DocsLayout = (props: DocsLayoutProps) => {
-	const { title, path, section = "guide", children } = props;
-	const { title: sectionTitle, links } = sidebarSections[section];
+export default function DocsLayout(props: DocsLayoutProps) {
+	const { title, path, children } = props;
 
 	return (
 		<PageShell title={title} activePath={path}>
@@ -72,33 +70,23 @@ const DocsLayout = (props: DocsLayoutProps) => {
 						aria-label="Close sidebar"
 						class="drawer-overlay"
 					/>
-					<div class="bg-base-200 min-h-full w-64 flex flex-col">
-						<SidebarNav
-							sectionTitle={sectionTitle}
-							links={links}
-							activePath={path}
-						/>
+					<div class="bg-base-200 min-h-full w-64">
+						<SidebarNav activePath={path} />
 					</div>
 				</div>
 			</div>
 
 			{/* Desktop: simple flex layout, sidebar always visible */}
 			<div class="hidden lg:flex flex-1 overflow-hidden">
-				<aside class="shrink-0 w-64 bg-base-200 border-r-2 border-base-content overflow-y-auto flex flex-col">
-					<SidebarNav
-						sectionTitle={sectionTitle}
-						links={links}
-						activePath={path}
-					/>
+				<aside class="shrink-0 w-64 bg-base-200 border-r-2 border-base-content overflow-y-auto">
+					<SidebarNav activePath={path} />
 				</aside>
 
 				<DocsContent>{children}</DocsContent>
 			</div>
 		</PageShell>
 	);
-};
-
-export default DocsLayout;
+}
 
 // Layout-specific components below
 
@@ -113,41 +101,34 @@ function DocsContent({ children }: { children: ComponentChildren }) {
 	);
 }
 
-function SidebarNav({
-	sectionTitle,
-	links,
-	activePath,
-}: {
-	sectionTitle: string;
-	links: { href: string; label: string }[];
-	activePath?: string;
-}) {
+function SidebarNav(props: { activePath?: string }) {
 	return (
-		<>
-			<div class="px-6 py-4 bg-base border-b-2">
-				<h2 class="font-display text-4xl m-0 tracking-wider leading-none">
-					{sectionTitle}
-				</h2>
-			</div>
+		<div class="flex flex-col py-4 divide-y-2">
+			{Object.values(sidebarSections).map(({ title, links }) => (
+				<div class="px-4 py-6">
+					<h3>{title}</h3>
 
-			<nav class="flex flex-col">
-				{links.map((link) => {
-					const isActive = activePath === link.href;
-					return (
-						<a
-							key={link.href}
-							href={link.href}
-							class={`px-6 py-3 font-bold border-l-4 ${
-								isActive
-									? "border-primary bg-base-content text-base-100"
-									: "border-transparent hover:border-base-content hover:bg-base-300"
-							}`}
-						>
-							{link.label}
-						</a>
-					);
-				})}
-			</nav>
-		</>
+					<nav class="flex flex-col">
+						{links.map((link) => {
+							const isActive = props.activePath === link.href;
+
+							return (
+								<a
+									key={link.href}
+									href={link.href}
+									class={`px-3 py-1 border-l-4 ${
+										isActive
+											? "border-primary bg-base-content text-base-100"
+											: "border-transparent hover:border-base-content hover:bg-base-300"
+									}`}
+								>
+									{link.label}
+								</a>
+							);
+						})}
+					</nav>
+				</div>
+			))}
+		</div>
 	);
 }

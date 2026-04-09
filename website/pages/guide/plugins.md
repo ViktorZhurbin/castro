@@ -2,7 +2,6 @@
 title: Plugins - Castro Guide
 layout: docs
 path: /guide/plugins
-section: guide
 ---
 
 # PLUGINS
