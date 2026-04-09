@@ -5,7 +5,11 @@ export default function ThemeToggle() {
 	return (
 		<>
 			<label id="theme-toggle" class="swap btn btn-square btn-ghost btn-sm ">
-				<input type="checkbox" aria-label="Toggle theme" />
+				<input
+					class="w-full h-full"
+					type="checkbox"
+					aria-label="Toggle theme"
+				/>
 				<SunIcon className="swap-off" />
 				<MoonIcon className="swap-on" />
 			</label>

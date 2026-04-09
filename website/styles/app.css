@@ -210,6 +210,12 @@
 }
 
 /* Keeping outside of layers to override tailwindcss/typography styles. This way both normal pages and pages with "prose" will have the same classes */
+
+*:focus-visible {
+	outline: 3px dashed var(--color-primary);
+	outline-offset: 3px;
+}
+
 h1,
 h2,
 h3,
