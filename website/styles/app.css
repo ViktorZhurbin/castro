@@ -236,6 +236,10 @@ h6 {
 
 h1 {
 	@apply text-5xl md:text-7xl text-primary font-extrabold;
+
+	a {
+		@apply underline-offset-6;
+	}
 }
 
 h2 {

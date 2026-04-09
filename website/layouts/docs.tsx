@@ -44,13 +44,12 @@ export default function DocsLayout(props: DocsLayoutProps) {
 
 	return (
 		<PageShell title={title} activePath={path}>
-			{/* Mobile: DaisyUI drawer overlay */}
-			<div class="drawer lg:hidden flex-1 overflow-hidden">
+			<div class="drawer lg:drawer-open flex-1 overflow-hidden">
 				<input id="docs-drawer" type="checkbox" class="drawer-toggle" />
 
 				<div class="drawer-content flex flex-col overflow-hidden">
-					{/* Mobile toggle bar — must be inside drawer-content per DaisyUI */}
-					<div class="bg-base-100 border-b-2 border-base-content flex items-center px-4">
+					{/* Mobile-only toggle bar */}
+					<div class="lg:hidden bg-base-100 border-b-2 border-base-content flex items-center px-4">
 						<label
 							htmlFor="docs-drawer"
 							class="btn btn-ghost btn-square btn-sm"
@@ -60,29 +59,25 @@ export default function DocsLayout(props: DocsLayoutProps) {
 						</label>
 					</div>
 
-					<DocsContent>{children}</DocsContent>
+					<div class="flex flex-col flex-1 overflow-y-auto">
+						<main class="flex-1 prose prose-castro py-12 px-6 max-w-3xl snap-start">
+							{children}
+						</main>
+						<Footer />
+					</div>
 				</div>
 
-				{/* Mobile sidebar overlay */}
 				<div class="drawer-side z-60 border-r-2 border-base-content">
+					{/* Overlay closes drawer on mobile; hidden on desktop via drawer-open */}
 					<label
 						htmlFor="docs-drawer"
 						aria-label="Close sidebar"
 						class="drawer-overlay"
 					/>
-					<div class="bg-base-200 min-h-full w-64">
+					<div class="bg-base-200 min-h-full w-64 border-6 lg:border-none transition-none">
 						<SidebarNav activePath={path} />
 					</div>
 				</div>
-			</div>
-
-			{/* Desktop: simple flex layout, sidebar always visible */}
-			<div class="hidden lg:flex flex-1 overflow-hidden">
-				<aside class="shrink-0 w-64 bg-base-200 border-r-2 border-base-content overflow-y-auto">
-					<SidebarNav activePath={path} />
-				</aside>
-
-				<DocsContent>{children}</DocsContent>
 			</div>
 		</PageShell>
 	);
@@ -90,20 +85,9 @@ export default function DocsLayout(props: DocsLayoutProps) {
 
 // Layout-specific components below
 
-function DocsContent({ children }: { children: ComponentChildren }) {
-	return (
-		<div class="flex flex-col flex-1 overflow-y-auto">
-			<main class="flex-1 prose prose-castro py-12 px-6 max-w-3xl">
-				{children}
-			</main>
-			<Footer />
-		</div>
-	);
-}
-
 function SidebarNav(props: { activePath?: string }) {
 	return (
-		<div class="flex flex-col py-4 divide-y-2">
+		<div class="flex flex-col py-2 divide-y-2">
 			{Object.values(sidebarSections).map(({ title, links }) => (
 				<div class="px-4 py-6">
 					<h3 class="mb-2">{title}</h3>

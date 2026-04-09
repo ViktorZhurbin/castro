@@ -10,7 +10,7 @@ interface PageShellProps {
 
 export function PageShell({ title, activePath, children }: PageShellProps) {
 	return (
-		<html lang="en" class="h-screen overflow-hidden scroll-smooth">
+		<html lang="en" class="h-screen overflow-hidden">
 			<head>
 				<meta charSet="UTF-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
