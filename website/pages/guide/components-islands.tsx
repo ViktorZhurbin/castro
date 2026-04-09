@@ -73,9 +73,9 @@ export default function ComponentsIslands() {
 			<section>
 				<h2>LEVEL 1 - STATIC COMPONENTS</h2>
 				<p>
-					Pages, layouts, and components are plain <code>.tsx</code> files.
-					Write regular JSX - no special setup required. No JS ships to the
-					browser:
+					Pages, layouts, and components are plain <code>.tsx</code> files. They
+					are rendered at build time and delivered as plain HTML. Write regular
+					JSX - no setup required:
 				</p>
 				<pre>
 					<code>{`// components/Card.tsx
@@ -95,55 +95,57 @@ export default function Index() {
   return <Card title="Hello">World</Card>;
 }`}</code>
 				</pre>
-				<aside class="alert">
-					Static components are rendered at build time and delivered as plain
-					HTML. Only <code>.island.tsx</code> files send JavaScript to the
-					browser.
-				</aside>
 			</section>
 
 			{/* ─── LEVEL 2: CLIENTSCRIPT ───────────────────────────────── */}
 			<section>
-				<h2>
-					LEVEL 2 - <code>ClientScript</code>
-				</h2>
+				<h2>LEVEL 2 - Client Script</h2>
 				<p>
 					Not every interactive element needs a framework. Theme toggles, scroll
-					handlers, and DOM queries ship zero framework bytes -{" "}
+					handlers, and DOM queries often need a simple function -{" "}
 					<code>ClientScript</code> serializes a plain function as an inline{" "}
 					<code>{"<script>"}</code> IIFE. No bundler, no hydration, no runtime.
 				</p>
 				<pre>
 					<code>{`import { ClientScript } from "@vktrz/castro";
 
-function initToggle(storageKey: string, dark: string, light: string) {
-  const checkbox = document.querySelector("#toggle input") as HTMLInputElement;
-  if (!checkbox) return;
-
-  checkbox.checked = document.documentElement.getAttribute("data-theme") === dark;
-
-  checkbox.addEventListener("change", (e) => {
-    const next = (e.target as HTMLInputElement).checked ? dark : light;
-    document.documentElement.setAttribute("data-theme", next);
-    localStorage.setItem(storageKey, next);
-  });
-}
-
-export default function ThemeToggle() {
+export default function DummyThemeToggle() {
   return (
     <>
-      <label id="toggle">...</label>
-      <ClientScript fn={initToggle} args={["castro-theme", "dark", "light"]} />
+      <button id="toggle">Toggle</button>
+
+	  {/* pass the function and its arguments */}
+      <ClientScript fn={initButton} args={["dark", "light"]} />
     </>
   );
+}
+
+// plain JS/TS function, and direct DOM manipulation
+function initButton(dark: string, light: string) {
+  const button = document.querySelector<HTMLButtonElement>("#toggle");
+
+  button?.addEventListener("change", () => {
+    const current = document.documentElement.getAttribute("data-theme") || light;
+    const next = current === light ? dark : light;
+
+    document.documentElement.setAttribute("data-theme", next);
+  });
 }`}</code>
 				</pre>
 				<p>
 					The function is written and type-checked as normal TypeScript. It's
-					only serialized via <code>.toString()</code> when the page renders.
-					Args must be JSON-serializable - functions and symbols throw at build
-					time.
+					only serialized via <code>.toString()</code> when the page renders at
+					build time. Args must be JSON-serializable - functions and symbols
+					will throw an error. The above example renders to:
 				</p>
+				<pre>
+					<code>{`<button>Toggle</button>
+<script>(initButton initState(dark, light) {
+  ...
+})("dark", "light");
+</script>`}</code>
+				</pre>
+
 				<aside class="alert">
 					Function arguments must come through <code>args</code>.{" "}
 					<code>ClientScript</code> can't close over variables from the
@@ -169,9 +171,9 @@ export default function ThemeToggle() {
 			{/* ─── LEVEL 3: VANILLA ISLANDS ────────────────────────────── */}
 			<section>
 				<div>
-					<h2>LEVEL 3 - VANILLA ISLANDS</h2>
+					<h2>LEVEL 3 - "VANILLA" ISLANDS</h2>
 					<p>
-						The lifecycle above applies to all islands. Vanilla islands are a
+						The lifecycle above applies to all islands. "Vanilla" islands are a
 						specific case: full lifecycle - prop serialization, lazy loading,
 						directives - with zero framework runtime. The default export is
 						Preact JSX for the server render; the named <code>hydrate</code>{" "}
@@ -180,7 +182,7 @@ export default function ThemeToggle() {
 					<pre>
 						<code>{`// components/Chart.island.tsx
 
-// Rendered at build time - zero JS shipped
+// Rendered at build time to plain HTML
 export default function Chart(props: { data: number[] }) {
   return (
     <div class="chart-container">
@@ -189,9 +191,9 @@ export default function Chart(props: { data: number[] }) {
   );
 }
 
-// Only this ships to the browser
+// Only this JS ships to the browser, no framework runtime
 export function hydrate(container: HTMLElement, props: { data: number[] }) {
-  const canvas = container.querySelector(".chart-canvas") as HTMLCanvasElement;
+  const canvas = container.querySelector<HTMLCanvasElement>(".chart-canvas");
   // mount your D3 chart, Three.js scene, etc.
 }`}</code>
 					</pre>
@@ -248,16 +250,14 @@ export default function Index() {
 			<section>
 				<h2>CLIENT DIRECTIVES</h2>
 				<p>
-					You have the components. Now you must orchestrate them. Castro
-					provides three directives to control exactly when an island's
-					JavaScript is fetched and executed.
+					You have the components. Now you can orchestrate them. Castro provides
+					three directives to control exactly when an island's JavaScript is
+					fetched and executed.
 				</p>
 
 				<h3 class="flex gap-2 items-center flex-wrap">
 					<code>comrade:visible</code>
-					<span class="badge badge-dash badge-accent leading-none">
-						default
-					</span>
+					<span class="badge badge-dash leading-none">default</span>
 				</h3>
 
 				<blockquote>"Only work when the people are watching."</blockquote>
@@ -292,10 +292,11 @@ export default function Index() {
 
 				<h3>LIVE DEMONSTRATION</h3>
 				<p>
-					Open your DevTools network tab. Scroll this component into view.
-					Before hydration, it is pure, state-approved HTML. Upon intersection,
-					the <code>comrade:visible</code> directive executes, the Preact
-					runtime is distributed, and the component becomes interactive.
+					Open your DevTools network tab. Reload the page and scroll to this
+					component. Before hydration, it is pure, state-approved HTML. As you
+					scroll to it, the <code>comrade:visible</code> directive executes,
+					component JS and the Preact runtime get distributed, and the component
+					becomes interactive.
 				</p>
 
 				<Redactor />
