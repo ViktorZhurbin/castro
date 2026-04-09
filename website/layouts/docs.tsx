@@ -1,13 +1,13 @@
 import { Footer } from "@components/Footer.tsx";
 import { MenuIcon } from "@components/icons/MenuIcon";
 import { PageShell } from "@components/PageShell.tsx";
-import type { VNode } from "preact";
+import type { ComponentChildren } from "preact";
 
 export interface DocsLayoutProps {
 	title: string;
 	path?: string;
 	section?: SectionKey;
-	children: VNode;
+	children: ComponentChildren;
 }
 
 type SectionKey = "how-it-works" | "guide" | "reference";
@@ -102,7 +102,7 @@ export default DocsLayout;
 
 // Layout-specific components below
 
-function DocsContent({ children }: { children: VNode }) {
+function DocsContent({ children }: { children: ComponentChildren }) {
 	return (
 		<div class="flex flex-col flex-1 overflow-y-auto">
 			<main class="flex-1 prose prose-castro py-12 px-6 max-w-3xl">

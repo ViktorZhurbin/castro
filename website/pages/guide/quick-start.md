@@ -47,18 +47,25 @@ my-site/
 
 ## 3. CREATE A LAYOUT
 
-Layouts wrap your page content in standard HTML. `layouts/default.tsx` is the default layout.
+Layouts wrap your page content in standard HTML. `layouts/default.tsx` is the required default.
 
 <aside class="alert">
-  Layouts and pages use Preact - Castro's engine for build-time rendering. No Preact ships to the browser unless you explicitly deploy an island. Layouts must use a <code>default export</code>.
+  Layouts and pages use Preact - Castro's engine for build-time rendering. No Preact ships to the browser unless you explicitly deploy an island.
+  <br/>
+  <br/>
+  Layouts must use a <code>default export</code>.
 </aside>
 
-```tsx
-import type { VNode } from "preact";
+Each layout receives `children` prop which is a page content. You can pass other props from page components (see below).
 
+```tsx
+import type { ComponentChildren } from "preact";
+
+// layout props come from pages
 interface Props {
+  children: ComponentChildren; // page content, automatic
+  // props from a page ↓
   title: string;
-  children: VNode;
 }
 
 export default function DefaultLayout({ title, children }: Props) {
@@ -81,30 +88,28 @@ export default function DefaultLayout({ title, children }: Props) {
 
 Pages live in `pages/`. Both `.tsx` and `.md` files are supported.
 
-<aside class="alert">
-  JSX pages require a <code>default export</code> for the component.
-  <br />
-  <br />
-  The named <code>meta</code> export is optional - it allows to set page title, use a non-default layout, and pass any custom props to the layout.
-</aside>
-
 ### TSX PAGE
 
 ```tsx
 // pages/index.tsx
-import type { PageMeta } from "@vktrz/castro";
 
-// optional
-export const meta: PageMeta = {
+// optional, pass any props to the layout component
+export const meta = {
   title: "Home",
   layout: "special",
-  // ...pass any props to the layout component
+  // ...any other props
 };
 
 export default function Home() {
   return <h1>Hello, world!</h1>;
 }
 ```
+
+<aside class="alert">
+  JSX pages require a <code>default export</code> for the component.
+</aside>
+
+The named <code>meta</code> export is optional - it allows to pass any custom props to the layout, or use a non-default layout. In Markdown, `frontmatter` serves the same purpose:
 
 ### MARKDOWN PAGE
 
@@ -116,7 +121,9 @@ layout: special
 
 # About
 
-This page renders from Markdown. Every `.md` file in `pages/` becomes an HTML route.
+Every `.md` file in `pages/` becomes an HTML route.
+
+This page would use a layout defined in `layouts/special.tsx`
 ```
 
 ## 5. ADD COMPONENTS

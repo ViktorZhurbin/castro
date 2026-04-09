@@ -1,13 +1,13 @@
 import { Footer } from "@components/Footer.tsx";
 import { PageShell } from "@components/PageShell.tsx";
-import type { VNode } from "preact";
+import type { ComponentChildren } from "preact";
 
 interface Props {
 	title: string;
-	children: VNode;
+	children: ComponentChildren;
 }
 
-const DefaultLayout = (props: Props) => {
+export default function DefaultLayout(props: Props) {
 	const { title, children } = props;
 
 	return (
@@ -19,6 +19,4 @@ const DefaultLayout = (props: Props) => {
 			</main>
 		</PageShell>
 	);
-};
-
-export default DefaultLayout;
+}
