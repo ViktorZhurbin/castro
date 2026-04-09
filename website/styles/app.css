@@ -34,7 +34,7 @@
 
 		/* --radius-box: 0rem is a DaisyUI component variable and doesn't affect Tailwind's rounded-* utilities, which @tailwindcss/typography uses for pre */
 		pre {
-			@apply rounded-none;
+			@apply rounded-none border-2;
 		}
 	}
 }
@@ -245,12 +245,11 @@ a {
 	@apply decoration-2 decoration-primary/50 hover:decoration-primary transition-colors;
 }
 
-/* Inline code outside prose — prose already handles code via @tailwindcss/typography */
-:not(.prose) :not(pre) > code {
-	@apply px-1.5 py-0.5 font-mono text-sm bg-base-200 border border-base-300;
+:not(pre) > code {
+	@apply px-1.5 py-0.5 font-mono text-sm bg-base-200 border border-base-content;
 }
 
 /* Apply the primary border ONLY to default variant */
 .alert:not([class*="alert-"]) {
-	@apply block border-0 border-l-4 border-l-primary mb-3;
+	@apply block bg-base-200 border-2 border-base-content border-l-8 border-l-primary rounded-none mb-6 p-4 text-base-content;
 }

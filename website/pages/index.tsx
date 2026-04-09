@@ -7,7 +7,7 @@ export default function Home() {
 		<>
 			<Hero />
 
-			<section class="max-w-4xl mx-auto py-24 px-6 bg-base-100">
+			<section class="max-w-5xl mx-auto py-24 px-6 bg-base-100">
 				<div class="text-center mb-16">
 					<h2 class="font-display text-primary mb-4">WHAT THE PARTY OFFERS</h2>
 					<p>
@@ -154,7 +154,7 @@ function AlsoIncluded() {
 			<div class="divider my-14 font-display text-lg text-base-content/80 tracking-widest">
 				ALSO INCLUDED
 			</div>
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+			<div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6">
 				<AlsoIncludedItem
 					title="BUN-NATIVE"
 					description="No Webpack, no Vite. Built on Bun's build pipeline from the ground up."

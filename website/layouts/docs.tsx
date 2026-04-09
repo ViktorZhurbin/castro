@@ -106,7 +106,7 @@ function SidebarNav(props: { activePath?: string }) {
 		<div class="flex flex-col py-4 divide-y-2">
 			{Object.values(sidebarSections).map(({ title, links }) => (
 				<div class="px-4 py-6">
-					<h3>{title}</h3>
+					<h3 class="mb-2">{title}</h3>
 
 					<nav class="flex flex-col">
 						{links.map((link) => {
@@ -119,7 +119,7 @@ function SidebarNav(props: { activePath?: string }) {
 									class={`px-3 py-1 border-l-4 ${
 										isActive
 											? "border-primary bg-base-content text-base-100"
-											: "border-transparent hover:border-base-content hover:bg-base-300"
+											: "border-transparent hover:border-primary hover:bg-base-content hover:text-base-100"
 									}`}
 								>
 									{link.label}
