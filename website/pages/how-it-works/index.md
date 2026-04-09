@@ -14,26 +14,47 @@ Castro's build pipeline has three moving parts. Understanding all three is under
 
 Islands compile before any pages are processed. Each `.island.tsx` file goes through `Bun.build` twice - once for the server (producing an SSR module that's pre-loaded into a registry) and once for the browser (producing a hashed JS bundle written to `dist/islands/`). The server needs a Bun module; the browser needs an ES module. Same source, two targets.
 
-<div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-center">
-  <div class="card card-border border-base-content bg-base-200 p-6 text-center">
-    <span class="badge badge-primary mb-3 mx-auto">Counter.island.tsx</span>
-    <p class="text-sm text-base-content/80">Your island source file</p>
-  </div>
-
-  <div class="flex flex-col items-center gap-2 text-base-content/80">
-    <span class="hidden md:block text-2xl">→</span>
-    <span class="hidden md:block text-2xl">→</span>
-    <span class="md:hidden text-2xl">↓ ↓</span>
-  </div>
-
-  <div class="flex flex-col gap-4">
-    <div class="card card-dash border-base-content bg-base-200 p-5">
-      <span class="badge badge-secondary mb-2">SSR Module</span>
-      <p class="text-sm text-base-content/80">Runs at build time. Renders the island to HTML on the server. Stored in-memory, and accessed during page rendering.</p>
+<div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-stretch mb-12">
+  <!-- SOURCE NODE: Heavy anchor block -->
+  <div class="border-2 border-neutral border-b-8 bg-base-200 p-6 flex flex-col items-center justify-center text-center">
+    <div class="bg-primary text-primary-content font-mono font-bold text-sm px-3 py-1 mb-4">
+      Counter.island.tsx
     </div>
-    <div class="card card-dash border-base-content bg-base-200 p-5">
-      <span class="badge badge-accent mb-2">Counter-a1b2.js</span>
-      <p class="text-sm text-base-content/80">Client bundle. Put into <code>dist/islands/</code>. Loaded by the browser on demand.</p>
+    <p class="text-sm text-base-content/90">
+      Your island source file
+    </p>
+  </div>
+  <!-- DIRECTIONAL ARROWS: Massive and stark -->
+  <div class="flex flex-col items-center justify-center gap-6 md:gap-16 text-neutral font-display">
+    <!-- Desktop: Two arrows pointing to the two output blocks -->
+    <span class="hidden md:block text-5xl leading-none">→</span>
+    <span class="hidden md:block text-5xl leading-none">→</span>
+    <!-- Mobile: Downward flow -->
+    <span class="md:hidden text-5xl leading-none py-2">↓ ↓</span>
+  </div>
+  <!-- OUTCOME NODES: Thick dashed cut-outs -->
+  <div class="flex flex-col gap-4">
+    <!-- Output 1: SSR Module -->
+    <div class="border-4 border-dashed border-neutral bg-base-200 p-5">
+      <div class="mb-3">
+        <span class="bg-neutral text-neutral-content font-mono font-bold text-sm px-2 py-1 inline-block">
+          SSR Module
+        </span>
+      </div>
+      <p class="text-sm text-base-content/90">
+        Runs at build time. Renders the island to HTML on the server. Stored in-memory, and accessed during page rendering.
+      </p>
+    </div>
+    <!-- Output 2: Client Bundle -->
+    <div class="border-4 border-dashed border-neutral bg-base-200 p-5">
+      <div class="mb-3">
+        <span class="bg-neutral text-neutral-content font-mono font-bold text-sm px-2 py-1 inline-block">
+          Counter-a1b2.js
+        </span>
+      </div>
+      <p class="text-sm text-base-content/90">
+        Client bundle. Put into <code>dist/islands/</code>. Loaded by the browser on demand.
+      </p>
     </div>
   </div>
 </div>

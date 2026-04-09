@@ -14,32 +14,60 @@ The build pipeline produces static HTML with `<castro-island>` wrappers. Now the
 
 The browser loads `castro-island.js` and registers a `<castro-island>` custom element. When one connects to the DOM, `connectedCallback()` reads the `directive` attribute and decides what happens next.
 
-<div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-center mb-8">
-  <div class="card card-border border-base-content bg-base-200 p-6 text-center">
-    <span class="badge badge-primary mb-3 mx-auto">connectedCallback()</span>
-    <p class="text-sm text-base-content/80">Fires when the element enters the DOM. Reads the <code>directive</code> attribute.</p>
+<div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-stretch mb-12">
+  <!-- SOURCE NODE: Heavy anchor block -->
+  <div class="border-2 border-neutral border-b-8 bg-base-200 p-6 flex flex-col items-center justify-center text-center">
+    <div class="bg-neutral text-neutral-content font-mono font-bold text-sm px-3 py-1 mb-4">
+      connectedCallback()
+    </div>
+    <p class="text-sm text-base-content/90">
+      Fires when the element enters the DOM. Reads the <code>directive</code> attribute.
+    </p>
   </div>
 
-  <div class="flex flex-col items-center gap-2 text-base-content/80">
-    <span class="hidden md:block text-2xl">→</span>
-    <span class="md:hidden text-2xl">↓</span>
+  <!-- DIRECTIONAL ARROW: Massive and stark -->
+  <div class="flex items-center justify-center text-neutral font-display">
+    <span class="hidden md:block text-6xl leading-none">→</span>
+    <span class="md:hidden text-6xl leading-none py-2">↓</span>
   </div>
 
+  <!-- OUTCOME NODES: Thick dashed cut-outs -->
   <div class="flex flex-col gap-4">
-    <div class="card card-dash border-base-content bg-base-200 p-4">
-      <div class="flex items-center mb-2 gap-2">
-        <span class="badge badge-primary">comrade:visible</span>
-        <span class="badge badge-sm badge-dash">default</span>
+    <!-- Option 1: Primary/Default -->
+    <div class="border-4 border-dashed border-neutral bg-base-200 p-5">
+      <div class="flex items-center mb-3 gap-2 flex-wrap">
+        <span class="bg-primary text-primary-content font-mono font-bold text-sm px-2 py-1">
+          comrade:visible
+        </span>
+        <span class="border-2 border-dotted border-primary text-base-content font-mono font-bold text-xs uppercase tracking-widest px-2 py-1">
+          default
+        </span>
       </div>
-      <p class="text-sm text-base-content/80">Wait for the element to enter the viewport via <code>IntersectionObserver</code> (with a 100px buffer). Then hydrate.</p>
+      <p class="text-sm text-base-content/90">
+        Wait for the element to enter the viewport via <code>IntersectionObserver</code> (with a 100px buffer). Then hydrate.
+      </p>
     </div>
-    <div class="card card-dash border-base-content bg-base-200 p-4">
-      <span class="badge badge-accent mb-2">comrade:patient</span>
-      <p class="text-sm text-base-content/80">Wait for page load, then wait for the browser to be idle via <code>requestIdleCallback</code>. Falls back to immediate hydration on Safari &lt;119.</p>
+    <!-- Option 2 -->
+    <div class="border-4 border-dashed border-neutral bg-base-200 p-5">
+      <div class="flex items-center mb-3 gap-2">
+        <span class="bg-neutral text-neutral-content font-mono font-bold text-sm px-2 py-1">
+          comrade:patient
+        </span>
+      </div>
+      <p class="text-sm text-base-content/90">
+        Wait for page load, then wait for the browser to be idle via <code>requestIdleCallback</code>. Falls back to immediate hydration on Safari &lt;119.
+      </p>
     </div>
-    <div class="card card-dash border-base-content bg-base-200 p-4">
-      <span class="badge badge-accent mb-2">comrade:eager</span>
-      <p class="text-sm text-base-content/80">Hydrate immediately. No waiting. JS loads as soon as the element connects.</p>
+    <!-- Option 3 -->
+    <div class="border-4 border-dashed border-neutral bg-base-200 p-5">
+      <div class="flex items-center mb-3 gap-2">
+        <span class="bg-neutral text-neutral-content font-mono font-bold text-sm px-2 py-1">
+          comrade:eager
+        </span>
+      </div>
+      <p class="text-sm text-base-content/90">
+        Hydrate immediately. No waiting. JS loads as soon as the element connects.
+      </p>
     </div>
   </div>
 </div>
