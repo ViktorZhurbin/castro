@@ -46,7 +46,7 @@ function Hero() {
 					<p class="text-lg font-bold mb-1">
 						Your Five-Year Plan to Learn Island Architecture
 					</p>
-					<p class="italic text-sm mb-10 text-base-content/80">
+					<p class="italic text-sm mb-10 text-base-content">
 						"The satire is optional. The knowledge is real."
 					</p>
 					<CTAButtons />
@@ -138,7 +138,7 @@ function SpectrumCard({
 		<div
 			class={`flex flex-col gap-3 p-5 bg-base-200 border-2 border-neutral border-t-8 ${borderColor}`}
 		>
-			<span class="font-display text-base-content/70 text-2xl">{level}</span>
+			<span class="font-display text-base-content text-2xl">{level}</span>
 			<p class="text-2xl font-display">{title}</p>
 			<span class="font-mono text-xs font-bold uppercase tracking-wider border px-2 py-1">
 				js: {js}
@@ -151,7 +151,7 @@ function SpectrumCard({
 function AlsoIncluded() {
 	return (
 		<>
-			<div class="divider my-14 font-display text-lg text-base-content/80 tracking-widest">
+			<div class="divider divider-neutral my-14 font-display text-xl text-base-content tracking-widest">
 				ALSO INCLUDED
 			</div>
 			<div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6">

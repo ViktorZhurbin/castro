@@ -20,31 +20,39 @@ export default function Redactor() {
 				<p>
 					The recent harvest was{" "}
 					{censored ? (
-						<span class="font-bold text-error bg-error/10 px-1">GLORIOUS</span>
+						<span class="font-bold text-error-content bg-error px-1">
+							GLORIOUS
+						</span>
 					) : (
-						<span class="line-through opacity-50">poor</span>
+						<span class="line-through decoration-2 decoration-base-content text-base-content">
+							poor
+						</span>
 					)}
 					.
 				</p>
 				<p>
 					The tractors are{" "}
 					{censored ? (
-						<span class="font-bold text-error bg-error/10 px-1">
+						<span class="font-bold text-error-content bg-error px-1">
 							MAGNIFICENT
 						</span>
 					) : (
-						<span class="line-through opacity-50">old and unreliable</span>
+						<span class="line-through decoration-2 decoration-base-content text-base-content">
+							old and unreliable
+						</span>
 					)}
 					.
 				</p>
 				<p>
 					Worker morale has{" "}
 					{censored ? (
-						<span class="font-bold text-error bg-error/10 px-1">
+						<span class="font-bold text-error-content bg-error px-1">
 							SKYROCKETED
 						</span>
 					) : (
-						<span class="line-through opacity-50">declined</span>
+						<span class="line-through decoration-2 decoration-base-content text-base-content">
+							declined
+						</span>
 					)}{" "}
 					since the last policy change.
 				</p>

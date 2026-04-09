@@ -247,7 +247,10 @@ h3 {
 }
 
 a {
-	@apply decoration-primary decoration-3 underline-offset-3;
+	@apply decoration-primary decoration-3 underline-offset-3 transition-none;
+}
+a:hover {
+	@apply bg-primary text-primary-content decoration-transparent;
 }
 
 :not(pre) > code {

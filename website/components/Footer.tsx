@@ -7,7 +7,7 @@ export function Footer() {
 					<p class="font-display text-4xl md:text-5xl text-base-content leading-none">
 						WORKERS OF THE WEB, UNITE!
 					</p>
-					<p class="font-display text-xl md:text-2xl text-base-content/70 mt-2 leading-none">
+					<p class="font-display text-xl md:text-2xl text-base-content mt-2 leading-none">
 						SEIZE THE MEANS OF RENDERING.
 					</p>
 				</div>
@@ -27,7 +27,7 @@ export function Footer() {
 							GitHub
 						</a>
 					</nav>
-					<p class="text-base-content/70 text-xs font-medium md:text-right">
+					<p class="text-base-content text-xs font-medium md:text-right">
 						Built with Castro <br class="hidden md:block" />
 						The People's Framework
 					</p>
