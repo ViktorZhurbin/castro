@@ -34,7 +34,7 @@
 
 		/* --radius-box: 0rem is a DaisyUI component variable and doesn't affect Tailwind's rounded-* utilities, which @tailwindcss/typography uses for pre */
 		pre {
-			@apply rounded-none border-2;
+			@apply rounded-none border-2 border-neutral;
 		}
 	}
 }
@@ -158,10 +158,10 @@
 
 	/* Constructivist step blocks */
 	.c-step {
-		@apply flex border-2 border-base-content bg-base-100;
+		@apply flex border-2 border-neutral bg-base-100;
 	}
 	.c-step-number {
-		@apply bg-primary text-primary-content font-display text-5xl md:text-6xl flex items-center justify-center w-20 md:w-28 shrink-0 border-r-2 border-base-content;
+		@apply bg-primary text-primary-content font-display text-5xl md:text-6xl flex items-center justify-center w-20 md:w-28 shrink-0 border-r-2 border-neutral;
 	}
 	.c-step-content {
 		@apply p-6 md:p-8;
@@ -170,39 +170,26 @@
 		@apply font-display text-3xl text-base-content leading-none mb-2;
 	}
 
-	.c-btn {
-		@apply btn btn-lg border-2 border-base-content border-b-4;
-	}
-	.c-btn-primary {
-		--btn-bg: var(--color-primary);
-		--btn-fg: var(--color-primary-content);
-		--btn-border: var(--color-base-content);
-		&:hover {
-			--btn-bg: var(--color-base-content);
-			--btn-fg: var(--color-base-100);
-			--btn-border: var(--color-base-content);
-		}
-	}
-	.c-btn-neutral {
-		--btn-bg: var(--color-base-content);
-		--btn-fg: var(--color-base-100);
-		--btn-border: var(--color-base-content);
-		&:hover {
-			--btn-bg: var(--color-primary);
-			--btn-fg: var(--color-primary-content);
-			--btn-border: var(--color-primary);
-		}
-	}
-	.c-btn-base {
-		--btn-bg: var(--color-base-100);
-		--btn-fg: var(--color-base-content);
-		--btn-border: var(--color-base-content);
-		&:hover {
-			--btn-bg: var(--color-base-content);
-			--btn-fg: var(--color-base-100);
-			--btn-border: var(--color-base-content);
-		}
-	}
+	/** Base Constructivist Button
+   * Anchors the size, heavy borders, and zero-shadow */
+  .c-btn {
+    @apply btn btn-lg border-2 border-neutral border-b-4 shadow-none;
+  }
+
+  /* Red/Gold block -> flips to high-contrast inverse on hover */
+  .c-btn-primary {
+    @apply bg-primary text-primary-content border-neutral hover:bg-base-content hover:text-base-100 hover:border-neutral;
+  }
+
+  /* Black/Concrete block -> floods with Primary color on hover */
+  .c-btn-neutral {
+    @apply bg-base-content text-base-100 border-neutral hover:bg-primary hover:text-primary-content hover:border-primary;
+  }
+
+  /* Paper/Background block -> fills with Black/Concrete on hover */
+  .c-btn-base {
+    @apply bg-base-100 text-base-content border-neutral hover:bg-base-content hover:text-base-100 hover:border-neutral;
+  }
 }
 
 * {
@@ -255,10 +242,10 @@ a {
 }
 
 :not(pre) > code {
-	@apply px-1.5 py-0.5 font-mono text-sm bg-base-200 border border-base-content;
+	@apply px-1.5 py-0.5 font-mono text-sm bg-base-200 border border-neutral;
 }
 
 /* Apply the primary border ONLY to default variant */
 .alert:not([class*="alert-"]) {
-	@apply block bg-base-200 border-2 border-base-content border-l-8 border-l-primary rounded-none mb-6 p-4 text-base-content;
+	@apply block bg-base-200 border-2 border-neutral border-l-8 border-l-primary rounded-none mb-6 p-4 text-base-content;
 }

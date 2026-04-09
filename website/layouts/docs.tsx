@@ -49,7 +49,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
 
 				<div class="drawer-content flex flex-col overflow-hidden">
 					{/* Mobile-only toggle bar */}
-					<div class="lg:hidden bg-base-100 border-b-2 border-base-content flex items-center px-4">
+					<div class="lg:hidden bg-base-100 border-b-2 border-neutral flex items-center px-4">
 						<label
 							htmlFor="docs-drawer"
 							class="btn btn-ghost btn-square btn-sm"
@@ -67,14 +67,14 @@ export default function DocsLayout(props: DocsLayoutProps) {
 					</div>
 				</div>
 
-				<div class="drawer-side z-60 border-r-2 border-base-content">
+				<div class="drawer-side z-60 border-r-2 border-neutral">
 					{/* Overlay closes drawer on mobile; hidden on desktop via drawer-open */}
 					<label
 						htmlFor="docs-drawer"
 						aria-label="Close sidebar"
 						class="drawer-overlay"
 					/>
-					<div class="bg-base-200 min-h-full w-64 border-6 lg:border-none transition-none">
+					<div class="bg-base-200 min-h-full w-64 border-6 border-neutral lg:border-none transition-none">
 						<SidebarNav activePath={path} />
 					</div>
 				</div>
@@ -87,7 +87,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
 
 function SidebarNav(props: { activePath?: string }) {
 	return (
-		<div class="flex flex-col py-2 divide-y-2">
+		<div class="flex flex-col py-2 divide-y-2 divide-neutral">
 			{Object.values(sidebarSections).map(({ title, links }) => (
 				<div class="px-4 py-6">
 					<h3 class="mb-2">{title}</h3>
@@ -102,8 +102,8 @@ function SidebarNav(props: { activePath?: string }) {
 									href={link.href}
 									class={`px-3 py-1 border-l-4 ${
 										isActive
-											? "border-primary bg-base-content text-base-100"
-											: "border-transparent hover:border-primary hover:bg-base-content hover:text-base-100"
+											? "border-primary bg-neutral text-neutral-content"
+											: "border-transparent text-base-content hover:bg-neutral hover:text-neutral-content "
 									}`}
 								>
 									{link.label}

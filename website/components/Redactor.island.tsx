@@ -4,7 +4,7 @@ export default function Redactor() {
 	const [censored, setCensored] = useState(false);
 
 	return (
-		<div class="border-2 border-base-content bg-base-100">
+		<div class="border-2 border-neutral bg-base-100">
 			{/* Header */}
 			<div
 				class={`bg-base-content text-base-100 px-4 py-2 flex items-center justify-between ${censored ? "bg-error" : ""}`}
@@ -51,7 +51,7 @@ export default function Redactor() {
 			</div>
 
 			{/* Control */}
-			<div class="border-t-2 border-base-content px-4 py-3">
+			<div class="border-t-2 border-neutral px-4 py-3">
 				<button
 					class={`btn w-full font-display btn-lg ${censored ? "btn-error" : "btn-primary"}`}
 					onClick={() => setCensored(!censored)}

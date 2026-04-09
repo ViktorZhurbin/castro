@@ -136,7 +136,7 @@ function SpectrumCard({
 }: SpectrumCardProps) {
 	return (
 		<div
-			class={`flex flex-col gap-3 p-5 bg-base-200 border-2 border-t-8 ${borderColor}`}
+			class={`flex flex-col gap-3 p-5 bg-base-200 border-2 border-neutral border-t-8 ${borderColor}`}
 		>
 			<span class="font-display text-base-content/70 text-2xl">{level}</span>
 			<p class="text-2xl font-display">{title}</p>
@@ -187,7 +187,9 @@ function AlsoIncludedItem({
 	borderColor,
 }: AlsoIncludedItemProps) {
 	return (
-		<div class={`bg-base-100 border-2 border-l-6 ${borderColor} p-6`}>
+		<div
+			class={`bg-base-100 border-2 border-l-6 border-neutral ${borderColor} p-6`}
+		>
 			<p class="font-display text-2xl mb-2">{title}</p>
 			<p>{description}</p>
 		</div>
