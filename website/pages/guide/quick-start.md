@@ -8,6 +8,27 @@ path: /guide/quick-start
 
 Mobilize a static site with interactive islands in under three minutes. Follow the state-approved blueprint.
 
+## SCAFFOLD (RECOMMENDED)
+
+The fastest way to start:
+
+```bash
+bun create castro        # Bun
+npm create castro        # npm
+npx create-castro        # npx
+```
+
+This creates a new directory with a working Castro project and runs `bun install`. Then:
+
+```bash
+cd my-castro-site
+bun run dev
+```
+
+---
+
+## MANUAL SETUP
+
 ## PREREQUISITES
 
 Castro runs on Bun 1.3.8+, so you'd need to [install](https://bun.sh) it. It uses Bun's build pipeline, markdown parser, YAML parser, and dev server. Node will not work here. The old ways have failed.
