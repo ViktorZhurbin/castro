@@ -34,12 +34,12 @@ The browser loads `castro-island.js` and registers a `<castro-island>` custom el
   <!-- OUTCOME NODES: Thick dashed cut-outs -->
   <div class="flex flex-col gap-4">
     <!-- Option 1: Primary/Default -->
-    <div class="border-4 border-dashed border-neutral bg-base-200 p-5">
+    <div class="c-diagram-box">
       <div class="flex items-center mb-3 gap-2 flex-wrap">
-        <span class="bg-primary text-primary-content font-mono font-bold text-sm px-2 py-1">
+        <span class="badge badge-primary">
           comrade:visible
         </span>
-        <span class="border-2 border-dotted border-primary text-base-content font-mono font-bold text-xs uppercase tracking-widest px-2 py-1">
+        <span class="c-badge border-dashed">
           default
         </span>
       </div>
@@ -48,9 +48,9 @@ The browser loads `castro-island.js` and registers a `<castro-island>` custom el
       </p>
     </div>
     <!-- Option 2 -->
-    <div class="border-4 border-dashed border-neutral bg-base-200 p-5">
+    <div class="c-diagram-box">
       <div class="flex items-center mb-3 gap-2">
-        <span class="bg-neutral text-neutral-content font-mono font-bold text-sm px-2 py-1">
+        <span class="badge badge-neutral">
           comrade:patient
         </span>
       </div>
@@ -59,9 +59,9 @@ The browser loads `castro-island.js` and registers a `<castro-island>` custom el
       </p>
     </div>
     <!-- Option 3 -->
-    <div class="border-4 border-dashed border-neutral bg-base-200 p-5">
+    <div class="c-diagram-box">
       <div class="flex items-center mb-3 gap-2">
-        <span class="bg-neutral text-neutral-content font-mono font-bold text-sm px-2 py-1">
+        <span class="badge badge-neutral">
           comrade:eager
         </span>
       </div>

@@ -48,13 +48,13 @@ export default function PropagandaRadio() {
 			<div class="border-t-2 border-neutral px-4 py-3 space-y-2">
 				<div class="flex gap-2">
 					<button
-						class="btn btn-primary btn-lg flex-1 font-display"
+						class="btn btn-primary btn-lg flex-1"
 						onClick={prev}
 					>
 						◀ PREV
 					</button>
 					<button
-						class="btn btn-primary btn-lg flex-1 font-display"
+						class="btn btn-primary btn-lg flex-1"
 						onClick={next}
 					>
 						NEXT ▶

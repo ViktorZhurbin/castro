@@ -17,7 +17,7 @@ Islands compile before any pages are processed. Each `.island.tsx` file goes thr
 <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-stretch mb-12">
   <!-- SOURCE NODE: Heavy anchor block -->
   <div class="border-2 border-neutral border-b-8 bg-base-200 p-6 flex flex-col items-center justify-center text-center">
-    <div class="bg-primary text-primary-content font-mono font-bold text-sm px-3 py-1 mb-4">
+    <div class="badge badge-primary mb-4">
       Counter.island.tsx
     </div>
     <p class="text-sm text-base-content/90">
@@ -35,9 +35,9 @@ Islands compile before any pages are processed. Each `.island.tsx` file goes thr
   <!-- OUTCOME NODES: Thick dashed cut-outs -->
   <div class="flex flex-col gap-4">
     <!-- Output 1: SSR Module -->
-    <div class="border-4 border-dashed border-neutral bg-base-200 p-5">
+    <div class="c-diagram-box">
       <div class="mb-3">
-        <span class="bg-neutral text-neutral-content font-mono font-bold text-sm px-2 py-1 inline-block">
+        <span class="badge badge-neutral">
           SSR Module
         </span>
       </div>
@@ -46,9 +46,9 @@ Islands compile before any pages are processed. Each `.island.tsx` file goes thr
       </p>
     </div>
     <!-- Output 2: Client Bundle -->
-    <div class="border-4 border-dashed border-neutral bg-base-200 p-5">
+    <div class="c-diagram-box">
       <div class="mb-3">
-        <span class="bg-neutral text-neutral-content font-mono font-bold text-sm px-2 py-1 inline-block">
+        <span class="badge badge-neutral">
           Counter-a1b2.js
         </span>
       </div>

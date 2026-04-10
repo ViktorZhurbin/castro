@@ -61,7 +61,7 @@ export default function Redactor() {
 			{/* Control */}
 			<div class="border-t-2 border-neutral px-4 py-3">
 				<button
-					class={`btn w-full font-display btn-lg ${censored ? "btn-error" : "btn-primary"}`}
+					class={`btn w-full btn-lg ${censored ? "btn-error" : "btn-primary"}`}
 					onClick={() => setCensored(!censored)}
 				>
 					{censored

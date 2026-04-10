@@ -14,7 +14,7 @@ export function Header({ activePath }: { activePath?: string }) {
 	];
 
 	return (
-		<header class="navbar sticky top-0 z-1 bg-base-100 border-b-2 border-neutral min-h-12 px-4 py-0">
+		<header class="navbar sticky top-0 z-50 bg-base-100 border-b-2 border-neutral min-h-12 px-4 py-0">
 			<div class="flex items-center flex-1 justify-start gap-2">
 				<a href="/" class="c-btn-square c-btn-square-primary" aria-label="Home">
 					<StarIcon />
@@ -46,13 +46,15 @@ export function Header({ activePath }: { activePath?: string }) {
 						<MoreIcon />
 					</summary>
 					{/* Heavy borders for the dropdown menu */}
-					<ul class="dropdown-content menu bg-base-100 border-2 z-50 w-52 p-2">
+					<ul class="dropdown-content menu z-50 w-52 p-2">
 						{navLinks.map((link) => (
 							<li key={link.href}>
 								<a
 									href={link.href}
 									class={`font-display text-lg ${
-										link.active ? "menu-active" : ""
+										link.active
+											? "bg-primary text-primary-content"
+											: "hover:bg-neutral hover:text-neutral-content"
 									}`}
 								>
 									{link.label}

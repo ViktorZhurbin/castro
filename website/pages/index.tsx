@@ -151,7 +151,7 @@ function SpectrumCard({
 function AlsoIncluded() {
 	return (
 		<>
-			<div class="divider divider-neutral my-14 font-display text-xl text-base-content tracking-widest">
+			<div class="c-divider-section">
 				ALSO INCLUDED
 			</div>
 			<div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6">
