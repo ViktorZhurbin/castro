@@ -60,10 +60,7 @@ export default function FiveYearPlan() {
 
 			{/* Control */}
 			<div class="border-t-2 border-neutral px-4 py-3">
-				<button
-					class="btn btn-primary btn-lg w-full"
-					onClick={work}
-				>
+				<button class="btn btn-primary btn-lg w-full" onClick={work}>
 					WORK HARDER, COMRADE!
 				</button>
 			</div>

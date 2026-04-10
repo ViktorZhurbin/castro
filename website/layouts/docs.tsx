@@ -53,12 +53,12 @@ export default function DocsLayout(props: DocsLayoutProps) {
 				<label
 					htmlFor="docs-drawer"
 					aria-label="Close sidebar"
-					class="fixed inset-0 bg-neutral/80 z-20 hidden peer-checked:block lg:hidden cursor-pointer"
+					class="fixed inset-0 bg-neutral/80 z-55 hidden peer-checked:block lg:hidden cursor-pointer"
 				/>
 
 				{/* Sidebar: Fixed pop-over on mobile, static structural block on desktop */}
 				<aside
-					class={`fixed inset-y-0 left-0 z-30 w-64 bg-base-200 border-r-4 border-neutral hidden peer-checked:flex flex-col lg:border-r-2 lg:static lg:flex lg:shrink-0`}
+					class={`fixed inset-y-0 left-0 z-60 w-64 bg-base-200 border-r-4 border-neutral hidden peer-checked:flex flex-col lg:border-r-2 lg:static lg:flex lg:shrink-0`}
 				>
 					<div class="flex-1 overflow-y-auto">
 						<SidebarNav activePath={path} />
