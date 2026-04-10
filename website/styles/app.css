@@ -43,6 +43,8 @@
 	themes:
 		castro --default,
 		castro-dark --prefersdark;
+
+	include: alert, badge, button, divider, dropdown, hero, menu, navbar, progress, swap, table;
 }
 
 @plugin "daisyui/theme" {
