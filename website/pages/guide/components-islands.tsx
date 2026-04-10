@@ -368,10 +368,10 @@ export default function Counter() {
 				</p>
 
 				<div class="flex flex-wrap gap-4">
-					<a href="/guide/quick-start" class="not-prose c-btn c-btn-base">
+					<a href="/guide/quick-start" class="c-btn c-btn-base">
 						← Quick Start
 					</a>
-					<a href="/guide/plugins" class="not-prose c-btn c-btn-base">
+					<a href="/guide/plugins" class="c-btn c-btn-base">
 						Plugins →
 					</a>
 				</div>

@@ -16,7 +16,9 @@ export function ThemeToggle() {
 }
 
 function initState(storageKey: string, dark: string, light: string) {
-	const btn = document.getElementById("theme-toggle") as HTMLButtonElement | null;
+	const btn = document.getElementById(
+		"theme-toggle",
+	) as HTMLButtonElement | null;
 
 	if (!btn) return;
 

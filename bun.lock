@@ -47,6 +47,13 @@
         "@types/bun": "^1.3.8",
       },
     },
+    "packages/create-castro": {
+      "name": "create-castro",
+      "version": "0.1.0",
+      "bin": {
+        "create-castro": "./index.js",
+      },
+    },
     "packages/tailwind": {
       "name": "@vktrz/castro-tailwind",
       "version": "0.1.0",
@@ -302,6 +309,8 @@
     "caniuse-lite": ["caniuse-lite@1.0.30001775", "", {}, "sha512-s3Qv7Lht9zbVKE9XoTyRG6wVDCKdtOFIjBGg3+Yhn6JaytuNKPIjBMTMIY1AnOH3seL5mvF+x33oGAyK3hVt3A=="],
 
     "convert-source-map": ["convert-source-map@2.0.0", "", {}, "sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg=="],
+
+    "create-castro": ["create-castro@workspace:packages/create-castro"],
 
     "cssesc": ["cssesc@3.0.0", "", { "bin": { "cssesc": "bin/cssesc" } }, "sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg=="],
 

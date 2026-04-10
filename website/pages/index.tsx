@@ -1,4 +1,5 @@
 import { StarIcon } from "@components/icons/StarIcon.tsx";
+import "./_index.css";
 
 export const meta = { title: "Castro - The People's Framework" };
 
@@ -7,9 +8,9 @@ export default function Home() {
 		<>
 			<Hero />
 
-			<section class="max-w-5xl mx-auto py-24 px-6 bg-base-100">
-				<div class="text-center mb-16">
-					<h2 class="text-primary mb-4">WHAT THE PARTY OFFERS</h2>
+			<section class="feature-section">
+				<div class="feature-section-header">
+					<h2>WHAT THE PARTY OFFERS</h2>
 					<p>
 						A working static site generator you can read in an afternoon and
 						understand completely.
@@ -20,7 +21,7 @@ export default function Home() {
 				<AlsoIncluded />
 			</section>
 
-			<section class="py-24 px-6 bg-base-200 flex flex-col gap-16">
+			<section class="cta-buttons">
 				<HowItWorks />
 				<CTAButtons />
 			</section>
@@ -30,23 +31,21 @@ export default function Home() {
 
 function Hero() {
 	return (
-		<div class="hero sm:min-h-[calc(100vh-3rem)] bg-base-200">
-			<div class="hero-content text-center px-6">
-				<div class="max-w-3xl flex flex-col items-center">
-					<div class="w-32 h-32 mb-8 text-primary">
+		<div class="hero">
+			<div class="hero-content">
+				<div>
+					<div>
 						<StarIcon />
 					</div>
-					<h1 class="mb-3">CASTRO</h1>
-					<p class="font-display text-3xl md:text-5xl">
-						THE PEOPLE'S FRAMEWORK
-					</p>
+					<h1>CASTRO</h1>
+					<p class="subtitle">THE PEOPLE'S FRAMEWORK</p>
 
-					<hr class="border-0 border-t-8 border-primary w-32 mx-auto my-10" />
+					<hr class="hero-hr" />
 
-					<p class="text-lg font-bold mb-1">
+					<p class="hero-tagline">
 						Your Five-Year Plan to Learn Island Architecture
 					</p>
-					<p class="italic text-sm mb-10 text-base-content">
+					<p class="hero-quote">
 						"The satire is optional. The knowledge is real."
 					</p>
 					<CTAButtons />
@@ -58,7 +57,7 @@ function Hero() {
 
 function CTAButtons() {
 	return (
-		<div class="flex flex-wrap gap-4 justify-center">
+		<div class="cta-buttons-container">
 			<a href="/guide/quick-start" class="c-btn c-btn-primary">
 				GET STARTED
 			</a>
@@ -79,13 +78,13 @@ function CTAButtons() {
 
 function InteractivitySpectrum() {
 	return (
-		<div class="max-w-4xl mx-auto text-center">
-			<h3 class="mb-6">THE INTERACTIVITY SPECTRUM</h3>
-			<p class="text-center mb-4">
+		<div class="spectrum-grid">
+			<h3>THE INTERACTIVITY SPECTRUM</h3>
+			<p>
 				Each level adds capability and ships more JavaScript. The right choice
 				is the lowest level that meets your needs.
 			</p>
-			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
+			<div class="spectrum-cards">
 				<SpectrumCard
 					level="01"
 					title="STATIC"
@@ -136,23 +135,31 @@ function SpectrumCard({
 }: SpectrumCardProps) {
 	return (
 		<div
-			class={`flex flex-col gap-3 p-5 bg-base-200 border-2 border-neutral border-t-8 ${borderColor}`}
+			class="spectrum-card"
+			style={`border-top-color: ${getBorderColor(borderColor)}`}
 		>
-			<span class="font-display text-base-content text-2xl">{level}</span>
-			<p class="text-2xl font-display">{title}</p>
-			<span class="font-mono text-xs font-bold uppercase tracking-wider border px-2 py-1">
-				js: {js}
-			</span>
+			<span class="spectrum-card-level">{level}</span>
+			<p class="spectrum-card-title">{title}</p>
+			<span class="spectrum-card-js">js: {js}</span>
 			<p>{body}</p>
 		</div>
 	);
+}
+
+function getBorderColor(borderColor: string): string {
+	const colors: Record<string, string> = {
+		"border-t-primary": "var(--pico-primary)",
+		"border-t-secondary": "var(--pico-secondary)",
+		"border-t-accent": "var(--pico-secondary)",
+	};
+	return colors[borderColor] || "var(--pico-primary)";
 }
 
 function AlsoIncluded() {
 	return (
 		<>
 			<div class="c-divider-section">ALSO INCLUDED</div>
-			<div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6">
+			<div class="also-included-grid">
 				<AlsoIncludedItem
 					title="BUN-NATIVE"
 					description="No Webpack, no Vite. Built on Bun's build pipeline from the ground up."
@@ -186,9 +193,10 @@ function AlsoIncludedItem({
 }: AlsoIncludedItemProps) {
 	return (
 		<div
-			class={`bg-base-100 border-2 border-l-6 border-neutral ${borderColor} p-6`}
+			class="also-included-item"
+			style={`border-left-color: ${getBorderColor(borderColor)}`}
 		>
-			<p class="font-display text-2xl mb-2">{title}</p>
+			<h3>{title}</h3>
 			<p>{description}</p>
 		</div>
 	);
@@ -196,16 +204,16 @@ function AlsoIncludedItem({
 
 function HowItWorks() {
 	return (
-		<div class="max-w-3xl mx-auto flex flex-col items-center">
-			<div class="text-center mb-16">
-				<h2 class="text-primary">HOW IT WORKS AT RUNTIME</h2>
-				<p class="max-w-xl mt-4 text-lg">
+		<div class="how-it-works">
+			<div class="how-it-works-header">
+				<h2>HOW IT WORKS AT RUNTIME</h2>
+				<p class="how-it-works-intro">
 					Island architecture in four steps. No magic, just HTML-first
 					progressive enhancement.
 				</p>
 			</div>
 
-			<div class="flex flex-col gap-6">
+			<div class="how-it-works-steps">
 				<div class="c-step">
 					<div class="c-step-number">1</div>
 					<div class="c-step-content">

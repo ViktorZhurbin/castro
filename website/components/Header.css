@@ -1,0 +1,99 @@
+/* Header layout and navigation styles */
+
+.navbar {
+	position: sticky;
+	top: 0;
+	z-index: 50;
+	background: var(--pico-background-color);
+	border-bottom: 2px solid var(--pico-muted-border-color);
+	min-height: 3rem;
+	padding: 0 1rem;
+	padding-top: 0;
+	padding-bottom: 0;
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+/* Nav start section */
+.navbar .flex {
+	display: flex;
+	align-items: center;
+	flex: 1;
+	justify-content: flex-start;
+	gap: 1rem;
+}
+
+/* Desktop nav links */
+.navbar nav {
+	display: none;
+	align-items: center;
+	gap: 1.1rem;
+}
+
+@media (min-width: 640px) {
+	.navbar nav {
+		display: flex;
+	}
+}
+
+.navbar nav a {
+	font-family: "Bebas Neue", sans-serif;
+	font-size: 1.1rem;
+	transition: none;
+	border-bottom: 4px solid transparent;
+	color: var(--pico-secondary);
+	text-decoration: none;
+}
+
+.navbar nav a:hover {
+	border-bottom-color: var(--pico-muted-border-color);
+}
+
+.navbar nav a.active,
+.navbar nav a[aria-current="page"] {
+	border-bottom-color: var(--pico-primary);
+	color: var(--pico-primary);
+}
+
+/* Mobile dropdown menu */
+.navbar .dropdown {
+	display: block;
+}
+
+@media (min-width: 640px) {
+	.navbar .dropdown {
+		display: none;
+	}
+}
+
+/* Dropdown menu items */
+.navbar .dropdown-content {
+	width: 13rem;
+	padding: 0.5rem;
+}
+
+.navbar .menu li a {
+	font-family: "Bebas Neue", sans-serif;
+	font-size: 1.125rem;
+	color: var(--pico-color);
+	text-decoration: none;
+}
+
+.navbar .menu li a:hover {
+	background: var(--pico-muted-border-color);
+	color: var(--pico-color);
+}
+
+.navbar .menu li a.active,
+.navbar .menu li a[aria-current="page"] {
+	background: var(--pico-primary);
+	color: var(--pico-primary-inverse);
+}
+
+/* End section (theme toggle) */
+.navbar > div:last-child {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}

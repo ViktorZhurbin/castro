@@ -1,93 +1,98 @@
+:root {
+	--pico-font-family: "Barlow", -apple-system, sans-serif;
+	--pico-border-radius: 0rem;
+	--pico-border-width: 2px;
+	--pico-transition: 0s;
+
+	/* Kill box shadows everywhere */
+	--pico-box-shadow: none;
+	--pico-card-box-shadow: none;
+	--pico-button-box-shadow: none;
+	--pico-button-hover-box-shadow: none;
+	--pico-dropdown-box-shadow: none;
+
+	/* Focus: dashed primary outline (constructivist) */
+	--pico-outline-width: 3px;
+
+	/* Constructivist focus ring */
+	*:focus-visible {
+		--pico-box-shadow: none;
+		box-shadow: none;
+		outline: 3px dashed var(--pico-primary);
+		outline-offset: 3px;
+	}
+}
+
 /* Light (castro) */
 [data-theme="light"],
 :root:not([data-theme="dark"]) {
-  --pico-font-family: "Barlow", -apple-system, sans-serif;
-  --pico-border-radius: 0rem;
-  --pico-border-width: 2px;
-  --pico-transition: 0s;
+	--pico-background-color: oklch(93% 0.012 80);
+	--pico-color: oklch(15% 0 0);
+	--pico-muted-color: oklch(35% 0 0);
+	--pico-muted-border-color: oklch(15% 0 0);
 
-  --pico-background-color: oklch(93% 0.012 80);
-  --pico-color: oklch(15% 0 0);
-  --pico-muted-color: oklch(35% 0 0);
-  --pico-muted-border-color: oklch(15% 0 0);
+	--pico-primary: oklch(53% 0.2 20); /* Soviet Red */
+	--pico-primary-background: oklch(53% 0.2 20);
+	--pico-primary-hover: oklch(43% 0.2 20);
+	--pico-primary-hover-background: oklch(43% 0.2 20);
+	--pico-primary-inverse: oklch(98% 0 0);
+	--pico-primary-focus: oklch(53% 0.2 20 / 30%);
 
-  --pico-primary: oklch(53% 0.2 20);           /* Soviet Red */
-  --pico-primary-background: oklch(53% 0.2 20);
-  --pico-primary-hover: oklch(43% 0.2 20);
-  --pico-primary-hover-background: oklch(43% 0.2 20);
-  --pico-primary-inverse: oklch(98% 0 0);
-  --pico-primary-focus: oklch(53% 0.2 20 / 30%);
+	/* Secondary = Stark Black */
+	--pico-secondary: oklch(15% 0 0);
+	--pico-secondary-background: oklch(15% 0 0);
+	--pico-secondary-hover: oklch(5% 0 0);
+	--pico-secondary-inverse: oklch(98% 0 0);
 
-  /* Secondary = Stark Black */
-  --pico-secondary: oklch(15% 0 0);
-  --pico-secondary-background: oklch(15% 0 0);
-  --pico-secondary-hover: oklch(5% 0 0);
-  --pico-secondary-inverse: oklch(98% 0 0);
+	--pico-card-background-color: oklch(93% 0.012 80);
+	--pico-card-border-color: oklch(15% 0 0);
 
-  --pico-card-background-color: oklch(93% 0.012 80);
-  --pico-card-border-color: oklch(15% 0 0);
-  --pico-card-box-shadow: none;
-
-  --pico-code-background-color: oklch(89% 0.015 77);
-  --pico-code-color: oklch(15% 0 0);
-
-  /* Kill box shadows everywhere */
-  --pico-box-shadow: none;
-  --pico-button-box-shadow: none;
-  --pico-button-hover-box-shadow: none;
-  --pico-dropdown-box-shadow: none;
-
-  /* Focus: dashed primary outline (constructivist) */
-  --pico-outline-width: 3px;
+	--pico-code-background-color: oklch(89% 0.015 77);
+	--pico-code-color: oklch(15% 0 0);
 }
 
 /* Dark (castro-dark) */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
-    --pico-background-color: oklch(22% 0.006 56);
-    --pico-color: oklch(91% 0.016 74);
-    --pico-primary: oklch(80% 0.17 80);
-    --pico-primary-background: oklch(80% 0.17 80);
-    --pico-primary-hover: oklch(70% 0.17 80);
-    --pico-primary-inverse: oklch(15% 0 0);
-    --pico-secondary: oklch(55% 0.22 25);
-    --pico-secondary-background: oklch(55% 0.22 25);
-    --pico-card-background-color: oklch(22% 0.006 56);
-    --pico-card-border-color: oklch(35% 0.01 250);
-    --pico-muted-border-color: oklch(35% 0.01 250);
-    --pico-code-background-color: oklch(26% 0.006 56);
-    --pico-code-color: oklch(91% 0.016 74);
-    --pico-box-shadow: none;
-    --pico-button-box-shadow: none;
-  }
+	:root:not([data-theme]) {
+		--pico-background-color: oklch(22% 0.006 56);
+		--pico-color: oklch(91% 0.016 74);
+		--pico-primary: oklch(80% 0.17 80);
+		--pico-primary-background: oklch(80% 0.17 80);
+		--pico-primary-hover: oklch(70% 0.17 80);
+		--pico-primary-inverse: oklch(15% 0 0);
+		--pico-secondary: oklch(55% 0.22 25);
+		--pico-secondary-background: oklch(55% 0.22 25);
+		--pico-card-background-color: oklch(22% 0.006 56);
+		--pico-card-border-color: oklch(35% 0.01 250);
+		--pico-muted-border-color: oklch(35% 0.01 250);
+		--pico-code-background-color: oklch(26% 0.006 56);
+		--pico-code-color: oklch(91% 0.016 74);
+	}
 }
 
 [data-theme="dark"] {
-  --pico-background-color: oklch(22% 0.006 56);
-  --pico-color: oklch(91% 0.016 74);
-  --pico-primary: oklch(80% 0.17 80);          /* Gold in dark mode */
-  --pico-primary-background: oklch(80% 0.17 80);
-  --pico-primary-hover: oklch(70% 0.17 80);
-  --pico-primary-inverse: oklch(15% 0 0);
-  --pico-secondary: oklch(55% 0.22 25);        /* Soviet Red in dark */
-  --pico-secondary-background: oklch(55% 0.22 25);
-  --pico-card-background-color: oklch(22% 0.006 56);
-  --pico-card-border-color: oklch(35% 0.01 250);
-  --pico-muted-border-color: oklch(35% 0.01 250);
-  --pico-code-background-color: oklch(26% 0.006 56);
-  --pico-code-color: oklch(91% 0.016 74);
-  --pico-box-shadow: none;
-  --pico-button-box-shadow: none;
+	--pico-background-color: oklch(22% 0.006 56);
+	--pico-color: oklch(91% 0.016 74);
+	--pico-primary: oklch(80% 0.17 80); /* Gold in dark mode */
+	--pico-primary-background: oklch(80% 0.17 80);
+	--pico-primary-hover: oklch(70% 0.17 80);
+	--pico-primary-inverse: oklch(15% 0 0);
+	--pico-secondary: oklch(55% 0.22 25); /* Soviet Red in dark */
+	--pico-secondary-background: oklch(55% 0.22 25);
+	--pico-card-background-color: oklch(22% 0.006 56);
+	--pico-card-border-color: oklch(35% 0.01 250);
+	--pico-muted-border-color: oklch(35% 0.01 250);
+	--pico-code-background-color: oklch(26% 0.006 56);
+	--pico-code-color: oklch(91% 0.016 74);
 }
 
 /* Heading font */
-h1, h2, h3, h4, h5, h6 {
-  font-family: "Bebas Neue", sans-serif;
-  letter-spacing: 0.05em;
-}
-
-/* Constructivist focus ring */
-*:focus-visible {
-  outline: 3px dashed var(--pico-primary);
-  outline-offset: 3px;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "Bebas Neue", sans-serif;
+	letter-spacing: 0.05em;
 }

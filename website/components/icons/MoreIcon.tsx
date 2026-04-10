@@ -3,7 +3,6 @@ import type { SvgProps } from "./types";
 export const MoreIcon = (props: SvgProps) => {
 	return (
 		<svg
-			class="h-5 w-5"
 			xmlns="http://www.w3.org/2000/svg"
 			width="24"
 			height="24"

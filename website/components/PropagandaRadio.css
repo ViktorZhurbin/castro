@@ -1,0 +1,87 @@
+/* Propaganda Radio island card styles */
+
+.propaganda-radio {
+	border: 2px solid var(--pico-muted-border-color);
+	background: var(--pico-background-color);
+}
+
+.propaganda-radio-header {
+	background: var(--pico-color);
+	color: var(--pico-background-color);
+	padding: 0.5rem 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.propaganda-radio-header p {
+	font-family: "Bebas Neue", sans-serif;
+	font-weight: 700;
+	font-size: 0.875rem;
+}
+
+.propaganda-radio-header .on-air-badge {
+	font-size: 0.75rem;
+	font-weight: 700;
+	animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.5;
+	}
+}
+
+.propaganda-radio-headline {
+	padding: 1.5rem;
+}
+
+.propaganda-radio-headline p {
+	font-family: "Bebas Neue", sans-serif;
+	font-size: 1.5rem;
+	line-height: 1.25;
+	min-height: 6rem;
+	display: flex;
+	align-items: center;
+}
+
+.propaganda-radio-controls {
+	border-top: 2px solid var(--pico-muted-border-color);
+	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.propaganda-radio-buttons {
+	display: flex;
+	gap: 0.5rem;
+}
+
+.propaganda-radio-buttons button {
+	flex: 1;
+	padding: 0.75rem 1.5rem;
+	font-family: "Bebas Neue", sans-serif;
+	font-size: 1rem;
+	letter-spacing: 0.1em;
+	background: var(--pico-primary);
+	color: var(--pico-primary-inverse);
+	border: 2px solid var(--pico-muted-border-color);
+	cursor: pointer;
+	font-weight: 700;
+}
+
+.propaganda-radio-buttons button:hover {
+	opacity: 0.9;
+}
+
+.propaganda-radio-counter {
+	text-align: center;
+	font-size: 0.875rem;
+	font-family: monospace;
+	font-weight: 700;
+}

@@ -104,8 +104,8 @@ User-provided entries override plugin-generated entries on pages with islands. T
 
 -----
 
-<div class="flex flex-wrap gap-4">
-  <a href="/reference/plugin-api" class="not-prose c-btn c-btn-base">
+<div class="c-btn-group">
+  <a href="/reference/plugin-api" class="c-btn c-btn-base">
     Plugin API →
   </a>
 </div>
