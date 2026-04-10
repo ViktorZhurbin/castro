@@ -1,0 +1,23 @@
+.theme-toggle {
+  background: none;
+  border: 2px solid transparent;
+  padding: 4px;
+  cursor: pointer;
+  color: inherit;
+}
+
+.theme-toggle:hover {
+  border-color: currentColor;
+}
+
+.theme-toggle .icon-moon {
+  display: none;
+}
+
+[data-theme="dark"] .theme-toggle .icon-moon {
+  display: block;
+}
+
+[data-theme="dark"] .theme-toggle .icon-sun {
+  display: none;
+}

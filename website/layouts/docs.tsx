@@ -1,6 +1,7 @@
 import { Footer } from "@components/Footer.tsx";
 import { MenuIcon } from "@components/icons/MenuIcon";
 import { PageShell } from "@components/PageShell.tsx";
+import { ClientScript } from "@vktrz/castro";
 import type { ComponentChildren } from "preact";
 
 export interface DocsLayoutProps {
@@ -39,67 +40,61 @@ const sidebarSections: Record<
 	},
 };
 
+const picoHead = (
+	<>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+		/>
+		<link rel="stylesheet" href="/styles/pico-theme.css" />
+		<link rel="stylesheet" href="/styles/docs.css" />
+	</>
+);
+
 export default function DocsLayout(props: DocsLayoutProps) {
 	const { title, path, children } = props;
 
 	return (
-		<PageShell title={title} activePath={path}>
-			{/* Main flex container safely locks to the viewport height left by the header */}
-			<div class="flex flex-1 overflow-hidden relative">
-				{/* Hidden checkbox controls the mobile sidebar state via Tailwind 'peer' */}
-				<input id="docs-drawer" type="checkbox" class="peer hidden" />
+		<PageShell title={title} activePath={path} head={picoHead}>
+			<div class="docs-shell">
+				<div id="docs-overlay" class="docs-overlay" />
 
-				{/* Mobile Overlay: Solid stark block, clicking it resets the checkbox */}
-				<label
-					htmlFor="docs-drawer"
-					aria-label="Close sidebar"
-					class="fixed inset-0 bg-neutral/80 z-55 hidden peer-checked:block lg:hidden cursor-pointer"
-				/>
-
-				{/* Sidebar: Fixed pop-over on mobile, static structural block on desktop */}
-				<aside
-					class={`fixed inset-y-0 left-0 z-60 w-64 bg-base-200 border-r-4 border-neutral hidden peer-checked:flex flex-col lg:border-r-2 lg:static lg:flex lg:shrink-0`}
-				>
-					<div class="flex-1 overflow-y-auto">
+				<aside id="docs-sidebar" class="docs-sidebar">
+					<div style={{ flex: 1, overflowY: "auto" }}>
 						<SidebarNav activePath={path} />
 					</div>
 				</aside>
 
-				{/* Content Container: Isolated scrolling context */}
-				<div class="flex-1 flex flex-col min-w-0 overflow-y-auto bg-base-100 scroll-pt-16 lg:scroll-pt-8">
-					{/* Mobile toggle bar (sticky) */}
-					<div class="lg:hidden sticky top-0 z-10 bg-base-100 border-b-2 border-neutral flex items-center px-4 py-1">
-						<label
-							htmlFor="docs-drawer"
-							class="c-btn-square c-btn-square-base btn-xs"
+				<div class="docs-content">
+					<div class="docs-mobile-bar">
+						<button
+							class="docs-toggle"
+							id="docs-toggle"
 							aria-label="Open sidebar"
 						>
 							<MenuIcon />
-						</label>
+						</button>
 					</div>
 
-					{/* Main document flow */}
-					<main class="flex-1 prose prose-castro py-12 px-6 max-w-3xl snap-start">
-						{children}
-					</main>
+					<main class="container">{children}</main>
 
 					<Footer />
 				</div>
 			</div>
+
+			<ClientScript fn={initSidebar} />
 		</PageShell>
 	);
 }
 
-// Layout-specific components below
-
 function SidebarNav(props: { activePath?: string }) {
 	return (
-		<div class="flex flex-col py-2 divide-y-2 divide-neutral">
+		<nav style={{ padding: 0 }}>
 			{Object.values(sidebarSections).map(({ title, links }) => (
-				<div class="px-4 py-6" key={title}>
-					<h3 class="mb-2">{title}</h3>
+				<div class="docs-sidebar-section" key={title}>
+					<h3>{title}</h3>
 
-					<nav class="flex flex-col">
+					<div style={{ display: "flex", flexDirection: "column" }}>
 						{links.map((link) => {
 							const isActive = props.activePath === link.href;
 
@@ -107,19 +102,35 @@ function SidebarNav(props: { activePath?: string }) {
 								<a
 									key={link.href}
 									href={link.href}
-									class={`px-3 py-1 border-l-4 ${
-										isActive
-											? "border-primary bg-neutral text-neutral-content"
-											: "border-transparent text-base-content hover:bg-neutral hover:text-neutral-content"
-									}`}
+									aria-current={isActive ? "page" : undefined}
 								>
 									{link.label}
 								</a>
 							);
 						})}
-					</nav>
+					</div>
 				</div>
 			))}
-		</div>
+		</nav>
 	);
+}
+
+function initSidebar() {
+	const toggle = document.getElementById(
+		"docs-toggle",
+	) as HTMLButtonElement | null;
+	const sidebar = document.getElementById("docs-sidebar") as HTMLElement | null;
+	const overlay = document.getElementById("docs-overlay") as HTMLElement | null;
+
+	if (!toggle || !sidebar || !overlay) return;
+
+	toggle.addEventListener("click", () => {
+		const isOpen = sidebar.classList.toggle("is-open");
+		overlay.classList.toggle("is-open", isOpen);
+	});
+
+	overlay.addEventListener("click", () => {
+		sidebar.classList.remove("is-open");
+		overlay.classList.remove("is-open");
+	});
 }

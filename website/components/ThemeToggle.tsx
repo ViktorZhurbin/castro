@@ -1,18 +1,14 @@
 import { ClientScript } from "@vktrz/castro";
 import { DARK, LIGHT, STORAGE_KEY } from "../lib/theme.ts";
+import "./ThemeToggle.css";
 
 export function ThemeToggle() {
 	return (
 		<>
-			<label id="theme-toggle" class="swap c-btn-square c-btn-square-base">
-				<input
-					class="w-full h-full"
-					type="checkbox"
-					aria-label="Toggle theme"
-				/>
-				<SunIcon className="swap-off" />
-				<MoonIcon className="swap-on" />
-			</label>
+			<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+				<SunIcon className="icon-sun" />
+				<MoonIcon className="icon-moon" />
+			</button>
 
 			<ClientScript fn={initState} args={[STORAGE_KEY, DARK, LIGHT]} />
 		</>
@@ -20,19 +16,13 @@ export function ThemeToggle() {
 }
 
 function initState(storageKey: string, dark: string, light: string) {
-	const checkbox = document.querySelector(
-		"#theme-toggle input",
-	) as HTMLInputElement | null;
+	const btn = document.getElementById("theme-toggle") as HTMLButtonElement | null;
 
-	if (!checkbox) return;
+	if (!btn) return;
 
-	// Read the actual applied theme from the HTML tag
-	const currentTheme = document.documentElement.getAttribute("data-theme");
-	checkbox.checked = currentTheme === dark;
-
-	checkbox.addEventListener("change", (e) => {
-		const isChecked = (e.target as HTMLInputElement).checked;
-		const next = isChecked ? dark : light;
+	btn.addEventListener("click", () => {
+		const current = document.documentElement.getAttribute("data-theme");
+		const next = current === dark ? light : dark;
 
 		document.documentElement.setAttribute("data-theme", next);
 		localStorage.setItem(storageKey, next);

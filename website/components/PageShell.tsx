@@ -1,14 +1,20 @@
-import type { VNode } from "preact";
+import type { ComponentChildren } from "preact";
 import { Header } from "./Header.tsx";
 import { ThemeScript } from "./ThemeScript.tsx";
 
 interface PageShellProps {
 	title: string;
 	activePath?: string;
-	children: VNode | VNode[];
+	children: ComponentChildren;
+	head?: ComponentChildren;
 }
 
-export function PageShell({ title, activePath, children }: PageShellProps) {
+export function PageShell({
+	title,
+	activePath,
+	children,
+	head,
+}: PageShellProps) {
 	return (
 		<html lang="en" class="h-screen overflow-hidden">
 			<head>
@@ -26,6 +32,7 @@ export function PageShell({ title, activePath, children }: PageShellProps) {
 					href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&family=Bebas+Neue&display=swap"
 					rel="stylesheet"
 				/>
+				{head}
 			</head>
 			<body class="h-screen flex flex-col overflow-hidden">
 				<Header activePath={activePath} />
