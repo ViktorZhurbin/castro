@@ -1,0 +1,68 @@
+@layer components {
+	.font-display {
+		letter-spacing: 0.05em;
+	}
+
+	/* Dashed diagram boxes */
+	.c-diagram-box {
+		@apply border-4 border-dashed border-neutral bg-base-200 p-5;
+	}
+
+	.c-badge {
+		@apply border-2 border-primary text-base-content font-mono font-bold text-xs uppercase tracking-widest px-2 py-1;
+	}
+
+	/* Section dividers */
+	.c-divider-section {
+		@apply divider divider-neutral my-14 font-display text-xl text-base-content tracking-widest;
+	}
+
+	/* Menu styling */
+	.menu {
+		@apply rounded-none p-0;
+	}
+
+	/* Constructivist step blocks */
+	.c-step {
+		@apply flex border-2 border-neutral bg-base-100;
+	}
+	.c-step-number {
+		@apply bg-primary text-primary-content font-display text-5xl md:text-6xl flex items-center justify-center w-20 md:w-28 shrink-0 border-r-2 border-neutral;
+	}
+	.c-step-content {
+		@apply p-6 md:p-8;
+	}
+	.c-step-title {
+		@apply font-display text-3xl text-base-content leading-none mb-2;
+	}
+
+	/** Base Constructivist Button */
+	.c-btn {
+		@apply btn btn-lg border-2 border-neutral border-b-4;
+	}
+
+	/* Red/Gold block -> flips to high-contrast inverse on hover */
+	.c-btn-primary {
+		@apply bg-primary text-primary-content hover:bg-base-content hover:text-base-100 hover:border-neutral;
+	}
+
+	/* Black/Concrete block -> floods with Primary color on hover */
+	.c-btn-neutral {
+		@apply bg-base-content text-base-100 hover:bg-primary hover:text-primary-content hover:border-primary;
+	}
+
+	/* Paper/Background block -> fills with Black/Concrete on hover */
+	.c-btn-base {
+		@apply bg-base-100 text-base-content hover:bg-base-content hover:text-base-100 hover:border-neutral;
+	}
+
+	.c-btn-square {
+		@apply btn btn-square btn-sm border-transparent bg-transparent;
+	}
+	.c-btn-square-primary {
+		@apply text-primary hover:bg-primary hover:text-primary-content;
+	}
+	.c-btn-square-base {
+		@apply border-2 border-transparent hover:border-neutral;
+	}
+}

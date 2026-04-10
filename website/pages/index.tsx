@@ -9,7 +9,7 @@ export default function Home() {
 
 			<section class="max-w-5xl mx-auto py-24 px-6 bg-base-100">
 				<div class="text-center mb-16">
-					<h2 class="font-display text-primary mb-4">WHAT THE PARTY OFFERS</h2>
+					<h2 class="text-primary mb-4">WHAT THE PARTY OFFERS</h2>
 					<p>
 						A working static site generator you can read in an afternoon and
 						understand completely.
@@ -36,7 +36,7 @@ function Hero() {
 					<div class="w-32 h-32 mb-8 text-primary">
 						<StarIcon />
 					</div>
-					<h1 class="font-display mb-3">CASTRO</h1>
+					<h1 class="mb-3">CASTRO</h1>
 					<p class="font-display text-3xl md:text-5xl">
 						THE PEOPLE'S FRAMEWORK
 					</p>
@@ -80,7 +80,7 @@ function CTAButtons() {
 function InteractivitySpectrum() {
 	return (
 		<div class="max-w-4xl mx-auto text-center">
-			<h3 class="font-display mb-6">THE INTERACTIVITY SPECTRUM</h3>
+			<h3 class="mb-6">THE INTERACTIVITY SPECTRUM</h3>
 			<p class="text-center mb-4">
 				Each level adds capability and ships more JavaScript. The right choice
 				is the lowest level that meets your needs.
@@ -151,9 +151,7 @@ function SpectrumCard({
 function AlsoIncluded() {
 	return (
 		<>
-			<div class="c-divider-section">
-				ALSO INCLUDED
-			</div>
+			<div class="c-divider-section">ALSO INCLUDED</div>
 			<div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6">
 				<AlsoIncludedItem
 					title="BUN-NATIVE"
@@ -200,7 +198,7 @@ function HowItWorks() {
 	return (
 		<div class="max-w-3xl mx-auto flex flex-col items-center">
 			<div class="text-center mb-16">
-				<h2 class="font-display text-primary">HOW IT WORKS AT RUNTIME</h2>
+				<h2 class="text-primary">HOW IT WORKS AT RUNTIME</h2>
 				<p class="max-w-xl mt-4 text-lg">
 					Island architecture in four steps. No magic, just HTML-first
 					progressive enhancement.
