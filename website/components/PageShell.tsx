@@ -38,7 +38,7 @@ export function PageShell({ title, activePath, children }: PageShellProps) {
 					rel="stylesheet"
 				/>
 			</head>
-			<body style="display: flex; flex-direction: column; min-height: 100vh;">
+			<body style="display: flex; flex-direction: column; height: 100vh; overflow: hidden; margin: 0;">
 				<Header activePath={activePath} />
 				{children}
 			</body>
