@@ -1,5 +1,5 @@
 import { StarIcon } from "@components/icons/StarIcon.tsx";
-import "./_index.css";
+import "./index.css";
 
 export const meta = { title: "Castro - The People's Framework" };
 

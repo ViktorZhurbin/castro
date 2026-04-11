@@ -1,5 +1,5 @@
 import { StarIcon } from "@components/icons/StarIcon.tsx";
-import "./_404.css";
+import "./404.css";
 
 export const meta = {
 	title: "404 - Page Not Found",
