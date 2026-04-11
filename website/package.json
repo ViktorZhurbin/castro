@@ -10,11 +10,7 @@
 	},
 	"dependencies": {
 		"@vktrz/castro": "workspace:*",
-		"@vktrz/castro-jsx": "workspace:*",
-		"@vktrz/castro-tailwind": "workspace:*",
-		"daisyui": "^5.5.19",
-		"preact": "^10.28.2",
-		"tailwindcss": "^4"
+		"preact": "^10.28.2"
 	},
 	"devDependencies": {
 		"@tailwindcss/typography": "^0.5.19",
