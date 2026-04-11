@@ -16,7 +16,7 @@
 }
 
 /* Nav start section */
-.navbar .flex {
+.navbar-start {
 	display: flex;
 	align-items: center;
 	flex: 1;
@@ -39,15 +39,15 @@
 
 .navbar nav a {
 	font-family: "Bebas Neue", sans-serif;
-	font-size: 1.1rem;
+	font-size: 1.25rem;
 	transition: none;
 	border-bottom: 4px solid transparent;
-	color: var(--pico-secondary);
+	color: var(--pico-contrast);
 	text-decoration: none;
 }
 
 .navbar nav a:hover {
-	border-bottom-color: var(--pico-muted-border-color);
+	border-bottom-color: var(--pico-contrast);
 }
 
 .navbar nav a.active,

@@ -150,7 +150,7 @@ function getBorderColor(borderColor: string): string {
 	const colors: Record<string, string> = {
 		"border-t-primary": "var(--pico-primary)",
 		"border-t-secondary": "var(--pico-secondary)",
-		"border-t-accent": "var(--pico-secondary)",
+		"border-t-accent": "var(--castro-accent)",
 	};
 	return colors[borderColor] || "var(--pico-primary)";
 }

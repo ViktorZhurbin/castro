@@ -3,6 +3,7 @@
 	--pico-border-radius: 0rem;
 	--pico-border-width: 2px;
 	--pico-transition: 0s;
+	--pico-font-size: 100%;
 
 	/* Kill box shadows everywhere */
 	--pico-box-shadow: none;
@@ -21,6 +22,54 @@
 		outline: 3px dashed var(--pico-primary);
 		outline-offset: 3px;
 	}
+
+	--pico-block-spacing-vertical: 0;
+
+	/* Heading typography: mobile baseline */
+	h1 {
+		--pico-font-size: 3rem;
+		--pico-line-height: 1;
+		font-family: "Bebas Neue", sans-serif;
+		letter-spacing: 0.05em;
+	}
+	h2 {
+		--pico-font-size: 1.875rem;
+		font-family: "Bebas Neue", sans-serif;
+		letter-spacing: 0.05em;
+	}
+	h3 {
+		--pico-font-size: 1.5rem;
+		font-family: "Bebas Neue", sans-serif;
+		letter-spacing: 0.05em;
+	}
+	h4 {
+		--pico-font-size: 1.25rem;
+		font-family: "Bebas Neue", sans-serif;
+		letter-spacing: 0.05em;
+	}
+	h5 {
+		--pico-font-size: 1.125rem;
+		font-family: "Bebas Neue", sans-serif;
+		letter-spacing: 0.05em;
+	}
+	h6 {
+		--pico-font-size: 1rem;
+		font-family: "Bebas Neue", sans-serif;
+		letter-spacing: 0.05em;
+	}
+
+	/* Heading typography: desktop scale-up at md breakpoint */
+	@media (min-width: 768px) {
+		h1 {
+			--pico-font-size: 4.5rem;
+		}
+		h2 {
+			--pico-font-size: 3rem;
+		}
+		h3 {
+			--pico-font-size: 2.25rem;
+		}
+	}
 }
 
 /* Light (castro) */
@@ -31,68 +80,174 @@
 	--pico-muted-color: oklch(35% 0 0);
 	--pico-muted-border-color: oklch(15% 0 0);
 
-	--pico-primary: oklch(53% 0.2 20); /* Soviet Red */
+	/* Primary: Soviet Red */
+	--pico-primary: oklch(53% 0.2 20);
 	--pico-primary-background: oklch(53% 0.2 20);
 	--pico-primary-hover: oklch(43% 0.2 20);
 	--pico-primary-hover-background: oklch(43% 0.2 20);
-	--pico-primary-inverse: oklch(98% 0 0);
+	--pico-primary-underline: oklch(53% 0.2 20 / 50%);
 	--pico-primary-focus: oklch(53% 0.2 20 / 30%);
+	--pico-primary-inverse: oklch(98% 0 0);
 
-	/* Secondary = Stark Black */
-	--pico-secondary: oklch(15% 0 0);
-	--pico-secondary-background: oklch(15% 0 0);
-	--pico-secondary-hover: oklch(5% 0 0);
+	/* Secondary: Industrial Iron (cool grey-blue) */
+	--pico-secondary: oklch(25% 0.02 250);
+	--pico-secondary-background: oklch(25% 0.02 250);
+	--pico-secondary-hover: oklch(20% 0.02 250);
 	--pico-secondary-inverse: oklch(98% 0 0);
 
+	/* Contrast: Stark Black (for neutral role, maximum contrast) */
+	--pico-contrast: oklch(15% 0 0);
+	--pico-contrast-background: oklch(98% 0 0);
+	--pico-contrast-hover: oklch(5% 0 0);
+	--pico-contrast-inverse: oklch(98% 0 0);
+
+	/* Heading colors: per-level semantic hierarchy */
+	--pico-h1-color: var(--pico-primary);
+	--pico-h2-color: var(--pico-color);
+	--pico-h3-color: var(--pico-color);
+	--pico-h4-color: var(--pico-color);
+	--pico-h5-color: var(--pico-color);
+	--pico-h6-color: var(--pico-muted-color);
+
+	/* Accent: Propaganda Gold (custom, not standard Pico) */
+	--castro-accent: oklch(75% 0.18 80);
+	--castro-accent-content: oklch(15% 0 0);
+
+	/* Status colors */
+	--pico-del-color: oklch(53% 0.2 20);
+	--pico-ins-color: oklch(48% 0.12 150);
+
+	/* Card and form background variations */
 	--pico-card-background-color: oklch(93% 0.012 80);
 	--pico-card-border-color: oklch(15% 0 0);
+	--pico-card-sectioning-background-color: oklch(89% 0.015 77);
 
 	--pico-code-background-color: oklch(89% 0.015 77);
 	--pico-code-color: oklch(15% 0 0);
+
+	/* Form elements */
+	--pico-form-element-background-color: oklch(93% 0.012 80);
+	--pico-form-element-border-color: oklch(15% 0 0);
+	--pico-form-element-color: oklch(15% 0 0);
+	--pico-form-element-focus-color: var(--pico-primary);
 }
 
-/* Dark (castro-dark) */
+/* Dark (castro-dark) – auto mode */
 @media (prefers-color-scheme: dark) {
 	:root:not([data-theme]) {
 		--pico-background-color: oklch(22% 0.006 56);
 		--pico-color: oklch(91% 0.016 74);
+		--pico-muted-color: oklch(70% 0.01 74);
+		--pico-muted-border-color: oklch(35% 0.01 250);
+
+		/* Primary: Gold in dark mode */
 		--pico-primary: oklch(80% 0.17 80);
 		--pico-primary-background: oklch(80% 0.17 80);
 		--pico-primary-hover: oklch(70% 0.17 80);
+		--pico-primary-hover-background: oklch(70% 0.17 80);
+		--pico-primary-underline: oklch(80% 0.17 80 / 50%);
+		--pico-primary-focus: oklch(80% 0.17 80 / 30%);
 		--pico-primary-inverse: oklch(15% 0 0);
+
+		/* Secondary: Soviet Red in dark mode */
 		--pico-secondary: oklch(55% 0.22 25);
 		--pico-secondary-background: oklch(55% 0.22 25);
+		--pico-secondary-hover: oklch(50% 0.22 25);
+		--pico-secondary-inverse: oklch(15% 0 0);
+
+		/* Contrast: light fill in dark mode (true flip of black-on-light) */
+		--pico-contrast: oklch(98% 0 0);
+		--pico-contrast-background: oklch(35% 0.01 250);
+		--pico-contrast-hover: oklch(98% 0 0);
+		--pico-contrast-inverse: oklch(15% 0 0);
+
+		/* Heading colors: per-level semantic hierarchy */
+		--pico-h1-color: var(--pico-primary);
+		--pico-h2-color: var(--pico-color);
+		--pico-h3-color: var(--pico-color);
+		--pico-h4-color: var(--pico-color);
+		--pico-h5-color: var(--pico-color);
+		--pico-h6-color: var(--pico-muted-color);
+
+		/* Accent: Concrete Grey in dark mode */
+		--castro-accent: oklch(70% 0.02 250);
+		--castro-accent-content: oklch(15% 0 0);
+
+		/* Status colors */
+		--pico-del-color: oklch(65% 0.2 28);
+		--pico-ins-color: oklch(70% 0.15 150);
+
+		/* Card and form background variations */
 		--pico-card-background-color: oklch(22% 0.006 56);
 		--pico-card-border-color: oklch(35% 0.01 250);
-		--pico-muted-border-color: oklch(35% 0.01 250);
+		--pico-card-sectioning-background-color: oklch(26% 0.006 56);
+
 		--pico-code-background-color: oklch(26% 0.006 56);
 		--pico-code-color: oklch(91% 0.016 74);
+
+		/* Form elements */
+		--pico-form-element-background-color: oklch(22% 0.006 56);
+		--pico-form-element-border-color: oklch(35% 0.01 250);
+		--pico-form-element-color: oklch(91% 0.016 74);
+		--pico-form-element-focus-color: var(--pico-primary);
 	}
 }
 
+/* Dark (castro-dark) – forced mode */
 [data-theme="dark"] {
 	--pico-background-color: oklch(22% 0.006 56);
 	--pico-color: oklch(91% 0.016 74);
-	--pico-primary: oklch(80% 0.17 80); /* Gold in dark mode */
+	--pico-muted-color: oklch(70% 0.01 74);
+	--pico-muted-border-color: oklch(35% 0.01 250);
+
+	/* Primary: Gold in dark mode */
+	--pico-primary: oklch(80% 0.17 80);
 	--pico-primary-background: oklch(80% 0.17 80);
 	--pico-primary-hover: oklch(70% 0.17 80);
+	--pico-primary-hover-background: oklch(70% 0.17 80);
+	--pico-primary-underline: oklch(80% 0.17 80 / 50%);
+	--pico-primary-focus: oklch(80% 0.17 80 / 30%);
 	--pico-primary-inverse: oklch(15% 0 0);
-	--pico-secondary: oklch(55% 0.22 25); /* Soviet Red in dark */
+
+	/* Secondary: Soviet Red in dark mode */
+	--pico-secondary: oklch(55% 0.22 25);
 	--pico-secondary-background: oklch(55% 0.22 25);
+	--pico-secondary-hover: oklch(50% 0.22 25);
+	--pico-secondary-inverse: oklch(15% 0 0);
+
+	/* Contrast: Raised Iron (less intense black replacement) */
+	--pico-contrast: oklch(98% 0 0);
+	--pico-contrast-background: oklch(35% 0.01 250);
+	--pico-contrast-hover: oklch(98% 0 0);
+	--pico-contrast-inverse: oklch(15% 0 0);
+
+	/* Heading colors: per-level semantic hierarchy */
+	--pico-h1-color: var(--pico-primary);
+	--pico-h2-color: var(--pico-color);
+	--pico-h3-color: var(--pico-color);
+	--pico-h4-color: var(--pico-color);
+	--pico-h5-color: var(--pico-color);
+	--pico-h6-color: var(--pico-muted-color);
+
+	/* Accent: Concrete Grey in dark mode */
+	--castro-accent: oklch(70% 0.02 250);
+	--castro-accent-content: oklch(15% 0 0);
+
+	/* Status colors */
+	--pico-del-color: oklch(65% 0.2 28);
+	--pico-ins-color: oklch(70% 0.15 150);
+
+	/* Card and form background variations */
 	--pico-card-background-color: oklch(22% 0.006 56);
 	--pico-card-border-color: oklch(35% 0.01 250);
-	--pico-muted-border-color: oklch(35% 0.01 250);
+	--pico-card-sectioning-background-color: oklch(26% 0.006 56);
+
 	--pico-code-background-color: oklch(26% 0.006 56);
 	--pico-code-color: oklch(91% 0.016 74);
-}
 
-/* Heading font */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	font-family: "Bebas Neue", sans-serif;
-	letter-spacing: 0.05em;
+	/* Form elements */
+	--pico-form-element-background-color: oklch(22% 0.006 56);
+	--pico-form-element-border-color: oklch(35% 0.01 250);
+	--pico-form-element-color: oklch(91% 0.016 74);
+	--pico-form-element-focus-color: var(--pico-primary);
 }

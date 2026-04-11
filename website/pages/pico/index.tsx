@@ -15,13 +15,19 @@ export default function PicoShowcase() {
 				<h2>Color Palette</h2>
 				<div class="pico-color-grid">
 					<ColorSwatch name="Primary" varName="--pico-primary" />
-					<ColorSwatch name="Primary Inverse" varName="--pico-primary-inverse" />
+					<ColorSwatch
+						name="Primary Inverse"
+						varName="--pico-primary-inverse"
+					/>
 					<ColorSwatch name="Secondary" varName="--pico-secondary" />
 					<ColorSwatch
 						name="Secondary Inverse"
 						varName="--pico-secondary-inverse"
 					/>
-					<ColorSwatch name="Secondary Background" varName="--pico-secondary-background" />
+					<ColorSwatch
+						name="Secondary Background"
+						varName="--pico-secondary-background"
+					/>
 					<ColorSwatch
 						name="Form Element Background"
 						varName="--pico-form-element-background-color"
@@ -30,13 +36,22 @@ export default function PicoShowcase() {
 						name="Code Background"
 						varName="--pico-code-background-color"
 					/>
-					<ColorSwatch name="Muted Border" varName="--pico-muted-border-color" />
+					<ColorSwatch
+						name="Muted Border"
+						varName="--pico-muted-border-color"
+					/>
 					<ColorSwatch name="Color (text)" varName="--pico-color" />
 					<ColorSwatch
 						name="Background Color"
 						varName="--pico-background-color"
 					/>
 					<ColorSwatch name="Del Color (error)" varName="--pico-del-color" />
+					<ColorSwatch name="Contrast" varName="--pico-contrast" />
+					<ColorSwatch
+						name="Contrast Inverse"
+						varName="--pico-contrast-inverse"
+					/>
+					<ColorSwatch name="Accent (custom)" varName="--castro-accent" />
 				</div>
 			</section>
 
@@ -49,9 +64,9 @@ export default function PicoShowcase() {
 					<h1>Heading 1</h1>
 					<h2>Heading 2</h2>
 					<h3>Heading 3</h3>
-					<h4>Heading 4</h4>
-					<h5>Heading 5</h5>
-					<h6>Heading 6</h6>
+					<h4>Heading 4 (secondary color)</h4>
+					<h5>Heading 5 (secondary color)</h5>
+					<h6>Heading 6 (muted color)</h6>
 				</div>
 				<div>
 					<p>
@@ -89,7 +104,10 @@ console.log(message);`}
 				<div class="pico-square-buttons">
 					<div class="pico-button-item">
 						<p class="pico-button-label">c-btn-square c-btn-square-primary</p>
-						<button class="c-btn-square c-btn-square-primary" aria-label="Action">
+						<button
+							class="c-btn-square c-btn-square-primary"
+							aria-label="Action"
+						>
 							★
 						</button>
 					</div>
@@ -166,14 +184,10 @@ console.log(message);`}
 						</p>
 					</div>
 					<div class="pico-contrast-box pico-contrast-box-code">
-						<p class="pico-contrast-text">
-							Text on code background
-						</p>
+						<p class="pico-contrast-text">Text on code background</p>
 					</div>
 					<div class="pico-contrast-box pico-contrast-box-primary">
-						<p class="pico-contrast-text">
-							Primary inverse text on primary bg
-						</p>
+						<p class="pico-contrast-text">Primary inverse text on primary bg</p>
 						<h3 class="pico-contrast-heading c-step-title">
 							Heading on primary
 						</h3>
@@ -212,6 +226,28 @@ console.log(message);`}
 			</section>
 
 			<section class="pico-section">
+				<h2>Form Elements</h2>
+				<div class="pico-form-grid">
+					<div>
+						<label htmlFor="form-text">Text Input</label>
+						<input id="form-text" type="text" placeholder="Type something..." />
+					</div>
+					<div>
+						<label htmlFor="form-textarea">Textarea</label>
+						<textarea id="form-textarea" placeholder="Multiple lines..." />
+					</div>
+					<div>
+						<label htmlFor="form-select">Select</label>
+						<select id="form-select">
+							<option>Option 1</option>
+							<option>Option 2</option>
+							<option>Option 3</option>
+						</select>
+					</div>
+				</div>
+			</section>
+
+			<section class="pico-section">
 				<h2>CSS Variables Reference</h2>
 				<div class="pico-variables-ref">
 					<code class="pico-variables-code">
@@ -242,19 +278,10 @@ console.log(message);`}
 	);
 }
 
-function ColorSwatch({
-	name,
-	varName,
-}: {
-	name: string;
-	varName: string;
-}) {
+function ColorSwatch({ name, varName }: { name: string; varName: string }) {
 	return (
 		<div class="pico-swatch">
-			<div
-				class="pico-swatch-box"
-				style={`background: var(${varName})`}
-			/>
+			<div class="pico-swatch-box" style={`background: var(${varName})`} />
 			<p class="pico-swatch-name">{name}</p>
 			<code class="pico-swatch-var">{varName}</code>
 		</div>

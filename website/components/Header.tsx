@@ -16,7 +16,7 @@ export function Header({ activePath }: { activePath?: string }) {
 
 	return (
 		<header class="navbar">
-			<div class="flex">
+			<div class="navbar-start">
 				<a href="/" class="c-btn-square c-btn-square-primary" aria-label="Home">
 					<StarIcon />
 				</a>
