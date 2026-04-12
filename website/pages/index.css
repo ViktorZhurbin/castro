@@ -1,7 +1,3 @@
-.feature-section {
-	margin-inline: auto;
-}
-
 .feature-section,
 .how-it-works-section {
 	padding: var(--spacing-6xl) var(--spacing-xl);

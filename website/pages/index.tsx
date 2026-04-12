@@ -13,16 +13,18 @@ export default function Home() {
 			<Hero />
 
 			<section class="feature-section">
-				<div class="feature-section-header">
-					<h2>WHAT THE PARTY OFFERS</h2>
-					<p>
-						A working static site generator you can read in an afternoon and
-						understand completely.
-					</p>
-				</div>
+				<div class="container">
+					<div class="feature-section-header">
+						<h2>WHAT THE PARTY OFFERS</h2>
+						<p>
+							A working static site generator you can read in an afternoon and
+							understand completely.
+						</p>
+					</div>
 
-				<InteractivitySpectrum />
-				<AlsoIncluded />
+					<InteractivitySpectrum />
+					<AlsoIncluded />
+				</div>
 			</section>
 
 			<section class="how-it-works-section">

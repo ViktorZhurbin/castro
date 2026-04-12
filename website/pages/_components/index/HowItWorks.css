@@ -1,5 +1,4 @@
 .how-it-works {
-	max-width: 48rem;
 	margin-inline: auto;
 	display: flex;
 	flex-direction: column;
@@ -16,7 +15,6 @@
 }
 
 .how-it-works-intro {
-	max-width: 40rem;
 	margin-top: var(--spacing);
 	font-size: 1.125rem;
 }

@@ -3,7 +3,7 @@ import "./Footer.css";
 export function Footer() {
 	return (
 		<footer class="footer">
-			<div>
+			<div class="container">
 				{/* Slogan locked hard left */}
 				<div class="footer-slogan">
 					<p>WORKERS OF THE WEB, UNITE!</p>

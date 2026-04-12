@@ -1,15 +1,15 @@
 .footer {
 	background: var(--pico-code-background-color);
-	padding: var(--spacing-3xl) var(--spacing-xl) var(--spacing-5xl);
+	padding-block: var(--spacing-3xl) var(--spacing-5xl);
 	border-top: 4px solid var(--pico-primary);
 
 	@media (min-width: 768px) {
 		padding-bottom: var(--spacing-3xl);
+		padding-inline: var(--spacing-2xl);
 	}
 }
 
 .footer > div {
-	max-width: 64rem;
 	margin-inline: auto;
 	display: flex;
 	flex-direction: column;

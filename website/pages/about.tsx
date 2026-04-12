@@ -5,7 +5,7 @@ export const meta = { title: "About - Castro" };
 export default function About() {
 	return (
 		<section class="about-section">
-			<div class="about-content">
+			<div class="container about-content">
 				<h1>ABOUT</h1>
 				<div class="about-divider" />
 				<h2>WHY IT EXISTS</h2>

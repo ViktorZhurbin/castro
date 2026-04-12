@@ -2,7 +2,7 @@ import "./HowItWorks.css";
 
 export function HowItWorks() {
 	return (
-		<div class="how-it-works">
+		<div class="container how-it-works">
 			<div class="how-it-works-header">
 				<h2>HOW IT WORKS AT RUNTIME</h2>
 				<p class="how-it-works-intro">

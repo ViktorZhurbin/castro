@@ -7,11 +7,6 @@
 	background: var(--pico-code-background-color);
 }
 
-.about-content {
-	max-width: 48rem;
-	margin-inline: auto;
-}
-
 .about-divider {
 	border-top: 4px solid var(--pico-primary);
 	max-width: 8rem;

@@ -5,7 +5,7 @@ import { CTAButtons } from "./CTAButtons";
 export function Hero() {
 	return (
 		<div class="hero">
-			<div class="hero-content">
+			<div class="container hero-content">
 				<div>
 					<StarIcon />
 				</div>

@@ -8,7 +8,7 @@ export const meta = {
 export default function NotFound() {
 	return (
 		<div class="not-found-container">
-			<div class="not-found-content">
+			<div class="container not-found-content">
 				<div class="not-found-icon">
 					<StarIcon />
 				</div>
