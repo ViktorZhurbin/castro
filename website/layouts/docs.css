@@ -22,7 +22,7 @@
 	flex-direction: column;
 
 	main {
-		padding: 3rem 1.5rem;
+		padding: calc(var(--spacing-xl) * 2) var(--spacing-xl);
 		flex: 1; /* Pushes the footer down if the content is short */
 	}
 }
@@ -38,16 +38,16 @@
 	@media (max-width: 1023px) {
 		display: flex;
 		align-items: center;
-		padding: 0.25rem 1rem;
-		border-bottom: 2px solid var(--pico-muted-border-color);
-		background: var(--pico-background-color);
+		padding: var(--spacing-xxs) var(--spacing);
+		border-bottom: var(--border-2);
+		background-color: var(--pico-background-color);
 		flex-shrink: 0;
 	}
 }
 
 /* ─── SIDEBAR & PURE CSS TOGGLE LOGIC ──────────────────────────────────── */
 .docs-sidebar {
-	width: 16rem;
+	width: calc(var(--pico-spacing) * 16);
 	background: var(--pico-code-background-color);
 	border-right: 4px solid var(--pico-muted-border-color);
 	display: flex;
@@ -76,7 +76,7 @@
 		display: none;
 		position: fixed;
 		inset: 0;
-		background: oklch(15% 0 0 / 80%);
+		background-color: oklch(var(--color-black-raw) / 80%);
 		z-index: 55;
 		cursor: default;
 
@@ -88,44 +88,32 @@
 
 /* ─── SIDEBAR NAVIGATION STYLING ───────────────────────────────────────── */
 .docs-sidebar nav {
-	padding: 0;
+	padding: calc(var(--spacing) * 0.5);
 }
 
 .docs-sidebar-section {
-	padding: 1.5rem 1rem;
-	border-bottom: 2px solid var(--pico-muted-border-color);
+	padding: var(--spacing-lg) var(--spacing);
+	border-bottom: var(--border-2);
 }
 
 .docs-sidebar-section h3 {
-	margin-bottom: 0.5rem;
-	font-size: 1rem;
-}
-
-/* Normalize ul in case Pico adds default margins */
-.docs-sidebar-section ul {
-	list-style: none;
-	padding: 0;
 	margin: 0;
 }
 
 .docs-sidebar-section a {
-	display: block;
-	padding: 0.25rem 0.75rem;
+	padding: var(--spacing-xxs) var(--spacing-sm);
 	border-left: 4px solid transparent;
-	text-decoration: none;
-	color: var(--pico-secondary);
-	font-weight: 500;
-	font-size: 0.875rem;
-	line-height: 1.5;
-}
+	color: var(--pico-contrast);
 
-.docs-sidebar-section a:hover {
-	background: var(--pico-secondary-background);
-	color: var(--pico-secondary-inverse);
-}
+	&:hover {
+		background: var(--pico-contrast-background);
+		color: var(--pico-contrast-inverse);
+		text-decoration: none;
+	}
 
-.docs-sidebar-section a[aria-current="page"] {
-	border-left-color: var(--pico-primary);
-	background: var(--pico-primary);
-	color: var(--pico-primary-inverse);
+	&[aria-current="page"] {
+		color: var(--pico-contrast-inverse);
+		background-color: var(--pico-contrast-background);
+		border-left-color: var(--pico-primary);
+	}
 }

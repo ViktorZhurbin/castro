@@ -2,7 +2,17 @@
 	--header-height: 3rem;
 
 	--font-display: "Bebas Neue", sans-serif;
+
 	--border-2: var(--pico-border-width) solid var(--pico-muted-border-color);
+
+	--spacing-xxs: calc(var(--pico-spacing) * 0.25);
+	--spacing-xs: calc(var(--pico-spacing) * 0.5);
+	--spacing-sm: calc(var(--pico-spacing) * 0.75);
+	--spacing: var(--pico-spacing);
+	--spacing-lg: calc(var(--pico-spacing) * 1.25);
+	--spacing-xl: calc(var(--pico-spacing) * 1.5);
+	--spacing-2xl: calc(var(--pico-spacing) * 1.75);
+	--spacing-3xl: calc(var(--pico-spacing) * 2);
 
 	*:focus-visible {
 		box-shadow: none;
