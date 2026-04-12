@@ -1,0 +1,56 @@
+.hero {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--pico-code-background-color);
+
+	@media (min-width: 640px) {
+		min-height: calc(100vh - var(--header-height));
+	}
+}
+
+.hero-content {
+	text-align: center;
+	padding: 1.5rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	max-width: 48rem;
+
+	svg {
+		width: 8rem;
+		height: 8rem;
+		margin-bottom: 2rem;
+		color: var(--pico-primary);
+	}
+
+	h1 {
+		margin-bottom: 0.75rem;
+	}
+
+	.subtitle {
+		font-family: var(--font-display);
+		font-size: clamp(1.875rem, 5vw, 3rem);
+	}
+}
+
+.hero-hr {
+	border: 0;
+	border-top: 8px solid var(--pico-primary);
+	width: 8rem;
+	margin: 2.5rem auto;
+}
+
+.hero-tagline {
+	font-size: 1.125rem;
+	font-weight: 700;
+	margin-bottom: 0.25rem;
+}
+
+.hero-quote {
+	font-style: italic;
+	font-size: 0.875rem;
+	margin-bottom: 2.5rem;
+	color: var(--pico-color);
+}

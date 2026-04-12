@@ -14,58 +14,58 @@ The build pipeline produces static HTML with `<castro-island>` wrappers. Now the
 
 The browser loads `castro-island.js` and registers a `<castro-island>` custom element. When one connects to the DOM, `connectedCallback()` reads the `directive` attribute and decides what happens next.
 
-<div class="c-diagram-grid">
+<div class="diagram-grid">
   <!-- SOURCE NODE: Heavy anchor block -->
-  <div class="c-diagram-source">
-    <div class="bg-neutral text-neutral-content font-mono font-bold text-sm px-3 py-1 mb-4">
-      connectedCallback()
-    </div>
-    <p class="c-text-muted">
+  <div class="diagram-source">
+    <h4>
+      <code>connectedCallback()</code>
+    </h4>
+    <p>
       Fires when the element enters the DOM. Reads the <code>directive</code> attribute.
     </p>
   </div>
 
   <!-- DIRECTIONAL ARROW: Massive and stark -->
-  <div class="c-diagram-arrows">
-    <span class="hidden md:block text-6xl leading-none">→</span>
-    <span class="md:hidden text-6xl leading-none py-2">↓</span>
+  <div class="diagram-arrows">
+    <span class="arrow-desktop">→</span>
+    <span class="arrow-mobile">↓</span>
   </div>
 
   <!-- OUTCOME NODES: Thick dashed cut-outs -->
-  <div class="c-diagram-outputs">
+  <div class="diagram-outputs">
     <!-- Option 1: Primary/Default -->
-    <div class="c-diagram-box">
-      <div class="c-diagram-box-header">
+    <div class="diagram-box">
+      <div class="diagram-box-header">
         <span class="badge badge-primary">
           comrade:visible
         </span>
-        <span class="c-badge-dotted">
+        <span class="badge-dotted">
           default
         </span>
       </div>
-      <p class="c-text-muted">
+      <p>
         Wait for the element to enter the viewport via <code>IntersectionObserver</code> (with a 100px buffer). Then hydrate.
       </p>
     </div>
     <!-- Option 2 -->
-    <div class="c-diagram-box">
-      <div class="c-diagram-box-header">
+    <div class="diagram-box">
+      <div class="diagram-box-header">
         <span class="badge badge-neutral">
           comrade:patient
         </span>
       </div>
-      <p class="c-text-muted">
+      <p>
         Wait for page load, then wait for the browser to be idle via <code>requestIdleCallback</code>. Falls back to immediate hydration on Safari &lt;119.
       </p>
     </div>
     <!-- Option 3 -->
-    <div class="c-diagram-box">
-      <div class="c-diagram-box-header">
+    <div class="diagram-box">
+      <div class="diagram-box-header">
         <span class="badge badge-neutral">
           comrade:eager
         </span>
       </div>
-      <p class="c-text-muted">
+      <p>
         Hydrate immediately. No waiting. JS loads as soon as the element connects.
       </p>
     </div>
@@ -174,8 +174,8 @@ HTML arrives
 
 That's island architecture: static HTML by default, JavaScript delivered exactly when each component needs it. Islands hydrate independently and in parallel. A heavy island below the fold never blocks a critical one above it. The directive controls timing; isolation handles the rest.
 
-<div class="c-btn-group">
-  <a href="/how-it-works" class="c-btn c-btn-base">
+<div class="btn-group">
+  <a href="/how-it-works" class="btn btn-base">
     ← Back to The Build Pipeline
   </a>
 </div>

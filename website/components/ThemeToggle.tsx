@@ -5,9 +5,9 @@ import "./ThemeToggle.css";
 export function ThemeToggle() {
 	return (
 		<>
-			<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-				<SunIcon className="icon-sun" />
-				<MoonIcon className="icon-moon" />
+			<button id="theme-toggle" class="btn-square" aria-label="Toggle theme">
+				<SunIcon />
+				<MoonIcon />
 			</button>
 
 			<ClientScript fn={initState} args={[STORAGE_KEY, DARK, LIGHT]} />
@@ -31,12 +31,10 @@ function initState(storageKey: string, dark: string, light: string) {
 	});
 }
 
-const iconClasses = "w-5 h-5 fill-current";
-
-function SunIcon(props: { className: string }) {
+function SunIcon() {
 	return (
 		<svg
-			class={`${props.className} ${iconClasses}`}
+			class="icon-sun"
 			xmlns="http://www.w3.org/2000/svg"
 			viewBox="0 0 24 24"
 		>
@@ -45,10 +43,10 @@ function SunIcon(props: { className: string }) {
 	);
 }
 
-function MoonIcon(props: { className: string }) {
+function MoonIcon() {
 	return (
 		<svg
-			class={`${props.className} ${iconClasses}`}
+			class="icon-moon"
 			xmlns="http://www.w3.org/2000/svg"
 			viewBox="0 0 24 24"
 		>

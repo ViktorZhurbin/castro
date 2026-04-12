@@ -1,4 +1,4 @@
-import "./index.css";
+import "./about.css";
 
 export const meta = { title: "About - Castro" };
 
@@ -31,11 +31,11 @@ export default function About() {
 						href="https://github.com/ViktorZhurbin/castro"
 						target="_blank"
 						rel="noopener"
-						class="c-btn c-btn-primary"
+						class="btn btn-primary"
 					>
 						VIEW SOURCE
 					</a>
-					<a href="/how-it-works" class="c-btn c-btn-neutral">
+					<a href="/how-it-works" class="btn btn-neutral">
 						HOW IT WORKS
 					</a>
 				</div>

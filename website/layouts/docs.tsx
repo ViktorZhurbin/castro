@@ -91,7 +91,7 @@ export default function DocsLayout({ title, path, children }: DocsLayoutProps) {
 					<div class="docs-mobile-bar">
 						<label
 							htmlFor="docs-drawer"
-							class="docs-toggle"
+							class="btn-square"
 							aria-label="Open sidebar"
 						>
 							<MenuIcon />

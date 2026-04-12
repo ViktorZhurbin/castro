@@ -215,7 +215,7 @@ The dev server watches for changes and reloads automatically. The build produces
 
 ### WHAT'S NEXT
 
-<div class="c-btn-group" style="margin-top: 1.5rem;">
-  <a href="/guide/components-islands" class="c-btn c-btn-base">COMPONENTS & ISLANDS →</a>
-  <a href="/reference/config" class="c-btn c-btn-base">CONFIGURATION →</a>
+<div class="btn-group" style="margin-top: 1.5rem;">
+  <a href="/guide/components-islands" class="btn btn-base">COMPONENTS & ISLANDS →</a>
+  <a href="/reference/config" class="btn btn-base">CONFIGURATION →</a>
 </div>

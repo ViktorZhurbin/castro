@@ -1,6 +1,7 @@
 import type { ComponentChildren } from "preact";
 import { Header } from "./Header.tsx";
 import { ThemeScript } from "./ThemeScript.tsx";
+import "./PageShell.css";
 
 interface PageShellProps {
 	title: string;
@@ -16,16 +17,12 @@ export function PageShell({ title, activePath, children }: PageShellProps) {
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 				<title>{title}</title>
 				<ThemeScript />
-				{/* Pico CSS — semantic base styles */}
 				<link
 					rel="stylesheet"
 					href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
 				/>
-				{/* Castro theme tokens (maps colors to --pico-* vars) */}
 				<link rel="stylesheet" href="/styles/pico-theme.css" />
-				{/* Global base element styles */}
 				<link rel="stylesheet" href="/styles/base.css" />
-				{/* .c-* component classes */}
 				<link rel="stylesheet" href="/styles/components.css" />
 				<link rel="preconnect" href="https://fonts.googleapis.com" />
 				<link
@@ -38,7 +35,7 @@ export function PageShell({ title, activePath, children }: PageShellProps) {
 					rel="stylesheet"
 				/>
 			</head>
-			<body style="display: flex; flex-direction: column; height: 100vh; overflow: hidden; margin: 0;">
+			<body>
 				<Header activePath={activePath} />
 				{children}
 			</body>

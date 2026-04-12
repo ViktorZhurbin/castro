@@ -1,12 +1,12 @@
 /* Header layout and navigation styles */
 
 .navbar {
+	min-height: var(--header-height);
 	position: sticky;
 	top: 0;
 	z-index: 50;
 	background: var(--pico-background-color);
 	border-bottom: 2px solid var(--pico-muted-border-color);
-	min-height: 3rem;
 	padding: 0 1rem;
 	padding-top: 0;
 	padding-bottom: 0;
@@ -24,76 +24,67 @@
 	gap: 1rem;
 }
 
-/* Desktop nav links */
-.navbar nav {
+.desktop-nav {
 	display: none;
 	align-items: center;
 	gap: 1.1rem;
-}
 
-@media (min-width: 640px) {
-	.navbar nav {
+	@media (min-width: 640px) {
 		display: flex;
 	}
 }
 
-.navbar nav a {
-	font-family: "Bebas Neue", sans-serif;
-	font-size: 1.25rem;
-	transition: none;
-	border-bottom: 4px solid transparent;
-	color: var(--pico-contrast);
-	text-decoration: none;
-}
+.desktop-nav {
+	li a {
+		font-family: var(--font-display);
+		font-size: 1.25rem;
+		color: var(--pico-contrast);
+		text-decoration-color: transparent;
+		text-underline-offset: 0.35rem;
+		text-decoration-thickness: 0.25rem;
 
-.navbar nav a:hover {
-	border-bottom-color: var(--pico-contrast);
-}
+		&:hover,
+		&.active {
+			text-decoration-color: currentColor;
+		}
 
-.navbar nav a.active,
-.navbar nav a[aria-current="page"] {
-	border-bottom-color: var(--pico-primary);
-	color: var(--pico-primary);
-}
-
-/* Mobile dropdown menu */
-.navbar .dropdown {
-	display: block;
-}
-
-@media (min-width: 640px) {
-	.navbar .dropdown {
-		display: none;
+		&.active {
+			color: var(--pico-color);
+			text-decoration-line: underline;
+		}
 	}
 }
 
-/* Dropdown menu items */
-.navbar .dropdown-content {
-	width: 13rem;
-	padding: 0.5rem;
-}
+.dropdown {
+	display: block;
+	margin: 0;
 
-.navbar .menu li a {
-	font-family: "Bebas Neue", sans-serif;
-	font-size: 1.125rem;
-	color: var(--pico-color);
-	text-decoration: none;
-}
+	@media (min-width: 640px) {
+		display: none;
+	}
 
-.navbar .menu li a:hover {
-	background: var(--pico-muted-border-color);
-	color: var(--pico-color);
-}
+	/* clear Pico dropdown svg */
+	& > .btn-square::after {
+		content: none;
+	}
 
-.navbar .menu li a.active,
-.navbar .menu li a[aria-current="page"] {
-	background: var(--pico-primary);
-	color: var(--pico-primary-inverse);
-}
+	.menu {
+		padding: 0.5rem;
+		border: var(--border-2);
 
-/* End section (theme toggle) */
-.navbar > div:last-child {
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
+		li a {
+			font-family: var(--font-display);
+			font-size: 1.25rem;
+
+			&:hover {
+				background: var(--pico-contrast-background);
+				color: var(--pico-contrast-inverse);
+			}
+
+			&.active.active {
+				color: var(--pico-primary-inverse);
+				background-color: var(--pico-primary);
+			}
+		}
+	}
 }

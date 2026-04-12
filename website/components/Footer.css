@@ -1,72 +1,59 @@
-/* Footer layout and typography styles */
-
 .footer {
 	background: var(--pico-code-background-color);
-	padding-bottom: 5rem;
-	padding-top: 3rem;
-	padding-left: 1.5rem;
-	padding-right: 1.5rem;
+	padding: 3rem 1.5rem 5rem;
 	border-top: 4px solid var(--pico-primary);
-}
 
-@media (min-width: 768px) {
-	.footer {
+	@media (min-width: 768px) {
 		padding-bottom: 3rem;
 	}
 }
 
-.footer > div {
+.footer {
 	max-width: 64rem;
-	margin-left: auto;
-	margin-right: auto;
+	margin-inline: auto;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
 	align-items: flex-start;
 	gap: 2rem;
-}
 
-@media (min-width: 768px) {
-	.footer > div {
+	@media (min-width: 768px) {
 		flex-direction: row;
 		align-items: flex-end;
 	}
 }
 
-/* Slogan section */
 .footer-slogan {
 	flex: 1;
+
+	p {
+		font-family: var(--font-display);
+		color: var(--pico-color);
+		line-height: 1;
+	}
+
+	p:first-child {
+		font-size: clamp(2rem, 8vw, 3rem);
+		margin: 0;
+	}
+
+	p:last-child {
+		font-size: clamp(1.25rem, 4vw, 1.5rem);
+		margin-top: 0.5rem;
+	}
 }
 
-.footer-slogan p:first-child {
-	font-family: "Bebas Neue", sans-serif;
-	font-size: clamp(2rem, 8vw, 3rem);
-	color: var(--pico-color);
-	line-height: 1;
-}
-
-.footer-slogan p:last-child {
-	font-family: "Bebas Neue", sans-serif;
-	font-size: clamp(1.25rem, 4vw, 1.5rem);
-	color: var(--pico-color);
-	margin-top: 0.5rem;
-	line-height: 1;
-}
-
-/* Footer nav and info section */
 .footer-nav-section {
 	display: flex;
 	flex-direction: column;
+	align-items: flex-start;
 	gap: 1rem;
-}
 
-@media (min-width: 768px) {
-	.footer-nav-section {
+	@media (min-width: 768px) {
 		align-items: flex-end;
 	}
 }
 
-/* Nav links */
 .footer-nav {
 	display: flex;
 	gap: 1.5rem;
@@ -76,35 +63,20 @@
 	letter-spacing: 0.05em;
 }
 
-.footer-nav a {
-	color: var(--pico-color);
-	text-decoration: none;
-}
-
-.footer-nav a:hover {
-	color: var(--pico-primary);
-	transition: color 0.15s ease;
-}
-
-/* Footer info text */
 .footer-info {
 	color: var(--pico-color);
 	font-size: 0.75rem;
 	font-weight: 500;
-}
 
-@media (min-width: 768px) {
-	.footer-info {
-		text-align: right;
+	br {
+		display: none;
 	}
-}
 
-.footer-info br {
-	display: none;
-}
+	@media (min-width: 768px) {
+		text-align: right;
 
-@media (min-width: 768px) {
-	.footer-info br {
-		display: block;
+		br {
+			display: block;
+		}
 	}
 }

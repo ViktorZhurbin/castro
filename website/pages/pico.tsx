@@ -1,4 +1,4 @@
-import "./index.css";
+import "./pico.css";
 
 export const meta = { title: "Pico Theme Showcase - Castro" };
 
@@ -85,16 +85,16 @@ console.log(message);`}
 				<h2>Buttons</h2>
 				<div class="pico-button-group">
 					<div class="pico-button-item">
-						<p class="pico-button-label">c-btn c-btn-primary</p>
-						<button class="c-btn c-btn-primary">Primary</button>
+						<p class="pico-button-label">btn btn-primary</p>
+						<button class="btn btn-primary">Primary</button>
 					</div>
 					<div class="pico-button-item">
-						<p class="pico-button-label">c-btn c-btn-neutral</p>
-						<button class="c-btn c-btn-neutral">Neutral</button>
+						<p class="pico-button-label">btn btn-neutral</p>
+						<button class="btn btn-neutral">Neutral</button>
 					</div>
 					<div class="pico-button-item">
-						<p class="pico-button-label">c-btn c-btn-base</p>
-						<button class="c-btn c-btn-base">Base</button>
+						<p class="pico-button-label">btn btn-base</p>
+						<button class="btn btn-base">Base</button>
 					</div>
 				</div>
 			</section>
@@ -103,17 +103,14 @@ console.log(message);`}
 				<h2>Square Buttons</h2>
 				<div class="pico-square-buttons">
 					<div class="pico-button-item">
-						<p class="pico-button-label">c-btn-square c-btn-square-primary</p>
-						<button
-							class="c-btn-square c-btn-square-primary"
-							aria-label="Action"
-						>
+						<p class="pico-button-label">btn-square btn-square-primary</p>
+						<button class="btn-square btn-square-primary" aria-label="Action">
 							★
 						</button>
 					</div>
 					<div class="pico-button-item">
-						<p class="pico-button-label">c-btn-square c-btn-square-base</p>
-						<button class="c-btn-square c-btn-square-base" aria-label="Action">
+						<p class="pico-button-label">btn-square btn-square-base</p>
+						<button class="btn-square btn-square-base" aria-label="Action">
 							⋯
 						</button>
 					</div>
@@ -144,31 +141,31 @@ console.log(message);`}
 						<span class="badge badge-info">info</span>
 					</div>
 					<div class="pico-badge-item">
-						<p class="pico-button-label">c-badge-dotted</p>
-						<span class="c-badge-dotted">dotted</span>
+						<p class="pico-button-label">badge-dotted</p>
+						<span class="badge-dotted">dotted</span>
 					</div>
 				</div>
 			</section>
 
 			<section class="pico-section">
 				<h2>Dividers & Sections</h2>
-				<div class="c-divider-section">SECTION DIVIDER</div>
+				<div class="divider-section">SECTION DIVIDER</div>
 			</section>
 
 			<section class="pico-section">
 				<h2>Step Blocks</h2>
 				<div class="pico-steps">
-					<div class="c-step">
-						<div class="c-step-number">1</div>
-						<div class="c-step-content">
-							<h3 class="c-step-title">First Step</h3>
+					<div class="step">
+						<div class="step-number">1</div>
+						<div class="step-content">
+							<h3 class="step-title">First Step</h3>
 							<p>This is the first step in a process.</p>
 						</div>
 					</div>
-					<div class="c-step">
-						<div class="c-step-number">2</div>
-						<div class="c-step-content">
-							<h3 class="c-step-title">Second Step</h3>
+					<div class="step">
+						<div class="step-number">2</div>
+						<div class="step-content">
+							<h3 class="step-title">Second Step</h3>
 							<p>This is the second step in a process.</p>
 						</div>
 					</div>
@@ -188,9 +185,7 @@ console.log(message);`}
 					</div>
 					<div class="pico-contrast-box pico-contrast-box-primary">
 						<p class="pico-contrast-text">Primary inverse text on primary bg</p>
-						<h3 class="pico-contrast-heading c-step-title">
-							Heading on primary
-						</h3>
+						<h3 class="pico-contrast-heading step-title">Heading on primary</h3>
 					</div>
 					<div class="pico-contrast-box pico-contrast-box-secondary">
 						<p class="pico-contrast-text">
@@ -208,8 +203,8 @@ console.log(message);`}
 			<section class="pico-section">
 				<h2>Diagram Components</h2>
 				<div class="pico-diagram-grid">
-					<div class="c-diagram-box">
-						<div class="c-diagram-box-header">
+					<div class="diagram-box">
+						<div class="diagram-box-header">
 							<span class="badge badge-primary">label</span>
 						</div>
 						<p>Diagram box content</p>

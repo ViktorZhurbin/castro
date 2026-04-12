@@ -4,53 +4,47 @@ import { ThemeToggle } from "./ThemeToggle.tsx";
 import "./Header.css";
 
 export function Header({ activePath }: { activePath?: string }) {
-	const isHowItWorks = activePath?.startsWith("/how-it-works");
-	const isGuide = activePath?.startsWith("/guide");
-	const isReference = activePath?.startsWith("/reference");
-
 	const navLinks = [
-		{ href: "/guide/quick-start", label: "GUIDE", active: isGuide },
-		{ href: "/how-it-works", label: "HOW IT WORKS", active: isHowItWorks },
-		{ href: "/reference/config", label: "REFERENCE", active: isReference },
-	];
+		{ href: "/guide/quick-start", label: "GUIDE" },
+		{ href: "/how-it-works", label: "HOW IT WORKS" },
+		{ href: "/reference/config", label: "REFERENCE" },
+	].map((link) => {
+		const [, pathRoot] = link.href.split("/");
+		const isActive = !!pathRoot && activePath?.startsWith(`/${pathRoot}`);
+
+		return (
+			<li key={link.href}>
+				<a
+					href={link.href}
+					class={isActive ? "active" : undefined}
+					aria-current={isActive ? "page" : undefined}
+				>
+					{link.label}
+				</a>
+			</li>
+		);
+	});
 
 	return (
 		<header class="navbar">
 			<div class="navbar-start">
-				<a href="/" class="c-btn-square c-btn-square-primary" aria-label="Home">
+				<a href="/" class="btn-square btn-square-primary" aria-label="Home">
 					<StarIcon />
 				</a>
 
-				{/* Desktop nav */}
-				<nav>
-					{navLinks.map((link) => (
-						<a
-							key={link.href}
-							href={link.href}
-							class={link.active ? "active" : ""}
-						>
-							{link.label}
-						</a>
-					))}
+				<nav class="desktop-nav">
+					<ul>{navLinks}</ul>
 				</nav>
 
-				{/* Mobile dropdown */}
 				<details class="dropdown">
 					<summary
-						class="c-btn-square c-btn-square-base"
+						role="button"
+						class="btn-square btn-square-base"
 						aria-label="Open menu"
 					>
 						<MoreIcon />
 					</summary>
-					<ul class="dropdown-content menu">
-						{navLinks.map((link) => (
-							<li key={link.href}>
-								<a href={link.href} class={link.active ? "active" : ""}>
-									{link.label}
-								</a>
-							</li>
-						))}
-					</ul>
+					<ul class="menu">{navLinks}</ul>
 				</details>
 			</div>
 			<div>

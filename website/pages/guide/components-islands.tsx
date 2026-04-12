@@ -23,49 +23,47 @@ export default function ComponentsIslands() {
 				</p>
 
 				{/* Spectrum summary table */}
-				<div class="overflow-x-auto">
-					<table class="table table-zebra w-full text-sm">
-						<thead>
-							<tr>
-								<th>Level</th>
-								<th>JS shipped</th>
-								<th>When to use</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>
-									<strong>Static component</strong>
-								</td>
-								<td>
-									<code>0 bytes</code>
-								</td>
-								<td>Anything that doesn't need the DOM at runtime</td>
-							</tr>
-							<tr>
-								<td>
-									<code>ClientScript</code>
-								</td>
-								<td>One inlined function</td>
-								<td>DOM touch without reactive state</td>
-							</tr>
-							<tr>
-								<td>
-									<strong>Vanilla island</strong>
-								</td>
-								<td>Your code, no framework</td>
-								<td>Third-party libs, localized interactions</td>
-							</tr>
-							<tr>
-								<td>
-									<strong>Framework island</strong>
-								</td>
-								<td>Your code + framework runtime</td>
-								<td>Reactive state, complex UI</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+				<table class="striped overflow-auto">
+					<thead>
+						<tr>
+							<th>Level</th>
+							<th>JS shipped</th>
+							<th>When to use</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								<strong>Static component</strong>
+							</td>
+							<td>
+								<code>0 bytes</code>
+							</td>
+							<td>Anything that doesn't need the DOM at runtime</td>
+						</tr>
+						<tr>
+							<td>
+								<code>ClientScript</code>
+							</td>
+							<td>One inlined function</td>
+							<td>DOM touch without reactive state</td>
+						</tr>
+						<tr>
+							<td>
+								<strong>Vanilla island</strong>
+							</td>
+							<td>Your code, no framework</td>
+							<td>Third-party libs, localized interactions</td>
+						</tr>
+						<tr>
+							<td>
+								<strong>Framework island</strong>
+							</td>
+							<td>Your code + framework runtime</td>
+							<td>Reactive state, complex UI</td>
+						</tr>
+					</tbody>
+				</table>
 			</section>
 
 			{/* ─── LEVEL 1: STATIC COMPONENTS ─────────────────────────── */}
@@ -254,10 +252,11 @@ export default function Index() {
 					fetched and executed.
 				</p>
 
-				<h3 class="flex gap-2 items-center flex-wrap">
+				<h3>
 					<code>comrade:visible</code>
-					<span class="badge badge-dash leading-none">default</span>
 				</h3>
+
+				<p class="badge badge-dash">default</p>
 
 				<blockquote>"Only work when the people are watching."</blockquote>
 
@@ -367,11 +366,11 @@ export default function Counter() {
 					<a href="/guide/plugins">Plugins →</a>
 				</p>
 
-				<div class="flex flex-wrap gap-4">
-					<a href="/guide/quick-start" class="c-btn c-btn-base">
+				<div class="btn-group">
+					<a href="/guide/quick-start" class="btn btn-base">
 						← Quick Start
 					</a>
-					<a href="/guide/plugins" class="c-btn c-btn-base">
+					<a href="/guide/plugins" class="btn btn-base">
 						Plugins →
 					</a>
 				</div>

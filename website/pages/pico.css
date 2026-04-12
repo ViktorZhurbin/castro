@@ -145,7 +145,7 @@
 	gap: 1rem;
 	padding: 1rem;
 	text-align: center;
-	font-family: "Bebas Neue", sans-serif;
+	font-family: var(--font-display);
 	font-size: 1.25rem;
 	color: var(--pico-secondary);
 }

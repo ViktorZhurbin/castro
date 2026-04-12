@@ -66,11 +66,11 @@ That's the full plugin. For complete plugin examples see [packages/](https://git
 
 -----
 
-<div class="c-btn-group">
-  <a href="/guide/components-islands" class="c-btn c-btn-base">
+<div class="btn-group">
+  <a href="/guide/components-islands" class="btn btn-base">
     ← Components & Islands
   </a>
-  <a href="/reference/plugin-api" class="c-btn c-btn-base">
+  <a href="/reference/plugin-api" class="btn btn-base">
     Plugin API →
   </a>
 </div>

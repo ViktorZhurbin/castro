@@ -20,7 +20,7 @@ export default function NotFound() {
 					<br />
 					It never existed.
 				</p>
-				<a href="/" class="c-btn c-btn-primary">
+				<a href="/" class="btn btn-primary">
 					RETURN TO THE COLLECTIVE
 				</a>
 			</div>
