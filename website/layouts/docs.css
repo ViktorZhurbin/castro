@@ -21,7 +21,7 @@
 	flex-direction: column;
 
 	main {
-		padding: calc(var(--spacing-xl) * 2) var(--spacing-xl);
+		padding: var(--spacing-3xl) var(--spacing-xl);
 		flex: 1; /* Pushes the footer down if the content is short */
 	}
 }
