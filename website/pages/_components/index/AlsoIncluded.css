@@ -15,8 +15,7 @@
 }
 
 .also-included-item {
-	background: var(--pico-background-color);
-	border: 2px solid var(--pico-muted-border-color);
+	border: var(--border);
 	border-left-width: 6px;
 	padding: 1.5rem;
 

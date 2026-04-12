@@ -33,7 +33,7 @@ export default function PropagandaRadio() {
 			{/* Header */}
 			<div class="propaganda-radio-header">
 				<p>STATE RADIO</p>
-				<span class="badge badge-error on-air-badge">ON AIR</span>
+				<span class="badge badge-primary on-air-badge">ON AIR</span>
 			</div>
 
 			{/* Headline */}

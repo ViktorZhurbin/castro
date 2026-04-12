@@ -10,41 +10,19 @@
 	border-color: var(--pico-primary);
 }
 
-.badge-neutral {
+.badge-base {
 	background: var(--pico-contrast);
 	color: var(--pico-contrast-inverse);
 	border-color: var(--pico-contrast);
 }
 
-.badge-error {
-	background: var(--pico-del-color);
-	color: var(--pico-primary-inverse);
-	border-color: var(--pico-del-color);
-}
-
-.badge-success {
-	background: var(--pico-ins-color);
-	color: var(--pico-primary-inverse);
-	border-color: var(--pico-ins-color);
-}
-
-.badge-info {
-	background: var(--pico-primary);
-	color: var(--pico-primary-inverse);
-	border-color: var(--pico-primary);
-}
-
-.badge-dotted {
-	border-style: dotted;
-}
-
-.badge-dash {
+.badge-dashed {
 	border-style: dashed;
 }
 
 .alert {
 	background: var(--pico-code-background-color);
-	border: 2px solid var(--pico-muted-border-color);
+	border: var(--border);
 	border-left: 8px solid var(--pico-primary);
 	padding: 1rem;
 	margin-bottom: 1.5rem;
@@ -75,8 +53,8 @@
 	justify-content: center;
 	padding: 0.5rem 1.25rem;
 	font-size: 1.125rem;
-	color: var(--color-base-content);
-	border: var(--border-2);
+	color: var(--pico-contrast);
+	border: var(--border);
 	border-bottom-width: 4px;
 	cursor: pointer;
 	font-weight: 600;
@@ -110,15 +88,13 @@
 }
 
 .btn-base {
-	background: var(--color-base-100);
-	color: var(--color-base-content);
+	color: var(--pico-contrast);
 	border-color: var(--pico-muted-border-color);
 }
 
 .btn-base:hover {
 	background: var(--pico-contrast-background);
 	color: var(--pico-contrast-inverse);
-	border-color: var(--pico-contrast);
 }
 
 .btn-square {
@@ -129,10 +105,11 @@
 	height: 2rem;
 	padding: 0.125rem;
 	margin: 0;
-	border: var(--pico-border-width) solid transparent;
+	border: var(--border);
+	border-color: transparent;
 	background: transparent;
 	cursor: pointer;
-	color: var(--color-base-content);
+	color: var(--pico-contrast);
 	box-shadow: none;
 	transition: none;
 
@@ -148,14 +125,6 @@
 .btn-square-primary:hover {
 	background: var(--pico-primary);
 	color: var(--pico-primary-inverse);
-}
-
-.btn-square-base {
-	border: 2px solid transparent;
-}
-
-.btn-square-base:hover {
-	border-color: var(--pico-muted-border-color);
 }
 
 .btn-group {
@@ -184,7 +153,7 @@
 }
 
 .diagram-source {
-	border: 2px solid var(--pico-muted-border-color);
+	border: var(--border);
 	border-bottom-width: 8px;
 	background: var(--pico-code-background-color);
 	padding: 1.5rem;

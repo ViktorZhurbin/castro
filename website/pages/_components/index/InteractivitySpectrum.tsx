@@ -14,28 +14,28 @@ export function InteractivitySpectrum() {
 					title="STATIC"
 					js="0 bytes"
 					body="JSX rendered to HTML at build time."
-					color="primary"
+					colorVar="--pico-primary"
 				/>
 				<SpectrumCard
 					level="02"
 					title="CLIENT SCRIPT"
 					js="one function"
 					body="DOM access without a framework runtime."
-					color="secondary"
+					colorVar="--pico-secondary"
 				/>
 				<SpectrumCard
 					level="03"
 					title="VANILLA ISLAND"
 					js="your code only"
 					body="Full island lifecycle, no framework cost."
-					color="accent"
+					colorVar="--pico-accent"
 				/>
 				<SpectrumCard
 					level="04"
 					title="FRAMEWORK ISLAND"
 					js="your code + runtime"
 					body="Reactive state when you need it."
-					color="primary"
+					colorVar="--pico-primary"
 				/>
 			</div>
 		</div>
@@ -47,14 +47,12 @@ interface SpectrumCardProps {
 	title: string;
 	js: string;
 	body: string;
-	color: "primary" | "secondary" | "accent";
+	colorVar: string;
 }
 
-function SpectrumCard({ level, title, js, body, color }: SpectrumCardProps) {
-	const colorVar = color === "accent" ? "--castro-accent" : `--pico-${color}`;
-
+function SpectrumCard({ level, title, js, body, colorVar }: SpectrumCardProps) {
 	return (
-		<div class="spectrum-card" style={`border-top-color: var(${colorVar})`}>
+		<div class="spectrum-card" style={{ borderTopColor: `var(${colorVar})` }}>
 			<span class="spectrum-card-level">{level}</span>
 			<p class="spectrum-card-title">{title}</p>
 			<span class="spectrum-card-js">js: {js}</span>

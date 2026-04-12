@@ -28,7 +28,6 @@
 
 	p {
 		font-family: var(--font-display);
-		color: var(--pico-color);
 		line-height: 1;
 	}
 
@@ -64,7 +63,6 @@
 }
 
 .footer-info {
-	color: var(--pico-color);
 	font-size: 0.75rem;
 	font-weight: 500;
 

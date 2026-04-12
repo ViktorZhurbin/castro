@@ -256,7 +256,7 @@ export default function Index() {
 					<code>comrade:visible</code>
 				</h3>
 
-				<p class="badge badge-dash">default</p>
+				<span class="badge badge-dashed">default</span>
 
 				<blockquote>"Only work when the people are watching."</blockquote>
 

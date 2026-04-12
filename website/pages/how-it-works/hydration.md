@@ -39,7 +39,7 @@ The browser loads `castro-island.js` and registers a `<castro-island>` custom el
         <span class="badge badge-primary">
           comrade:visible
         </span>
-        <span class="badge-dotted">
+        <span class="badge badge-dashed">
           default
         </span>
       </div>
@@ -50,7 +50,7 @@ The browser loads `castro-island.js` and registers a `<castro-island>` custom el
     <!-- Option 2 -->
     <div class="diagram-box">
       <div class="diagram-box-header">
-        <span class="badge badge-neutral">
+        <span class="badge badge-base">
           comrade:patient
         </span>
       </div>
@@ -61,7 +61,7 @@ The browser loads `castro-island.js` and registers a `<castro-island>` custom el
     <!-- Option 3 -->
     <div class="diagram-box">
       <div class="diagram-box-header">
-        <span class="badge badge-neutral">
+        <span class="badge badge-base">
           comrade:eager
         </span>
       </div>

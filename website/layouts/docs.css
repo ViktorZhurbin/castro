@@ -17,7 +17,6 @@
 	flex: 1;
 	min-width: 0;
 	overflow-y: hidden;
-	background: var(--pico-background-color);
 	display: flex;
 	flex-direction: column;
 
@@ -39,7 +38,7 @@
 		display: flex;
 		align-items: center;
 		padding: var(--spacing-xxs) var(--spacing);
-		border-bottom: var(--border-2);
+		border-bottom: var(--border);
 		background-color: var(--pico-background-color);
 		flex-shrink: 0;
 	}
@@ -48,7 +47,6 @@
 /* ─── SIDEBAR & PURE CSS TOGGLE LOGIC ──────────────────────────────────── */
 .docs-sidebar {
 	width: calc(var(--pico-spacing) * 16);
-	background: var(--pico-code-background-color);
 	border-right: 4px solid var(--pico-muted-border-color);
 	display: flex;
 	flex-direction: column;
@@ -76,7 +74,7 @@
 		display: none;
 		position: fixed;
 		inset: 0;
-		background-color: oklch(var(--color-black-raw) / 80%);
+		background-color: oklch(var(--ink-black-raw) / 70%);
 		z-index: 55;
 		cursor: default;
 
@@ -88,12 +86,12 @@
 
 /* ─── SIDEBAR NAVIGATION STYLING ───────────────────────────────────────── */
 .docs-sidebar nav {
-	padding: calc(var(--spacing) * 0.5);
+	padding: var(--spacing-xs) 0;
 }
 
 .docs-sidebar-section {
 	padding: var(--spacing-lg) var(--spacing);
-	border-bottom: var(--border-2);
+	border-bottom: var(--border);
 }
 
 .docs-sidebar-section h3 {
@@ -103,7 +101,7 @@
 .docs-sidebar-section a {
 	padding: var(--spacing-xxs) var(--spacing-sm);
 	border-left: 4px solid transparent;
-	color: var(--color-base-content);
+	color: var(--pico-contrast);
 
 	&:hover {
 		background: var(--pico-contrast-background);

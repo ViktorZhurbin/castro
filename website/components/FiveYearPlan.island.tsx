@@ -13,10 +13,10 @@ export default function FiveYearPlan() {
 		const p = progress;
 
 		if (p >= 50) {
-			setBadge({ text: "Record Output!", style: "badge-success" });
+			setBadge({ text: "Record Output!", style: "badge-primary" });
 		}
 		if (p >= 25) {
-			setBadge({ text: "Adequate Output", style: "badge-info" });
+			setBadge({ text: "Adequate Output", style: "badge-base" });
 		}
 	});
 

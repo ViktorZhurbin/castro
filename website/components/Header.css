@@ -5,14 +5,11 @@
 	position: sticky;
 	top: 0;
 	z-index: 50;
-	background: var(--pico-background-color);
-	border-bottom: 2px solid var(--pico-muted-border-color);
-	padding: 0 1rem;
-	padding-top: 0;
-	padding-bottom: 0;
+	border-bottom: var(--border);
+	padding: 0 var(--spacing);
 	display: flex;
 	align-items: center;
-	gap: 1rem;
+	gap: var(--spacing);
 }
 
 /* Nav start section */
@@ -21,13 +18,13 @@
 	align-items: center;
 	flex: 1;
 	justify-content: flex-start;
-	gap: 1rem;
+	gap: var(--spacing);
 }
 
 .desktop-nav {
 	display: none;
 	align-items: center;
-	gap: 1.1rem;
+	gap: var(--spacing);
 
 	@media (min-width: 640px) {
 		display: flex;
@@ -38,7 +35,7 @@
 	li a {
 		font-family: var(--font-display);
 		font-size: 1.25rem;
-		color: var(--color-base-content);
+		color: var(--pico-contrast);
 		text-decoration-color: transparent;
 		text-underline-offset: 0.35rem;
 		text-decoration-thickness: 0.25rem;
@@ -69,8 +66,8 @@
 	}
 
 	.menu {
-		padding: 0.5rem;
-		border: var(--border-2);
+		padding: var(--spacing-xs);
+		border: var(--border);
 
 		li a {
 			font-family: var(--font-display);

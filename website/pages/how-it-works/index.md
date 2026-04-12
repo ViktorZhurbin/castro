@@ -17,7 +17,7 @@ Islands compile before any pages are processed. Each `.island.tsx` file goes thr
 <div class="diagram-grid">
   <!-- SOURCE NODE: Heavy anchor block -->
   <div class="diagram-source">
-    <div class="badge badge-primary mb-4">
+    <div class="badge badge-primary">
       Counter.island.tsx
     </div>
     <p>
@@ -37,7 +37,7 @@ Islands compile before any pages are processed. Each `.island.tsx` file goes thr
     <!-- Output 1: SSR Module -->
     <div class="diagram-box">
       <div class="diagram-box-header">
-        <span class="badge badge-neutral">
+        <span class="badge badge-base">
           SSR Module
         </span>
       </div>
@@ -48,7 +48,7 @@ Islands compile before any pages are processed. Each `.island.tsx` file goes thr
     <!-- Output 2: Client Bundle -->
     <div class="diagram-box">
       <div class="diagram-box-header">
-        <span class="badge badge-neutral">
+        <span class="badge badge-base">
           Counter-a1b2.js
         </span>
       </div>

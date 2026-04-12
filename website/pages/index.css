@@ -1,9 +1,6 @@
 .feature-section {
-	max-width: 64rem;
-	margin-left: auto;
-	margin-right: auto;
+	margin-inline: auto;
 	padding: 6rem 1.5rem;
-	background: var(--pico-background-color);
 }
 
 .feature-section-header {

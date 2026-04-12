@@ -37,11 +37,7 @@ export function Header({ activePath }: { activePath?: string }) {
 				</nav>
 
 				<details class="dropdown">
-					<summary
-						role="button"
-						class="btn-square btn-square-base"
-						aria-label="Open menu"
-					>
+					<summary role="button" class="btn-square" aria-label="Open menu">
 						<MoreIcon />
 					</summary>
 					<ul class="menu">{navLinks}</ul>
