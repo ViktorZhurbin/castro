@@ -10,15 +10,12 @@ export default function FiveYearPlan() {
 	} | null>(null);
 
 	useEffect(() => {
-		const p = progress;
-
-		if (p >= 50) {
+		if (progress >= 50) {
 			setBadge({ text: "Record Output!", style: "badge-primary" });
-		}
-		if (p >= 25) {
+		} else if (progress >= 25) {
 			setBadge({ text: "Adequate Output", style: "badge-base" });
 		}
-	});
+	}, [progress]);
 
 	function work() {
 		const next = progress + 5;
