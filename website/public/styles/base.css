@@ -30,6 +30,7 @@ body {
 	--pico-h6-color: var(--pico-muted-color);
 
 	--pico-dropdown-background-color: var(--pico-background-color);
+	--pico-progress-background-color: var(--pico-background-color);
 	--pico-dropdown-border-color: var(--pico-muted-border-color);
 }
 

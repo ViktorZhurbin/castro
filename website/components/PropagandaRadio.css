@@ -9,17 +9,13 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-}
 
-.propaganda-radio-header p {
-	font-family: var(--font-display);
-	font-weight: 700;
-	font-size: 0.875rem;
+	> h4 {
+		margin: 0;
+	}
 }
 
 .propaganda-radio-header .on-air-badge {
-	font-size: 0.75rem;
-	font-weight: 700;
 	animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
@@ -35,19 +31,13 @@
 
 .propaganda-radio-headline {
 	padding: var(--spacing-xl);
-}
 
-.propaganda-radio-headline p {
-	font-family: var(--font-display);
-	font-size: 1.5rem;
-	line-height: 1.25;
-	min-height: 6rem;
-	display: flex;
-	align-items: center;
+	h3 {
+		margin: 0;
+	}
 }
 
 .propaganda-radio-controls {
-	border-top: var(--border);
 	padding: var(--spacing);
 	display: flex;
 	flex-direction: column;
@@ -59,22 +49,7 @@
 	gap: var(--spacing-xs);
 }
 
-.propaganda-radio-buttons button {
-	flex: 1;
-	padding: var(--spacing-sm) var(--spacing-xl);
-	font-family: var(--font-display);
-	font-size: 1rem;
-	letter-spacing: 0.1em;
-	background: var(--pico-primary);
-	color: var(--pico-primary-inverse);
-	border: var(--border);
-	cursor: pointer;
-	font-weight: 700;
-}
-
 .propaganda-radio-counter {
 	text-align: center;
-	font-size: 0.875rem;
-	font-family: monospace;
-	font-weight: 700;
+	font-family: var(--pico-font-family-monospace);
 }

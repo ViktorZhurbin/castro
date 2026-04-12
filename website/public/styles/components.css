@@ -63,6 +63,10 @@
 	text-decoration: none;
 }
 
+.btn-full {
+	width: 100%;
+}
+
 .btn-primary {
 	background: var(--pico-primary);
 	color: var(--pico-primary-inverse);

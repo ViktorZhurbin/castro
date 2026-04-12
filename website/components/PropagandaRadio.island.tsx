@@ -32,20 +32,24 @@ export default function PropagandaRadio() {
 		<div class="propaganda-radio">
 			{/* Header */}
 			<div class="propaganda-radio-header">
-				<p>STATE RADIO</p>
+				<h4>STATE RADIO</h4>
 				<span class="badge badge-primary on-air-badge">ON AIR</span>
 			</div>
 
 			{/* Headline */}
 			<div class="propaganda-radio-headline">
-				<p>{`"${HEADLINES[index]}"`}</p>
+				<h3>{`"${HEADLINES[index]}"`}</h3>
 			</div>
 
 			{/* Controls */}
 			<div class="propaganda-radio-controls">
 				<div class="propaganda-radio-buttons">
-					<button onClick={prev}>◀ PREV</button>
-					<button onClick={next}>NEXT ▶</button>
+					<button class="btn btn-primary btn-full" onClick={prev}>
+						◀ PREV
+					</button>
+					<button class="btn btn-primary btn-full" onClick={next}>
+						NEXT ▶
+					</button>
 				</div>
 				<div class="propaganda-radio-counter">
 					{`${String(index + 1).padStart(2, "0")} / ${String(HEADLINES.length).padStart(2, "0")}`}

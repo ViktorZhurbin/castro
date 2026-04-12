@@ -32,16 +32,16 @@ export default function FiveYearPlan() {
 		<div class="five-year-plan">
 			{/* Header */}
 			<div class="five-year-plan-header">
-				<p>FIVE-YEAR PLAN</p>
-				<p>QUOTA #{quota}</p>
+				<h4>FIVE-YEAR PLAN</h4>
+				<h4>QUOTA #{quota}</h4>
 			</div>
 
 			{/* Content */}
 			<div class="five-year-plan-content">
 				{/* Progress readout */}
 				<div class="five-year-plan-readout">
-					<p>TRACTOR PRODUCTION</p>
-					<p>{progress.toString().padStart(3, " ")}%</p>
+					<h3>TRACTOR PRODUCTION</h3>
+					<h3>{progress.toString().padStart(3, " ")}%</h3>
 					{/* Badge */}
 					{badge && <div class={`badge ${badge.style}`}>{badge.text}</div>}
 				</div>
@@ -52,7 +52,9 @@ export default function FiveYearPlan() {
 
 			{/* Control */}
 			<div class="five-year-plan-control">
-				<button onClick={work}>WORK HARDER, COMRADE!</button>
+				<button class="btn btn-primary btn-full" onClick={work}>
+					WORK HARDER, COMRADE!
+				</button>
 			</div>
 		</div>
 	);

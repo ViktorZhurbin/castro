@@ -8,47 +8,33 @@ export default function Redactor() {
 		<div class="redactor">
 			{/* Header */}
 			<div class={`redactor-header ${censored ? "approved" : ""}`}>
-				<p>FIELD REPORT № 1947</p>
-				<p>
+				<h4>FIELD REPORT № 1947</h4>
+				<h4>
 					{censored ? "CLASSIFICATION: APPROVED" : "CLASSIFICATION: PENDING"}
-				</p>
+				</h4>
 			</div>
 
 			{/* Document body */}
 			<div class="redactor-content">
 				<p>
 					The recent harvest was{" "}
-					{censored ? (
-						<span class="censored">GLORIOUS</span>
-					) : (
-						<span class="strikethrough">poor</span>
-					)}
-					.
+					{censored ? <ins>GLORIOUS</ins> : <del>poor</del>}.
 				</p>
 				<p>
 					The tractors are{" "}
-					{censored ? (
-						<span class="censored">MAGNIFICENT</span>
-					) : (
-						<span class="strikethrough">old and unreliable</span>
-					)}
-					.
+					{censored ? <ins>MAGNIFICENT</ins> : <del>old and unreliable</del>}.
 				</p>
 				<p>
 					Worker morale has{" "}
-					{censored ? (
-						<span class="censored">SKYROCKETED</span>
-					) : (
-						<span class="strikethrough">declined</span>
-					)}{" "}
-					since the last policy change.
+					{censored ? <ins>SKYROCKETED</ins> : <del>declined</del>} since the
+					last policy change.
 				</p>
 			</div>
 
 			{/* Control */}
 			<div class="redactor-control">
 				<button
-					class={censored ? "approved" : ""}
+					class={`btn btn-primary btn-full ${censored ? "approved" : ""}`}
 					onClick={() => setCensored(!censored)}
 				>
 					{censored
