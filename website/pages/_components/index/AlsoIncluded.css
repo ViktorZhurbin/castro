@@ -18,3 +18,22 @@
 		margin-bottom: var(--spacing-xs);
 	}
 }
+
+.also-included-divider {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing);
+	margin: var(--spacing-3xl) 0;
+	font-family: var(--font-display);
+	font-size: 1.25rem;
+	letter-spacing: 0.05em;
+	color: var(--pico-color);
+
+	&::before,
+	&::after {
+		content: "";
+		flex: 1;
+		height: 2px;
+		background: var(--pico-muted-border-color);
+	}
+}

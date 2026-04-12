@@ -3,7 +3,7 @@ import "./AlsoIncluded.css";
 export function AlsoIncluded() {
 	return (
 		<>
-			<div class="divider-section">ALSO INCLUDED</div>
+			<div class="also-included-divider">ALSO INCLUDED</div>
 			<div class="also-included-grid">
 				<AlsoIncludedItem
 					title="BUN-NATIVE"

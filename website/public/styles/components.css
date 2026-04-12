@@ -28,25 +28,6 @@
 	margin-bottom: var(--spacing-xl);
 }
 
-.divider-section {
-	display: flex;
-	align-items: center;
-	gap: var(--spacing);
-	margin: var(--spacing-3xl) 0;
-	font-family: var(--font-display);
-	font-size: 1.25rem;
-	letter-spacing: 0.05em;
-	color: var(--pico-color);
-
-	&::before,
-	&::after {
-		content: "";
-		flex: 1;
-		height: 2px;
-		background: var(--pico-muted-border-color);
-	}
-}
-
 .btn {
 	display: inline-flex;
 	align-items: center;
@@ -71,34 +52,34 @@
 	background: var(--pico-primary);
 	color: var(--pico-primary-inverse);
 	border-color: var(--pico-muted-border-color);
-}
 
-.btn-primary:hover {
-	background: var(--pico-contrast-background);
-	color: var(--pico-contrast-inverse);
-	border-color: var(--pico-contrast);
+	&:hover {
+		background: var(--pico-contrast-background);
+		color: var(--pico-contrast-inverse);
+		border-color: var(--pico-contrast);
+	}
 }
 
 .btn-neutral {
 	background: var(--pico-contrast-background);
 	color: var(--pico-contrast-inverse);
 	border-color: var(--pico-muted-border-color);
-}
 
-.btn-neutral:hover {
-	background: var(--pico-primary-background);
-	color: var(--pico-primary-inverse);
-	border-color: var(--pico-primary);
+	&:hover {
+		background: var(--pico-primary-background);
+		color: var(--pico-primary-inverse);
+		border-color: var(--pico-primary);
+	}
 }
 
 .btn-base {
 	color: var(--pico-contrast);
 	border-color: var(--pico-muted-border-color);
-}
 
-.btn-base:hover {
-	background: var(--pico-contrast-background);
-	color: var(--pico-contrast-inverse);
+	&:hover {
+		background: var(--pico-contrast-background);
+		color: var(--pico-contrast-inverse);
+	}
 }
 
 .btn-square {
@@ -124,11 +105,11 @@
 
 .btn-square-primary {
 	color: var(--pico-primary);
-}
 
-.btn-square-primary:hover {
-	background: var(--pico-primary);
-	color: var(--pico-primary-inverse);
+	&:hover {
+		background: var(--pico-primary);
+		color: var(--pico-primary-inverse);
+	}
 }
 
 .btn-group {
@@ -139,6 +120,9 @@
 }
 
 .diagram-box {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-sm);
 	border: 4px dashed var(--pico-muted-border-color);
 	background: var(--pico-code-background-color);
 	padding: var(--spacing-lg);
@@ -174,8 +158,6 @@
 	align-items: center;
 	justify-content: center;
 	gap: var(--spacing-xl);
-	color: var(--pico-secondary);
-	font-family: var(--font-display);
 
 	@media (min-width: 768px) {
 		gap: var(--spacing-4xl);
@@ -191,7 +173,6 @@
 .diagram-box-header {
 	display: flex;
 	align-items: center;
-	margin-bottom: var(--spacing-sm);
 	gap: var(--spacing-xs);
 	flex-wrap: wrap;
 }

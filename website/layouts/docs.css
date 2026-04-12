@@ -47,6 +47,7 @@
 /* ─── SIDEBAR & PURE CSS TOGGLE LOGIC ──────────────────────────────────── */
 .docs-sidebar {
 	width: 16rem;
+	background-color: var(--pico-background-color);
 	border-right: 4px solid var(--pico-muted-border-color);
 	display: flex;
 	flex-direction: column;

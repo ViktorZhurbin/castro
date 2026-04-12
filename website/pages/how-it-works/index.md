@@ -36,22 +36,18 @@ Islands compile before any pages are processed. Each `.island.tsx` file goes thr
   <div class="diagram-outputs">
     <!-- Output 1: SSR Module -->
     <div class="diagram-box">
-      <div class="diagram-box-header">
-        <span class="badge badge-base">
-          SSR Module
-        </span>
-      </div>
+      <span class="badge badge-base">
+        SSR Module
+      </span>
       <p>
         Runs at build time. Renders the island to HTML on the server. Stored in-memory, and accessed during page rendering.
       </p>
     </div>
     <!-- Output 2: Client Bundle -->
     <div class="diagram-box">
-      <div class="diagram-box-header">
-        <span class="badge badge-base">
-          Counter-a1b2.js
-        </span>
-      </div>
+      <span class="badge badge-base">
+        Counter-a1b2.js
+      </span>
       <p>
         Client bundle. Put into <code>dist/islands/</code>. Loaded by the browser on demand.
       </p>

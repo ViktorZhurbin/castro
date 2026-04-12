@@ -49,22 +49,18 @@ The browser loads `castro-island.js` and registers a `<castro-island>` custom el
     </div>
     <!-- Option 2 -->
     <div class="diagram-box">
-      <div class="diagram-box-header">
-        <span class="badge badge-base">
-          comrade:patient
-        </span>
-      </div>
+      <span class="badge badge-base">
+        comrade:patient
+      </span>
       <p>
         Wait for page load, then wait for the browser to be idle via <code>requestIdleCallback</code>. Falls back to immediate hydration on Safari &lt;119.
       </p>
     </div>
     <!-- Option 3 -->
     <div class="diagram-box">
-      <div class="diagram-box-header">
-        <span class="badge badge-base">
-          comrade:eager
-        </span>
-      </div>
+      <span class="badge badge-base">
+        comrade:eager
+      </span>
       <p>
         Hydrate immediately. No waiting. JS loads as soon as the element connects.
       </p>
