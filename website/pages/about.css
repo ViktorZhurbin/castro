@@ -2,37 +2,36 @@
 
 .about-section {
 	flex: 1;
-	padding: 5rem 1rem;
+	padding: var(--spacing-5xl) var(--spacing);
 	margin: 0;
 	background: var(--pico-code-background-color);
 }
 
 .about-content {
 	max-width: 48rem;
-	margin-left: auto;
-	margin-right: auto;
+	margin-inline: auto;
 }
 
 .about-divider {
 	border-top: 4px solid var(--pico-primary);
 	max-width: 8rem;
-	margin-bottom: 2rem;
+	margin-bottom: var(--spacing-2xl);
 }
 
 .about-content h2 {
-	margin-bottom: 2rem;
+	margin-bottom: var(--spacing-2xl);
 }
 
 .about-content p {
-	margin-bottom: 1.5rem;
+	margin-bottom: var(--spacing-xl);
 }
 
 .about-content p:last-of-type {
-	margin-bottom: 2.5rem;
+	margin-bottom: var(--spacing-3xl);
 }
 
 .about-cta {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 1rem;
+	gap: var(--spacing);
 }

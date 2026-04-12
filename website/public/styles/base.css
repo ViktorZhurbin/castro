@@ -3,14 +3,20 @@ body {
 
 	--border: var(--pico-border-width) solid var(--pico-muted-border-color);
 
-	--spacing-xxs: calc(var(--pico-spacing) * 0.25);
+	--spacing-4xs: calc(var(--pico-spacing) * 0.1);
+	--spacing-3xs: calc(var(--pico-spacing) * 0.125);
+	--spacing-2xs: calc(var(--pico-spacing) * 0.25);
 	--spacing-xs: calc(var(--pico-spacing) * 0.5);
 	--spacing-sm: calc(var(--pico-spacing) * 0.75);
 	--spacing: var(--pico-spacing);
 	--spacing-lg: calc(var(--pico-spacing) * 1.25);
 	--spacing-xl: calc(var(--pico-spacing) * 1.5);
-	--spacing-2xl: calc(var(--pico-spacing) * 1.75);
-	--spacing-3xl: calc(var(--pico-spacing) * 2);
+	--spacing-2xl: calc(var(--pico-spacing) * 2);
+	--spacing-2-5xl: calc(var(--pico-spacing) * 2.5);
+	--spacing-3xl: calc(var(--pico-spacing) * 3);
+	--spacing-4xl: calc(var(--pico-spacing) * 4);
+	--spacing-5xl: calc(var(--pico-spacing) * 5);
+	--spacing-6xl: calc(var(--pico-spacing) * 6);
 
 	*:focus-visible {
 		box-shadow: none;
@@ -105,7 +111,7 @@ h6 {
 
 :not(pre):not(a) > code {
 	border: 1px solid var(--pico-muted-border-color);
-	padding: calc(var(--spacing) * 0.1) var(--spacing-xxs);
+	padding: var(--spacing-4xs) var(--spacing-2xs);
 }
 
 pre {

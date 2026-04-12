@@ -1,10 +1,9 @@
 .cta-buttons-container {
 	max-width: 48rem;
-	margin-left: auto;
-	margin-right: auto;
+	margin-inline: auto;
 	width: 100%;
 	display: flex;
 	flex-wrap: wrap;
-	gap: 1rem;
+	gap: var(--spacing);
 	justify-content: center;
 }

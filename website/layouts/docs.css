@@ -37,7 +37,7 @@
 	@media (max-width: 1023px) {
 		display: flex;
 		align-items: center;
-		padding: var(--spacing-xxs) var(--spacing);
+		padding: var(--spacing-2xs) var(--spacing);
 		border-bottom: var(--border);
 		background-color: var(--pico-background-color);
 		flex-shrink: 0;
@@ -46,7 +46,7 @@
 
 /* ─── SIDEBAR & PURE CSS TOGGLE LOGIC ──────────────────────────────────── */
 .docs-sidebar {
-	width: calc(var(--pico-spacing) * 16);
+	width: 16rem;
 	border-right: 4px solid var(--pico-muted-border-color);
 	display: flex;
 	flex-direction: column;
@@ -99,7 +99,7 @@
 }
 
 .docs-sidebar-section a {
-	padding: var(--spacing-xxs) var(--spacing-sm);
+	padding: var(--spacing-2xs) var(--spacing-sm);
 	border-left: 4px solid transparent;
 	color: var(--pico-contrast);
 

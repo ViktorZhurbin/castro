@@ -1,19 +1,18 @@
 .spectrum-grid {
 	max-width: 56rem;
-	margin-left: auto;
-	margin-right: auto;
+	margin-inline: auto;
 	text-align: center;
 
 	p {
 		text-align: center;
-		margin-bottom: 1rem;
+		margin-bottom: var(--spacing);
 	}
 }
 
 .spectrum-cards {
 	display: grid;
 	grid-template-columns: 1fr;
-	gap: 1rem;
+	gap: var(--spacing);
 	text-align: left;
 
 	@media (min-width: 640px) {
@@ -28,8 +27,8 @@
 .spectrum-card {
 	display: flex;
 	flex-direction: column;
-	gap: 0.75rem;
-	padding: 1.25rem;
+	gap: var(--spacing-sm);
+	padding: var(--spacing-lg);
 	background: var(--pico-code-background-color);
 	border: var(--border);
 	border-top-width: 8px;
@@ -46,11 +45,11 @@
 }
 
 .spectrum-card-js {
-	font-family: monospace;
+	font-family: var(--pico-font-family-monospace);
 	font-size: 0.75rem;
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
 	border: 1px solid currentColor;
-	padding: 0.5rem;
+	padding: var(--spacing-xs);
 }
