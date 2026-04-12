@@ -38,7 +38,7 @@
 	li a {
 		font-family: var(--font-display);
 		font-size: 1.25rem;
-		color: var(--pico-contrast);
+		color: var(--color-base-content);
 		text-decoration-color: transparent;
 		text-underline-offset: 0.35rem;
 		text-decoration-thickness: 0.25rem;

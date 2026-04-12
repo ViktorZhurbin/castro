@@ -103,7 +103,7 @@
 .docs-sidebar-section a {
 	padding: var(--spacing-xxs) var(--spacing-sm);
 	border-left: 4px solid transparent;
-	color: var(--pico-contrast);
+	color: var(--color-base-content);
 
 	&:hover {
 		background: var(--pico-contrast-background);

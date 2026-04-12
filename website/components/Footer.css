@@ -8,7 +8,7 @@
 	}
 }
 
-.footer {
+.footer > div {
 	max-width: 64rem;
 	margin-inline: auto;
 	display: flex;
