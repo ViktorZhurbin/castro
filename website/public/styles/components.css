@@ -22,8 +22,8 @@
 
 .alert {
 	background: var(--pico-code-background-color);
-	border: var(--border);
-	border-left: 8px solid var(--pico-primary);
+	border: var(--border-2);
+	border-left: var(--border-primary-8);
 	padding: var(--spacing);
 	margin-bottom: var(--spacing-xl);
 }
@@ -35,7 +35,7 @@
 	padding: var(--spacing-xs) var(--spacing-lg);
 	font-size: var(--text-lg);
 	color: var(--pico-contrast);
-	border: var(--border);
+	border: var(--border-2);
 	border-bottom-width: 4px;
 	cursor: pointer;
 	font-weight: 600;
@@ -90,7 +90,7 @@
 	height: 2rem;
 	padding: var(--spacing-3xs);
 	margin: 0;
-	border: var(--border);
+	border: var(--border-2);
 	border-color: transparent;
 	background: transparent;
 	cursor: pointer;
@@ -141,7 +141,7 @@
 }
 
 .diagram-source {
-	border: var(--border);
+	border: var(--border-2);
 	border-bottom-width: 8px;
 	background: var(--pico-code-background-color);
 	padding: var(--spacing-xl);

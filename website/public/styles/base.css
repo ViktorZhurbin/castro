@@ -4,7 +4,10 @@ body {
 	/* Breakpoints (from Pico CSS) — used in @media queries, not available as variables */
 	/* sm: 576px | md: 768px | lg: 1024px | xl: 1280px | xxl: 1536px */
 
-	--border: var(--pico-border-width) solid var(--pico-muted-border-color);
+	--border-2: var(--pico-border-width) solid var(--pico-muted-border-color);
+	--border-4: 4px solid var(--pico-muted-border-color);
+	--border-primary-4: 4px solid var(--pico-primary);
+	--border-primary-8: 8px solid var(--pico-primary);
 
 	--spacing-4xs: calc(var(--pico-spacing) * 0.1);
 	--spacing-3xs: calc(var(--pico-spacing) * 0.125);
@@ -111,5 +114,5 @@ h2 {
 }
 
 pre {
-	border: var(--border);
+	border: var(--border-2);
 }

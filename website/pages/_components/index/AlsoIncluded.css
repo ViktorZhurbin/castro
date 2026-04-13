@@ -9,7 +9,7 @@
 }
 
 .also-included-item {
-	border: var(--border);
+	border: var(--border-2);
 	border-left-width: 6px;
 	padding: var(--spacing-xl);
 

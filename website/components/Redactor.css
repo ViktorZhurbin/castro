@@ -1,7 +1,7 @@
 /* Redactor island card styles */
 
 .redactor {
-	border: var(--border);
+	border: var(--border-2);
 }
 
 .redactor-header {

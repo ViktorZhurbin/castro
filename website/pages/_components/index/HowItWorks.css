@@ -29,7 +29,7 @@
 /* Constructivist step blocks */
 .step {
 	display: flex;
-	border: var(--border);
+	border: var(--border-2);
 	background-color: var(--pico-background-color);
 }
 
@@ -43,7 +43,7 @@
 	justify-content: center;
 	width: 5rem;
 	min-width: 5rem;
-	border-right: var(--border);
+	border-right: var(--border-2);
 	flex-shrink: 0;
 
 	@media (min-width: 768px) {

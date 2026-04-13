@@ -35,7 +35,7 @@
 
 .hero-hr {
 	border: 0;
-	border-top: 8px solid var(--pico-primary);
+	border-top: var(--border-primary-8);
 	width: 8rem;
 	margin: var(--spacing-2-5xl) auto;
 }

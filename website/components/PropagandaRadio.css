@@ -1,7 +1,7 @@
 /* Propaganda Radio island card styles */
 
 .propaganda-radio {
-	border: var(--border);
+	border: var(--border-2);
 }
 
 .propaganda-radio-header {
