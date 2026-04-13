@@ -18,6 +18,13 @@ body {
 	--spacing-5xl: calc(var(--pico-spacing) * 5);
 	--spacing-6xl: calc(var(--pico-spacing) * 6);
 
+	--text-xs: 0.75rem;
+	--text-sm: 0.875rem;
+	--text-base: 1rem;
+	--text-lg: 1.125rem;
+	--text-xl: 1.25rem;
+	--text-2xl: 1.5rem;
+
 	*:focus-visible {
 		box-shadow: none;
 		outline: var(--pico-outline-width) dashed var(--pico-primary);

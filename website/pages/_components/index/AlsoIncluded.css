@@ -14,7 +14,7 @@
 	padding: var(--spacing-xl);
 
 	h3 {
-		font-size: 1.5rem;
+		font-size: var(--text-2xl);
 		margin-bottom: var(--spacing-xs);
 	}
 }
@@ -25,7 +25,7 @@
 	gap: var(--spacing);
 	margin: var(--spacing-3xl) 0;
 	font-family: var(--font-display);
-	font-size: 1.25rem;
+	font-size: var(--text-xl);
 	letter-spacing: 0.05em;
 	color: var(--pico-color);
 

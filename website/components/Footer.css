@@ -56,14 +56,14 @@
 .footer-nav {
 	display: flex;
 	gap: var(--spacing-xl);
-	font-size: 0.875rem;
+	font-size: var(--text-sm);
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
 }
 
 .footer-info {
-	font-size: 0.75rem;
+	font-size: var(--text-xs);
 	font-weight: 500;
 
 	br {

@@ -34,7 +34,7 @@
 .desktop-nav {
 	li a {
 		font-family: var(--font-display);
-		font-size: 1.25rem;
+		font-size: var(--text-xl);
 		color: var(--pico-contrast);
 		text-decoration-color: transparent;
 		text-underline-offset: 0.35rem;
@@ -71,7 +71,7 @@
 
 		li a {
 			font-family: var(--font-display);
-			font-size: 1.25rem;
+			font-size: var(--text-xl);
 
 			&:hover {
 				background: var(--pico-contrast-background);

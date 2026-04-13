@@ -33,7 +33,7 @@
 	align-items: center;
 	justify-content: center;
 	padding: var(--spacing-xs) var(--spacing-lg);
-	font-size: 1.125rem;
+	font-size: var(--text-lg);
 	color: var(--pico-contrast);
 	border: var(--border);
 	border-bottom-width: 4px;
