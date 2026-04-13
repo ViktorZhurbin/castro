@@ -203,26 +203,33 @@ The test structure (pages, components, islands, layouts) mirrors a real site and
 
 ## Website Playground (`website/`)
 
-Demo site that consumes castro. Uses Tailwind CSS v4 + DaisyUI v5 via `@vktrz/castro-tailwind`.
+Demo site that consumes castro. Uses PicoCSS v2 (CDN) with a custom theme, no preprocessor.
 
-**CSS pipeline**: `styles/app.css` → `@vktrz/castro-tailwind` plugin (PostCSS + `@tailwindcss/postcss`) → `dist/app.css`. Fully integrated into Castro's build — `castro build` and `castro dev` handle CSS automatically. The `<link>` tag is auto-injected via the plugin's `getPageAssets()`.
+**CSS stack**: PicoCSS loaded from CDN in `PageShell.tsx`, then three static files from `public/styles/` applied in order:
+1. `pico-theme.css` — color palette (raw materials + Pico role variables) and global Pico overrides (zero radius, no shadows, no transitions)
+2. `base.css` — utility variables: `--spacing-*`, `--text-*`, `--border*`; heading typography overrides; breakpoint reference comment
+3. `components.css` — shared component classes: `.btn`, `.badge`, `.alert`, `.diagram-*`
 
-**Themes**: Two custom DaisyUI themes defined in `styles/app.css` — `castro` (light, cream/gold/red) and `castro-dark` (dark, halloween-inspired). Theme toggle persists via `localStorage`, flash-prevention script in layout `<head>`.
+Each component and page has a co-located CSS file. No build step for CSS — files are served directly from `public/`.
+
+**Themes**: Light (`data-theme="light"`) and dark (`data-theme="dark"`) defined in `pico-theme.css`. `ThemeScript` island in `PageShell.tsx` handles persistence via `localStorage` and prevents flash-of-wrong-theme.
 
 **Key files**:
-- `styles/app.css` — Tailwind + DaisyUI config, both custom theme definitions, `font-display`/`font-sans` theme
-- `layouts/default.tsx` — HTML shell, Google Fonts (Bebas Neue + Barlow), ThemeToggle island
-- `layouts/docs.tsx` — docs layout with DaisyUI drawer sidebar; section-aware via `sidebarSections` map keyed by `"how-it-works"` / `"guide"`
+- `public/styles/pico-theme.css` — The full color palette and both theme definitions. Edit this for color changes.
+- `public/styles/base.css` — Utility variables and global typography. Edit this to change the spacing/text/border scales.
+- `public/styles/components.css` — Shared component classes.
+- `components/PageShell.tsx` — HTML shell, CDN links (PicoCSS, Google Fonts), `ThemeScript`
+- `layouts/default.tsx` — Default layout (header + footer wrapping `<main class="default-main">`)
+- `layouts/docs.tsx` — Docs layout: pure-CSS sidebar toggle, three sections (`"how-it-works"`, `"guide"`, `"reference"`)
 
-**Docs pages** (`how-it-works/`, `guide/`): each exports a `meta` with `layout: "docs"`, `path: "<exact-url>"`, and `section: "<section-key>"`. The `path` field drives sidebar active highlighting and header active state — **update it if a page's URL changes**. The `section` field selects which sidebar group is shown (`"how-it-works"` or `"guide"`).
+**Docs pages** (`how-it-works/`, `guide/`, `reference/`): each exports a `meta` with `layout: "docs"` and `path: "<exact-url>"`. The `path` prop threads through to `PageShell` and drives sidebar active state (`aria-current`) and header highlighting — **update it if a page's URL changes**.
 
-**Reference Documentation**: `.claude/docs/` contains tool and framework references with a consistent naming pattern: `{tool}-{concept}.md` (e.g., `bun-bundler.md`, `bun-server.md`, `daisyui-llms.md`) and concept-specific files (e.g., `web-components.md`, `preact-render-to-string.md`). When working with a specific library, search by tool prefix or concept name.
+**Design guidelines**: `website/DESIGN.md` — the color system, typography, and layout conventions. Read this before making any UI changes.
 
-**Design guidelines**: `website/DESIGN.md` — full rules for the Soviet Constructivist aesthetic. Read this before making any UI changes. Short version:
-- Apply color **structurally** (borders, backgrounds), not **typographically** (text). Gold on cream fails contrast; a gold border-top on a card does not.
-- `text-secondary` and `text-accent` are banned on headings/body — they fail WCAG AA and break the aesthetic. Use `text-primary` or `text-base-content` only.
-- Zero border radius everywhere. Heavy borders over shadows. `btn-neutral` as the secondary CTA.
-- Do not default to "gentle SaaS" patterns: no soft gradients, no rounded cards, no pastel badges and soft buttons, no hover-lift shadows.
+
+## Reference Documentation
+
+`.claude/docs/` contains tool and framework references with a consistent naming pattern: `{tool}-{concept}.md` (e.g., `bun-bundler.md`, `bun-server.md`, `pico-variables-css.md`) and concept-specific files (e.g., `web-components.md`, `preact-render-to-string.md`). When working with a specific library, search by tool prefix or concept name.
 
 ## Maintaining This File
 

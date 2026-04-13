@@ -1,80 +1,126 @@
-# Website Design Guidelines
+# Website Design Reference
 
-The Castro website is a Soviet Constructivist propaganda poster, not a SaaS landing page. Every design decision should serve that aesthetic.
+The Castro website uses a Soviet Constructivist aesthetic: unbleached paper, propaganda red, industrial iron, heavy geometry. This document describes the design system so that UI changes stay consistent with that identity.
 
-## The Aesthetic
+## CSS Architecture
 
-Constructivism relies on **visual violence**: stark blacks and whites, pure reds, industrial iron, unbleached paper, heavy structural geometry. The zero-radius borders (`--radius-*: 0rem`) and Bebas Neue are non-negotiable anchors of this identity. Never soften them.
+Three static files in `public/styles/` define the visual system, applied in this order:
 
-The satirical framing—communist state wrapping a JavaScript framework—only works if the design commits fully. Muddiness, softness, or SaaS-ness breaks the joke.
+**`pico-theme.css`** — The color palette and all Pico overrides. Structured in three layers:
+- Global settings: zero border radius, no shadows, no transitions, Bebas Neue + Barlow as fonts
+- Raw material variables: `--ink-*`, `--canvas-*`, `--color-*` — semantic names for what colors physically are
+- Theme role variables: Pico's `--pico-primary`, `--pico-background-color`, etc., mapped separately for light and dark themes
 
-## Color Rules
+**`base.css`** — Utility variables consumed by all component CSS:
+- `--spacing-*` spacing scale (multiples of Pico's spacing unit)
+- `--text-*` font-size scale
+- `--border-*` border variants
+- Heading typography overrides and the breakpoint reference comment
 
-### Use color structurally, not typographically
+**`components.css`** — Shared classes: `.btn` variants, `.badge`, `.alert`, `.diagram-*`.
 
-The biggest recurring mistake: applying `text-primary`, `text-secondary`, or `text-accent` to headings and body copy to "add color." This is the SaaS habit. It fails both the aesthetic and WCAG AA contrast.
+Each component and page has its own co-located CSS file. No preprocessor — files are merged into a single CSS file per page and served directly.
 
-**What to do instead:**
-- Put color on borders, backgrounds, and structural elements
-- Keep text stark: `text-base-content` or `text-primary` only
-- A thick colored border-top on a card (like `FeatureCard`) carries more visual weight than colored text anyway
+## Color System
 
-### Which colors belong on text
+`pico-theme.css` uses two naming layers. Work with the Pico role variables in component CSS; reference the raw materials only when defining new theme rules.
 
-| Color | On text? | Why |
-|-------|----------|-----|
-| `primary` | ✓ Yes | High-contrast red (light) / gold (dark) — passes AA |
-| `base-content` | ✓ Yes | This is the default text color — always safe |
-| `secondary` | ✗ No | Industrial iron (light) / red (dark) — use for borders/backgrounds |
-| `accent` | ✗ No | Gold (light) / grey (dark) — low contrast against cream/dark backgrounds |
-| `neutral` | ✗ No | Use as background for high-contrast blocks |
+### Raw Materials (defined in `:root`)
 
-### Never use `secondary` for text
+Inks (text and structural lines):
+- `--ink-black`, `--ink-white` — pure opposites
+- `--ink-chalk` — off-white for dark mode body text
+- `--ink-graphite` — heavy grey for light mode secondary text
+- `--ink-ash` — pale grey for dark mode secondary text
 
-`secondary` was the original mistake that caused contrast failures. In both themes it's a mid-tone that sits uncomfortably against the base colors. It belongs on borders, backgrounds, and structural dividers — not typography.
+Canvases (backgrounds):
+- `--canvas-cream`, `--canvas-newsprint`, `--canvas-cardboard` — light mode surfaces, warm and slightly dirty
+- `--canvas-charcoal`, `--canvas-slate` — dark mode surfaces
 
-### Semantic colors (info/success/warning/error) are for alerts only
+Pigments:
+- `--color-crimson` — Soviet red, the primary pigment in light mode
+- `--color-gold` — propaganda gold, the primary pigment in dark mode
+- `--color-iron`, `--color-concrete` — industrial greys for secondary roles
 
-Don't reach for `text-success` to make something feel positive, or `text-warning` to add urgency. Semantic colors exist for `.alert` components and status indicators. Using them decoratively dilutes their meaning and usually fails contrast.
+### Pico Role Variables (per-theme)
 
-## Theme Color Reference
+| Variable | Light | Dark | Use on |
+|---|---|---|---|
+| `--pico-primary` | Crimson | Gold | Headlines, CTAs, accents |
+| `--pico-secondary` | Iron grey | Blood red | Borders, backgrounds |
+| `--pico-contrast` | Black | White | Stark blocks, `.btn-neutral` |
+| `--pico-background-color` | Cream | Charcoal | Page surface |
+| `--pico-code-background-color` | Newsprint | Slate | Secondary surface (cards, code blocks) |
+| `--pico-color` | Black | Chalk | Body text |
+| `--pico-muted-color` | Graphite | Ash | Secondary labels, captions |
+| `--pico-muted-border-color` | Black | Concrete | Standard border color |
 
-### Light theme (`castro`)
-- `base-100`: Unbleached paper/cream — the page background
-- `primary`: True Soviet Red — headlines, CTAs, bullets, accents
-- `secondary`: Industrial Iron (dark grey) — structural borders, dividers
-- `accent`: Propaganda Gold — structural highlights (borders, icons), never text
-- `neutral`: Stark Black — high-contrast backgrounds (hero reverse blocks)
+`--color-accent` is outside Pico's role system: mustard (light) / concrete grey (dark). Use it for icon highlights and structural accents — not text.
 
-### Dark theme (`castro-dark`)
-- `primary` flips to Gold (high contrast on charcoal)
-- `secondary` becomes True Soviet Red
-- `accent` becomes Concrete Grey
-- Theme is halloween-industrial, not a simple dark inversion
+### Color on Text
+
+`--pico-primary` and `--pico-color` are the only role variables that reliably pass WCAG AA contrast on the theme backgrounds. `--pico-secondary` is a mid-tone in both themes and shouldn't appear as text. Color belongs on borders, backgrounds, and geometric elements — a thick crimson border-top on a card carries more visual weight than a crimson heading anyway.
 
 ## Typography
 
-- **Headings** (`font-display`, Bebas Neue): use `letter-spacing: 0.05em` (handled globally by `.font-display` in `app.css`). Use `text-primary` for hero/section-level; `text-base-content` for subsection headers.
-- **Body**: Barlow at `font-weight: 500`. Let it be black on cream. Don't add color to body text.
-- **Prose** (`prose-castro`): docs pages (`layouts/docs.tsx`) render content inside `<main class="prose prose-castro">`. The `prose` class activates `@tailwindcss/typography` styles; `prose-castro` overrides the plugin's CSS variables with DaisyUI theme colors (configured in `app.css`).
+**Display** (`var(--font-display)`, Bebas Neue): headings, nav items, step numbers, uppercase labels. Global `letter-spacing: 0.05em` is applied in `base.css` to all heading elements. Don't remove it.
 
-## Layout & Structure
+**Body** (Barlow, `font-weight: 500`): set via `--pico-font-family` and `--pico-font-weight`. Default for all other text.
 
-- Zero border radius everywhere — the theme variables handle this.
-- Heavy borders over shadows — `border-2` (default) or `border-t-8` conveys structure; `shadow-*` conveys SaaS softness
-- `btn-neutral` (stark black/charcoal) as the secondary CTA — not `btn-outline`, which reads as "ghost" and gets lost
-- Default alerts (no semantic class) get a thick `border-l-primary` left border via `app.css`. Semantic alerts (`alert-success`, `alert-warning`, etc.) use DaisyUI's built-in styling unchanged.
+**Font sizes**: Use `var(--text-xs)` through `var(--text-2xl)` for `font-size` declarations. Raw rem values belong in `base.css` only, where the scale is defined.
 
-## What "Gentle SaaS" Looks Like (Avoid This)
+**Heading scale**: `h1` and `h2` override `--pico-font-size` in `base.css`, with a responsive bump at 768px. `h1` uses `--pico-h1-color: var(--pico-primary)` so top-level headings are automatically crimson/gold.
 
-These are patterns to actively reject:
+## Border System
 
-- Soft gradient backgrounds
-- Rounded cards or buttons
-- Pastel or muted badge colors
-- Colored text to differentiate sections (use borders or backgrounds instead)
-- Hover shadows that lift cards
-- Centered, narrow, paragraph-heavy hero sections with small fonts
-- `secondary` or `accent` on headings
+The constructivist visual weight comes from border geometry, not shadows. Four weights are defined in `base.css`:
 
-If a UI pattern would look at home on a Stripe or Vercel marketing page, it probably doesn't belong here.
+| Variable | Value | Typical use |
+|---|---|---|
+| `--border-2` | 2px solid muted border color | Cards, dividers, form elements |
+| `--border-4` | 4px solid muted border color | Structural separators (sidebar) |
+| `--border-accent-4` | 4px solid primary | Section dividers (footer top, page dividers) |
+| `--border-accent-8` | 8px solid primary | Major emphasis (hero hr, alert left border) |
+
+These apply to any border side: `border: var(--border-2)`, `border-top: var(--border-accent-4)`, `border-left: var(--border-accent-8)`.
+
+Cards typically combine `border: var(--border-2)` with a heavier directional border (`border-left-width: 6px` or `border-top-width: 8px`) for structural emphasis.
+
+## Layout Conventions
+
+**Zero border radius** — `--pico-border-radius: 0rem` in `pico-theme.css` applies globally to all Pico components. Don't add `border-radius` in component CSS.
+
+**No shadows** — `--pico-box-shadow: none` (and card, button, dropdown equivalents) is set globally. Use border weight for depth, not shadows.
+
+**No transitions** — `--pico-transition: 0s`. Hover states change instantly.
+
+**Breakpoints** (Pico's standard scale, documented in `base.css`):
+`sm` 576px / `md` 768px / `lg` 1024px / `xl` 1280px / `xxl` 1536px.
+The site uses `576px` for mobile nav collapse, `768px` for layout switches, `1024px` for sidebar behavior.
+
+**Spacing**: Use `var(--spacing-*)` throughout. The scale runs from `--spacing-4xs` (0.1× Pico unit) to `--spacing-6xl` (6× Pico unit).
+
+## Buttons
+
+`.btn` base class from `components.css`, with variants:
+
+| Class | Fill | Text | Use |
+|---|---|---|---|
+| `.btn-primary` | Crimson | White | Primary action |
+| `.btn-neutral` | Black | White | Secondary action |
+| `.btn-base` | Transparent | Black | Tertiary / inline |
+| `.btn-square` | Transparent | — | Icon-only |
+
+All buttons use `border-bottom-width: 4px` for a structural slab weight. Hover states swap fill colors — no lift, no shadow, no transition.
+
+`.btn-neutral` is the default secondary CTA. `.btn-base` reads as too light for most contexts.
+
+## Adding New UI
+
+When building a new component or page section:
+
+- **Visual emphasis**: Reach for border weight and background color, not text color. `border-top: var(--border-accent-4)` on a section header reads stronger than making the heading crimson.
+- **Cards**: `border: var(--border)` + a heavy directional border side. Background: `var(--pico-code-background-color)` (newsprint/slate) to lift from page surface.
+- **Labels and badges**: Use `var(--font-display)` + uppercase + `var(--text-xs)` or `var(--text-sm)`. See `.badge` in `components.css`.
+- **Dividers**: `border-top: var(--border-accent-4)` with a constrained `max-width` for decorative separators; `border-top: var(--border-heavy)` for structural ones.
+- **Icons**: Match `color: currentColor` or `color: var(--pico-primary)` depending on whether the icon is structural or decorative.
