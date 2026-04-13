@@ -11,7 +11,7 @@
 	justify-content: space-between;
 
 	&.approved {
-		background: var(--pico-ins-color);
+		background-color: var(--color-success);
 		color: var(--pico-contrast-inverse);
 	}
 
@@ -45,5 +45,5 @@
 }
 
 .redactor-control button.approved {
-	background: var(--pico-ins-color);
+	background-color: var(--color-success);
 }

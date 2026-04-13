@@ -35,7 +35,7 @@ export function InteractivitySpectrum() {
 					title="FRAMEWORK ISLAND"
 					js="your code + runtime"
 					body="Reactive state when you need it."
-					colorVar="--pico-primary"
+					colorVar="--color-success"
 				/>
 			</div>
 		</div>
