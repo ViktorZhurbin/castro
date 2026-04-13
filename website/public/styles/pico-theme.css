@@ -129,7 +129,7 @@
 	--pico-secondary: var(--color-soviet-red-dark);
 	--pico-secondary-background: var(--color-soviet-red-dark);
 	--pico-secondary-hover: var(--color-soviet-red-dark);
-	--pico-secondary-inverse: var(--ink-black);
+	--pico-secondary-inverse: var(--ink-white);
 
 	/* Contrast Role (Harsh White Block / Black Text) */
 	--pico-contrast: var(--ink-white);

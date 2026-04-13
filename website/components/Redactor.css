@@ -46,5 +46,4 @@
 
 .redactor-control button.approved {
 	background: var(--pico-ins-color);
-	color: var(--pico-secondary-inverse);
 }
