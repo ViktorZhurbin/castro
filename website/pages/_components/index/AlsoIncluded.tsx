@@ -13,7 +13,7 @@ export function AlsoIncluded() {
 				<AlsoIncludedItem
 					title="PLUGIN SYSTEM"
 					description="Tailwind, custom frameworks, asset injection. The core stays small."
-					colorVar="--pico-accent"
+					colorVar="--color-accent"
 				/>
 				<AlsoIncludedItem
 					title="READABLE BY DESIGN"

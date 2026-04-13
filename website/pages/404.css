@@ -5,8 +5,8 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: var(--pico-code-background-color);
-	padding: var(--spacing-6xl) var(--spacing-xl);
+	background-color: var(--pico-code-background-color);
+	padding: var(--spacing-5xl) var(--spacing-xl);
 }
 
 .not-found-content {
@@ -14,16 +14,16 @@
 }
 
 .not-found-icon {
-	width: 8rem;
-	height: 8rem;
+	width: 6rem;
+	height: 6rem;
 	margin-inline: auto;
 	margin-bottom: var(--spacing-2-5xl);
 	color: var(--pico-primary);
-}
 
-.not-found-heading {
-	font-size: clamp(3rem, 20vw, 10rem);
-	line-height: 1;
+	@media (min-width: 768px) {
+		width: 8rem;
+		height: 8rem;
+	}
 }
 
 .not-found-divider {

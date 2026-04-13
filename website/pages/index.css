@@ -14,7 +14,7 @@
 }
 
 .how-it-works-section {
-	background: var(--pico-code-background-color);
+	background-color: var(--pico-code-background-color);
 	display: flex;
 	flex-direction: column;
 	gap: var(--spacing-4xl);

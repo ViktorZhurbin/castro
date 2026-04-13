@@ -1,5 +1,5 @@
 .footer {
-	background: var(--pico-code-background-color);
+	background-color: var(--pico-code-background-color);
 	padding-block: var(--spacing-3xl) var(--spacing-5xl);
 	border-top: var(--border-primary-4);
 

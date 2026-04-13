@@ -106,7 +106,7 @@
 	color: var(--pico-contrast);
 
 	&:hover {
-		background: var(--pico-contrast-background);
+		background-color: var(--pico-contrast-background);
 		color: var(--pico-contrast-inverse);
 		text-decoration: none;
 	}

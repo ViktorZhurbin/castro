@@ -2,9 +2,9 @@
 
 .about-section {
 	flex: 1;
-	padding: var(--spacing-5xl) var(--spacing);
+	padding: var(--spacing-3xl) var(--spacing);
 	margin: 0;
-	background: var(--pico-code-background-color);
+	background-color: var(--pico-code-background-color);
 }
 
 .about-divider {

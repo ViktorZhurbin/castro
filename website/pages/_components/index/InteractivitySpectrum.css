@@ -28,7 +28,7 @@
 	flex-direction: column;
 	gap: var(--spacing-sm);
 	padding: var(--spacing-lg);
-	background: var(--pico-code-background-color);
+	background-color: var(--pico-code-background-color);
 	border: var(--border-2);
 	border-top-width: 8px;
 }

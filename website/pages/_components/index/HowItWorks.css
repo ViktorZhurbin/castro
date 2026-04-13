@@ -34,7 +34,7 @@
 }
 
 .step-number {
-	background: var(--pico-primary);
+	background-color: var(--pico-primary);
 	color: var(--pico-primary-inverse);
 	font-family: var(--font-display);
 	font-size: clamp(3rem, 8vw, 6rem);

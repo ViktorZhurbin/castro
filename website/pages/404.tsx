@@ -12,7 +12,7 @@ export default function NotFound() {
 				<div class="not-found-icon">
 					<StarIcon />
 				</div>
-				<h1 class="not-found-heading">404</h1>
+				<h1>404</h1>
 				<div class="not-found-divider" />
 				<h2>PAGE NOT FOUND</h2>
 				<p class="not-found-message">

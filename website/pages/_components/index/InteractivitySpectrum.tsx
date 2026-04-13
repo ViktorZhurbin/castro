@@ -28,7 +28,7 @@ export function InteractivitySpectrum() {
 					title="VANILLA ISLAND"
 					js="your code only"
 					body="Full island lifecycle, no framework cost."
-					colorVar="--pico-accent"
+					colorVar="--color-accent"
 				/>
 				<SpectrumCard
 					level="04"
