@@ -1,21 +1,29 @@
-import type { VNode } from "preact";
+import type { ComponentChildren } from "preact";
 import { Header } from "./Header.tsx";
 import { ThemeScript } from "./ThemeScript.tsx";
+import "./PageShell.css";
 
 interface PageShellProps {
 	title: string;
 	activePath?: string;
-	children: VNode | VNode[];
+	children: ComponentChildren;
 }
 
 export function PageShell({ title, activePath, children }: PageShellProps) {
 	return (
-		<html lang="en" class="h-screen overflow-hidden">
+		<html lang="en">
 			<head>
 				<meta charSet="UTF-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 				<title>{title}</title>
 				<ThemeScript />
+				<link
+					rel="stylesheet"
+					href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+				/>
+				<link rel="stylesheet" href="/styles/pico-theme.css" />
+				<link rel="stylesheet" href="/styles/base.css" />
+				<link rel="stylesheet" href="/styles/components.css" />
 				<link rel="preconnect" href="https://fonts.googleapis.com" />
 				<link
 					rel="preconnect"
@@ -27,7 +35,7 @@ export function PageShell({ title, activePath, children }: PageShellProps) {
 					rel="stylesheet"
 				/>
 			</head>
-			<body class="h-screen flex flex-col overflow-hidden">
+			<body>
 				<Header activePath={activePath} />
 				{children}
 			</body>

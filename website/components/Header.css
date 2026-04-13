@@ -1,0 +1,87 @@
+/* Header layout and navigation styles */
+
+.navbar {
+	min-height: var(--header-height);
+	position: sticky;
+	top: 0;
+	z-index: 50;
+	border-bottom: var(--border);
+	padding: 0 var(--spacing);
+	display: flex;
+	align-items: center;
+	gap: var(--spacing);
+}
+
+/* Nav start section */
+.navbar-start {
+	display: flex;
+	align-items: center;
+	flex: 1;
+	justify-content: flex-start;
+	gap: var(--spacing);
+}
+
+.desktop-nav {
+	display: none;
+	align-items: center;
+	gap: var(--spacing);
+
+	@media (min-width: 640px) {
+		display: flex;
+	}
+}
+
+.desktop-nav {
+	li a {
+		font-family: var(--font-display);
+		font-size: 1.25rem;
+		color: var(--pico-contrast);
+		text-decoration-color: transparent;
+		text-underline-offset: 0.35rem;
+		text-decoration-thickness: 0.25rem;
+
+		&:hover,
+		&.active {
+			text-decoration-color: currentColor;
+		}
+
+		&.active {
+			color: var(--pico-color);
+			text-decoration-line: underline;
+		}
+	}
+}
+
+.dropdown {
+	display: block;
+	margin: 0;
+
+	@media (min-width: 640px) {
+		display: none;
+	}
+
+	/* clear Pico dropdown svg */
+	& > .btn-square::after {
+		content: none;
+	}
+
+	.menu {
+		padding: var(--spacing-xs);
+		border: var(--border);
+
+		li a {
+			font-family: var(--font-display);
+			font-size: 1.25rem;
+
+			&:hover {
+				background: var(--pico-contrast-background);
+				color: var(--pico-contrast-inverse);
+			}
+
+			&.active.active {
+				color: var(--pico-primary-inverse);
+				background-color: var(--pico-primary);
+			}
+		}
+	}
+}

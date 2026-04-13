@@ -1,67 +1,40 @@
 import { useState } from "preact/hooks";
+import "./Redactor.css";
 
 export default function Redactor() {
 	const [censored, setCensored] = useState(false);
 
 	return (
-		<div class="border-2 border-neutral bg-base-100">
+		<div class="redactor">
 			{/* Header */}
-			<div
-				class={`bg-base-content text-base-100 px-4 py-2 flex items-center justify-between ${censored ? "bg-error" : ""}`}
-			>
-				<p class="font-display font-bold text-sm">FIELD REPORT № 1947</p>
-				<p class="text-xs font-mono">
+			<div class={`redactor-header ${censored ? "approved" : ""}`}>
+				<h4>FIELD REPORT № 1947</h4>
+				<h4>
 					{censored ? "CLASSIFICATION: APPROVED" : "CLASSIFICATION: PENDING"}
-				</p>
+				</h4>
 			</div>
 
 			{/* Document body */}
-			<div class="p-6 space-y-3 leading-relaxed font-sans">
+			<div class="redactor-content">
 				<p>
 					The recent harvest was{" "}
-					{censored ? (
-						<span class="font-bold text-error-content bg-error px-1">
-							GLORIOUS
-						</span>
-					) : (
-						<span class="line-through decoration-2 decoration-base-content text-base-content">
-							poor
-						</span>
-					)}
-					.
+					{censored ? <ins>GLORIOUS</ins> : <del>poor</del>}.
 				</p>
 				<p>
 					The tractors are{" "}
-					{censored ? (
-						<span class="font-bold text-error-content bg-error px-1">
-							MAGNIFICENT
-						</span>
-					) : (
-						<span class="line-through decoration-2 decoration-base-content text-base-content">
-							old and unreliable
-						</span>
-					)}
-					.
+					{censored ? <ins>MAGNIFICENT</ins> : <del>old and unreliable</del>}.
 				</p>
 				<p>
 					Worker morale has{" "}
-					{censored ? (
-						<span class="font-bold text-error-content bg-error px-1">
-							SKYROCKETED
-						</span>
-					) : (
-						<span class="line-through decoration-2 decoration-base-content text-base-content">
-							declined
-						</span>
-					)}{" "}
-					since the last policy change.
+					{censored ? <ins>SKYROCKETED</ins> : <del>declined</del>} since the
+					last policy change.
 				</p>
 			</div>
 
 			{/* Control */}
-			<div class="border-t-2 border-neutral px-4 py-3">
+			<div class="redactor-control">
 				<button
-					class={`btn w-full btn-lg ${censored ? "btn-error" : "btn-primary"}`}
+					class={`btn btn-primary btn-full ${censored ? "approved" : ""}`}
 					onClick={() => setCensored(!censored)}
 				>
 					{censored

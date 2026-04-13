@@ -1,0 +1,118 @@
+/* ─── SHELL & LAYOUT ───────────────────────────────────────────────────── */
+.docs-shell {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-height: 0; /* Prevents flex blowout */
+	overflow: hidden;
+	position: relative;
+
+	@media (min-width: 1024px) {
+		flex-direction: row;
+	}
+}
+
+/* ─── SCROLLING CONTENT CONTAINER ──────────────────────────────────────── */
+.docs-content {
+	flex: 1;
+	min-width: 0;
+	overflow-y: hidden;
+	display: flex;
+	flex-direction: column;
+
+	main {
+		padding: var(--spacing-3xl) var(--spacing-xl);
+		flex: 1; /* Pushes the footer down if the content is short */
+	}
+}
+
+.docs-scrolled-content {
+	overflow-y: auto;
+}
+
+/* ─── MOBILE TOGGLE BAR ───────────────────────────────────────── */
+.docs-mobile-bar {
+	display: none;
+
+	@media (max-width: 1023px) {
+		display: flex;
+		align-items: center;
+		padding: var(--spacing-2xs) var(--spacing);
+		border-bottom: var(--border);
+		background-color: var(--pico-background-color);
+		flex-shrink: 0;
+	}
+}
+
+/* ─── SIDEBAR & PURE CSS TOGGLE LOGIC ──────────────────────────────────── */
+.docs-sidebar {
+	width: 16rem;
+	background-color: var(--pico-background-color);
+	border-right: 4px solid var(--pico-muted-border-color);
+	display: flex;
+	flex-direction: column;
+	flex-shrink: 0;
+	overflow-y: auto;
+
+	@media (max-width: 1023px) {
+		position: fixed;
+		inset-block: 0;
+		left: 0;
+		z-index: 60;
+
+		display: none;
+
+		:has(.docs-drawer-toggle:checked) & {
+			display: block;
+		}
+	}
+}
+
+.docs-overlay.docs-overlay {
+	display: none;
+
+	@media (max-width: 1023px) {
+		display: none;
+		position: fixed;
+		inset: 0;
+		background-color: oklch(var(--ink-black-raw) / 70%);
+		z-index: 55;
+		cursor: default;
+
+		:has(.docs-drawer-toggle:checked) & {
+			display: block;
+		}
+	}
+}
+
+/* ─── SIDEBAR NAVIGATION STYLING ───────────────────────────────────────── */
+.docs-sidebar nav {
+	padding: var(--spacing-xs) 0;
+}
+
+.docs-sidebar-section {
+	padding: var(--spacing-lg) var(--spacing);
+	border-bottom: var(--border);
+}
+
+.docs-sidebar-section h3 {
+	margin: 0;
+}
+
+.docs-sidebar-section a {
+	padding: var(--spacing-2xs) var(--spacing-sm);
+	border-left: 4px solid transparent;
+	color: var(--pico-contrast);
+
+	&:hover {
+		background: var(--pico-contrast-background);
+		color: var(--pico-contrast-inverse);
+		text-decoration: none;
+	}
+
+	&[aria-current="page"] {
+		color: var(--pico-contrast-inverse);
+		background-color: var(--pico-contrast-background);
+		border-left-color: var(--pico-primary);
+	}
+}

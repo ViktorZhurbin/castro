@@ -1,0 +1,17 @@
+[data-theme="dark"] {
+	.icon-moon {
+		display: block;
+	}
+	.icon-sun {
+		display: none;
+	}
+}
+
+[data-theme="light"] {
+	.icon-moon {
+		display: none;
+	}
+	.icon-sun {
+		display: block;
+	}
+}

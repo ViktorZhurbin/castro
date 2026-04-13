@@ -1,0 +1,80 @@
+.footer {
+	background: var(--pico-code-background-color);
+	padding-block: var(--spacing-3xl) var(--spacing-5xl);
+	border-top: 4px solid var(--pico-primary);
+
+	@media (min-width: 768px) {
+		padding-bottom: var(--spacing-3xl);
+		padding-inline: var(--spacing-2xl);
+	}
+}
+
+.footer > div {
+	margin-inline: auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: var(--spacing-2xl);
+
+	@media (min-width: 768px) {
+		flex-direction: row;
+		align-items: flex-end;
+	}
+}
+
+.footer-slogan {
+	flex: 1;
+
+	p {
+		font-family: var(--font-display);
+		line-height: 1;
+	}
+
+	p:first-child {
+		font-size: clamp(2rem, 8vw, 3rem);
+		margin: 0;
+	}
+
+	p:last-child {
+		font-size: clamp(1.25rem, 4vw, 1.5rem);
+		margin-top: var(--spacing-xs);
+	}
+}
+
+.footer-nav-section {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--spacing);
+
+	@media (min-width: 768px) {
+		align-items: flex-end;
+	}
+}
+
+.footer-nav {
+	display: flex;
+	gap: var(--spacing-xl);
+	font-size: 0.875rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+.footer-info {
+	font-size: 0.75rem;
+	font-weight: 500;
+
+	br {
+		display: none;
+	}
+
+	@media (min-width: 768px) {
+		text-align: right;
+
+		br {
+			display: block;
+		}
+	}
+}

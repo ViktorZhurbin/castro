@@ -1,0 +1,44 @@
+/* 404 page styles */
+
+.not-found-container {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--pico-code-background-color);
+	padding: var(--spacing-6xl) var(--spacing-xl);
+}
+
+.not-found-content {
+	text-align: center;
+}
+
+.not-found-icon {
+	width: 8rem;
+	height: 8rem;
+	margin-inline: auto;
+	margin-bottom: var(--spacing-2-5xl);
+	color: var(--pico-primary);
+}
+
+.not-found-heading {
+	font-size: clamp(3rem, 20vw, 10rem);
+	line-height: 1;
+}
+
+.not-found-divider {
+	border-top: 4px solid var(--pico-primary);
+	max-width: 8rem;
+	margin: var(--spacing-xl) auto;
+}
+
+.not-found-content h2 {
+	margin-bottom: var(--spacing-2xl);
+}
+
+.not-found-message {
+	font-size: 1.125rem;
+	font-weight: 700;
+	margin-bottom: var(--spacing-2-5xl);
+	line-height: 1.5;
+}

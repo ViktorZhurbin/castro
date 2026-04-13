@@ -1,6 +1,7 @@
 import { Footer } from "@components/Footer.tsx";
 import { PageShell } from "@components/PageShell.tsx";
 import type { ComponentChildren } from "preact";
+import "./default.css";
 
 interface Props {
 	title: string;
@@ -12,7 +13,7 @@ export default function DefaultLayout(props: Props) {
 
 	return (
 		<PageShell title={title}>
-			<main class="flex flex-col flex-1 overflow-y-auto">
+			<main class="default-main">
 				{children}
 
 				<Footer />

@@ -1,0 +1,67 @@
+.how-it-works {
+	margin-inline: auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.how-it-works-header {
+	text-align: center;
+	margin-bottom: var(--spacing-4xl);
+
+	h2 {
+		color: var(--pico-primary);
+	}
+}
+
+.how-it-works-intro {
+	margin-top: var(--spacing);
+	font-size: 1.125rem;
+}
+
+.how-it-works-steps {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-xl);
+	width: 100%;
+}
+
+/* Constructivist step blocks */
+.step {
+	display: flex;
+	border: var(--border);
+	background-color: var(--pico-background-color);
+}
+
+.step-number {
+	background: var(--pico-primary);
+	color: var(--pico-primary-inverse);
+	font-family: var(--font-display);
+	font-size: clamp(3rem, 8vw, 6rem);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 5rem;
+	min-width: 5rem;
+	border-right: var(--border);
+	flex-shrink: 0;
+
+	@media (min-width: 768px) {
+		width: 7rem;
+		min-width: 7rem;
+	}
+}
+
+.step-content {
+	padding: var(--spacing-xl);
+
+	@media (min-width: 768px) {
+		padding: var(--spacing-2xl);
+	}
+}
+
+.step-title {
+	font-family: var(--font-display);
+	font-size: clamp(1.5rem, 4vw, 2.25rem);
+	margin-bottom: var(--spacing-xs);
+}

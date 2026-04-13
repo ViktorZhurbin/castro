@@ -1,0 +1,55 @@
+/* Propaganda Radio island card styles */
+
+.propaganda-radio {
+	border: var(--border);
+}
+
+.propaganda-radio-header {
+	padding: var(--spacing-xs) var(--spacing);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	> h4 {
+		margin: 0;
+	}
+}
+
+.propaganda-radio-header .on-air-badge {
+	animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.5;
+	}
+}
+
+.propaganda-radio-headline {
+	padding: var(--spacing-xl);
+
+	h3 {
+		margin: 0;
+	}
+}
+
+.propaganda-radio-controls {
+	padding: var(--spacing);
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-xs);
+}
+
+.propaganda-radio-buttons {
+	display: flex;
+	gap: var(--spacing-xs);
+}
+
+.propaganda-radio-counter {
+	text-align: center;
+	font-family: var(--pico-font-family-monospace);
+}

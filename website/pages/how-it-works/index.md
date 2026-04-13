@@ -14,45 +14,41 @@ Castro's build pipeline has three moving parts. Understanding all three is under
 
 Islands compile before any pages are processed. Each `.island.tsx` file goes through `Bun.build` twice - once for the server (producing an SSR module that's pre-loaded into a registry) and once for the browser (producing a hashed JS bundle written to `dist/islands/`). The server needs a Bun module; the browser needs an ES module. Same source, two targets.
 
-<div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-stretch mb-12">
+<div class="diagram-grid">
   <!-- SOURCE NODE: Heavy anchor block -->
-  <div class="border-2 border-neutral border-b-8 bg-base-200 p-6 flex flex-col items-center justify-center text-center">
-    <div class="badge badge-primary mb-4">
+  <div class="diagram-source">
+    <div class="badge badge-primary">
       Counter.island.tsx
     </div>
-    <p class="text-sm text-base-content/90">
+    <p>
       Your island source file
     </p>
   </div>
   <!-- DIRECTIONAL ARROWS: Massive and stark -->
-  <div class="flex flex-col items-center justify-center gap-6 md:gap-16 text-neutral font-display">
+  <div class="diagram-arrows">
     <!-- Desktop: Two arrows pointing to the two output blocks -->
-    <span class="hidden md:block text-5xl leading-none">→</span>
-    <span class="hidden md:block text-5xl leading-none">→</span>
+    <span class="arrow-desktop">→</span>
+    <span class="arrow-desktop">→</span>
     <!-- Mobile: Downward flow -->
-    <span class="md:hidden text-5xl leading-none py-2">↓ ↓</span>
+    <span class="arrow-mobile">↓ ↓</span>
   </div>
   <!-- OUTCOME NODES: Thick dashed cut-outs -->
-  <div class="flex flex-col gap-4">
+  <div class="diagram-outputs">
     <!-- Output 1: SSR Module -->
-    <div class="c-diagram-box">
-      <div class="mb-3">
-        <span class="badge badge-neutral">
-          SSR Module
-        </span>
-      </div>
-      <p class="text-sm text-base-content/90">
+    <div class="diagram-box">
+      <span class="badge badge-base">
+        SSR Module
+      </span>
+      <p>
         Runs at build time. Renders the island to HTML on the server. Stored in-memory, and accessed during page rendering.
       </p>
     </div>
     <!-- Output 2: Client Bundle -->
-    <div class="c-diagram-box">
-      <div class="mb-3">
-        <span class="badge badge-neutral">
-          Counter-a1b2.js
-        </span>
-      </div>
-      <p class="text-sm text-base-content/90">
+    <div class="diagram-box">
+      <span class="badge badge-base">
+        Counter-a1b2.js
+      </span>
+      <p>
         Client bundle. Put into <code>dist/islands/</code>. Loaded by the browser on demand.
       </p>
     </div>
@@ -161,11 +157,11 @@ mandatory.
 
 -----
 
-<div class="flex flex-wrap gap-4">
-  <a href="/how-it-works/hydration" class="not-prose c-btn c-btn-base">
+<div class="btn-group">
+  <a href="/how-it-works/hydration" class="btn btn-base">
     Next: Hydration →
   </a>
-  <a href="/guide/quick-start" class="not-prose c-btn c-btn-base">
+  <a href="/guide/quick-start" class="btn btn-base">
     Quick Start Guide →
   </a>
 </div>

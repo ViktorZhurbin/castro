@@ -12,6 +12,7 @@
 			"Bash(grep:*)",
 			"Bash(tree:*)",
 			"Bash(mkdir:*)",
+			"Bash(mv:*)",
 			"Bash(cp:*)",
 			"Bash(ls:*)",
 			"Bash(find:*)",

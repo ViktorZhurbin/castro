@@ -130,8 +130,8 @@ type Asset =
 "<script>/* raw hydration script */</script>"
 ```
 
-<div class="flex flex-wrap gap-4">
-  <a href="/reference/config" class="not-prose c-btn c-btn-base">
+<div class="btn-group">
+  <a href="/reference/config" class="btn btn-base">
     ← Configuration
   </a>
 </div>

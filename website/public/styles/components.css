@@ -1,0 +1,201 @@
+.badge {
+	font-family: var(--pico-font-family-monospace);
+	font-weight: 700;
+	padding: var(--spacing-2xs) var(--spacing-xs);
+}
+
+.badge-primary {
+	background: var(--pico-primary);
+	color: var(--pico-primary-inverse);
+	border-color: var(--pico-primary);
+}
+
+.badge-base {
+	background: var(--pico-contrast);
+	color: var(--pico-contrast-inverse);
+	border-color: var(--pico-contrast);
+}
+
+.badge-dashed {
+	border-style: dashed;
+}
+
+.alert {
+	background: var(--pico-code-background-color);
+	border: var(--border);
+	border-left: 8px solid var(--pico-primary);
+	padding: var(--spacing);
+	margin-bottom: var(--spacing-xl);
+}
+
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--spacing-xs) var(--spacing-lg);
+	font-size: 1.125rem;
+	color: var(--pico-contrast);
+	border: var(--border);
+	border-bottom-width: 4px;
+	cursor: pointer;
+	font-weight: 600;
+	box-shadow: none;
+	transition: none;
+	text-decoration: none;
+}
+
+.btn-full {
+	width: 100%;
+}
+
+.btn-primary {
+	background: var(--pico-primary);
+	color: var(--pico-primary-inverse);
+	border-color: var(--pico-muted-border-color);
+
+	&:hover {
+		background: var(--pico-contrast-background);
+		color: var(--pico-contrast-inverse);
+		border-color: var(--pico-contrast);
+	}
+}
+
+.btn-neutral {
+	background: var(--pico-contrast-background);
+	color: var(--pico-contrast-inverse);
+	border-color: var(--pico-muted-border-color);
+
+	&:hover {
+		background: var(--pico-primary-background);
+		color: var(--pico-primary-inverse);
+		border-color: var(--pico-primary);
+	}
+}
+
+.btn-base {
+	color: var(--pico-contrast);
+	border-color: var(--pico-muted-border-color);
+
+	&:hover {
+		background: var(--pico-contrast-background);
+		color: var(--pico-contrast-inverse);
+	}
+}
+
+.btn-square {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	padding: var(--spacing-3xs);
+	margin: 0;
+	border: var(--border);
+	border-color: transparent;
+	background: transparent;
+	cursor: pointer;
+	color: var(--pico-contrast);
+	box-shadow: none;
+	transition: none;
+
+	&:hover {
+		border-color: var(--pico-contrast);
+	}
+}
+
+.btn-square-primary {
+	color: var(--pico-primary);
+
+	&:hover {
+		background: var(--pico-primary);
+		color: var(--pico-primary-inverse);
+	}
+}
+
+.btn-group {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--spacing);
+	margin-top: var(--spacing-xl);
+}
+
+.diagram-box {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-sm);
+	border: 4px dashed var(--pico-muted-border-color);
+	background: var(--pico-code-background-color);
+	padding: var(--spacing-lg);
+}
+
+.diagram-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--spacing-xl);
+	margin-bottom: var(--spacing-3xl);
+	align-items: stretch;
+
+	@media (min-width: 768px) {
+		grid-template-columns: 1fr auto 1fr;
+	}
+}
+
+.diagram-source {
+	border: var(--border);
+	border-bottom-width: 8px;
+	background: var(--pico-code-background-color);
+	padding: var(--spacing-xl);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+.diagram-arrows {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: var(--spacing-xl);
+
+	@media (min-width: 768px) {
+		gap: var(--spacing-4xl);
+	}
+}
+
+.diagram-outputs {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing);
+}
+
+.diagram-box-header {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-xs);
+	flex-wrap: wrap;
+}
+
+.arrow-desktop,
+.arrow-mobile {
+	font-size: 3.125rem;
+	line-height: 1;
+}
+
+.arrow-desktop {
+	display: none;
+
+	@media (min-width: 768px) {
+		display: block;
+	}
+}
+
+.arrow-mobile {
+	display: block;
+	padding-block: var(--spacing-xs);
+
+	@media (min-width: 768px) {
+		display: none;
+	}
+}

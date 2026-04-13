@@ -1,4 +1,5 @@
 import { useEffect, useState } from "preact/hooks";
+import "./FiveYearPlan.css";
 
 export default function FiveYearPlan() {
 	const [progress, setProgress] = useState(0);
@@ -9,15 +10,12 @@ export default function FiveYearPlan() {
 	} | null>(null);
 
 	useEffect(() => {
-		const p = progress;
-
-		if (p >= 50) {
-			setBadge({ text: "Record Output!", style: "badge-success" });
+		if (progress >= 50) {
+			setBadge({ text: "Record Output!", style: "badge-primary" });
+		} else if (progress >= 25) {
+			setBadge({ text: "Adequate Output", style: "badge-base" });
 		}
-		if (p >= 25) {
-			setBadge({ text: "Adequate Output", style: "badge-info" });
-		}
-	});
+	}, [progress]);
 
 	function work() {
 		const next = progress + 5;
@@ -31,36 +29,30 @@ export default function FiveYearPlan() {
 	}
 
 	return (
-		<div class="border-2 border-neutral bg-base-100">
+		<div class="five-year-plan">
 			{/* Header */}
-			<div class="bg-base-content text-base-100 px-4 py-2 flex items-center justify-between">
-				<p class="font-display font-bold text-sm">FIVE-YEAR PLAN</p>
-				<p class="text-xs font-mono">QUOTA #{quota}</p>
+			<div class="five-year-plan-header">
+				<h4>FIVE-YEAR PLAN</h4>
+				<h4>QUOTA #{quota}</h4>
 			</div>
 
 			{/* Content */}
-			<div class="p-6 space-y-4">
+			<div class="five-year-plan-content">
 				{/* Progress readout */}
-				<div class="flex items-baseline justify-between">
-					<p class="font-display text-sm font-bold">TRACTOR PRODUCTION</p>
-					<p class="font-mono text-2xl font-bold">
-						{progress.toString().padStart(3, " ")}%
-					</p>
+				<div class="five-year-plan-readout">
+					<h3>TRACTOR PRODUCTION</h3>
+					<h3>{progress.toString().padStart(3, " ")}%</h3>
 					{/* Badge */}
 					{badge && <div class={`badge ${badge.style}`}>{badge.text}</div>}
 				</div>
 
 				{/* Progress bar */}
-				<progress
-					class="progress progress-primary w-full"
-					value={progress}
-					max="100"
-				/>
+				<progress value={progress} max="100" />
 			</div>
 
 			{/* Control */}
-			<div class="border-t-2 border-neutral px-4 py-3">
-				<button class="btn btn-primary btn-lg w-full" onClick={work}>
+			<div class="five-year-plan-control">
+				<button class="btn btn-primary btn-full" onClick={work}>
 					WORK HARDER, COMRADE!
 				</button>
 			</div>

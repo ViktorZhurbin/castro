@@ -1,4 +1,5 @@
 import { StarIcon } from "@components/icons/StarIcon.tsx";
+import "./404.css";
 
 export const meta = {
 	title: "404 - Page Not Found",
@@ -6,20 +7,20 @@ export const meta = {
 
 export default function NotFound() {
 	return (
-		<div class="flex-1 flex items-center justify-center bg-base-200 py-24 px-6">
-			<div class="max-w-lg text-center">
-				<div class="w-32 h-32 mx-auto mb-10 text-primary">
+		<div class="not-found-container">
+			<div class="container not-found-content">
+				<div class="not-found-icon">
 					<StarIcon />
 				</div>
-				<h1 class="text-9xl">404</h1>
-				<div class="border-t-4 border-primary max-w-xs mx-auto my-6" />
-				<h2 class="mb-8">PAGE NOT FOUND</h2>
-				<p class="text-lg font-bold mb-10">
+				<h1 class="not-found-heading">404</h1>
+				<div class="not-found-divider" />
+				<h2>PAGE NOT FOUND</h2>
+				<p class="not-found-message">
 					This page has been redacted by the Ministry of Truth.
 					<br />
 					It never existed.
 				</p>
-				<a href="/" class="c-btn c-btn-primary">
+				<a href="/" class="btn btn-primary">
 					RETURN TO THE COLLECTIVE
 				</a>
 			</div>

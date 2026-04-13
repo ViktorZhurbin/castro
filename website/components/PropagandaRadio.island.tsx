@@ -1,4 +1,5 @@
 import { useEffect, useState } from "preact/hooks";
+import "./PropagandaRadio.css";
 
 const HEADLINES = [
 	"Harvest exceeds expectations by 400%",
@@ -28,33 +29,29 @@ export default function PropagandaRadio() {
 	}, []);
 
 	return (
-		<div class="border-2 border-neutral bg-base-100">
+		<div class="propaganda-radio">
 			{/* Header */}
-			<div class="bg-base-content text-base-100 px-4 py-2 flex items-center justify-between">
-				<p class="font-display font-bold text-sm">STATE RADIO</p>
-				<span class="badge badge-error animate-pulse text-xs font-bold">
-					ON AIR
-				</span>
+			<div class="propaganda-radio-header">
+				<h4>STATE RADIO</h4>
+				<span class="badge badge-primary on-air-badge">ON AIR</span>
 			</div>
 
 			{/* Headline */}
-			<div class="p-6">
-				<p class="font-display text-2xl leading-tight min-h-24 flex items-center">
-					{`"${HEADLINES[index]}"`}
-				</p>
+			<div class="propaganda-radio-headline">
+				<h3>{`"${HEADLINES[index]}"`}</h3>
 			</div>
 
 			{/* Controls */}
-			<div class="border-t-2 border-neutral px-4 py-3 space-y-2">
-				<div class="flex gap-2">
-					<button class="btn btn-primary btn-lg flex-1" onClick={prev}>
+			<div class="propaganda-radio-controls">
+				<div class="propaganda-radio-buttons">
+					<button class="btn btn-primary btn-full" onClick={prev}>
 						◀ PREV
 					</button>
-					<button class="btn btn-primary btn-lg flex-1" onClick={next}>
+					<button class="btn btn-primary btn-full" onClick={next}>
 						NEXT ▶
 					</button>
 				</div>
-				<div class="text-center text-sm font-mono font-bold">
+				<div class="propaganda-radio-counter">
 					{`${String(index + 1).padStart(2, "0")} / ${String(HEADLINES.length).padStart(2, "0")}`}
 				</div>
 			</div>

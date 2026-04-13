@@ -23,6 +23,7 @@ import {
 	LAYOUTS_DIR,
 	OUTPUT_DIR,
 	PAGES_DIR,
+	PUBLIC_DIR,
 } from "../constants.js";
 import { allPlugins } from "../islands/plugins.js";
 import { messages } from "../messages/index.js";
@@ -157,8 +158,9 @@ export async function startDevServer() {
 		return;
 	}
 
+	// TODO: ignore those temp files instead?
 	// Extensions that trigger rebuilds — ignores editor temp files (.tmp, .swp, ~)
-	const PAGE_EXTENSIONS = new Set([".md", ".jsx", ".tsx"]);
+	const PAGE_EXTENSIONS = new Set([".md", ".jsx", ".tsx", ".css"]);
 	const SOURCE_EXTENSIONS = new Set([".tsx", ".ts", ".jsx", ".js", ".css"]);
 
 	// Debounced rebuild — collapses rapid file events (e.g., git checkout)
@@ -189,7 +191,7 @@ export async function startDevServer() {
 		}
 	})();
 
-	for (const dir of [LAYOUTS_DIR, COMPONENTS_DIR]) {
+	for (const dir of [LAYOUTS_DIR, COMPONENTS_DIR, PUBLIC_DIR]) {
 		(async () => {
 			/** @type {AsyncIterable<FileChangeInfo<string>>} */
 			let watcher;

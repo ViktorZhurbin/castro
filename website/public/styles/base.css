@@ -1,0 +1,105 @@
+body {
+	--header-height: 3rem;
+
+	--border: var(--pico-border-width) solid var(--pico-muted-border-color);
+
+	--spacing-4xs: calc(var(--pico-spacing) * 0.1);
+	--spacing-3xs: calc(var(--pico-spacing) * 0.125);
+	--spacing-2xs: calc(var(--pico-spacing) * 0.25);
+	--spacing-xs: calc(var(--pico-spacing) * 0.5);
+	--spacing-sm: calc(var(--pico-spacing) * 0.75);
+	--spacing: var(--pico-spacing);
+	--spacing-lg: calc(var(--pico-spacing) * 1.25);
+	--spacing-xl: calc(var(--pico-spacing) * 1.5);
+	--spacing-2xl: calc(var(--pico-spacing) * 2);
+	--spacing-2-5xl: calc(var(--pico-spacing) * 2.5);
+	--spacing-3xl: calc(var(--pico-spacing) * 3);
+	--spacing-4xl: calc(var(--pico-spacing) * 4);
+	--spacing-5xl: calc(var(--pico-spacing) * 5);
+	--spacing-6xl: calc(var(--pico-spacing) * 6);
+
+	*:focus-visible {
+		box-shadow: none;
+		outline: var(--pico-outline-width) dashed var(--pico-primary);
+		outline-offset: 3px;
+	}
+
+	* {
+		scrollbar-width: thin;
+	}
+
+	--pico-h1-color: var(--pico-primary);
+	--pico-h2-color: var(--pico-color);
+	--pico-h3-color: var(--pico-color);
+	--pico-h4-color: var(--pico-color);
+	--pico-h5-color: var(--pico-color);
+	--pico-h6-color: var(--pico-muted-color);
+
+	--pico-dropdown-background-color: var(--pico-background-color);
+	--pico-progress-background-color: var(--pico-background-color);
+	--pico-dropdown-border-color: var(--pico-muted-border-color);
+}
+
+a {
+	& {
+		text-decoration-thickness: 3px;
+		text-underline-offset: 3px;
+		transition: none;
+	}
+}
+
+/* Heading typography: mobile baseline */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: var(--font-display);
+	letter-spacing: 0.05em;
+
+	& a,
+	& a > code {
+		color: inherit;
+		text-decoration: none;
+		text-decoration-thickness: 4px;
+		text-underline-offset: 4px;
+		text-decoration-color: var(--pico-primary);
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+}
+
+h1 {
+	--pico-font-size: 3rem;
+	a {
+		text-underline-offset: 6px;
+	}
+}
+h2 {
+	--pico-font-size: 1.875rem;
+}
+
+/* Heading typography: desktop scale-up at md breakpoint */
+@media (min-width: 768px) {
+	h1 {
+		--pico-font-size: 4.25rem;
+	}
+	h2 {
+		--pico-font-size: 3rem;
+	}
+	h3 {
+		--pico-font-size: 2.25rem;
+	}
+}
+
+:not(pre):not(a) > code {
+	border: 1px solid var(--pico-muted-border-color);
+	padding: var(--spacing-4xs) var(--spacing-2xs);
+}
+
+pre {
+	border: var(--border);
+}

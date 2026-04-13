@@ -8,12 +8,33 @@ path: /guide/quick-start
 
 Mobilize a static site with interactive islands in under three minutes. Follow the state-approved blueprint.
 
-## PREREQUISITES
+## SCAFFOLD (RECOMMENDED)
+
+The fastest way to start:
+
+```bash
+bun create castro        # Bun
+npm create castro        # npm
+npx create-castro        # npx
+```
+
+This creates a new directory with a working Castro project and runs `bun install`. Then:
+
+```bash
+cd my-castro-site
+bun run dev
+```
+
+---
+
+## MANUAL SETUP
+
+### PREREQUISITES
 
 Castro runs on Bun 1.3.8+, so you'd need to [install](https://bun.sh) it. It uses Bun's build pipeline, markdown parser, YAML parser, and dev server. Node will not work here. The old ways have failed.
 
 
-## 1. INSTALLATION
+### 1. INSTALLATION
 
 ```bash
 mkdir my-site && cd my-site
@@ -32,7 +53,7 @@ Add the build and dev scripts to `package.json`:
 }
 ```
 
-## 2. PROJECT STRUCTURE
+### 2. PROJECT STRUCTURE
 
 Castro follows a convention-over-configuration structure. There is no required config file - create the directories and start building.
 
@@ -44,7 +65,7 @@ my-site/
 └── public/           ← assets copied directly to dist/
 ```
 
-## 3. CREATE A LAYOUT
+### 3. CREATE A LAYOUT
 
 Layouts wrap your page content in standard HTML. `layouts/default.tsx` is the required default.
 
@@ -83,11 +104,11 @@ export default function DefaultLayout({ title, children }: Props) {
 }
 ```
 
-## 4. CREATE A PAGE
+### 4. CREATE A PAGE
 
 Pages live in `pages/`. Both `.tsx` and `.md` files are supported.
 
-### TSX PAGE
+#### TSX PAGE
 
 ```tsx
 // pages/index.tsx
@@ -110,7 +131,7 @@ export default function Home() {
 
 The named <code>meta</code> export is optional - it allows to pass any custom props to the layout, or use a non-default layout. In Markdown, `frontmatter` serves the same purpose:
 
-### MARKDOWN PAGE
+#### MARKDOWN PAGE
 
 ```markdown
 ---
@@ -125,7 +146,7 @@ Every `.md` file in `pages/` becomes an HTML route.
 This page would use a layout defined in `layouts/special.tsx`
 ```
 
-## 5. ADD COMPONENTS
+### 5. ADD COMPONENTS
 
 Shared UI lives in `components/`. A regular `.tsx` component is server-rendered at build time and shipped to the browser as plain HTML.
 
@@ -141,7 +162,7 @@ export function Card({ title, body }: { title: string; body: string }) {
 }
 ```
 
-## 6. ADD AN ISLAND
+### 6. ADD AN ISLAND
 
 You only need an island when a component requires client-side interactivity. Name it `*.island.tsx` - it gets pre-rendered at build time and hydrated in the browser.
 
@@ -179,11 +200,11 @@ export default function Home() {
 
 For details on islands, directives, and alternative frameworks see [Components & Islands →](/guide/components-islands)
 
-## 7. CONFIGURATION (OPTIONAL)
+### 7. CONFIGURATION (OPTIONAL)
 
 Castro works without config. When you need it, see [Configuration →](/reference/config)
 
-## 8. RUN IT
+### 8. RUN IT
 
 ```bash
 bun run dev      # dev server at http://localhost:3000
@@ -192,9 +213,9 @@ bun run build    # production build → dist/
 
 The dev server watches for changes and reloads automatically. The build produces static HTML in `dist/` ready to be distributed to the masses.
 
-## WHAT'S NEXT
+### WHAT'S NEXT
 
-<div class="flex flex-wrap gap-4 mt-6">
-  <a href="/guide/components-islands" class="not-prose c-btn c-btn-base">COMPONENTS & ISLANDS →</a>
-  <a href="/reference/config" class="not-prose c-btn c-btn-base">CONFIGURATION →</a>
+<div class="btn-group">
+  <a href="/guide/components-islands" class="btn btn-base">COMPONENTS & ISLANDS →</a>
+  <a href="/reference/config" class="btn btn-base">CONFIGURATION →</a>
 </div>

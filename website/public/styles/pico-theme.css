@@ -1,0 +1,156 @@
+:root {
+	/* ─── GLOBAL SYSTEM SETTINGS ─── */
+	--pico-font-family: "Barlow", -apple-system, sans-serif;
+	--font-display: "Bebas Neue", sans-serif;
+
+	--pico-border-radius: 0rem;
+	--pico-border-width: 2px;
+
+	--pico-font-weight: 500;
+	--pico-transition: 0s;
+
+	--pico-nav-link-spacing-horizontal: 0;
+	--pico-nav-link-spacing-vertical: 0;
+
+	--pico-nav-element-spacing-horizontal: 0.5rem;
+	--pico-nav-element-spacing-vertical: 0.5rem;
+
+	/* Kill all SaaS shadows */
+	--pico-box-shadow: none;
+	--pico-card-box-shadow: none;
+	--pico-button-box-shadow: none;
+	--pico-button-hover-box-shadow: none;
+	--pico-dropdown-box-shadow: none;
+
+	--pico-outline-width: 3px;
+	--pico-block-spacing-vertical: 0;
+
+	/* ─── "LITERAL" COLORS ─── */
+
+	/* Inks */
+	--ink-black-raw: 15% 0 0;
+	--ink-black: oklch(var(--ink-black-raw));
+	--ink-white: oklch(98% 0 0);
+	--ink-chalk: oklch(91% 0.016 74); /* Off-white for dark mode body text */
+
+	/* Light Mode Canvas */
+	--paper-cream: oklch(93% 0.012 80);
+	--paper-dark: oklch(89% 0.015 77);
+	--paper-darker: oklch(86% 0.017 79);
+
+	/* Dark Mode Canvas */
+	--paper-charcoal: oklch(22% 0.006 56);
+	--paper-charcoal-light: oklch(26% 0.006 56);
+
+	/* Theme Colors */
+	--color-soviet-red-raw: 53% 0.2 20;
+	--color-soviet-red: oklch(var(--color-soviet-red-raw));
+	--color-soviet-red-dark: oklch(55% 0.22 25);
+
+	--color-soviet-gold-raw: 80% 0.17 80;
+	--color-soviet-gold: oklch(var(--color-soviet-gold-raw));
+	--color-propaganda-gold: oklch(75% 0.18 80);
+
+	--color-iron-grey: oklch(25% 0.02 250);
+	--color-concrete-grey: oklch(35% 0.01 250);
+
+	/* Status Colors */
+	--color-status-success: oklch(48% 0.12 150);
+	--color-status-success-dark: oklch(70% 0.15 150);
+	--color-status-error-dark: oklch(65% 0.2 28);
+}
+
+/* ─── LAYER 2: LIGHT THEME ─── */
+[data-theme="light"],
+:root:not([data-theme="dark"]) {
+	/* Base Canvas */
+	--pico-background-color: var(--paper-cream);
+	--pico-color: var(--ink-black);
+	--pico-muted-color: oklch(35% 0 0);
+	--pico-muted-border-color: var(--ink-black);
+
+	/* Primary Role (The Red Ink) */
+	--pico-primary: var(--color-soviet-red);
+	--pico-primary-background: var(--color-soviet-red);
+	--pico-primary-hover: var(--color-soviet-red);
+	--pico-primary-hover-background: var(--color-soviet-red);
+	--pico-primary-underline: var(--color-soviet-red);
+	--pico-primary-focus: oklch(var(--color-soviet-red-raw) / 30%);
+	--pico-primary-inverse: var(--ink-white);
+
+	/* Secondary Role (The Iron) */
+	--pico-secondary: var(--color-iron-grey);
+	--pico-secondary-background: var(--color-iron-grey);
+	--pico-secondary-hover: var(--color-iron-grey);
+	--pico-secondary-inverse: var(--ink-white);
+
+	/* Contrast Role (Heavy Black Block) */
+	--pico-contrast: var(--ink-black);
+	--pico-contrast-background: var(--ink-black);
+	--pico-contrast-hover: var(--ink-black);
+	--pico-contrast-inverse: var(--ink-white);
+
+	/* Custom Accent */
+	--pico-accent: var(--color-propaganda-gold);
+
+	/* Status colors */
+	--pico-del-color: var(--color-soviet-red);
+	--pico-ins-color: var(--color-status-success);
+
+	/* Component Specifics (Deviating from base paper) */
+	--pico-code-color: var(--ink-black);
+	--pico-code-background-color: var(--paper-dark);
+
+	/* Form elements */
+	--pico-form-element-background-color: var(--paper-cream);
+	--pico-form-element-border-color: var(--ink-black);
+	--pico-form-element-color: var(--ink-black);
+	--pico-form-element-focus-color: var(--pico-primary);
+}
+
+/* ─── LAYER 3: DARK THEME ─── */
+[data-theme="dark"] {
+	/* Base Canvas */
+	--pico-background-color: var(--paper-charcoal);
+	--pico-color: var(--ink-chalk);
+	--pico-muted-color: oklch(70% 0.01 74);
+	--pico-muted-border-color: var(--color-concrete-grey);
+
+	/* Primary Role (The Gold Ink) */
+	--pico-primary: var(--color-soviet-gold);
+	--pico-primary-background: var(--color-soviet-gold);
+	--pico-primary-hover: var(--color-soviet-gold);
+	--pico-primary-hover-background: var(--color-soviet-gold);
+	--pico-primary-underline: var(--color-soviet-gold);
+	--pico-primary-focus: oklch(var(--color-soviet-gold-raw) / 30%);
+	--pico-primary-inverse: var(--ink-black);
+
+	/* Secondary Role (The Dark Red) */
+	--pico-secondary: var(--color-soviet-red-dark);
+	--pico-secondary-background: var(--color-soviet-red-dark);
+	--pico-secondary-hover: var(--color-soviet-red-dark);
+	--pico-secondary-inverse: var(--ink-black);
+
+	/* Contrast Role (Harsh White Block / Black Text) */
+	--pico-contrast: var(--ink-white);
+	--pico-contrast-background: var(--ink-white);
+	--pico-contrast-hover: var(--ink-white);
+	--pico-contrast-inverse: var(--ink-black);
+
+	/* Custom Accent */
+	--pico-accent: var(--color-concrete-grey);
+
+	/* Status colors */
+	--pico-del-color: var(--color-status-error-dark);
+	--pico-ins-color: var(--color-status-success-dark);
+
+	/* Component Specifics */
+	--pico-code-color: var(--ink-chalk);
+	--pico-code-background-color: var(--paper-charcoal-light);
+
+	/* Form elements */
+	--pico-form-element-background-color: var(--paper-charcoal);
+	--pico-form-element-border-color: var(--color-concrete-grey);
+	--pico-form-element-color: var(--ink-chalk);
+	--pico-form-element-focus-color: var(--pico-primary);
+}

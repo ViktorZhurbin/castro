@@ -1,18 +1,14 @@
 import { ClientScript } from "@vktrz/castro";
 import { DARK, LIGHT, STORAGE_KEY } from "../lib/theme.ts";
+import "./ThemeToggle.css";
 
 export function ThemeToggle() {
 	return (
 		<>
-			<label id="theme-toggle" class="swap c-btn-square c-btn-square-base">
-				<input
-					class="w-full h-full"
-					type="checkbox"
-					aria-label="Toggle theme"
-				/>
-				<SunIcon className="swap-off" />
-				<MoonIcon className="swap-on" />
-			</label>
+			<button id="theme-toggle" class="btn-square" aria-label="Toggle theme">
+				<SunIcon />
+				<MoonIcon />
+			</button>
 
 			<ClientScript fn={initState} args={[STORAGE_KEY, DARK, LIGHT]} />
 		</>
@@ -20,31 +16,25 @@ export function ThemeToggle() {
 }
 
 function initState(storageKey: string, dark: string, light: string) {
-	const checkbox = document.querySelector(
-		"#theme-toggle input",
-	) as HTMLInputElement | null;
+	const btn = document.getElementById(
+		"theme-toggle",
+	) as HTMLButtonElement | null;
 
-	if (!checkbox) return;
+	if (!btn) return;
 
-	// Read the actual applied theme from the HTML tag
-	const currentTheme = document.documentElement.getAttribute("data-theme");
-	checkbox.checked = currentTheme === dark;
-
-	checkbox.addEventListener("change", (e) => {
-		const isChecked = (e.target as HTMLInputElement).checked;
-		const next = isChecked ? dark : light;
+	btn.addEventListener("click", () => {
+		const current = document.documentElement.getAttribute("data-theme");
+		const next = current === dark ? light : dark;
 
 		document.documentElement.setAttribute("data-theme", next);
 		localStorage.setItem(storageKey, next);
 	});
 }
 
-const iconClasses = "w-5 h-5 fill-current";
-
-function SunIcon(props: { className: string }) {
+function SunIcon() {
 	return (
 		<svg
-			class={`${props.className} ${iconClasses}`}
+			class="icon-sun"
 			xmlns="http://www.w3.org/2000/svg"
 			viewBox="0 0 24 24"
 		>
@@ -53,10 +43,10 @@ function SunIcon(props: { className: string }) {
 	);
 }
 
-function MoonIcon(props: { className: string }) {
+function MoonIcon() {
 	return (
 		<svg
-			class={`${props.className} ${iconClasses}`}
+			class="icon-moon"
 			xmlns="http://www.w3.org/2000/svg"
 			viewBox="0 0 24 24"
 		>
