@@ -9,6 +9,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	border-bottom: var(--border-2);
 
 	> h4 {
 		margin: 0;

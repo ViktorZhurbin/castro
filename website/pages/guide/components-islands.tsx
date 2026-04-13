@@ -22,47 +22,49 @@ export default function ComponentsIslands() {
 			</p>
 
 			{/* Spectrum summary table */}
-			<table class="overflow-auto">
-				<thead>
-					<tr>
-						<th>Level</th>
-						<th>JS shipped</th>
-						<th>When to use</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>
-							<strong>Static component</strong>
-						</td>
-						<td>
-							<code>0 bytes</code>
-						</td>
-						<td>Anything that doesn't need the DOM at runtime</td>
-					</tr>
-					<tr>
-						<td>
-							<code>ClientScript</code>
-						</td>
-						<td>One inlined function</td>
-						<td>DOM touch without reactive state</td>
-					</tr>
-					<tr>
-						<td>
-							<strong>Vanilla island</strong>
-						</td>
-						<td>Your code, no framework</td>
-						<td>Third-party libs, localized interactions</td>
-					</tr>
-					<tr>
-						<td>
-							<strong>Framework island</strong>
-						</td>
-						<td>Your code + framework runtime</td>
-						<td>Reactive state, complex UI</td>
-					</tr>
-				</tbody>
-			</table>
+			<div class="overflow-auto">
+				<table>
+					<thead>
+						<tr>
+							<th>Level</th>
+							<th>JS shipped</th>
+							<th>When to use</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								<strong>Static component</strong>
+							</td>
+							<td>
+								<code>0 bytes</code>
+							</td>
+							<td>Anything that doesn't need the DOM at runtime</td>
+						</tr>
+						<tr>
+							<td>
+								<code>ClientScript</code>
+							</td>
+							<td>One inlined function</td>
+							<td>DOM touch without reactive state</td>
+						</tr>
+						<tr>
+							<td>
+								<strong>Vanilla island</strong>
+							</td>
+							<td>Your code, no framework</td>
+							<td>Third-party libs, localized interactions</td>
+						</tr>
+						<tr>
+							<td>
+								<strong>Framework island</strong>
+							</td>
+							<td>Your code + framework runtime</td>
+							<td>Reactive state, complex UI</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 
 			{/* ─── LEVEL 1: STATIC COMPONENTS ─────────────────────────── */}
 			<h2>LEVEL 1 - STATIC COMPONENTS</h2>
@@ -325,7 +327,12 @@ import { createSignal } from "solid-js";
 
 export default function Counter() {
   const [count, setCount] = createSignal(0);
-  return <button onClick={() => setCount(count() + 1)}>Count: {count()}</button>;
+
+  return (
+		<button onClick={() => setCount(count() + 1)}>
+			Count: {count()}
+		</button>
+	)
 }`}</code>
 			</pre>
 
