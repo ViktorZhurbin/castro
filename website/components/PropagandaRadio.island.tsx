@@ -2,12 +2,12 @@ import { useEffect, useState } from "preact/hooks";
 import "./PropagandaRadio.css";
 
 const HEADLINES = [
-	"Harvest exceeds expectations by 400%",
-	"Framework stability improved by decree",
+	"Harvest exceeds projections by 400%",
 	"Virtual DOM dissidents sent to re-education",
 	"Bundle sizes redistributed equally",
-	"Hydration deemed mandatory for all components",
-	"Central Committee approves new CSS standard",
+	"Hydration declared mandatory for all components",
+	"Island architecture triumphs over SPA revisionism",
+	"Optimal line count achieved. Further additions prohibited.",
 ];
 
 export default function PropagandaRadio() {

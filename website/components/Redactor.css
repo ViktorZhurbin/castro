@@ -9,6 +9,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	gap: var(--spacing);
 	border-bottom: var(--border-2);
 
 	&.approved {
@@ -21,6 +22,7 @@
 		color: inherit;
 	}
 	h4:last-child {
+		text-align: end;
 		font-family: var(--pico-font-family-monospace);
 	}
 }
@@ -38,6 +40,10 @@
 
 	ins {
 		font-weight: 700;
+	}
+
+	span {
+		color: var(--color-error);
 	}
 }
 

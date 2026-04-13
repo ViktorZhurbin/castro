@@ -29,11 +29,17 @@
 
 .five-year-plan-readout {
 	display: flex;
-	align-items: baseline;
+	align-items: center;
 	justify-content: space-between;
 	gap: var(--spacing);
 
-	> h3 {
+	> div {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing);
+	}
+
+	h3 {
 		margin: 0;
 	}
 }
