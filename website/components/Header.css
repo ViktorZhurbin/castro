@@ -26,7 +26,7 @@
 	align-items: center;
 	gap: var(--spacing);
 
-	@media (min-width: 640px) {
+	@media (min-width: 576px) {
 		display: flex;
 	}
 }
@@ -56,7 +56,7 @@
 	display: block;
 	margin: 0;
 
-	@media (min-width: 640px) {
+	@media (min-width: 576px) {
 		display: none;
 	}
 

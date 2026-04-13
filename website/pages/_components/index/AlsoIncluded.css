@@ -3,7 +3,7 @@
 	grid-template-columns: 1fr;
 	gap: var(--spacing-xl);
 
-	@media (min-width: 640px) {
+	@media (min-width: 576px) {
 		grid-template-columns: repeat(3, 1fr);
 	}
 }
