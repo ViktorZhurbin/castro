@@ -1,5 +1,5 @@
 import { ClientScript } from "@vktrz/castro";
-import { DARK, LIGHT, STORAGE_KEY } from "../lib/theme.ts";
+import { DARK, LIGHT, STORAGE_KEY } from "./constants.ts";
 import "./ThemeToggle.css";
 
 export function ThemeToggle() {
