@@ -27,7 +27,7 @@ export default {
 
 ## BUILDING A PLUGIN
 
-A plugin is a plain object with named hooks that run at specific points in the build pipeline. The `@vktrz/castro-tailwind` plugin is a real-world example used by this website — it compiles CSS before every build and auto-injects the `<link>` tag into each page:
+A plugin is a plain object with named hooks that run at specific points in the build pipeline. The `@vktrz/castro-tailwind` plugin is a real-world example — it compiles CSS before every build and auto-injects the `<link>` tag into each page:
 
 ```javascript
 import { basename, dirname } from "node:path";
