@@ -431,8 +431,6 @@ To build a CommonJS module, set `format` to `"cjs"`. When choosing `"cjs"`, the 
 
 #### format: "iife" - IIFE
 
-TODO: document IIFE once we support globalNames.
-
 ### `jsx`
 
 Configure JSX transform behavior. Allows fine-grained control over how JSX is compiled.

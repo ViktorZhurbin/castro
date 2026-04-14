@@ -14,7 +14,7 @@
  */
 
 import { watch } from "node:fs/promises";
-import { extname, join } from "node:path";
+import { join } from "node:path";
 import { styleText } from "node:util";
 import { buildAll } from "../builder/buildAll.js";
 import { config } from "../config.js";
@@ -158,11 +158,6 @@ export async function startDevServer() {
 		return;
 	}
 
-	// TODO: ignore those temp files instead?
-	// Extensions that trigger rebuilds — ignores editor temp files (.tmp, .swp, ~)
-	const PAGE_EXTENSIONS = new Set([".md", ".jsx", ".tsx", ".css"]);
-	const SOURCE_EXTENSIONS = new Set([".tsx", ".ts", ".jsx", ".js", ".css"]);
-
 	// Debounced rebuild — collapses rapid file events (e.g., git checkout)
 	// into a single buildAll(). Serialized so builds never overlap.
 	const rebuild = debounceAsync(
@@ -183,8 +178,7 @@ export async function startDevServer() {
 		const watcher = watch(PAGES_DIR, { recursive: true });
 
 		for await (const event of watcher) {
-			if (!event.filename) continue;
-			if (!PAGE_EXTENSIONS.has(extname(event.filename))) continue;
+			if (!event.filename || isIgnored(event.filename)) continue;
 
 			logFileChanged(join(PAGES_DIR, event.filename));
 			rebuild.schedule();
@@ -209,8 +203,7 @@ export async function startDevServer() {
 			}
 
 			for await (const event of watcher) {
-				if (!event.filename) continue;
-				if (!SOURCE_EXTENSIONS.has(extname(event.filename))) continue;
+				if (!event.filename || isIgnored(event.filename)) continue;
 
 				logFileChanged(`${dir}/${event.filename}`);
 				rebuild.schedule();
@@ -235,8 +228,7 @@ export async function startDevServer() {
 				}
 
 				for await (const event of watcher) {
-					if (!event.filename) continue;
-					if (!SOURCE_EXTENSIONS.has(extname(event.filename))) continue;
+					if (!event.filename || isIgnored(event.filename)) continue;
 
 					logFileChanged(join(dir, event.filename));
 					rebuild.schedule();
@@ -261,5 +253,16 @@ export async function startDevServer() {
 				controllers.delete(controller);
 			}
 		}
+	}
+
+	// Ignore editor temp files and OS metadata.
+	// Any file change that doesn't match triggers a rebuild.
+	const IGNORE = new Bun.Glob("{*~,*.swp,*.swo,*.tmp,.DS_Store,4913}");
+	/**
+	 * @param {string | undefined} filename
+	 * @returns {boolean}
+	 */
+	function isIgnored(filename) {
+		return !filename || IGNORE.match(filename.split("/").pop() ?? "");
 	}
 }

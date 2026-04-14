@@ -125,7 +125,7 @@ Any import map key is automatically treated as external during island client com
 
 ### Dev Server
 
-File watchers rebuild on change. Page changes → single page rebuild + user plugin rebuild. Layout/component changes → full rebuild (all plugins). Plugin `watchDirs` get their own watchers. All watchers have per-iteration error handling so a build failure doesn't kill the watcher.
+File watchers on `pages/`, `layouts/`, `components/`, and `public/` rebuild on any change. Editor temp files and OS metadata are ignored via a denylist glob; all other file types trigger rebuilds. Plugin `watchDirs` get their own watchers with the same filtering. Rapid changes are debounced so builds never overlap.
 
 **Cache busting:** Bun's module loader caches by file path and ignores query strings. We use content-hashed filenames (`post.tsx.a1b2c3d4.js`) so changed code gets a new path.
 
