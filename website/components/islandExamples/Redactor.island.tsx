@@ -18,21 +18,11 @@ export default function Redactor() {
 			<div class="redactor-content">
 				<p>
 					Q3 grain output:{" "}
-					{censored ? (
-						<ins>HISTORIC SURPLUS</ins>
-					) : (
-						<span>43% of target</span>
-					)}
-					.
+					{censored ? <ins>HISTORIC SURPLUS</ins> : <span>43% of target</span>}.
 				</p>
 				<p>
 					District 7 tractors operational:{" "}
-					{censored ? (
-						<ins>ALL OF THEM</ins>
-					) : (
-						<span>3 of 11</span>
-					)}
-					.
+					{censored ? <ins>ALL OF THEM</ins> : <span>3 of 11</span>}.
 				</p>
 				<p>
 					Saturday brigade sign-ups:{" "}
@@ -46,9 +36,7 @@ export default function Redactor() {
 					class={`btn btn-primary btn-full ${censored ? "approved" : ""}`}
 					onClick={() => setCensored(!censored)}
 				>
-					{censored
-						? "✓ APPROVED FOR DISTRIBUTION"
-						: "SUBMIT FOR REVIEW"}
+					{censored ? "✓ APPROVED FOR DISTRIBUTION" : "SUBMIT FOR REVIEW"}
 				</button>
 			</div>
 		</div>

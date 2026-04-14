@@ -1,6 +1,6 @@
 import type { ComponentChildren } from "preact";
-import { Header } from "./Header.tsx";
-import { ThemeScript } from "./theme/ThemeScript.tsx";
+import { Header } from "./Header";
+import { ThemeScript } from "./theme/ThemeScript";
 import "./PageShell.css";
 
 interface PageShellProps {

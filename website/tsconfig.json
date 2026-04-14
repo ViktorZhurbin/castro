@@ -10,8 +10,6 @@
 		// Module resolution
 		"module": "ESNext",
 		"moduleResolution": "bundler",
-		"resolveJsonModule": true,
-		"allowImportingTsExtensions": true,
 
 		// Emit
 		"noEmit": true,
@@ -22,11 +20,8 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true,
-		"noUncheckedIndexedAccess": true,
 
 		// Interop
-		"esModuleInterop": true,
-		"allowSyntheticDefaultImports": true,
 		"forceConsistentCasingInFileNames": true,
 		"skipLibCheck": true,
 
@@ -36,12 +31,6 @@
 			"@components/*": ["components/*"]
 		}
 	},
-	"include": [
-		"components/**/*",
-		"islands/**/*",
-		"layouts/**/*",
-		"pages/**/*",
-		"lib/**/*"
-	],
+	"include": ["components/**/*", "islands/**/*", "layouts/**/*", "pages/**/*"],
 	"exclude": ["node_modules", "dist"]
 }

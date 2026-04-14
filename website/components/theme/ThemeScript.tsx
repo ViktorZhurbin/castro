@@ -1,5 +1,5 @@
 import { ClientScript } from "@vktrz/castro";
-import { DARK, LIGHT, STORAGE_KEY } from "./constants.ts";
+import { DARK, LIGHT, STORAGE_KEY } from "./constants";
 
 export function ThemeScript() {
 	return <ClientScript fn={themeInit} args={[STORAGE_KEY, DARK, LIGHT]} />;

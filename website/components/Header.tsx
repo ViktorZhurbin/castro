@@ -1,6 +1,6 @@
-import { MoreIcon } from "./icons/MoreIcon.tsx";
-import { StarIcon } from "./icons/StarIcon.tsx";
-import { ThemeToggle } from "./theme/ThemeToggle.tsx";
+import { MoreIcon } from "./icons/MoreIcon";
+import { StarIcon } from "./icons/StarIcon";
+import { ThemeToggle } from "./theme/ThemeToggle";
 import "./Header.css";
 
 export function Header({ activePath }: { activePath?: string }) {

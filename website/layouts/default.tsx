@@ -1,5 +1,5 @@
-import { Footer } from "@components/Footer.tsx";
-import { PageShell } from "@components/PageShell.tsx";
+import { Footer } from "@components/Footer";
+import { PageShell } from "@components/PageShell";
 import type { ComponentChildren } from "preact";
 import "./default.css";
 

@@ -1,6 +1,6 @@
-import { Footer } from "@components/Footer.tsx";
-import { MenuIcon } from "@components/icons/MenuIcon.tsx";
-import { PageShell } from "@components/PageShell.tsx";
+import { Footer } from "@components/Footer";
+import { MenuIcon } from "@components/icons/MenuIcon";
+import { PageShell } from "@components/PageShell";
 import type { ComponentChildren } from "preact";
 import "./docs.css";
 
