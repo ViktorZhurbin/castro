@@ -1,5 +1,6 @@
 import { dirname, extname, join } from "node:path";
 import { h } from "preact";
+import { config } from "../config.js";
 import { OUTPUT_DIR, PAGES_DIR } from "../constants.js";
 import { messages } from "../messages/index.js";
 import { validateMeta } from "../utils/validateMeta.js";
@@ -75,9 +76,11 @@ async function buildMarkdownPage(sourceFilePath, outputFilePath) {
 	// Type assertion: we know meta is valid PageMeta after validation
 	const validatedMeta = validateMeta(meta, sourceFilePath);
 
-	// Convert markdown to HTML
-	// TODO: remove hard-coded options, and pass them through config instead
-	const contentHtml = Bun.markdown.html(markdown, { headings: true });
+	// Convert markdown to HTML using configured options
+	const contentHtml = Bun.markdown.html(
+		markdown,
+		config.markdown?.options ?? {},
+	);
 
 	// Use shared rendering pipeline
 	await renderPage({

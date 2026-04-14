@@ -117,8 +117,8 @@ async function compileIslandClient({ sourcePath, outputDir, frameworkId }) {
 
 	// Calculate externals: framework defaults + user config dependencies + import map keys.
 	// We strip trailing slashes from import map keys so Bun can treat them as package names.
-	const userImportMapKeys = Object.keys(castroConfig.importMap).map((key) =>
-		key.replace(/\/$/, ""),
+	const userImportMapKeys = Object.keys(castroConfig.importMap ?? {}).map(
+		(key) => key.replace(/\/$/, ""),
 	);
 
 	const external = [

@@ -10,7 +10,6 @@
 import { rmSync } from "node:fs";
 import { access } from "node:fs/promises";
 import { basename, extname, join } from "node:path";
-import { styleText } from "node:util";
 import { compileJSX } from "../builder/compileJsx.js";
 import { writeCSSFiles } from "../builder/writeCss.js";
 import { LAYOUTS_DIR, OUTPUT_DIR } from "../constants.js";
@@ -19,7 +18,7 @@ import { resolveTempDir } from "../utils/cache.js";
 
 /**
  * @import { VNode } from "preact";
- * @import { Asset } from '../types.js'
+ * @import { Asset } from '../types.d.ts'
  *
  * @typedef {(props: {
  * 		title: string;

@@ -14,7 +14,7 @@ import { allPlugins } from "../islands/plugins.js";
 import { islands } from "../islands/registry.js";
 
 /**
- * @import { Asset, ImportsMap } from '../types.js'
+ * @import { Asset, ImportsMap } from '../types.d.ts'
  *
  * @typedef {{ pageCssAssets?: Asset[]; usedIslands: Set<string>; usedFrameworks: Set<string>; }} Options
  */

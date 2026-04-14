@@ -17,7 +17,7 @@ import { messages } from "../messages/index.js";
 import { writeHtmlPage } from "./writeHtmlPage.js";
 
 /**
- * @import { Asset, PageMeta } from "../types.js"
+ * @import { Asset, PageMeta } from "../types.d.ts"
  * @import { VNode } from "preact"
  */
 

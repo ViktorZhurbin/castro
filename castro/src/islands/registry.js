@@ -26,7 +26,7 @@ import { getLoadedFrameworkConfigss } from "./frameworkConfig.js";
 const transpiler = new Bun.Transpiler({ loader: "tsx" });
 
 /**
- * @import { IslandComponent } from '../types.js'
+ * @import { IslandComponent } from '../types.d.ts'
  *
  * @typedef {ReturnType<typeof getIslandId>} IslandId
  */

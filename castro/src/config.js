@@ -6,26 +6,16 @@
  *
  * User plugins (CastroPlugin[]) are extracted separately
  * so they can be wired into the build pipeline without polluting config.
- *
- * @import { CastroPlugin } from './types.js'
- *
- * @typedef {{
- * 	port?: number,
- * 	messages?: "satirical" | "serious",
- * 	plugins?: CastroPlugin[],
- * 	importMap?: Record<string, string>,
- * 	clientDependencies?: string[]
- * }} CastroConfig
  */
+
+/** @import { CastroConfig, DefaultConfig } from './types' */
 
 import { join } from "node:path";
 
-/** @type {Required<Omit<CastroConfig, "plugins">>} */
+/** @type {DefaultConfig} */
 const defaults = {
 	port: 3000,
 	messages: "satirical",
-	importMap: {},
-	clientDependencies: [],
 };
 
 /** @type {CastroConfig} */
@@ -40,8 +30,10 @@ try {
 
 const { plugins: userPlugins = [], ...userRest } = userConfig;
 
-/** @type {Required<Omit<CastroConfig, "plugins">>} */
-export const config = { ...defaults, ...userRest };
+/** @type {CastroConfig & DefaultConfig} */
+export const config = {
+	...defaults,
+	...userRest,
+};
 
-/** @type {CastroPlugin[]} */
 export { userPlugins };

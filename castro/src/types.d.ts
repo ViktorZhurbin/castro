@@ -24,6 +24,17 @@ export type Asset =
 
 export type ImportsMap = Record<string, string>;
 
+export type CastroConfig = {
+	port?: number;
+	messages?: "satirical" | "serious";
+	plugins?: CastroPlugin[];
+	importMap?: Record<string, string>;
+	clientDependencies?: string[];
+	markdown?: { options?: Bun.markdown.Options };
+};
+
+export type DefaultConfig = Required<Pick<CastroConfig, "port" | "messages">>;
+
 /** Passed to onAfterBuild — aggregated across all pages in the build. */
 export type BuildContext = {
 	/** Framework IDs that had at least one island rendered (e.g. "castro-jsx", "preact", "solid") */

@@ -181,6 +181,23 @@ test("markdown page has no island artifacts", async () => {
 	expect(html).not.toContain("castro-island");
 });
 
+test("markdown page renders GFM tables when configured", async () => {
+	const html = await readHtml("markdown.html");
+	expect(html).toContain("<table>");
+	expect(html).toContain("<td>");
+});
+
+test("markdown page renders GFM task lists when configured", async () => {
+	const html = await readHtml("markdown.html");
+	expect(html).toContain('type="checkbox"');
+});
+
+test("markdown page generates anchor tags in headings", async () => {
+	const html = await readHtml("markdown.html");
+	expect(html).toContain("<h2 id=");
+	expect(html).toContain("<a href=");
+});
+
 // ------ Multi-framework (Preact + Solid on same page) ------
 
 test("mixed page has both Preact and Solid islands", async () => {
