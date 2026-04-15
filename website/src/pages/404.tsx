@@ -1,4 +1,4 @@
-import { StarIcon } from "@components/icons/StarIcon";
+import { StarIcon } from "@/components/icons/StarIcon";
 import "./404.css";
 
 export const meta = {

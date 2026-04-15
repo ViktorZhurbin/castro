@@ -1,4 +1,4 @@
-import Redactor from "@components/islandExamples/Redactor.island";
+import Redactor from "@/components/islandExamples/Redactor.island";
 
 export const meta = {
 	title: "Components & Islands - Castro Guide",

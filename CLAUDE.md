@@ -251,6 +251,8 @@ Each component and page has a co-located CSS file. No build step for CSS — fil
 
 **Design guidelines**: `website/DESIGN.md` — the color system, typography, and layout conventions. Read this before making any UI changes.
 
+**`website/tsconfig.json` is the canonical tsconfig** — `packages/create-castro/template/tsconfig.json` must be kept in sync with it. When editing either file, update the other to match.
+
 
 ## Reference Documentation
 

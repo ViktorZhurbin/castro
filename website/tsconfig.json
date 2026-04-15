@@ -27,7 +27,7 @@
 
 		// Path mappings (optional, for convenience)
 		"paths": {
-			"@components/*": ["./src/components/*"]
+			"@/*": ["./src/*"]
 		}
 	},
 	"include": ["types/**/*", "src/**/*"],

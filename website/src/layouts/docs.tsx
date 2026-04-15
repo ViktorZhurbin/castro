@@ -1,7 +1,7 @@
-import { Footer } from "@components/Footer";
-import { MenuIcon } from "@components/icons/MenuIcon";
-import { PageShell } from "@components/PageShell";
 import type { ComponentChildren } from "preact";
+import { Footer } from "@/components/Footer";
+import { MenuIcon } from "@/components/icons/MenuIcon";
+import { PageShell } from "@/components/PageShell";
 import "./docs.css";
 
 export interface DocsLayoutProps {

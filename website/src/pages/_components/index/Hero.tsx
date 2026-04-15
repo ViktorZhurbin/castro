@@ -1,5 +1,5 @@
 import "./Hero.css";
-import { StarIcon } from "@components/icons/StarIcon";
+import { StarIcon } from "@/components/icons/StarIcon";
 import { CTAButtons } from "./CTAButtons";
 
 export function Hero() {

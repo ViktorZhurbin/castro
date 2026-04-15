@@ -27,15 +27,9 @@
 
 		// Path mappings (optional, for convenience)
 		"paths": {
-			"@components/*": ["./components/*"]
+			"@/*": ["./src/*"]
 		}
 	},
-	"include": [
-		"types/**/*",
-		"components/**/*",
-		"islands/**/*",
-		"layouts/**/*",
-		"pages/**/*"
-	],
+	"include": ["types/**/*", "src/**/*"],
 	"exclude": ["node_modules", "dist"]
 }
