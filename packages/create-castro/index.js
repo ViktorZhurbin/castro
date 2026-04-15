@@ -4,46 +4,14 @@ import { join } from "node:path";
 import { styleText } from "node:util";
 
 async function question(promptText) {
-	const input = await new Promise((resolve) => {
-		// For pipe/redirect input: read from stdin
-		if (!process.stdin.isTTY) {
-			const chunks = [];
-			process.stdin.on("data", (chunk) => chunks.push(chunk));
-			process.stdin.on("end", () => {
-				resolve(Buffer.concat(chunks).toString().trim());
-			});
-			return;
-		}
+	process.stdout.write(promptText);
 
-		// For interactive terminal: read line from stdin
-		process.stdout.write(promptText);
+	// `console` is async-iterable over stdin lines in Bun (and Node 23+)
+	for await (const line of console) {
+		return line.trim();
+	}
 
-		let line = "";
-		const onData = (chunk) => {
-			const str = chunk.toString();
-			const newline = str.indexOf("\n");
-			if (newline !== -1) {
-				line += str.slice(0, newline);
-				process.stdin.removeListener("data", onData);
-				process.stdin.removeListener("end", onEnd);
-				process.stdin.pause();
-				resolve(line);
-			} else {
-				line += str;
-			}
-		};
-
-		const onEnd = () => {
-			process.stdin.removeListener("data", onData);
-			resolve(line);
-		};
-
-		process.stdin.on("data", onData);
-		process.stdin.on("end", onEnd);
-		process.stdin.resume();
-	});
-
-	return input;
+	return "";
 }
 
 async function main() {
@@ -53,7 +21,7 @@ async function main() {
 		"Name of the collective's project (my-castro-site): ",
 	);
 
-	projectName = projectName.trim() || "my-castro-site";
+	projectName = projectName || "my-castro-site";
 
 	const targetDir = join(process.cwd(), projectName);
 	const templateDir = join(import.meta.dir, "template");
