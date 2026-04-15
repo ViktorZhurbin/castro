@@ -10,15 +10,16 @@ bun add @vktrz/castro-tailwind tailwindcss
 
 ## Usage
 
-```js
-// castro.config.js
+```ts
+// castro.config.ts
+import { defineConfig } from "@vktrz/castro";
 import { tailwind } from "@vktrz/castro-tailwind";
 
-export default {
+export default defineConfig({
   plugins: [
     tailwind({ input: "styles/app.css" }),
   ],
-};
+});
 ```
 
 The `input` option accepts a single path or an array of paths, relative to your project root. Each file is processed through PostCSS and written to `dist/` on every build. A `<link>` tag is auto-injected into every page.

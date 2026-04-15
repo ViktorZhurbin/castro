@@ -1,7 +1,8 @@
+import { defineConfig } from "@vktrz/castro";
 import { castroJsx } from "@vktrz/castro-jsx";
 import { castroSolid } from "@vktrz/castro-solid";
 
-export default {
+export default defineConfig({
 	plugins: [castroJsx(), castroSolid()],
 	messages: "serious",
 	importMap: {
@@ -11,4 +12,4 @@ export default {
 	markdown: {
 		options: { headings: true, tables: true, tasklists: true },
 	},
-};
+});

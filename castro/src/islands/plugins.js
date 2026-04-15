@@ -17,7 +17,7 @@ for (const plugin of userPlugins) {
 }
 
 /**
- * Internal plugins (islands) + user plugins (from castro.config.js).
+ * Internal plugins (islands) + user plugins (from castro config file).
  * Build pipeline and dev server iterate this merged list.
  * @type {CastroPlugin[]}
  */

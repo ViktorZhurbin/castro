@@ -181,7 +181,9 @@ Key rules from `src/messages/README.md`:
 
 ## Configuration
 
-`castro.config.js` (optional) exports a default `CastroConfig` object with the following options:
+`castro.config.ts` (optional) exports a default `CastroConfig` object. `.js` and `.mjs` are also supported — the loader tries `.ts`, `.js`, `.mjs` in that order.
+
+Options:
 
 - **`port`** (number, default: `3000`) — Dev server port.
 - **`messages`** (`"satirical"` | `"serious"`, default: `"satirical"`) — CLI output preset.
@@ -191,18 +193,23 @@ Key rules from `src/messages/README.md`:
 - **`markdown`** (`{ options?: Bun.markdown.Options }`) — Markdown compiler options (syntax extensions, highlight, etc.).
 - **`plugins`** (CastroPlugin[]) — User plugins participating in the build lifecycle.
 
-### Example: Using a `src/` Directory
+### `defineConfig`
+
+`defineConfig` is exported from `@vktrz/castro`. It's an identity function — returns the config unchanged. Use it in `.ts` files for type inference, or in `.js` files as a typed alternative to the JSDoc hint:
+
+```typescript
+// castro.config.ts
+import { defineConfig } from "@vktrz/castro";
+export default defineConfig({ srcDir: "src" });
+```
+
+For plain JavaScript without `defineConfig`, use a JSDoc type hint:
 
 ```javascript
 // castro.config.js
-export default {
-	srcDir: "src",  // Pages are now in src/pages, layouts in src/layouts, etc.
-	messages: "serious",
-	plugins: [],
-};
+/** @type {import("@vktrz/castro").CastroConfig} */
+export default { srcDir: "src" };
 ```
-
-This is purely organizational — the output is identical to a flat structure. `srcDir` is useful when your site grows beyond the learning-by-example stage.
 
 ## Testing
 

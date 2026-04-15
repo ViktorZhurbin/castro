@@ -1,3 +1,4 @@
+/// <reference types="bun" />
 /// <reference path="./jsx.d.ts" />
 
 export { ClientScript } from "./components/ClientScript";
@@ -80,3 +81,6 @@ export type PageMeta = {
 };
 
 export type AnyFunction = (...args: never) => unknown;
+
+/** Identity function that provides type inference for castro config file */
+export function defineConfig(config: CastroConfig): CastroConfig;

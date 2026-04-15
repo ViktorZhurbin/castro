@@ -7,7 +7,7 @@ section: reference
 
 # CONFIGURATION
 
-Castro works without any config file. When you need to customize behavior, create `castro.config.js` at your project root.
+Castro works without any config file. When you need to customize behavior, create `castro.config.ts` at your project root.
 
 ```typescript
 type CastroConfig = {
@@ -17,6 +17,7 @@ type CastroConfig = {
   plugins?: CastroPlugin[];
   importMap?: Record<string, string>;
   clientDependencies?: string[];
+  markdown?: { options?: Bun.markdown.Options };
 }
 ```
 
@@ -28,17 +29,29 @@ type CastroConfig = {
 
 Tailwind plugin, port 4123, serious messages:
 
-```javascript
+```typescript
+import { defineConfig } from "@vktrz/castro";
 import { tailwind } from "@vktrz/castro-tailwind";
 
-export default {
+export default defineConfig({
   plugins: [tailwind({ input: "styles/app.css" })],
+  port: 4123,
+  messages: "serious",
+});
+```
+
+`defineConfig` is an identity function — it returns the config object unchanged. Its only job is to give you type inference in `.ts` files and editor autocomplete in `.js` files.
+
+You can use a JSDoc type hint as well:
+
+```javascript
+// castro.config.js
+/** @type {import("@vktrz/castro").CastroConfig} */
+export default {
   port: 4123,
   messages: "serious",
 };
 ```
-
-→ [website/castro.config.js](https://github.com/ViktorZhurbin/castro/blob/main/website/castro.config.js)
 
 
 ## REFERENCE
@@ -63,11 +76,12 @@ Controls CLI output tone. "satirical" wraps build output in communist bureaucrac
 
 Groups `pages/`, `layouts/`, and `components/` under a single directory. Useful once your project root gets cluttered.
 
-```javascript
-// castro.config.js
-export default {
+```typescript
+import { defineConfig } from "@vktrz/castro";
+
+export default defineConfig({
   srcDir: "src",
-};
+});
 ```
 
 The output is identical either way — paths in `dist/` are always relative to the project root, not to `srcDir`. `public/` stays at the project root regardless.
@@ -90,11 +104,12 @@ By default, each island bundles its own copy of every dependency it uses. If mul
 
 Example: if five islands use `date-fns`, instead of bundling it five times:
 
-```javascript
-// castro.config.js
-export default {
+```typescript
+import { defineConfig } from "@vktrz/castro";
+
+export default defineConfig({
   clientDependencies: ["date-fns"],
-};
+});
 ```
 
 Now `date-fns` is bundled once and shared. Works for exact package names only - if you need subpath routing (e.g., `@mui/material/Button`, `@mui/material/Popper`), use `importMap` instead.
@@ -108,16 +123,36 @@ A map of import specifiers to URLs. Use it to override plugin-generated import m
 
 When you need wildcard routing for subpaths like `@mui/material/Button`, `@mui/material/Popper`, etc., add them here:
 
-```javascript
-// castro.config.js
-export default {
+```typescript
+import { defineConfig } from "@vktrz/castro";
+
+export default defineConfig({
   importMap: {
-    "@mui/material/": "https://esm.sh/@mui/material/"
-  }
-};
+    "@mui/material/": "https://esm.sh/@mui/material/",
+  },
+});
 ```
 
 User-provided entries override plugin-generated entries on pages with islands. They have no effect on purely static pages.
+
+
+### `markdown`
+
+`markdown?: { options?: Bun.markdown.Options }` - default: `{}`
+
+Castro is using `Bun.markdown.html` to render `.md` pages. `markdown.options` is passed to it as-is as the second parameter. It allows to render heading anchors, tables, and other syntax extensions.
+
+```typescript
+import { defineConfig } from "@vktrz/castro";
+
+export default defineConfig({
+  markdown: {
+    options: { headings: true },
+  },
+});
+```
+
+See [Bun's Markdown documentation](https://bun.sh/docs/runtime/markdown) for the full list of options.
 
 -----
 

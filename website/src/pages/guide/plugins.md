@@ -13,15 +13,16 @@ For the complete plugin API reference, see [Plugin API →](/reference/plugin-ap
 
 ## Using a Plugin
 
-Add plugins to the `plugins` array in `castro.config.js`:
+Add plugins to the `plugins` array in `castro.config.ts`:
 
-```javascript
+```typescript
+import { defineConfig } from "@vktrz/castro";
 import { castroJsx } from "@vktrz/castro-jsx";
 import { tailwind } from "@vktrz/castro-tailwind";
 
-export default {
+export default defineConfig({
   plugins: [castroJsx(), tailwind({ input: "styles/app.css" })],
-};
+});
 ```
 
 

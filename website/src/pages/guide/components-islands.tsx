@@ -306,15 +306,16 @@ export default function Page() {
 			</p>
 
 			<p>
-				Register framework plugins in <code>castro.config.js</code>:
+				Register framework plugins in <code>castro.config.ts</code>:
 			</p>
 			<pre>
-				<code>{`// castro.config.js
+				<code>{`// castro.config.ts
+import { defineConfig } from "@vktrz/castro";
 import { castroSolid } from "@vktrz/castro-solid";
 
-export default {
+export default defineConfig({
   plugins: [castroSolid()],
-};`}</code>
+});`}</code>
 			</pre>
 
 			<p>Then create islands using that framework:</p>
