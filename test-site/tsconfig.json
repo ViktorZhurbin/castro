@@ -3,7 +3,7 @@
 		"target": "ES2022",
 		"jsx": "react-jsx",
 		"jsxImportSource": "preact",
-		"types": ["@vktrz/castro"],
+		"types": ["@vktrz/castro", "bun"],
 		"module": "ESNext",
 		"moduleResolution": "bundler",
 		"allowImportingTsExtensions": true,

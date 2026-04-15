@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		// Language and environment
 		"target": "ES2022",
-		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"lib": ["ES2022", "DOM"],
 		"jsx": "react-jsx",
 		"jsxImportSource": "preact",
 		"types": ["@vktrz/castro"],
@@ -26,11 +26,16 @@
 		"skipLibCheck": true,
 
 		// Path mappings (optional, for convenience)
-		"baseUrl": ".",
 		"paths": {
-			"@components/*": ["components/*"]
+			"@components/*": ["./components/*"]
 		}
 	},
-	"include": ["components/**/*", "islands/**/*", "layouts/**/*", "pages/**/*"],
+	"include": [
+		"types/**/*",
+		"components/**/*",
+		"islands/**/*",
+		"layouts/**/*",
+		"pages/**/*"
+	],
 	"exclude": ["node_modules", "dist"]
 }

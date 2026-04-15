@@ -1,11 +1,41 @@
 {
 	"compilerOptions": {
-		"lib": ["ESNext", "DOM"],
-		"module": "ESNext",
-		"target": "ESNext",
-		"moduleResolution": "bundler",
+		// Language and environment
+		"target": "ES2022",
+		"lib": ["ES2022", "DOM"],
 		"jsx": "react-jsx",
 		"jsxImportSource": "preact",
-		"strict": true
-	}
+		"types": ["@vktrz/castro"],
+
+		// Module resolution
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+
+		// Emit
+		"noEmit": true,
+		"isolatedModules": true,
+
+		// Type checking
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+
+		// Interop
+		"forceConsistentCasingInFileNames": true,
+		"skipLibCheck": true,
+
+		// Path mappings (optional, for convenience)
+		"paths": {
+			"@components/*": ["./components/*"]
+		}
+	},
+	"include": [
+		"types/**/*",
+		"components/**/*",
+		"islands/**/*",
+		"layouts/**/*",
+		"pages/**/*"
+	],
+	"exclude": ["node_modules", "dist"]
 }
