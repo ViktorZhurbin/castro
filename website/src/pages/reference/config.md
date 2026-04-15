@@ -13,6 +13,7 @@ Castro works without any config file. When you need to customize behavior, creat
 type CastroConfig = {
   port?: number;
   messages?: "satirical" | "serious";
+  srcDir?: string;
   plugins?: CastroPlugin[];
   importMap?: Record<string, string>;
   clientDependencies?: string[];
@@ -54,6 +55,22 @@ The port the dev server listens on. 3000 is the default. The Party has no strong
 `messages?: "satirical" | "serious"` - default: `"satirical"`
 
 Controls CLI output tone. "satirical" wraps build output in communist bureaucracy humor. "serious" delivers the same information without the ideology. Both are equally correct. Only one is more fun.
+
+
+### `srcDir`
+
+`srcDir?: string` - default: `"."`
+
+Groups `pages/`, `layouts/`, and `components/` under a single directory. Useful once your project root gets cluttered.
+
+```javascript
+// castro.config.js
+export default {
+  srcDir: "src",
+};
+```
+
+The output is identical either way — paths in `dist/` are always relative to the project root, not to `srcDir`. `public/` stays at the project root regardless.
 
 
 ### `plugins`

@@ -16,6 +16,7 @@ import { join } from "node:path";
 const defaults = {
 	port: 3000,
 	messages: "satirical",
+	srcDir: ".",
 };
 
 /** @type {CastroConfig} */

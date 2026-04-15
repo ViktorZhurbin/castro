@@ -31,9 +31,12 @@ export type CastroConfig = {
 	importMap?: Record<string, string>;
 	clientDependencies?: string[];
 	markdown?: { options?: Bun.markdown.Options };
+	srcDir?: string;
 };
 
-export type DefaultConfig = Required<Pick<CastroConfig, "port" | "messages">>;
+export type DefaultConfig = Required<
+	Pick<CastroConfig, "port" | "messages" | "srcDir">
+>;
 
 /** Passed to onAfterBuild — aggregated across all pages in the build. */
 export type BuildContext = {

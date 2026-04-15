@@ -179,6 +179,31 @@ Key rules from `src/messages/README.md`:
 - **Three hydration directives: `comrade:eager`, `comrade:patient`, `comrade:visible` (default).** `comrade:eager` hydrates immediately. `comrade:visible` hydrates on intersection. `comrade:patient` uses `requestIdleCallback` with load-event gating (waiting for idle during initial page load is counterproductive) and Safari fallback.
 - **Plugin hooks include `onAfterBuild(context)` and `getImportMap(context)`.** Both receive `{ usedFrameworks: Set<string> }` so plugins can conditionally write assets based on which frameworks are actually used. This prevents bundling unused frameworks and unused island runtime scripts.
 
+## Configuration
+
+`castro.config.js` (optional) exports a default `CastroConfig` object with the following options:
+
+- **`port`** (number, default: `3000`) — Dev server port.
+- **`messages`** (`"satirical"` | `"serious"`, default: `"satirical"`) — CLI output preset.
+- **`srcDir`** (string, default: `"."`) — Source directory for pages, layouts, and components. Useful for organizing larger sites into a `src/` folder. The output paths are unaffected — paths are always relative to `dist/` root.
+- **`importMap`** (Record<string, string>) — Manual import map overrides for island pages. Allows CDN swaps or custom versioning. User entries override plugin-generated entries.
+- **`clientDependencies`** (string[]) — Additional packages to vendor alongside framework dependencies. Each entry is vendored and available in the browser import map.
+- **`markdown`** (`{ options?: Bun.markdown.Options }`) — Markdown compiler options (syntax extensions, highlight, etc.).
+- **`plugins`** (CastroPlugin[]) — User plugins participating in the build lifecycle.
+
+### Example: Using a `src/` Directory
+
+```javascript
+// castro.config.js
+export default {
+	srcDir: "src",  // Pages are now in src/pages, layouts in src/layouts, etc.
+	messages: "serious",
+	plugins: [],
+};
+```
+
+This is purely organizational — the output is identical to a flat structure. `srcDir` is useful when your site grows beyond the learning-by-example stage.
+
 ## Testing
 
 `test-site/` is a single test site that exercises the full build pipeline with castro-jsx, Preact, Solid, and vanilla islands. Run with `bun test:sites`. Tests verify:
@@ -218,11 +243,11 @@ Each component and page has a co-located CSS file. No build step for CSS — fil
 - `public/styles/pico-theme.css` — The full color palette and both theme definitions. Edit this for color changes.
 - `public/styles/base.css` — Utility variables and global typography. Edit this to change the spacing/text/border scales.
 - `public/styles/components.css` — Shared component classes.
-- `components/PageShell.tsx` — HTML shell, CDN links (PicoCSS, Google Fonts), `ThemeScript`
-- `layouts/default.tsx` — Default layout (header + footer wrapping `<main class="default-main">`)
-- `layouts/docs.tsx` — Docs layout: pure-CSS sidebar toggle, three sections (`"how-it-works"`, `"guide"`, `"reference"`)
+- `src/components/PageShell.tsx` — HTML shell, CDN links (PicoCSS, Google Fonts), `ThemeScript`
+- `src/layouts/default.tsx` — Default layout (header + footer wrapping `<main class="default-main">`)
+- `src/layouts/docs.tsx` — Docs layout: pure-CSS sidebar toggle, three sections (`"how-it-works"`, `"guide"`, `"reference"`)
 
-**Docs pages** (`how-it-works/`, `guide/`, `reference/`): each exports a `meta` with `layout: "docs"` and `path: "<exact-url>"`. The `path` prop threads through to `PageShell` and drives sidebar active state (`aria-current`) and header highlighting — **update it if a page's URL changes**.
+**Docs pages** (`src/pages/how-it-works/`, `src/pages/guide/`, `src/pages/reference/`): each exports a `meta` with `layout: "docs"` and `path: "<exact-url>"`. The `path` prop threads through to `PageShell` and drives sidebar active state (`aria-current`) and header highlighting — **update it if a page's URL changes**.
 
 **Design guidelines**: `website/DESIGN.md` — the color system, typography, and layout conventions. Read this before making any UI changes.
 
