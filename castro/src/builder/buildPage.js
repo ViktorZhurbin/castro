@@ -69,7 +69,8 @@ async function buildJSXPage(sourceFilePath, outputFilePath) {
  */
 
 async function buildMarkdownPage(sourceFilePath, outputFilePath) {
-	// Read and parse markdown with frontmatter
+	// Markdown pages skip Bun.build entirely — no CSS extraction step.
+	// They inherit layout CSS via renderPage(), but have no page-level CSS.
 	const sourceFileContent = await Bun.file(sourceFilePath).text();
 	const { meta, markdown } = parseFrontmatter(sourceFileContent);
 

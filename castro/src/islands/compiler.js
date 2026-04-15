@@ -68,6 +68,8 @@ export async function compileIsland({
 			"/",
 		);
 
+		// CSS kept as a string (not written to disk) — it's inlined per-page
+		// in writeHtmlPage.js, since each page uses a different island subset.
 		const cssContent = cssFile ? await cssFile.text() : "";
 
 		return {

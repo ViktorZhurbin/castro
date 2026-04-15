@@ -81,7 +81,9 @@ async function resolvePageContext({
 		Object.assign(importMap, castroConfig.importMap);
 	}
 
-	// Island CSS: only for islands actually rendered on this page
+	// Island CSS is inlined as <style> rather than written to disk because each
+	// page renders a different subset of islands — per-page permutations aren't
+	// worth caching as separate files. Only islands actually rendered get included.
 	const cssManifest = islands.getCssManifest();
 	if (usedIslands.size && cssManifest.size) {
 		for (const id of usedIslands) {
