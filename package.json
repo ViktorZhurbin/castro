@@ -12,9 +12,7 @@
 		"dev": "bun --filter website dev",
 		"build": "bun --filter website build",
 		"format": "biome format --write",
-		"check:castro": "bun --parallel --filter @vktrz/castro check",
-		"check:website": "bun --filter website type-check",
-		"check": "bun format && bun check:castro && bun check:website && bun test",
+		"check": "bun format && bun run --parallel --filter '*' --if-present type-check build knip && bun test",
 		"test:sites": "bun test ./test-site",
 		"loc": "bunx cloc castro/src/ --exclude-dir=messages",
 		"loc-files": "bun run loc --by-file"

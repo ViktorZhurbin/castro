@@ -26,8 +26,7 @@
 	],
 	"scripts": {
 		"knip": "knip",
-		"type-check": "tsc",
-		"check": "bun knip && bun type-check"
+		"type-check": "tsc"
 	},
 	"dependencies": {
 		"preact": "^10",
