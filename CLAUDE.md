@@ -28,7 +28,7 @@ bun loc              # LOC count (core only, excludes messages/)
 
 ```
 cli.js                  Entry point (dev | build)
-config.js               Loads castro.config.js
+config.js               Loads castro.config.(ts|js|mjs)
 constants.js            Shared path constants
 
 builder/
@@ -107,15 +107,15 @@ Old approach used `options.vnode` hook (runtime monkey-patch). Current approach:
 
 By default, framework dependencies are automatically vendored to `/dist/vendor/` via the `vendorDependencies` plugin:
 1. Each framework declares `clientDependencies` (e.g., Preact declares `["preact", "preact/hooks", "preact/jsx-runtime"]`)
-2. User can add custom `clientDependencies` in `castro.config.js`
+2. User can add custom `clientDependencies` in `castro.config.ts`
 3. Plugin `getImportMap` hooks generate per-page entries: `{ "preact": "/vendor/preact.js?v=10.28.3", ... }` with version query strings for cache busting
-4. User `importMap` entries (from `castro.config.js`) override plugin-generated entries on pages with islands, allowing CDN swaps or custom versioning. Static pages have no import map.
+4. User `importMap` entries (from `castro.config.ts`) override plugin-generated entries on pages with islands, allowing CDN swaps or custom versioning. Static pages have no import map.
 
 Any import map key is automatically treated as external during island client compilation — Bun won't bundle it. Plugins use `getImportMap` to contribute entries based on which frameworks are actually used on each page.
 
 ### User Plugins
 
-`castro.config.js` accepts a `plugins` array of `CastroPlugin` objects. User plugins are merged with internal plugins (island runtime, Preact islands) and participate in the same build lifecycle:
+`castro.config.ts` accepts a `plugins` array of `CastroPlugin` objects. User plugins are merged with internal plugins (island runtime, Preact islands) and participate in the same build lifecycle:
 - `getPageAssets(params)` — called per-page. Injects `<link>`/`<style>`/`<script>` tags. Receives `{ hasIslands }` so plugins can conditionally inject only on pages with islands.
 - `getImportMap(context)` — called only on pages with islands. Plugins contribute import map entries (e.g., vendored dependencies). Receives `{ usedFrameworks }` so entries are based on which frameworks are actually used on that page.
 - `onPageBuild()` — runs before pages are built (and on every page save in dev for user plugins)
@@ -163,21 +163,16 @@ Key rules from `src/messages/README.md`:
 
 ## Key Design Decisions
 
-- **Preact is permanently the page/layout rendering engine.** Pages and layouts always use Preact for SSR and VNode tree construction. Preact is a build-time dependency only — never shipped to the browser for static pages. It's used in exactly four places: JSX transform in `compileJsx.js`, `renderToString` in `renderPage.js`, `h()` for island markers, and `h()` for markdown wrapping. Other frameworks (castro-jsx, Solid) are limited to islands; their SSR returns HTML strings, not VNodes, which Castro's single-pass `renderToString()` architecture requires.
-- **Multi-framework is a plugin-level capability, not a headline feature.** Islands can use different frameworks, but they can't nest, share state across frameworks, or avoid TypeScript pragmas. This is extensibility, not first-class micro-frontends.
+- **Preact is permanently the page/layout rendering engine.** Pages and layouts always use Preact for SSR and VNode tree construction. Preact is a build-time dependency only — never shipped to the browser for static pages. Other frameworks (castro-jsx, Solid) are limited to islands.
+- **Multi-framework is a plugin-level capability, not a headline feature.** Islands can use different frameworks, but they can't nest, share state across frameworks, or avoid TypeScript pragmas.
 - **Layouts receive `children` (VNode)**, not a pre-rendered `content` HTML string. The entire tree renders in a single `renderToString()` pass.
-- **Framework detection via AST scanning.** All frameworks declare `detectImports` (package names to match) and/or `detectExports` (exported names to match). Framework configs are loaded per-island via `frameworkConfig.js` (async load + sync cache pattern). Preact is the default framework. Detection order: exports first (strongest signal — vanilla's `hydrate` wins even if importing `preact`), imports second, Preact default. Plugins can register additional frameworks via `CastroPlugin.frameworkConfig` (e.g., `@vktrz/castro-jsx`, `@vktrz/castro-solid`). Each framework declares `clientDependencies` (browser-side packages to vendor) rather than hardcoded CDN URLs.
-- **`IslandComponent.ssrModule`** typed as `{ default: AnyFunction }` (framework-agnostic). Pre-loaded by the registry, accessed synchronously by `renderMarker()`.
-- **`renderSSR` accepts `AnyFunction`**, not `ComponentType`. Each framework config casts internally.
-- **Island CSS** tracked per-page via `pageState` in `marker.js`, not on the registry singleton. The runtime script is included when `usedIslands.size > 0`.
-- **Dependency vendoring via `clientDependencies` and auto-generated import maps.** Framework dependencies are vendored to `/dist/vendor/` by the `vendorDependencies` plugin. Each framework declares `clientDependencies` (e.g., Preact declares `["preact", "preact/hooks", "preact/jsx-runtime"]`). The plugin uses `Bun.build` with `splitting: true` to avoid duplicate code in vendored files. Import maps are auto-generated per-page with version-based cache busting (`?v=${version}` query strings), driven by installed package versions. User `importMap` entries override plugin-generated entries, allowing CDN swaps on pages with islands. Any import map key is automatically externalized during island client compilation.
-- **Island imports must use relative paths**, not tsconfig aliases. The `islandMarkerPlugin` intercepts imports at the AST level; tsconfig path aliases resolve after Bun's AST walk, so aliased imports don't trigger island detection. This limitation is documented for users.
-- **tsconfig.json path aliases** are supported natively in page imports. `getProjectDependencies()` reads `package.json` and passes all dependency keys to Bun's `external`, allowing aliases to resolve correctly before Bun's module loader processes them.
-- **Multi-framework type checking** requires per-file `/** @jsxImportSource */` pragmas for non-default frameworks (e.g. `/** @jsxImportSource @vktrz/castro-jsx */` for castro-jsx, `/** @jsxImportSource solid-js */` for Solid). The pragma is the only mechanism `tsc` honors per-file — TypeScript uses the root tsconfig's JSX settings for transitively imported files regardless of any nested tsconfig. Each framework package provides its own JSX type definitions. Preact's `Signalish<T>` and castro-jsx's `Signalish<T>` are incompatible types by design (object with `.value` vs plain getter function).
-- **`ClientScript` for zero-framework client behavior.** Some interactivity doesn't need a framework runtime — theme init, scroll handlers, DOM queries. `ClientScript` accepts a plain function and optional JSON-serializable args, serializes them as an inline IIFE `<script>`, and ships nothing else. The function is written in TypeScript and type-checked normally; only serialization happens at build time. This is the escape hatch between "static component" and "full island."
-- **Vanilla islands for island lifecycle without framework runtime.** A "vanilla" framework config provides the full island experience (directives, prop serialization, lazy loading) but ships zero client dependencies. The island's default export is Preact JSX for SSR; the named `hydrate` export is plain JavaScript for hydration. The virtual entry only imports `hydrate`, enabling tree-shaking of the SSR code and its Preact dependency. Perfect for D3 charts, Three.js canvases, or localized interactivity that doesn't need reactivity. Implemented via optional `virtualEntryImport` on `FrameworkConfig` — frameworks can customize which exports the client bundle imports.
-- **Three hydration directives: `comrade:eager`, `comrade:patient`, `comrade:visible` (default).** `comrade:eager` hydrates immediately. `comrade:visible` hydrates on intersection. `comrade:patient` uses `requestIdleCallback` with load-event gating (waiting for idle during initial page load is counterproductive) and Safari fallback.
-- **Plugin hooks include `onAfterBuild(context)` and `getImportMap(context)`.** Both receive `{ usedFrameworks: Set<string> }` so plugins can conditionally write assets based on which frameworks are actually used. This prevents bundling unused frameworks and unused island runtime scripts.
+- **Framework detection via AST scanning.** Detection order: exports first (strongest signal — vanilla's `hydrate` wins even if importing `preact`), imports second, Preact default. Plugins register additional frameworks via `CastroPlugin.frameworkConfig`.
+- **Island imports must use relative paths**, not tsconfig aliases. The `islandMarkerPlugin` intercepts imports at the AST level; tsconfig path aliases resolve after Bun's AST walk, so aliased imports don't trigger island detection.
+- **tsconfig.json path aliases** are supported natively in page imports. `getProjectDependencies()` externalizes all `package.json` dependencies, so Bun resolves local alias paths normally.
+- **Multi-framework type checking** requires per-file `/** @jsxImportSource */` pragmas for non-default frameworks (e.g. `/** @jsxImportSource solid-js */` for Solid). The pragma is the only mechanism `tsc` honors per-file — TypeScript uses the root tsconfig's JSX settings for all transitively imported files regardless of any nested tsconfig.
+- **`ClientScript` for zero-framework client behavior.** Accepts a plain function and optional JSON-serializable args, serializes them as an inline IIFE `<script>`. The escape hatch between "static component" and "full island."
+- **Vanilla islands for island lifecycle without framework runtime.** Full island experience (directives, prop serialization, lazy loading) but zero client dependencies. Default export is Preact JSX for SSR; named `hydrate` export is plain JS for the browser. Perfect for D3, Three.js, or localized interactivity.
+- **Three hydration directives: `comrade:eager`, `comrade:patient`, `comrade:visible` (default).** `comrade:eager` hydrates immediately. `comrade:visible` hydrates on intersection. `comrade:patient` uses `requestIdleCallback` with load-event gating and Safari fallback.
 
 ## Configuration
 
@@ -206,7 +201,7 @@ export default defineConfig({ srcDir: "src" });
 For plain JavaScript without `defineConfig`, use a JSDoc type hint:
 
 ```javascript
-// castro.config.js
+// castro.config.ts
 /** @type {import("@vktrz/castro").CastroConfig} */
 export default { srcDir: "src" };
 ```
