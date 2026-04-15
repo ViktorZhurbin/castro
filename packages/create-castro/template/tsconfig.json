@@ -30,6 +30,6 @@
 			"@/*": ["./src/*"]
 		}
 	},
-	"include": ["types/**/*", "src/**/*"],
+	"include": ["types/**/*", "pages/**/*", "layouts/**/*", "components/**/*"],
 	"exclude": ["node_modules", "dist"]
 }

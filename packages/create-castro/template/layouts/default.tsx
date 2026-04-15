@@ -1,11 +1,11 @@
-import type { VNode } from "preact";
+import type { ComponentChildren } from "preact";
 
 export default function Layout({
 	title,
 	children,
 }: {
 	title: string;
-	children: VNode;
+	children: ComponentChildren;
 }) {
 	return (
 		<html lang="en">
