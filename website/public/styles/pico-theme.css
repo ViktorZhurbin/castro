@@ -15,6 +15,9 @@
 	--pico-nav-element-spacing-horizontal: 0.5rem;
 	--pico-nav-element-spacing-vertical: 0.5rem;
 
+	/* Disable Pico's variable font size */
+	--pico-font-size: 100%;
+
 	/* Kill all SaaS shadows */
 	--pico-box-shadow: none;
 	--pico-card-box-shadow: none;
