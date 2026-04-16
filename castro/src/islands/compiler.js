@@ -17,9 +17,9 @@
  */
 
 import { basename, dirname, extname, resolve } from "node:path";
-import { styleText } from "node:util";
 import { config as castroConfig } from "../config.js";
 import { messages } from "../messages/index.js";
+import { safeBunBuild } from "../utils/build.js";
 import { getProjectDependencies } from "../utils/dependencies.js";
 import { getFrameworkConfig } from "./frameworkConfig.js";
 
@@ -42,47 +42,42 @@ export async function compileIsland({
 	publicDir,
 	frameworkId,
 }) {
-	try {
-		// Compile SSR version first (runs at build time in Bun)
-		const ssrCode = await compileIslandSSR({ sourcePath, frameworkId });
+	// Compile SSR version first (runs at build time in Bun)
+	const ssrCode = await compileIslandSSR({ sourcePath, frameworkId });
 
-		// Compile client version (runs in browser)
-		const clientResult = await compileIslandClient({
-			sourcePath,
-			outputDir,
-			frameworkId,
-		});
+	// Compile client version (runs in browser)
+	const clientResult = await compileIslandClient({
+		sourcePath,
+		outputDir,
+		frameworkId,
+	});
 
-		// Find the actual generated files (with hashes)
-		const jsFile = clientResult.outputs.find((f) => f.path.endsWith(".js"));
-		const cssFile = clientResult.outputs.find((f) => f.path.endsWith(".css"));
+	// Find the actual generated files (with hashes)
+	const jsFile = clientResult.outputs.find((f) => f.path.endsWith(".js"));
+	const cssFile = clientResult.outputs.find((f) => f.path.endsWith(".css"));
 
-		if (!jsFile) {
-			throw new Error(messages.build.noJsOutput(sourcePath));
-		}
-
-		// Construct public paths using the generated filenames
-		// Normalize to forward slashes for cross-platform URL compatibility
-		const publicJsPath = `${publicDir}/${basename(jsFile.path)}`.replaceAll(
-			"\\",
-			"/",
-		);
-
-		// CSS kept as a string (not written to disk) — it's inlined per-page
-		// in writeHtmlPage.js, since each page uses a different island subset.
-		const cssContent = cssFile ? await cssFile.text() : "";
-
-		return {
-			ssrCode,
-			sourcePath,
-			publicJsPath,
-			cssContent,
-			frameworkId,
-		};
-	} catch (err) {
-		console.info(styleText("red", messages.build.islandFailed(err)));
-		throw err;
+	if (!jsFile) {
+		throw new Error(messages.build.noJsOutput(sourcePath));
 	}
+
+	// Construct public paths using the generated filenames
+	// Normalize to forward slashes for cross-platform URL compatibility
+	const publicJsPath = `${publicDir}/${basename(jsFile.path)}`.replaceAll(
+		"\\",
+		"/",
+	);
+
+	// CSS kept as a string (not written to disk) — it's inlined per-page
+	// in writeHtmlPage.js, since each page uses a different island subset.
+	const cssContent = cssFile ? await cssFile.text() : "";
+
+	return {
+		ssrCode,
+		sourcePath,
+		publicJsPath,
+		cssContent,
+		frameworkId,
+	};
 }
 
 /**
@@ -139,7 +134,7 @@ async function compileIslandClient({ sourcePath, outputDir, frameworkId }) {
 		`${componentName}.virtual.js`,
 	);
 
-	const result = await Bun.build({
+	const result = await safeBunBuild({
 		entrypoints: [virtualEntryPath],
 		files: { [virtualEntryPath]: virtualEntry },
 		outdir: outputDir,
@@ -149,17 +144,10 @@ async function compileIslandClient({ sourcePath, outputDir, frameworkId }) {
 		define: {
 			"process.env.NODE_ENV": JSON.stringify("production"),
 		},
-		loader: {
-			".css": "css",
-		},
+		loader: { ".css": "css" },
 		...buildConfig,
 		external,
 	});
-
-	if (!result.success) {
-		const errors = result.logs.map((log) => log.message).join("\n");
-		throw new Error(`Client bundle failed for ${sourcePath}:\n${errors}`);
-	}
 
 	return result;
 }
@@ -180,55 +168,45 @@ async function compileIslandSSR({ sourcePath, frameworkId }) {
 	const frameworkConfig = getFrameworkConfig(frameworkId);
 	const buildConfig = frameworkConfig.getBuildConfig("ssr");
 
-	try {
-		// Stub regular CSS imports — they're side-effectful (no exports needed)
-		// and would fail in Bun's SSR environment. CSS module imports (.module.css)
-		// are left alone so Bun compiles them normally, providing the class name
-		// mapping that components need during SSR.
-		/** @type {Bun.BunPlugin} */
-		const cssStubPlugin = {
-			name: "css-stub",
-			setup(build) {
-				build.onResolve({ filter: /(?<!\.module)\.css$/ }, () => ({
-					path: "css-stub",
-					namespace: "css-stub",
-				}));
+	// Stub regular CSS imports — they're side-effectful (no exports needed)
+	// and would fail in Bun's SSR environment. CSS module imports (.module.css)
+	// are left alone so Bun compiles them normally, providing the class name
+	// mapping that components need during SSR.
+	/** @type {Bun.BunPlugin} */
+	const cssStubPlugin = {
+		name: "css-stub",
+		setup(build) {
+			build.onResolve({ filter: /(?<!\.module)\.css$/ }, () => ({
+				path: "css-stub",
+				namespace: "css-stub",
+			}));
 
-				build.onLoad({ filter: /.*/, namespace: "css-stub" }, () => ({
-					contents: "export default {};",
-					loader: "js",
-				}));
-			},
-		};
+			build.onLoad({ filter: /.*/, namespace: "css-stub" }, () => ({
+				contents: "export default {};",
+				loader: "js",
+			}));
+		},
+	};
 
-		const result = await Bun.build({
-			entrypoints: [sourcePath],
-			format: "esm",
-			target: "bun",
-			// Externalizes all NPM package imports found in package.json.
-			// This enables native support for tsconfig `paths` aliases (e.g., @components/*),
-			// as Bun will resolve local paths that are NOT in the dependencies list.
-			external: await getProjectDependencies(),
-			define: {
-				"process.env.NODE_ENV": JSON.stringify("production"),
-			},
-			...buildConfig,
-			// Merge framework plugins (e.g. Solid's Babel transform) with
-			// the CSS stub. Placed after ...buildConfig so cssStubPlugin
-			// always runs regardless of what the framework provides.
-			plugins: [...(buildConfig.plugins ?? []), cssStubPlugin],
-		});
+	const result = await safeBunBuild({
+		entrypoints: [sourcePath],
+		format: "esm",
+		target: "bun",
+		// Externalizes all NPM package imports found in package.json.
+		// This enables native support for tsconfig `paths` aliases (e.g., @components/*),
+		// as Bun will resolve local paths that are NOT in the dependencies list.
+		external: await getProjectDependencies(),
+		define: {
+			"process.env.NODE_ENV": JSON.stringify("production"),
+		},
+		...buildConfig,
+		// Merge framework plugins (e.g. Solid's Babel transform) with
+		// the CSS stub. Placed after ...buildConfig so cssStubPlugin
+		// always runs regardless of what the framework provides.
+		plugins: [...(buildConfig.plugins ?? []), cssStubPlugin],
+	});
 
-		if (!result.success) {
-			const errors = result.logs.map((log) => log.message).join("\n");
-			throw new Error(`SSR bundle failed for ${sourcePath}:\n${errors}`);
-		}
+	const output = result.outputs[0];
 
-		const output = result.outputs[0];
-		return output ? await output.text() : "";
-	} catch (e) {
-		const err = /** @type {Bun.ErrorLike} */ (e);
-
-		throw new Error(messages.build.ssrCompileFailed(sourcePath, err.message));
-	}
+	return output ? await output.text() : "";
 }

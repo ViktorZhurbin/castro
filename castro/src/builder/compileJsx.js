@@ -4,6 +4,7 @@ import {
 	islandMarkerPlugin,
 } from "../islands/buildPlugins.js";
 import { messages } from "../messages/index.js";
+import { safeBunBuild } from "../utils/build.js";
 import { getModule } from "../utils/cache.js";
 import { getProjectDependencies } from "../utils/dependencies.js";
 
@@ -20,7 +21,7 @@ export async function compileJSX(sourcePath) {
 	// Bun.build requires absolute entrypoints when using onResolve plugins
 	const absoluteSourcePath = resolve(sourcePath);
 
-	const result = await Bun.build({
+	const result = await safeBunBuild({
 		entrypoints: [absoluteSourcePath],
 		target: "bun",
 		// Externalizes all NPM package imports found in package.json.
@@ -33,20 +34,13 @@ export async function compileJSX(sourcePath) {
 		// VNode tree to HTML in one pass. This is a build-time convenience —
 		// Preact is NOT shipped to the browser for static pages.
 		jsx: { runtime: "automatic", importSource: "preact" },
-		loader: {
-			".css": "css",
-		},
+		loader: { ".css": "css" },
 		define: {
 			// makes sure we use production mode for SSG
 			"process.env.NODE_ENV": JSON.stringify("production"),
 		},
 		plugins: [castroExternalsPlugin, islandMarkerPlugin],
 	});
-
-	if (!result.success) {
-		const errors = result.logs.map((log) => log.message).join("\n");
-		throw new Error(messages.build.bundleFailed(errors));
-	}
 
 	const jsFile = result.outputs.find((f) => f.path.endsWith(".js"));
 	const cssFiles = result.outputs.filter((f) => f.path.endsWith(".css"));
@@ -58,7 +52,7 @@ export async function compileJSX(sourcePath) {
 	const jsText = await jsFile.text();
 
 	return {
-		module: await getModule(sourcePath, jsText),
 		cssFiles,
+		module: await getModule(sourcePath, jsText),
 	};
 }

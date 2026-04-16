@@ -20,9 +20,6 @@ export const satirical = {
 		noFiles: "⚠️  No pages found to build.",
 		writingFile: (source, dest) => `Writing ${source} → ${dest}`,
 		fileFailure: (file, err) => `Sabotage detected in ${file}: ${err}`,
-		islandFailed: (err) => `Island build failed: ${err}`,
-		ssrCompileFailed: (source, err) =>
-			`Failed to compile SSR code for ${source}: ${err}`,
 		bundleFailed: (errors) => `Production halted\n${errors}`,
 		noJsOutput: (source) => `No JavaScript output generated for ${source}`,
 	},

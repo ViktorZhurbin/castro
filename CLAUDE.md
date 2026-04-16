@@ -88,6 +88,8 @@ User plugins implement `CastroPlugin` (see [types.d.ts](castro/src/types.d.ts) f
 
 File watchers on `pages/`, `layouts/`, `components/`, `public/`, and any plugin `watchDirs` rebuild on change. Editor temp files and OS metadata are filtered via a denylist glob; everything else triggers a rebuild. Rapid changes are debounced so builds never overlap. Cache busting relies on content-hashed filenames (`post.tsx.a1b2c3d4.js`) because Bun's module loader ignores query strings.
 
+**Build error handling:** On failure, the server logs to the terminal and sends a `build-error` SSE event so the browser console shows the error — but does not reload, keeping the last good page visible. On the next successful build, a `reload` SSE event triggers a full page refresh. Reload is therefore gated on success; the browser-side live reload script (`dev/liveReload.js`) handles both events.
+
 ## Code Conventions
 
 - **ES Modules** (import/export), Bun 1.3.8+

@@ -20,8 +20,6 @@ export interface Messages {
 		noFiles: string;
 		writingFile: (source: string, dest: string) => string;
 		fileFailure: (file: string, err: string) => string;
-		islandFailed: (err: unknown) => string;
-		ssrCompileFailed: (source: string, errMessage: string) => string;
 		bundleFailed: (errors: string) => string;
 		noJsOutput: (source: string) => string;
 	};

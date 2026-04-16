@@ -160,18 +160,18 @@ export async function startDevServer() {
 
 	// Debounced rebuild — collapses rapid file events (e.g., git checkout)
 	// into a single buildAll(). Serialized so builds never overlap.
-	const rebuild = debounceAsync(
-		async () => {
-			try {
-				await buildAll();
-			} catch (e) {
-				const err = /** @type {Bun.ErrorLike} */ (e);
-				console.error(styleText("red", err.message));
-			}
-		},
-		80,
-		{ onComplete: notifyReload },
-	);
+	// Only reloads the browser on success; errors are sent as a separate SSE
+	// event so the console message isn't lost to an immediate reload.
+	const rebuild = debounceAsync(async () => {
+		try {
+			await buildAll();
+			notifyReload();
+		} catch (e) {
+			const err = /** @type {Bun.ErrorLike} */ (e);
+			console.error(styleText("red", err.message));
+			notifyBuildError(err.message);
+		}
+	}, 80);
 
 	// Watch pages directory
 	(async () => {
@@ -246,6 +246,20 @@ export async function startDevServer() {
 
 	function notifyReload() {
 		const data = encoder.encode("data: reload\n\n");
+		for (const controller of controllers) {
+			try {
+				controller.enqueue(data);
+			} catch {
+				controllers.delete(controller);
+			}
+		}
+	}
+
+	/** @param {string} message */
+	function notifyBuildError(message) {
+		const data = encoder.encode(
+			`event: build-error\ndata: ${JSON.stringify(message)}\n\n`,
+		);
 		for (const controller of controllers) {
 			try {
 				controller.enqueue(data);
