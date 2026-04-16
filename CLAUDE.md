@@ -2,9 +2,15 @@
 
 Educational Static Site Generator (~1500 LOC) teaching island architecture. Communist satire wraps serious, well-commented code. Preact for page rendering and islands, optional multiple frameworks (Solid, castro-jsx) for islands, Bun for everything else.
 
-Comparable to:
-- Fresh, Marko (though way less advanced), early Astro, Eleventy + is-land.
-- Also, to smaller peers: Capri, Mastro, Iles, Enhance.
+Peer reference: Fresh, early Astro, Eleventy + is-land, Marko, Capri, Mastro, Iles, Enhance.
+
+
+## Maintaining This File
+
+If your changes affect anything documented above (commands, architecture, design decisions, invariants), update this file as part of the same change.
+
+**Don't duplicate docblocks, type definitions, or per-file listings — link to them.** This file should hold cross-file invariants and pointers, not encyclopedia entries. If a fact lives in one source file already, point at that file instead of restating it here.
+
 
 ## Commands
 
@@ -26,108 +32,61 @@ bun loc              # LOC count (core only, excludes messages/)
 
 ### Core Module Structure (`castro/src/`)
 
-```
-cli.js                  Entry point (dev | build)
-config.js               Loads castro.config.(ts|js|mjs)
-constants.js            Shared path constants
+Subdirectory roles — read each file's module docblock for its specific responsibility.
 
-builder/
-  buildAll.js          Full site build orchestration
-  buildPage.js         Single page build (JSX or Markdown)
-  compileJsx.js        Bun.build pipeline for pages and layouts
-  renderPage.js        VNode → HTML via renderToString
-  writeHtmlPage.js    HTML assembly (assets, CSS injection, import maps)
-  writeCss.js          CSS file extraction
+- `cli.js`, `config.js`, `constants.js` — entry point, config loader, shared path constants
+- `builder/` — page build pipeline (orchestration, JSX/Markdown compilation, render, HTML assembly, CSS extraction)
+- `islands/` — island compilation, registry, build-time marker, runtime hydration custom element, framework configs, plugin registry
+- `islands/frameworks/` — built-in framework configs (Preact, vanilla)
+- `islands/plugins/` — internal plugins (island runtime injection, dependency vendoring)
+- `layouts/` — layout discovery and compilation
+- `dev/` — dev server (Bun.serve + watchers + SSE) and live-reload client
+- `messages/` — `communist.js` (satirical) and `serious.js` presets implementing `messages.d.ts`
+- `components/ClientScript.tsx` — function-as-inline-IIFE serializer (zero-framework client behavior)
+- `utils/` — dependency externals, content-hashed module cache, island ID generation, page metadata validation, debounce
+- `types.d.ts`, `jsx.d.ts` — shared types and JSX namespace for custom directives
 
-islands/
-  buildPlugins.js      Bun.build plugins for compile-time island interception
-  compiler.js           Island SSR + client compilation
-  registry.js           Singleton island store + SSR module preloading
-  marker.js             Build-time island renderer
-  frameworkConfig.js   Framework config loader (async load + sync cache)
-  frameworks/           Built-in framework configs (preact.js, vanilla.js, types.d.ts)
-  plugins.js            Plugin registry (internal + user plugins from config)
-  hydration.js          Client-side <castro-island> custom element
+The reference implementations for hydration patterns are [castro/src/islands/hydration.js](castro/src/islands/hydration.js) and [castro/src/islands/compiler.js](castro/src/islands/compiler.js) — read them before changing how islands work.
 
-layouts/
-  registry.js           Layout discovery and compilation
 
-dev/
-  server.js             Dev server (Bun.serve + file watching + SSE)
-  liveReload.js        Client-side SSE reconnection script
+## Reference Documentation
 
-messages/
-  messages.d.ts         Shared interface (both presets implement this)
-  communist.js          Satirical preset
-  serious.js            Technical preset
-  index.js              Exports active preset based on config
-  README.md             Message writing guidelines
+`.claude/docs/` has focused references for Bun APIs that differ from Node. Read the relevant file before working in an area.
 
-components/
-  ClientScript.tsx      Serializes a function as an inline IIFE script (zero framework runtime)
-
-utils/
-  dependencies.js       Reads package.json for accurate Bun.build `external` arrays
-  cache.js              Module caching with content-hashed filenames
-  ids.js                Island ID generation (project-relative paths)
-  format.js             Time formatting
-  validateMeta.js       Page metadata validation
-
-types.d.ts              Shared types (IslandComponent, PageMeta, CastroPlugin, etc.)
-jsx.d.ts                JSX namespace for custom directives
-```
+| Working on...                          | Read / look at                                              |
+|----------------------------------------|-------------------------------------------------------------|
+| Bun.build, bundler, compilation        | `bun-bundler.md` + `builder/compileJsx.js` (real usage)    |
+| Bun.build plugins, onLoad/onResolve    | `bun-plugins.md` + `islands/buildPlugins.js` (real usage)  |
+| Bun.Transpiler, AST import scanning    | `bun-transpiler.md` + `islands/buildPlugins.js`            |
+| Bun.serve, Bun.file, Glob, import.meta | `bun-apis.md`                                              |
+| Dev server (SSE, file watching)        | `dev/server.js` (read the source)                          |
+| Markdown processing                    | `bun-markdown.md`                                          |
+| Island hydration, custom elements      | `islands/hydration.js` (read the source)                   |
 
 
 ## Architecture
 
+Cross-file invariants. For per-step build mechanics, read the relevant module docblock.
+
 ### Build Pipeline
 
-1. `cli.js` → `buildAll()` → clean dist, copy public/, run plugins, build pages
-2. Pages (JSX/MD) compiled via `Bun.build` with two plugins:
-   - `castroExternalsPlugin` — keeps Castro internals external (singleton sharing)
-   - `islandMarkerPlugin` — replaces `.island.tsx` imports with marker stubs
-3. `external: getProjectDependencies()` externalizes all project dependencies. Supports tsconfig.json path aliases natively.
-4. Compiled page module is loaded via `getModule()` (content-hashed file path to bust Bun's import cache)
-5. `renderToString()` renders the full VNode tree (page + layout + islands) in one pass
-6. Islands encountered during render: marker calls `renderMarker()` → registry lookup → SSR → `<castro-island>` wrapper
-
-### Island Detection (Compile-Time)
-
-Old approach used `options.vnode` hook (runtime monkey-patch). Current approach:
-- At `Bun.build` time, `.island.tsx` files are intercepted by `islandMarkerPlugin`
-- Their content is replaced with a stub that imports `renderMarker()` from `marker.js`
-- `renderMarker()` is called synchronously during `renderToString()` traversal
-- SSR modules are pre-loaded in registry because `renderToString()` is synchronous
+`cli.js` → `buildAll()` orchestrates the build (see [buildAll.js](castro/src/builder/buildAll.js) docblock for the step list). Two `Bun.build` plugins are always active: `castroExternalsPlugin` (keeps Castro internals external for singleton sharing) and `islandMarkerPlugin` (replaces `.island.tsx` imports with marker stubs). Compiled page modules are loaded via `getModule()` with content-hashed file paths to bust Bun's import cache (Bun caches by path, not query string). The full VNode tree — page + layout + islands — renders in a single synchronous `renderToString()` pass; SSR modules must be pre-loaded.
 
 ### Island Tracking
 
-`marker.js` maintains a module-level `usedIslands` Set (reset per page render). Only CSS for islands actually rendered on a page gets injected. The `<castro-island>` runtime script is also only included on pages that use islands.
+`marker.js` maintains a module-level `usedIslands` Set, reset per page render. Only CSS for islands actually rendered on a page gets injected; the `<castro-island>` runtime script is also gated on island usage.
 
 ### Import Map & Dependency Vendoring
 
-By default, framework dependencies are automatically vendored to `/dist/vendor/` via the `vendorDependencies` plugin:
-1. Each framework declares `clientDependencies` (e.g., Preact declares `["preact", "preact/hooks", "preact/jsx-runtime"]`)
-2. User can add custom `clientDependencies` in `castro.config.ts`
-3. Plugin `getImportMap` hooks generate per-page entries: `{ "preact": "/vendor/preact.js?v=10.28.3", ... }` with version query strings for cache busting
-4. User `importMap` entries (from `castro.config.ts`) override plugin-generated entries on pages with islands, allowing CDN swaps or custom versioning. Static pages have no import map.
-
-Any import map key is automatically treated as external during island client compilation — Bun won't bundle it. Plugins use `getImportMap` to contribute entries based on which frameworks are actually used on each page.
+Framework dependencies are vendored to `/dist/vendor/` by the internal `vendorDependencies` plugin. Each framework declares `clientDependencies`; users can add more via `castro.config.ts`. Plugins contribute import-map entries through `getImportMap`, which runs only on pages with islands (static pages have no import map). User `importMap` entries override plugin-generated ones. **Any import map key is automatically treated as external during island client compilation** — Bun won't bundle it.
 
 ### User Plugins
 
-`castro.config.ts` accepts a `plugins` array of `CastroPlugin` objects. User plugins are merged with internal plugins (island runtime, Preact islands) and participate in the same build lifecycle:
-- `getPageAssets(params)` — called per-page. Injects `<link>`/`<style>`/`<script>` tags. Receives `{ hasIslands }` so plugins can conditionally inject only on pages with islands.
-- `getImportMap(context)` — called only on pages with islands. Plugins contribute import map entries (e.g., vendored dependencies). Receives `{ usedFrameworks }` so entries are based on which frameworks are actually used on that page.
-- `onPageBuild()` — runs before pages are built (and on every page save in dev for user plugins)
-- `onAfterBuild(context)` — runs after all pages are built. Receives `{ usedFrameworks: Set<string> }` so plugins can conditionally write assets (e.g., only bundle dependencies if the framework was actually used)
-- `frameworkConfig` — optional `FrameworkConfig` object to register a custom framework for islands
-- `watchDirs` — directories to watch in dev mode; changes trigger `onPageBuild()` + reload
+User plugins implement `CastroPlugin` (see [types.d.ts](castro/src/types.d.ts) for the full hook contract). Hooks: `getPageAssets`, `getImportMap`, `onPageBuild`, `onAfterBuild`, plus optional `frameworkConfig` and `watchDirs`. They run alongside internal plugins in the same lifecycle. In dev mode, `onPageBuild()` re-runs on every save for user plugins.
 
 ### Dev Server
 
-File watchers on `pages/`, `layouts/`, `components/`, and `public/` rebuild on any change. Editor temp files and OS metadata are ignored via a denylist glob; all other file types trigger rebuilds. Plugin `watchDirs` get their own watchers with the same filtering. Rapid changes are debounced so builds never overlap.
-
-**Cache busting:** Bun's module loader caches by file path and ignores query strings. We use content-hashed filenames (`post.tsx.a1b2c3d4.js`) so changed code gets a new path.
+File watchers on `pages/`, `layouts/`, `components/`, `public/`, and any plugin `watchDirs` rebuild on change. Editor temp files and OS metadata are filtered via a denylist glob; everything else triggers a rebuild. Rapid changes are debounced so builds never overlap. Cache busting relies on content-hashed filenames (`post.tsx.a1b2c3d4.js`) because Bun's module loader ignores query strings.
 
 ## Code Conventions
 
@@ -140,26 +99,17 @@ File watchers on `pages/`, `layouts/`, `components/`, and `public/` rebuild on a
 
 ## Comments
 
-This is an educational codebase — comments matter. But they should respect the reader.
+This is an educational codebase — comments matter, but they respect the reader.
 
-- **Module docblocks**: Explain the file's role in the architecture. Keep it to 3-8 lines.
-- **Inline comments**: Earn their place by answering "why?" or "why not the obvious way?". Delete comments that restate what the code says.
-- **JSDoc on functions**: Type signatures are required. Prose descriptions only when the name + types aren't enough.
-- **Never condescend**: The reader is a developer. No "Educational note:" or "Simply put:" prefixes. Explain the concept directly.
-- **Benchmark**: `compiler.js` and `hydration.js` are the standard for comment quality.
+- **Module docblocks**: 3-8 lines explaining the file's architectural role.
+- **Inline comments**: earn their place by answering "why?" or "why not the obvious way?". Delete comments that restate what the code says.
+- **JSDoc on functions**: type signatures required; prose only when name + types aren't enough.
+- **Never condescend.** No "Educational note:" or "Simply put:" prefixes — the reader is a developer.
+- **Benchmark**: [compiler.js](castro/src/islands/compiler.js) and [hydration.js](castro/src/islands/hydration.js) set the standard for comment quality.
 
 ## Messages
 
-Use `styleText` from `node:util` for colored logs.
-
-All user-facing strings live in `src/messages/`. Both `communist.js` and `serious.js` must implement the same `Messages` interface from `messages.d.ts`. Never use inline strings for user-facing output.
-
-Key rules from `src/messages/README.md`:
-- Clarity first, satire second
-- Allowed emojis: `✓`, `❌`, `⚠️` only
-- Satire at edges (opening/closing), not in status messages
-- One punchline per error, at the end
-- If a joke doesn't land, cut it
+All user-facing strings live in `castro/src/messages/`. Both `communist.js` and `serious.js` implement the `Messages` interface from `messages.d.ts`. **Never use inline strings for user-facing output.** Use `styleText` from `node:util` for colored logs. Tone, satire, and emoji rules: see [castro/src/messages/README.md](castro/src/messages/README.md).
 
 ## Key Design Decisions
 
@@ -176,90 +126,32 @@ Key rules from `src/messages/README.md`:
 
 ## Configuration
 
-`castro.config.ts` (optional) exports a default `CastroConfig` object. `.js` and `.mjs` are also supported — the loader tries `.ts`, `.js`, `.mjs` in that order.
+Optional `castro.config.{ts,js,mjs}` exports a default `CastroConfig`. The loader tries `.ts`, `.js`, `.mjs` in that order. All options live on the `CastroConfig` type in [castro/src/types.d.ts](castro/src/types.d.ts) — that file is the source of truth.
 
-Options:
+Use `defineConfig` (re-exported from `@vktrz/castro`) for type inference in `.ts`/`.js` configs without needing a JSDoc hint. It's an identity function.
 
-- **`port`** (number, default: `3000`) — Dev server port.
-- **`messages`** (`"satirical"` | `"serious"`, default: `"satirical"`) — CLI output preset.
-- **`srcDir`** (string, default: `"."`) — Source directory for pages, layouts, and components. Useful for organizing larger sites into a `src/` folder. The output paths are unaffected — paths are always relative to `dist/` root.
-- **`importMap`** (Record<string, string>) — Manual import map overrides for island pages. Allows CDN swaps or custom versioning. User entries override plugin-generated entries.
-- **`clientDependencies`** (string[]) — Additional packages to vendor alongside framework dependencies. Each entry is vendored and available in the browser import map.
-- **`markdown`** (`{ options?: Bun.markdown.Options }`) — Markdown compiler options (syntax extensions, highlight, etc.).
-- **`plugins`** (CastroPlugin[]) — User plugins participating in the build lifecycle.
-
-### `defineConfig`
-
-`defineConfig` is exported from `@vktrz/castro`. It's an identity function — returns the config unchanged. Use it in `.ts` files for type inference, or in `.js` files as a typed alternative to the JSDoc hint:
-
-```typescript
-// castro.config.ts
-import { defineConfig } from "@vktrz/castro";
-export default defineConfig({ srcDir: "src" });
-```
-
-For plain JavaScript without `defineConfig`, use a JSDoc type hint:
-
-```javascript
-// castro.config.ts
-/** @type {import("@vktrz/castro").CastroConfig} */
-export default { srcDir: "src" };
-```
+Two options worth flagging because their behavior isn't obvious from the type:
+- `srcDir` shifts where pages/layouts/components are *read from* but does not affect output paths — `dist/` is always the root.
+- `importMap` entries override plugin-generated entries on island pages; static pages get no import map at all.
 
 ## Testing
 
-`test-site/` is a single test site that exercises the full build pipeline with castro-jsx, Preact, Solid, and vanilla islands. Run with `bun test:sites`. Tests verify:
-- Static pages (no islands)
-- All three directives (`comrade:visible`, `comrade:patient`, `comrade:eager`)
-- Component composition (islands in static components, static components in islands, islands in layouts)
-- CSS modules in static components and islands
-- Multi-framework pages (Preact + Solid islands on the same page)
-- castro-jsx framework plugin (signals + direct DOM, no CDN dependencies)
-- Solid-only pages (SSR without Preact islands)
-- Vanilla islands (island lifecycle without framework runtime; tree-shaken Preact)
-
-The test structure (pages, components, islands, layouts) mirrors a real site and serves as a reference for expected patterns.
+`bun test:sites` builds and verifies `test-site/`, which exercises the full pipeline across castro-jsx, Preact, Solid, and vanilla islands (all directives, multi-framework pages, CSS modules, component composition). The site mirrors a real project's structure — **use it as the reference for expected patterns** when you're unsure how something should be wired up.
 
 ## What NOT to Change
 
 - Code must stay educational and well-commented — every file should explain "why"
-- Keep core LOC under ~1600 (currently ~1500)
+- Keep core executable LOC under ~1500 - run `bun loc` to verify
 - Satire belongs in messages/docs/CLI output only, never in the code logic itself
 - `website/dist/` and `test-site/dist/` are ephemeral, cleaned on every build
 - Island imports must use relative paths, not tsconfig aliases (documented in `compileJsx.js`)
 
 ## Website Playground (`website/`)
 
-Demo site that consumes castro. Uses PicoCSS v2 (CDN) with a custom theme, no preprocessor.
+Demo site that consumes castro. Uses PicoCSS v2 (CDN) plus three co-located stylesheets in `public/styles/` — no preprocessor, no build step for CSS. Each component/page has its own co-located CSS file.
 
-**CSS stack**: PicoCSS loaded from CDN in `PageShell.tsx`, then three static files from `public/styles/` applied in order:
-1. `pico-theme.css` — color palette (raw materials + Pico role variables) and global Pico overrides (zero radius, no shadows, no transitions)
-2. `base.css` — utility variables: `--spacing-*`, `--text-*`, `--border*`; heading typography overrides; breakpoint reference comment
-3. `components.css` — shared component classes: `.btn`, `.badge`, `.alert`, `.diagram-*`
+**Read [website/DESIGN.md](website/DESIGN.md) before any UI change** — it documents the color system, typography, layout conventions, and the structure of the three style files. Customization & CSS variable references: [.claude/docs/pico.md](.claude/docs/pico.md), [.claude/docs/pico-variables-css.md](.claude/docs/pico-variables-css.md).
 
-Each component and page has a co-located CSS file. No build step for CSS — files are served directly from `public/`.
+**Docs page `path` contract.** Pages under `src/pages/how-it-works/`, `src/pages/guide/`, `src/pages/reference/` export a `meta` with `layout: "docs"` and `path: "<exact-url>"`. The `path` drives sidebar active state and header highlighting — **update it whenever the page's URL changes**, or the nav silently goes wrong.
 
-**Themes**: Light (`data-theme="light"`) and dark (`data-theme="dark"`) defined in `pico-theme.css`. `ThemeScript` island in `PageShell.tsx` handles persistence via `localStorage` and prevents flash-of-wrong-theme.
-
-**Key files**:
-- `public/styles/pico-theme.css` — The full color palette and both theme definitions. Edit this for color changes.
-- `public/styles/base.css` — Utility variables and global typography. Edit this to change the spacing/text/border scales.
-- `public/styles/components.css` — Shared component classes.
-- `src/components/PageShell.tsx` — HTML shell, CDN links (PicoCSS, Google Fonts), `ThemeScript`
-- `src/layouts/default.tsx` — Default layout (header + footer wrapping `<main class="default-main">`)
-- `src/layouts/docs.tsx` — Docs layout: pure-CSS sidebar toggle, three sections (`"how-it-works"`, `"guide"`, `"reference"`)
-
-**Docs pages** (`src/pages/how-it-works/`, `src/pages/guide/`, `src/pages/reference/`): each exports a `meta` with `layout: "docs"` and `path: "<exact-url>"`. The `path` prop threads through to `PageShell` and drives sidebar active state (`aria-current`) and header highlighting — **update it if a page's URL changes**.
-
-**Design guidelines**: `website/DESIGN.md` — the color system, typography, and layout conventions. Read this before making any UI changes.
-
-**`website/tsconfig.json` is the canonical tsconfig** — `packages/create-castro/template/tsconfig.json` shares the same `compilerOptions` but differs in `include` paths: the template uses root-level `pages/`/`layouts/` (no `srcDir`), while the website uses `src/` (`srcDir: "src"`).
-
-
-## Reference Documentation
-
-`.claude/docs/` contains tool and framework references with a consistent naming pattern: `{tool}-{concept}.md` (e.g., `bun-bundler.md`, `bun-server.md`, `pico-variables-css.md`) and concept-specific files (e.g., `web-components.md`, `preact-render-to-string.md`). When working with a specific library, search by tool prefix or concept name.
-
-## Maintaining This File
-
-If your changes affect anything documented above (file structure, commands, architecture, design decisions), update this file as part of the same change. This file is the primary context source for AI-assisted development.
+**Canonical tsconfig.** [website/tsconfig.json](website/tsconfig.json) is the source of truth; [packages/create-castro/template/tsconfig.json](packages/create-castro/template/tsconfig.json) shares the same `compilerOptions` but uses root-level `pages/`/`layouts/` (no `srcDir`) instead of the website's `src/` layout.

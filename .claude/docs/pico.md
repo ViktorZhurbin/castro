@@ -1,10 +1,5 @@
 # Customization
 
-Additional docs:
-
-- https://picocss.com/docs/colors
-- https://picocss.com/docs/sass
-
 ## CSS variables
 
 Pico includes many custom properties (variables) that allow easy access to frequently used values such as font-family, font-size,border-radius, margin, padding, and more.
