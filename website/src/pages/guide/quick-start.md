@@ -12,20 +12,17 @@ Mobilize a static site with interactive islands in under three minutes. Follow t
 
 The fastest way to start:
 
-```bash
-bun create castro        # Bun
-npm create castro        # npm
-npx create-castro        # npx
+```sh
+bunx create-castro
 ```
 
 This creates a new directory with a working Castro project and runs `bun install`. Then:
 
-```bash
+```sh
 cd my-castro-site
 bun run dev
 ```
 
----
 
 ## MANUAL SETUP
 
@@ -36,7 +33,7 @@ Castro runs on Bun 1.3.8+, so you'd need to [install](https://bun.sh) it. It use
 
 ### 1. INSTALLATION
 
-```bash
+```sh
 mkdir my-site && cd my-site
 bun init -y
 bun add @vktrz/castro
@@ -206,7 +203,7 @@ Castro works without config. When you need it, see [Configuration →](/referenc
 
 ### 8. RUN IT
 
-```bash
+```sh
 bun run dev      # dev server at http://localhost:3000
 bun run build    # production build → dist/
 ```
