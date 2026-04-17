@@ -1,0 +1,8 @@
+{
+	"name": "test-error",
+	"version": "0.0.0",
+	"type": "module",
+	"dependencies": {
+		"@vktrz/castro": "workspace:*"
+	}
+}
