@@ -1,6 +1,6 @@
 # Castro
 
-*Educational Static Site Generator (~1500 LOC) that teaches island architecture.*
+*Educational Static Site Generator that teaches island architecture.*
 
 Communist satire wraps serious, well-commented code. Preact for rendering, Bun for everything else.
 

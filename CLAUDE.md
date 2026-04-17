@@ -1,6 +1,6 @@
 # Castro
 
-Educational Static Site Generator (~1500 LOC) teaching island architecture. Communist satire wraps serious, well-commented code. Preact for page rendering and islands, optional multiple frameworks (Solid, castro-jsx) for islands, Bun for everything else.
+Educational Static Site Generator teaching island architecture. Communist satire wraps serious, well-commented code. Preact for page rendering and islands, optional multiple frameworks (Solid, castro-jsx) for islands, Bun for everything else.
 
 Peer reference: Fresh, early Astro, Eleventy + is-land, Marko, Capri, Mastro, Iles, Enhance.
 
@@ -143,7 +143,6 @@ Two options worth flagging because their behavior isn't obvious from the type:
 ## What NOT to Change
 
 - Code must stay educational and well-commented — every file should explain "why"
-- Keep core executable LOC under ~1500 - run `bun loc` to verify
 - Satire belongs in messages/docs/CLI output only, never in the code logic itself
 - `website/dist/` and `test-site/dist/` are ephemeral, cleaned on every build
 - Island imports must use relative paths, not tsconfig aliases (documented in `compileJsx.js`)
