@@ -6,8 +6,7 @@
 		"castro",
 		"packages/*",
 		"website",
-		"test-site",
-		"test-errors/*"
+		"test-site"
 	],
 	"scripts": {
 		"dev": "bun --filter website dev",

@@ -7,5 +7,8 @@
 	"bin": {
 		"create-castro": "./index.js"
 	},
-	"files": ["index.js", "template"]
+	"files": [
+		"index.js",
+		"template"
+	]
 }
