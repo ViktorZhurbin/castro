@@ -4,12 +4,12 @@
  */
 
 import { test } from "bun:test";
-import { buildError, toPayload } from "./errors.js";
+import { CastroError, toPayload } from "./errors.js";
 
-test("buildError creates structured payload with tokens", () => {
-	const err = buildError("ROUTE_CONFLICT", {
-		file1: "pages/about.md",
-		file2: "pages/about.tsx",
+test("CastroError creates structured payload with tokens", () => {
+	const err = new CastroError("ROUTE_CONFLICT", {
+		route1: "pages/about.md",
+		route2: "pages/about.tsx",
 	});
 
 	if (!err.castroPayload) {

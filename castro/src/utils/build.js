@@ -1,4 +1,6 @@
-import { buildError, bunLogToFrame } from "./errors.js";
+import { CastroError } from "./errors.js";
+
+/** @import { CodeFrame } from "../types.d.ts" */
 
 /**
  * Wraps Bun.build to standardize error handling.
@@ -9,7 +11,7 @@ import { buildError, bunLogToFrame } from "./errors.js";
  *  - Soft failure: returns `{ success: false, logs: [...] }`
  *  - Hard failure: throws AggregateError with `errors` array
  *
- * @param {import("bun").BuildConfig} config
+ * @param {Bun.BuildConfig} config
  */
 export async function safeBunBuild(config) {
 	try {
@@ -17,16 +19,30 @@ export async function safeBunBuild(config) {
 
 		if (!result.success) {
 			const frames = result.logs.map(bunLogToFrame);
-			throw buildError("BUNDLE_FAILED", {}, frames);
+			throw new CastroError("BUNDLE_FAILED", {}, frames);
 		}
 
 		return result;
 	} catch (error) {
 		if (error instanceof AggregateError) {
 			const frames = error.errors.map(bunLogToFrame);
-			throw buildError("BUNDLE_FAILED", {}, frames);
+			throw new CastroError("BUNDLE_FAILED", {}, frames);
 		}
 
 		throw error;
 	}
+}
+
+/**
+ * Converts a Bun.build log/error entry into a CodeFrame.
+ * @param {BuildMessage | ResolveMessage} log
+ * @returns {CodeFrame}
+ */
+function bunLogToFrame(log) {
+	return {
+		file: log.position?.file || "unknown",
+		line: log.position?.line,
+		column: log.position?.column,
+		lineText: log.position?.lineText,
+	};
 }

@@ -14,7 +14,7 @@
 
 import { h } from "preact";
 import { messages } from "../messages/index.js";
-import { buildError } from "../utils/errors.js";
+import { CastroError } from "../utils/errors.js";
 import { getFrameworkConfig } from "./frameworkConfig.js";
 import { islands } from "./registry.js";
 
@@ -56,7 +56,7 @@ export function renderMarker(islandId, props = {}) {
 	const island = islands.getIsland(islandId);
 
 	if (!island?.ssrModule) {
-		throw buildError("ISLAND_NOT_FOUND", { islandId });
+		throw new CastroError("ISLAND_NOT_FOUND", { islandId });
 	}
 
 	// Each island carries its framework id from compilation.
@@ -106,7 +106,7 @@ function processProps(props = {}) {
 	const foundDirectives = DIRECTIVES.filter((d) => d in props);
 
 	if (foundDirectives.length > 1) {
-		throw buildError("MULTIPLE_DIRECTIVES", {
+		throw new CastroError("MULTIPLE_DIRECTIVES", {
 			directives: foundDirectives,
 		});
 	}

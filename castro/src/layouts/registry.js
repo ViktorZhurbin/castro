@@ -14,7 +14,7 @@ import { compileJSX } from "../builder/compileJsx.js";
 import { writeCSSFiles } from "../builder/writeCss.js";
 import { LAYOUTS_DIR, OUTPUT_DIR } from "../constants.js";
 import { resolveTempDir } from "../utils/cache.js";
-import { buildError } from "../utils/errors.js";
+import { CastroError } from "../utils/errors.js";
 
 /**
  * @import { VNode } from "preact";
@@ -73,7 +73,7 @@ class LayoutsRegistry {
 			const err = /** @type {Bun.ErrorLike} */ (e);
 
 			if (err.code === "ENOENT") {
-				throw buildError("NO_LAYOUTS_DIR", { dir: LAYOUTS_DIR });
+				throw new CastroError("NO_LAYOUTS_DIR", { dir: LAYOUTS_DIR });
 			}
 
 			throw err;
@@ -100,7 +100,7 @@ class LayoutsRegistry {
 				await compileJSX(sourceFilePath);
 
 			if (!layoutModule.default) {
-				throw buildError("LAYOUT_NO_DEFAULT_EXPORT", { file: fileName });
+				throw new CastroError("LAYOUT_NO_DEFAULT_EXPORT", { file: fileName });
 			}
 
 			this.#layouts.set(layoutId, layoutModule.default);
@@ -116,11 +116,11 @@ class LayoutsRegistry {
 
 		// Validate
 		if (this.#layouts.size === 0) {
-			throw buildError("NO_LAYOUT_FILES", { dir: LAYOUTS_DIR });
+			throw new CastroError("NO_LAYOUT_FILES", { dir: LAYOUTS_DIR });
 		}
 
 		if (!this.#layouts.has("default")) {
-			throw buildError("LAYOUT_MISSING_DEFAULT", {});
+			throw new CastroError("LAYOUT_MISSING_DEFAULT", {});
 		}
 	}
 }

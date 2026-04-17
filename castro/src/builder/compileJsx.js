@@ -6,7 +6,7 @@ import {
 import { safeBunBuild } from "../utils/build.js";
 import { getModule } from "../utils/cache.js";
 import { getProjectDependencies } from "../utils/dependencies.js";
-import { buildError } from "../utils/errors.js";
+import { CastroError } from "../utils/errors.js";
 
 /**
  * Compile JSX/TSX to JavaScript and import the module
@@ -46,7 +46,7 @@ export async function compileJSX(sourcePath) {
 	const cssFiles = result.outputs.filter((f) => f.path.endsWith(".css"));
 
 	if (!jsFile) {
-		throw buildError("BUNDLE_FAILED", { source: sourcePath });
+		throw new CastroError("BUNDLE_FAILED", { source: sourcePath });
 	}
 
 	const jsText = await jsFile.text();

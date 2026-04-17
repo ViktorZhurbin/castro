@@ -40,7 +40,7 @@ type ErrorContent = {
 // Error message definition: static object or function taking tokens
 export type ErrorMessageDef =
 	| ErrorContent
-	| ((tokens: Record<string, string | string[]>) => ErrorContent);
+	| ((tokens: Record<string, any>) => ErrorContent);
 
 /**
  * Structured error payload: data + code, voice in messages/*.js.

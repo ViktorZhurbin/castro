@@ -18,7 +18,7 @@ import { allPlugins } from "../islands/plugins.js";
 import { islands } from "../islands/registry.js";
 import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
-import { buildError } from "../utils/errors.js";
+import { CastroError } from "../utils/errors.js";
 import { buildPage } from "./buildPage.js";
 
 /**
@@ -73,9 +73,10 @@ export async function buildAll() {
 			// Example: both foo.md and foo.jsx try to be foo.html
 			if (outputMap.has(outputPath)) {
 				const existingFile = outputMap.get(outputPath);
-				throw buildError("ROUTE_CONFLICT", {
-					files: [`${PAGES_DIR}/${existingFile}`, `${PAGES_DIR}/${sourcePath}`],
-				});
+				const route1 = `${PAGES_DIR}/${existingFile}`;
+				const route2 = `${PAGES_DIR}/${sourcePath}`;
+
+				throw new CastroError("ROUTE_CONFLICT", { route1, route2 });
 			}
 
 			outputMap.set(outputPath, sourcePath);
@@ -117,7 +118,7 @@ export async function buildAll() {
 			console.error(
 				styleText(
 					"red",
-					messages.build.fileFailure(sourceFilePath, err.message),
+					messages.build.fileFailure(sourceFilePath),
 				),
 			);
 			throw err;

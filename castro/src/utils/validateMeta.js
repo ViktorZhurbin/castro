@@ -1,4 +1,4 @@
-import { buildError } from "./errors.js";
+import { CastroError } from "./errors.js";
 
 /** @import { PageMeta } from "../types.d.ts" */
 
@@ -27,7 +27,7 @@ export function validateMeta(meta, sourceFileName) {
 	}
 
 	if (issues.length > 0) {
-		throw buildError("META_INVALID", { file: sourceFileName, issues });
+		throw new CastroError("META_INVALID", { file: sourceFileName, issues });
 	}
 
 	return meta;

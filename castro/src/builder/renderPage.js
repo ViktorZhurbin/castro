@@ -13,7 +13,7 @@ import { basename } from "node:path";
 import { renderToString } from "preact-render-to-string";
 import { pageState } from "../islands/marker.js";
 import { layouts } from "../layouts/registry.js";
-import { buildError } from "../utils/errors.js";
+import { CastroError } from "../utils/errors.js";
 import { writeHtmlPage } from "./writeHtmlPage.js";
 
 /**
@@ -55,7 +55,7 @@ export async function renderPage({
 		const layoutComponent = layouts.getLayout(layoutName);
 
 		if (!layoutComponent) {
-			throw buildError("LAYOUT_NOT_FOUND", {
+			throw new CastroError("LAYOUT_NOT_FOUND", {
 				layoutName,
 				sourceFile: sourceFilePath,
 			});

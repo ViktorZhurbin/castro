@@ -19,7 +19,7 @@ export const satirical = {
 		success: (count) => `✓ Delivered ${count} pages to the people.`,
 		noFiles: "⚠️  No pages found to build.",
 		writingFile: (source, dest) => `Writing ${source} → ${dest}`,
-		fileFailure: (file, err) => `Sabotage detected in ${file}: ${err}`,
+		fileFailure: (file) => `Sabotage detected in ${file}`,
 	},
 
 	// File operations
@@ -29,11 +29,11 @@ export const satirical = {
 
 	// The Ministry of Errors — structured payloads (v1 scope: build-time fatals only)
 	errors: {
-		ROUTE_CONFLICT: ({ files }) => ({
+		ROUTE_CONFLICT: ({ route1, route2 }) => ({
 			title: "Route conflict",
-			message: "Two pages claim the same revolution",
-			notes: /** @type {string[]} */ (files),
-			hint: "The workers cannot serve two masters — remove one",
+			message: "Two pages claim the same route",
+			notes: [route1, route2],
+			hint: "The revolution cannot serve two masters — remove one",
 		}),
 
 		LAYOUT_NOT_FOUND: ({ layoutName, sourceFile }) => ({
@@ -81,7 +81,7 @@ export const satirical = {
 		META_INVALID: ({ file, issues }) => ({
 			title: "Invalid page meta",
 			message: `${file} submitted incomplete papers`,
-			notes: /** @type {string[]} */ (issues),
+			notes: issues,
 			hint: "Check that all meta properties are properly formed",
 		}),
 
@@ -93,7 +93,7 @@ export const satirical = {
 
 		MULTIPLE_DIRECTIVES: ({ directives }) => ({
 			title: "Multiple hydration directives",
-			message: `Component cannot serve both ${/** @type {string[]} */ (directives).join(" and ")}`,
+			message: `Component cannot serve both ${directives.join(" and ")}`,
 			hint: "Use only one hydration directive per island",
 		}),
 

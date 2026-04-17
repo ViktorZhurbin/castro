@@ -66,6 +66,7 @@ class IslandsRegistry {
 
 		const islandGlob = new Bun.Glob("**/*.island.{jsx,tsx}");
 
+		// TODO: need to verify COMPONENTS_DIR exists first, or it throws
 		for await (const relativePath of islandGlob.scan(COMPONENTS_DIR)) {
 			const sourcePath = join(COMPONENTS_DIR, relativePath);
 

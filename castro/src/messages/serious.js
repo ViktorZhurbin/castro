@@ -19,7 +19,7 @@ export const serious = {
 		success: (count) => `✓ Build complete: ${count} pages.`,
 		noFiles: "⚠️  No pages found to build.",
 		writingFile: (source, dest) => `Writing ${source} → ${dest}`,
-		fileFailure: (file, err) => `✗ Failed to build ${file}: ${err}`,
+		fileFailure: (file) => `✗ Failed to build ${file}`,
 	},
 
 	// File operations
@@ -29,10 +29,10 @@ export const serious = {
 
 	// Errors — structured payloads (v1 scope: build-time fatals only)
 	errors: {
-		ROUTE_CONFLICT: ({ files }) => ({
+		ROUTE_CONFLICT: ({ route1, route2 }) => ({
 			title: "Route conflict",
 			message: "Two pages map to the same URL",
-			notes: /** @type {string[]} */ (files),
+			notes: [route1, route2],
 			hint: "Remove or rename one of these files",
 		}),
 
@@ -81,7 +81,7 @@ export const serious = {
 		META_INVALID: ({ file, issues }) => ({
 			title: "Invalid page meta",
 			message: `${file} has invalid meta properties`,
-			notes: /** @type {string[]} */ (issues),
+			notes: issues,
 			hint: "Check that all meta properties have correct types",
 		}),
 
@@ -93,7 +93,7 @@ export const serious = {
 
 		MULTIPLE_DIRECTIVES: ({ directives }) => ({
 			title: "Multiple hydration directives",
-			message: `Component has both ${/** @type {string[]} */ (directives).join(" and ")}`,
+			message: `Component has both ${directives.join(" and ")}`,
 			hint: "Use only one hydration directive per island",
 		}),
 

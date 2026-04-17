@@ -20,7 +20,7 @@ import { basename, dirname, extname, resolve } from "node:path";
 import { config as castroConfig } from "../config.js";
 import { safeBunBuild } from "../utils/build.js";
 import { getProjectDependencies } from "../utils/dependencies.js";
-import { buildError } from "../utils/errors.js";
+import { CastroError } from "../utils/errors.js";
 import { getFrameworkConfig } from "./frameworkConfig.js";
 
 /**
@@ -57,7 +57,7 @@ export async function compileIsland({
 	const cssFile = clientResult.outputs.find((f) => f.path.endsWith(".css"));
 
 	if (!jsFile) {
-		throw buildError("BUNDLE_FAILED", { source: sourcePath });
+		throw new CastroError("BUNDLE_FAILED", { source: sourcePath });
 	}
 
 	// Construct public paths using the generated filenames

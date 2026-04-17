@@ -63,22 +63,8 @@ function renderFrame(frame) {
 	// Code snippet (if lineText is available)
 	if (frame.lineText) {
 		const lineNum = frame.line || 0;
-		const lineStr = String(lineNum);
-		const padding = 3; // show 1 before, 1 after, 1 current
-		const start = Math.max(1, lineNum - padding);
-		const end = lineNum + padding;
 
-		// Display 3 lines of context (before, error, after)
-		const beforeLineNum = lineNum - 1;
-		const afterLineNum = lineNum + 1;
-
-		// Show before line
-		if (beforeLineNum >= start) {
-			const beforeText = `   ${String(beforeLineNum).padStart(lineStr.length)}  ${frame.lineText}`;
-			lines.push(styleText("gray", beforeText));
-		}
-
-		// Show error line with highlight and caret
+		// Show error line with highlight
 		const errLinePrefix = styleText("red", `   > ${lineNum}`);
 		lines.push(`${errLinePrefix}  ${frame.lineText}`);
 
@@ -87,12 +73,6 @@ function renderFrame(frame) {
 			const caretPad = " ".repeat(frame.column);
 			const caret = styleText("red", "^");
 			lines.push(`       ${caretPad}${caret}`);
-		}
-
-		// Show after line
-		if (afterLineNum <= end) {
-			const afterText = `   ${String(afterLineNum).padStart(lineStr.length)}  ${frame.lineText}`;
-			lines.push(styleText("gray", afterText));
 		}
 	}
 

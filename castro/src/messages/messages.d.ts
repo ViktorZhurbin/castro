@@ -21,7 +21,7 @@ export interface Messages {
 		success: (count: string) => string;
 		noFiles: string;
 		writingFile: (source: string, dest: string) => string;
-		fileFailure: (file: string, err: string) => string;
+		fileFailure: (file: string) => string;
 	};
 
 	// File operation messages
