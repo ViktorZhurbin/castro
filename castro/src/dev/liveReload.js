@@ -170,18 +170,6 @@ class CastroErrorOverlay extends HTMLElement {
 			${frames}
 			${this.payload.hint ? `<div class="hint">→ ${escapeHtml(this.payload.hint)}</div>` : ""}
 		`;
-
-		// Attach click handlers to VS Code links
-		if (this.payload.frames && this.payload.frames.length > 0) {
-			const links = this.shadowRoot.querySelectorAll('a[href^="vscode://"]');
-			links.forEach((link) => {
-				link.addEventListener("click", (e) => {
-					if (!window.location.href.includes("vscode")) {
-						e.preventDefault();
-					}
-				});
-			});
-		}
 	}
 
 	/**
