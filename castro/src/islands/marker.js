@@ -171,7 +171,7 @@ function SSRError(props) {
 	return h(
 		"div",
 		{ style: ERROR_STYLES.container },
-		h("strong", null, messages.errors.ssrErrorTitle),
+		h("strong", null, messages.ssrErrorTitle),
 		h("div", { style: ERROR_STYLES.detail }, `Error in ${props.islandId}`),
 		h("pre", { style: ERROR_STYLES.pre }, props.error.message),
 	);

@@ -28,10 +28,20 @@ export interface Messages {
 		changed: (path: string) => string;
 	};
 
-	// Error messages — structured payloads for terminal and browser renderers.
+	// CLI command messages
+	commands: {
+		unknown: (cmd: string) => string;
+		usage: string;
+	};
+
+	ssrErrorTitle: string;
+
+	// Exception error messages — structured payloads for terminal and browser renderers.
 	// Shape: static object { title, hint } or function returning { title, message, hint, notes? }
 	errors: {
-		// Build-time fatal errors (v1 scope)
+		// Out of scope (v2+)
+		frameworkUnsupported: (name: string) => string;
+
 		ROUTE_CONFLICT: ErrorMessageDef;
 		LAYOUT_NOT_FOUND: ErrorMessageDef;
 		LAYOUT_MISSING_DEFAULT: ErrorMessageDef;
@@ -51,17 +61,5 @@ export interface Messages {
 		ISLAND_RENDER_FAILED: ErrorMessageDef;
 		FRAMEWORK_LOAD_FAILED: ErrorMessageDef;
 		UNEXPECTED: ErrorMessageDef;
-
-		// SSR error title — rendered inline in islands/marker.js, not thrown
-		ssrErrorTitle: string;
-
-		// Out of scope (v2+)
-		frameworkUnsupported: (name: string) => string;
-	};
-
-	// CLI command messages
-	commands: {
-		unknown: (cmd: string) => string;
-		usage: string;
 	};
 }

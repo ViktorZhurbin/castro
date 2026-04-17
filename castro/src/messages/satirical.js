@@ -26,8 +26,23 @@ export const satirical = {
 		changed: (path) => `Revised: ${path}`,
 	},
 
-	// The Ministry of Errors
+	// Commands
+	commands: {
+		unknown: (cmd) =>
+			`❌ Unknown directive: ${cmd}\n   The Party recognizes only: dev, build`,
+		usage: "Usage: castro [dev|build]",
+	},
+
+	// SSR error title — rendered inline in islands/marker.js, not thrown
+	ssrErrorTitle: "⚠️ Counter-revolutionary logic detected",
+
+	// The Ministry of Errors (Exceptions)
 	errors: {
+		// Out of scope (v2+)
+		frameworkUnsupported: (name) =>
+			`❌ Framework "${name}" is not recognized by the Party.\n` +
+			`   Built-in: preact, solid. Others require a framework plugin.`,
+
 		ROUTE_CONFLICT: ({ route1, route2, outputPath }) => ({
 			title: "Route conflict",
 			message: `Two pages claim the same route - ${outputPath}`,
@@ -143,20 +158,5 @@ export const satirical = {
 			message: "The revolution has encountered an anomaly",
 			hint: "Check the error details above",
 		}),
-
-		// SSR error title — rendered inline in islands/marker.js, not thrown
-		ssrErrorTitle: "⚠️ Counter-revolutionary logic detected",
-
-		// Out of scope (v2+)
-		frameworkUnsupported: (name) =>
-			`❌ Framework "${name}" is not recognized by the Party.\n` +
-			`   Built-in: preact, solid. Others require a framework plugin.`,
-	},
-
-	// Commands
-	commands: {
-		unknown: (cmd) =>
-			`❌ Unknown directive: ${cmd}\n   The Party recognizes only: dev, build`,
-		usage: "Usage: castro [dev|build]",
 	},
 };

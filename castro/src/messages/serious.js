@@ -4,7 +4,6 @@
  *
  * @type {import('./messages.d.ts').Messages}
  */
-
 export const serious = {
 	// CLI startup
 	devServer: {
@@ -26,8 +25,23 @@ export const serious = {
 		changed: (path) => `Changed: ${path}`,
 	},
 
-	// Errors
+	// Commands
+	commands: {
+		unknown: (cmd) =>
+			`❌ Unknown command: ${cmd}\n   Available commands: dev, build`,
+		usage: "Usage: castro [dev|build]",
+	},
+
+	// SSR error title — rendered inline in islands/marker.js, not thrown
+	ssrErrorTitle: "⚠️ Server Rendering Error",
+
+	// Exceptions
 	errors: {
+		// Out of scope (v2+)
+		frameworkUnsupported: (name) =>
+			`❌ Framework "${name}" is not supported.\n` +
+			`   Built-in: preact, solid. Others require a framework plugin.`,
+
 		ROUTE_CONFLICT: ({ route1, route2, outputPath }) => ({
 			title: "Route conflict",
 			message: `Two pages map to the same route = ${outputPath}`,
@@ -143,20 +157,5 @@ export const serious = {
 			message: "An error occurred during the build",
 			hint: "Check the error details above",
 		}),
-
-		// SSR error title — rendered inline in islands/marker.js, not thrown
-		ssrErrorTitle: "⚠️ Server Rendering Error",
-
-		// Out of scope (v2+)
-		frameworkUnsupported: (name) =>
-			`❌ Framework "${name}" is not supported.\n` +
-			`   Built-in: preact, solid. Others require a framework plugin.`,
-	},
-
-	// Commands
-	commands: {
-		unknown: (cmd) =>
-			`❌ Unknown command: ${cmd}\n   Available commands: dev, build`,
-		usage: "Usage: castro [dev|build]",
 	},
 };
