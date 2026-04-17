@@ -38,7 +38,7 @@ export async function safeBunBuild(config) {
  * @param {BuildMessage | ResolveMessage} log
  * @returns {CodeFrame}
  */
-function bunLogToFrame(log) {
+export function bunLogToFrame(log) {
 	return {
 		file: log.position?.file || "unknown",
 		line: log.position?.line,

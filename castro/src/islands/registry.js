@@ -14,7 +14,9 @@ import {
 	ISLANDS_OUTPUT_DIR,
 	OUTPUT_DIR,
 } from "../constants.js";
+import { bunLogToFrame } from "../utils/build.js";
 import { getModule } from "../utils/cache.js";
+import { CastroError } from "../utils/errors.js";
 import { getIslandId } from "../utils/ids.js";
 import { compileIsland } from "./compiler.js";
 import { getLoadedFrameworkConfigs } from "./frameworkConfig.js";
@@ -135,7 +137,17 @@ export const islands = new IslandsRegistry();
  */
 async function detectFramework(sourcePath) {
 	const code = await Bun.file(sourcePath).text();
-	const scanned = transpiler.scan(code);
+
+	let scanned;
+	try {
+		scanned = transpiler.scan(code);
+	} catch (e) {
+		// BuildMessage: transpiler found a syntax error before compilation
+		throw new CastroError("BUNDLE_FAILED", {}, [
+			bunLogToFrame(/** @type {BuildMessage} */ (e)),
+		]);
+	}
+
 	const fwConfigs = getLoadedFrameworkConfigs();
 
 	// Exports first: an explicit `export function hydrate` is the strongest signal.
