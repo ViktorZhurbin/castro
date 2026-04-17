@@ -13,7 +13,7 @@
  * 4. Browser receives event and reloads the page
  */
 
-import { watch } from "node:fs/promises";
+import { stat, watch } from "node:fs/promises";
 import { join } from "node:path";
 import { styleText } from "node:util";
 import { buildAll } from "../builder/buildAll.js";
@@ -220,8 +220,29 @@ export async function startDevServer() {
 				return;
 			}
 
+			// Track modification times to prevent infinite loops from OS atime/indexing events
+			const mtimes = new Map();
+
 			for await (const event of watcher) {
 				if (!event.filename || isIgnored(event.filename)) continue;
+
+				const filePath = join(dir, event.filename);
+
+				try {
+					const stats = await stat(filePath);
+
+					// Ignore:
+					// - directory access events triggered by cp()
+					// - events where the file wasn't actually modified
+					if (stats.isDirectory() || mtimes.get(filePath) === stats.mtimeMs) {
+						continue;
+					}
+
+					mtimes.set(filePath, stats.mtimeMs);
+				} catch {
+					// File was deleted, proceed to rebuild
+					mtimes.delete(filePath);
+				}
 
 				logFileChanged(`${dir}/${event.filename}`);
 				rebuild.schedule();
