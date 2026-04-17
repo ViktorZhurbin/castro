@@ -86,7 +86,7 @@ export function getFrameworkConfig(id) {
  *
  * @returns {FrameworkConfig[]}
  */
-export function getLoadedFrameworkConfigss() {
+export function getLoadedFrameworkConfigs() {
 	return Array.from(loadedConfigs.values());
 }
 

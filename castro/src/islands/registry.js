@@ -17,7 +17,7 @@ import {
 import { getModule } from "../utils/cache.js";
 import { getIslandId } from "../utils/ids.js";
 import { compileIsland } from "./compiler.js";
-import { getLoadedFrameworkConfigss } from "./frameworkConfig.js";
+import { getLoadedFrameworkConfigs } from "./frameworkConfig.js";
 
 /**
  * Transpiler for scanning imports and exports from component source files.
@@ -136,7 +136,7 @@ export const islands = new IslandsRegistry();
 async function detectFramework(sourcePath) {
 	const code = await Bun.file(sourcePath).text();
 	const scanned = transpiler.scan(code);
-	const fwConfigs = getLoadedFrameworkConfigss();
+	const fwConfigs = getLoadedFrameworkConfigs();
 
 	// Exports first: an explicit `export function hydrate` is the strongest signal.
 	// A vanilla island may import "preact" for SSR types — the hydrate export should win.
