@@ -18,6 +18,7 @@ export type ErrorCode =
 	| "BUNDLE_FAILED"
 	| "MULTIPLE_DIRECTIVES"
 	| "ISLAND_NOT_FOUND"
+	| "NO_PAGES"
 	| "UNEXPECTED";
 
 /**

@@ -62,7 +62,10 @@ async function main() {
 		if (exitCode !== 0) {
 			const stderr = await proc.stderr.text();
 			console.warn(
-				styleText("yellow", "⚠️  Auto-install failed. Run bun install manually."),
+				styleText(
+					"yellow",
+					"⚠️  Auto-install failed. Run bun install manually.",
+				),
 			);
 			if (stderr) {
 				console.warn(styleText("gray", stderr));
@@ -80,7 +83,9 @@ async function main() {
 	console.log("Next steps:");
 	console.log(styleText("cyan", `  cd ${projectName}`));
 	console.log(styleText("cyan", "  bun run dev"));
-	console.log(styleText("gray", `\n  bun run build  to build for production\n`));
+	console.log(
+		styleText("gray", `\n  bun run build  to build for production\n`),
+	);
 }
 
 main().catch((err) => {

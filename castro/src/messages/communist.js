@@ -17,7 +17,6 @@ export const satirical = {
 	build: {
 		starting: "Realizing the Five-Year Plan...",
 		success: (count) => `✓ Delivered ${count} pages to the people.`,
-		noFiles: "⚠️  No pages found to build.",
 		writingFile: (source, dest) => `Writing ${source} → ${dest}`,
 		fileFailure: (file) => `Sabotage detected in ${file}`,
 	},
@@ -101,6 +100,12 @@ export const satirical = {
 			title: "Island defected",
 			message: `Island '${islandId}' failed to load`,
 			hint: "This is a Castro internal error — please report it",
+		}),
+
+		NO_PAGES: ({ dir }) => ({
+			title: "No pages found",
+			message: `The revolution requires at least one page in ${dir}`,
+			hint: "Create a .md or .jsx/.tsx file in pages/ to continue",
 		}),
 
 		UNEXPECTED: () => ({

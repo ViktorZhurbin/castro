@@ -19,7 +19,6 @@ export interface Messages {
 	build: {
 		starting: string;
 		success: (count: string) => string;
-		noFiles: string;
 		writingFile: (source: string, dest: string) => string;
 		fileFailure: (file: string) => string;
 	};
@@ -45,6 +44,7 @@ export interface Messages {
 		BUNDLE_FAILED: ErrorMessageDef;
 		MULTIPLE_DIRECTIVES: ErrorMessageDef;
 		ISLAND_NOT_FOUND: ErrorMessageDef;
+		NO_PAGES: ErrorMessageDef;
 		UNEXPECTED: ErrorMessageDef;
 
 		// SSR error title — rendered inline in islands/marker.js, not thrown

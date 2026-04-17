@@ -17,7 +17,6 @@ export const serious = {
 	build: {
 		starting: "Building site...",
 		success: (count) => `✓ Build complete: ${count} pages.`,
-		noFiles: "⚠️  No pages found to build.",
 		writingFile: (source, dest) => `Writing ${source} → ${dest}`,
 		fileFailure: (file) => `✗ Failed to build ${file}`,
 	},
@@ -101,6 +100,12 @@ export const serious = {
 			title: "Island not found",
 			message: `Island '${islandId}' failed to load`,
 			hint: "This is a Castro internal error — please report it",
+		}),
+
+		NO_PAGES: ({ dir }) => ({
+			title: "No pages found",
+			message: `No .md or .jsx/.tsx files found in ${dir}`,
+			hint: "Create at least one page file to continue",
 		}),
 
 		UNEXPECTED: () => ({

@@ -54,52 +54,13 @@ export async function buildAll() {
 
 	await islands.load();
 	await layouts.load();
-
-	// Scan all pages upfront to detect route conflicts before building.
-	/** @type {Map<string, string>} */
-	const outputMap = new Map();
-
-	const pageGlob = new Bun.Glob("**/*.{md,jsx,tsx}");
-
-	try {
-		for await (const sourcePath of pageGlob.scan(PAGES_DIR)) {
-			// Skip files/folders prefixed with `_` (private convention, e.g. _drafts/, _partial.tsx)
-			if (sourcePath.split("/").some((segment) => segment.startsWith("_"))) {
-				continue;
-			}
-
-			const outputPath = sourcePath.replace(/\.(md|[jt]sx)$/, ".html");
-
-			// Example: both foo.md and foo.jsx try to be foo.html
-			if (outputMap.has(outputPath)) {
-				const existingFile = outputMap.get(outputPath);
-				const route1 = `${PAGES_DIR}/${existingFile}`;
-				const route2 = `${PAGES_DIR}/${sourcePath}`;
-
-				throw new CastroError("ROUTE_CONFLICT", { route1, route2 });
-			}
-
-			outputMap.set(outputPath, sourcePath);
-		}
-	} catch (e) {
-		const err = /** @type {Bun.ErrorLike} */ (e);
-
-		if (err.code === "ENOENT") {
-			return;
-		}
-		throw err;
-	}
-
-	if (outputMap.size === 0) {
-		console.warn(messages.build.noFiles);
-		return;
-	}
+	const pagesMap = await scanPages();
 
 	// Accumulate build context across pages for onAfterBuild hooks
 	/** @type {BuildContext} */
 	const buildContext = { usedFrameworks: new Set() };
 
-	for (const [outputPath, sourcePath] of outputMap.entries()) {
+	for (const [outputPath, sourcePath] of pagesMap.entries()) {
 		if (isProd) {
 			console.info(
 				messages.build.writingFile(
@@ -116,10 +77,7 @@ export async function buildAll() {
 			const sourceFilePath = `${PAGES_DIR}/${sourcePath}`;
 
 			console.error(
-				styleText(
-					"red",
-					messages.build.fileFailure(sourceFilePath),
-				),
+				styleText("red", messages.build.fileFailure(sourceFilePath)),
 			);
 			throw err;
 		}
@@ -138,5 +96,48 @@ export async function buildAll() {
 		}
 	}
 
-	console.info(messages.build.success(`${outputMap.size}`));
+	console.info(messages.build.success(`${pagesMap.size}`));
+}
+
+/**
+ * Glob all pages, skip private paths, detect route conflicts.
+ * @returns {Promise<Map<string, string>>} outputPath → sourcePath
+ */
+async function scanPages() {
+	/** @type {Map<string, string>} */
+	const pagesMap = new Map();
+	const pageGlob = new Bun.Glob("**/*.{md,jsx,tsx}");
+
+	try {
+		for await (const sourcePath of pageGlob.scan(PAGES_DIR)) {
+			// Skip files/folders prefixed with `_` (private convention, e.g. _drafts/, _partial.tsx)
+			if (sourcePath.split("/").some((segment) => segment.startsWith("_"))) {
+				continue;
+			}
+
+			const outputPath = sourcePath.replace(/\.(md|[jt]sx)$/, ".html");
+
+			// Example: both foo.md and foo.jsx try to be foo.html
+			if (pagesMap.has(outputPath)) {
+				const existingFile = pagesMap.get(outputPath);
+				const route1 = `${PAGES_DIR}/${existingFile}`;
+				const route2 = `${PAGES_DIR}/${sourcePath}`;
+
+				throw new CastroError("ROUTE_CONFLICT", { route1, route2 });
+			}
+
+			pagesMap.set(outputPath, sourcePath);
+		}
+	} catch (e) {
+		const err = /** @type {Bun.ErrorLike} */ (e);
+
+		if (err.code !== "ENOENT") throw err;
+	}
+
+	// Covers both: PAGES_DIR missing entirely (ENOENT swallowed above) or empty
+	if (pagesMap.size === 0) {
+		throw new CastroError("NO_PAGES", { dir: PAGES_DIR });
+	}
+
+	return pagesMap;
 }

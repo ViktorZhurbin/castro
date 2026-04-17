@@ -179,7 +179,21 @@ export async function startDevServer() {
 
 	// Watch pages directory
 	(async () => {
-		const watcher = watch(PAGES_DIR, { recursive: true });
+		/** @type {AsyncIterable<FileChangeInfo<string>>} */
+		let watcher;
+
+		try {
+			watcher = watch(PAGES_DIR, { recursive: true });
+		} catch (e) {
+			const err = /** @type {Bun.ErrorLike} */ (e);
+
+			// ENOENT = pages/ doesn't exist yet; the error overlay is already showing.
+			// User must restart dev after creating the directory.
+			if (err.code !== "ENOENT") {
+				console.warn(messages.devServer.watchError(PAGES_DIR, err.message));
+			}
+			return;
+		}
 
 		for await (const event of watcher) {
 			if (!event.filename || isIgnored(event.filename)) continue;
