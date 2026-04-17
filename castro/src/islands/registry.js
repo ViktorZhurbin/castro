@@ -66,42 +66,48 @@ class IslandsRegistry {
 
 		const islandGlob = new Bun.Glob("**/*.island.{jsx,tsx}");
 
-		// TODO: need to verify COMPONENTS_DIR exists first, or it throws
-		for await (const relativePath of islandGlob.scan(COMPONENTS_DIR)) {
-			const sourcePath = join(COMPONENTS_DIR, relativePath);
+		try {
+			for await (const relativePath of islandGlob.scan(COMPONENTS_DIR)) {
+				const sourcePath = join(COMPONENTS_DIR, relativePath);
 
-			// Determine which framework this island uses.
-			const frameworkId = await detectFramework(sourcePath);
+				// Determine which framework this island uses.
+				const frameworkId = await detectFramework(sourcePath);
 
-			// Preserve directory nesting in output (e.g., ui/Button → islands/ui/Button)
-			const relativeDir = dirname(relativePath);
-			const outputDir = join(outputIslandsDir, relativeDir);
-			const publicDir = `/${join(ISLANDS_OUTPUT_DIR, relativeDir)}`.replaceAll(
-				"\\",
-				"/",
-			);
+				// Preserve directory nesting in output (e.g., ui/Button → islands/ui/Button)
+				const relativeDir = dirname(relativePath);
+				const outputDir = join(outputIslandsDir, relativeDir);
+				const publicDir =
+					`/${join(ISLANDS_OUTPUT_DIR, relativeDir)}`.replaceAll("\\", "/");
 
-			const component = await compileIsland({
-				sourcePath,
-				outputDir,
-				publicDir,
-				frameworkId,
-			});
+				const component = await compileIsland({
+					sourcePath,
+					outputDir,
+					publicDir,
+					frameworkId,
+				});
 
-			const islandId = getIslandId(sourcePath);
+				const islandId = getIslandId(sourcePath);
 
-			// Pre-load SSR module so renderMarker() can access it synchronously
-			// during renderToString() traversal
-			component.ssrModule = await getModule(
-				sourcePath,
-				component.ssrCode,
-				"ssr",
-			);
+				// Pre-load SSR module so renderMarker() can access it synchronously
+				// during renderToString() traversal
+				component.ssrModule = await getModule(
+					sourcePath,
+					component.ssrCode,
+					"ssr",
+				);
 
-			this.#islands.set(islandId, component);
+				this.#islands.set(islandId, component);
 
-			if (component.cssContent) {
-				this.#cssManifest.set(islandId, component.cssContent);
+				if (component.cssContent) {
+					this.#cssManifest.set(islandId, component.cssContent);
+				}
+			}
+		} catch (e) {
+			const err = /** @type {Bun.ErrorLike} */ (e);
+
+			// ENOENT means COMPONENTS_DIR doesn't exist, which is fine
+			if (err.code !== "ENOENT") {
+				throw err;
 			}
 		}
 	}
