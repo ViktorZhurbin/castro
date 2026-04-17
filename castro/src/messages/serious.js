@@ -26,19 +26,19 @@ export const serious = {
 		changed: (path) => `Changed: ${path}`,
 	},
 
-	// Errors — structured payloads (v1 scope: build-time fatals only)
+	// Errors
 	errors: {
-		ROUTE_CONFLICT: ({ route1, route2 }) => ({
+		ROUTE_CONFLICT: ({ route1, route2, outputPath }) => ({
 			title: "Route conflict",
-			message: "Two pages map to the same URL",
+			message: `Two pages map to the same route = ${outputPath}`,
 			notes: [route1, route2],
 			hint: "Remove or rename one of these files",
 		}),
 
-		LAYOUT_NOT_FOUND: ({ layoutName, sourceFile }) => ({
+		LAYOUT_NOT_FOUND: ({ layoutName, sourceFilePath }) => ({
 			title: "Layout not found",
 			message: `Layout '${layoutName}' does not exist in layouts/`,
-			hint: `Create the layout, or change the layout for ${sourceFile}`,
+			hint: `Create the layout, or change the layout for ${sourceFilePath}`,
 		}),
 
 		LAYOUT_MISSING_DEFAULT: () => ({
@@ -47,9 +47,9 @@ export const serious = {
 			hint: "Create layouts/default.jsx to continue",
 		}),
 
-		NO_LAYOUTS_DIR: ({ dir }) => ({
+		NO_LAYOUTS_DIR: () => ({
 			title: "Layouts directory missing",
-			message: `No layouts/ directory found at ${dir}`,
+			message: `No layouts/ directory found`,
 			hint: "Create the directory with at least default.jsx",
 		}),
 
@@ -71,9 +71,9 @@ export const serious = {
 			hint: "Add a default export to this page",
 		}),
 
-		YAML_PARSE_FAILED: ({ reason }) => ({
+		YAML_PARSE_FAILED: ({ error, sourceFilePath }) => ({
 			title: "Markdown frontmatter syntax error",
-			message: `YAML parsing failed: ${reason}`,
+			message: `Frontmatter parsing in ${sourceFilePath} failed: ${error}`,
 			hint: "Check the frontmatter block at the top of the file",
 		}),
 

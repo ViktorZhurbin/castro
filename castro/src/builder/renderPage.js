@@ -55,10 +55,7 @@ export async function renderPage({
 		const layoutComponent = layouts.getLayout(layoutName);
 
 		if (!layoutComponent) {
-			throw new CastroError("LAYOUT_NOT_FOUND", {
-				layoutName,
-				sourceFile: sourceFilePath,
-			});
+			throw new CastroError("LAYOUT_NOT_FOUND", { layoutName, sourceFilePath });
 		}
 
 		const layoutCssAssets = layouts.getCssAssets(layoutName) ?? [];

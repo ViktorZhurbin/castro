@@ -72,7 +72,10 @@ async function buildMarkdownPage(sourceFilePath, outputFilePath) {
 	// Markdown pages skip Bun.build entirely — no CSS extraction step.
 	// They inherit layout CSS via renderPage(), but have no page-level CSS.
 	const sourceFileContent = await Bun.file(sourceFilePath).text();
-	const { meta, markdown } = parseFrontmatter(sourceFileContent);
+	const { meta, markdown } = parseFrontmatter(
+		sourceFileContent,
+		sourceFilePath,
+	);
 
 	// Type assertion: we know meta is valid PageMeta after validation
 	const validatedMeta = validateMeta(meta, sourceFilePath);
@@ -102,9 +105,10 @@ async function buildMarkdownPage(sourceFilePath, outputFilePath) {
  * the parsed data and remaining markdown content.
  *
  * @param {string} fileContent - Raw file content with optional frontmatter
+ * @param {string} sourceFilePath
  * @returns {{ meta: Record<string, unknown>, markdown: string }}
  */
-function parseFrontmatter(fileContent) {
+function parseFrontmatter(fileContent, sourceFilePath) {
 	/**
 	 * Regex based on "vfile-matter": https://github.com/vfile/vfile-matter/blob/main/lib/index.js#L37
 	 * ^---               - Start of file + opening delimiter.
@@ -139,6 +143,9 @@ function parseFrontmatter(fileContent) {
 	} catch (e) {
 		const err = /** @type {Bun.ErrorLike} */ (e);
 
-		throw new CastroError("YAML_PARSE_FAILED", { reason: err.message });
+		throw new CastroError("YAML_PARSE_FAILED", {
+			error: err.message,
+			sourceFilePath,
+		});
 	}
 }

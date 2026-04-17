@@ -123,7 +123,7 @@ async function scanPages() {
 				const route1 = `${PAGES_DIR}/${existingFile}`;
 				const route2 = `${PAGES_DIR}/${sourcePath}`;
 
-				throw new CastroError("ROUTE_CONFLICT", { route1, route2 });
+				throw new CastroError("ROUTE_CONFLICT", { route1, route2, outputPath });
 			}
 
 			pagesMap.set(outputPath, sourcePath);

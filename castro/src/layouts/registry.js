@@ -73,7 +73,7 @@ class LayoutsRegistry {
 			const err = /** @type {Bun.ErrorLike} */ (e);
 
 			if (err.code === "ENOENT") {
-				throw new CastroError("NO_LAYOUTS_DIR", { dir: LAYOUTS_DIR });
+				throw new CastroError("NO_LAYOUTS_DIR");
 			}
 
 			throw err;

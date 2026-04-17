@@ -26,30 +26,30 @@ export const satirical = {
 		changed: (path) => `Revised: ${path}`,
 	},
 
-	// The Ministry of Errors — structured payloads (v1 scope: build-time fatals only)
+	// The Ministry of Errors
 	errors: {
-		ROUTE_CONFLICT: ({ route1, route2 }) => ({
+		ROUTE_CONFLICT: ({ route1, route2, outputPath }) => ({
 			title: "Route conflict",
-			message: "Two pages claim the same route",
+			message: `Two pages claim the same route - ${outputPath}`,
 			notes: [route1, route2],
-			hint: "The revolution cannot serve two masters — remove one",
+			hint: "The revolution cannot serve two masters — remove the impostor",
 		}),
 
-		LAYOUT_NOT_FOUND: ({ layoutName, sourceFile }) => ({
+		LAYOUT_NOT_FOUND: ({ layoutName, sourceFilePath }) => ({
 			title: "Layout not found",
 			message: `Layout '${layoutName}' has defected from layouts/`,
-			hint: `Create the layout, or re-educate ${sourceFile}`,
+			hint: `Create the missing layout, or change layout for ${sourceFilePath}`,
 		}),
 
 		LAYOUT_MISSING_DEFAULT: () => ({
 			title: "Missing default layout",
-			message: "layouts/default.jsx is mandatory for the collective",
+			message: "default.jsx not found in layouts/",
 			hint: "Create layouts/default.jsx to continue",
 		}),
 
-		NO_LAYOUTS_DIR: ({ dir }) => ({
+		NO_LAYOUTS_DIR: () => ({
 			title: "Layouts directory missing",
-			message: `No layouts/ directory found at ${dir}`,
+			message: `No layouts/ directory found`,
 			hint: "Create the directory with at least default.jsx",
 		}),
 
@@ -71,9 +71,9 @@ export const satirical = {
 			hint: "Add a default export to this page",
 		}),
 
-		YAML_PARSE_FAILED: ({ reason }) => ({
-			title: "Markdown frontmatter sabotage",
-			message: `YAML parsing failed: ${reason}`,
+		YAML_PARSE_FAILED: ({ error, sourceFilePath }) => ({
+			title: "Invalid Markdown frontmatter",
+			message: `Frontmatter parsing in ${sourceFilePath} failed: ${error}`,
 			hint: "Check the frontmatter block for counter-revolutionary syntax",
 		}),
 
@@ -90,9 +90,9 @@ export const satirical = {
 			hint: "Check the code frame and error location above",
 		}),
 
-		MULTIPLE_DIRECTIVES: ({ directives }) => ({
+		MULTIPLE_DIRECTIVES: () => ({
 			title: "Multiple hydration directives",
-			message: `Component cannot serve both ${directives.join(" and ")}`,
+			message: `Components should serve a single purpose, defined by state`,
 			hint: "Use only one hydration directive per island",
 		}),
 
