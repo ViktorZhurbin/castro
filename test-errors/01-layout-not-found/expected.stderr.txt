@@ -1,0 +1,5 @@
+Sabotage detected in pages/index.tsx
+❌ Layout not found
+   Layout 'ghost' has defected from layouts/
+
+   → Create the missing layout, or change layout for pages/index.tsx

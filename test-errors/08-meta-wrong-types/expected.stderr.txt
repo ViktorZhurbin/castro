@@ -1,0 +1,7 @@
+Sabotage detected in pages/index.tsx
+❌ Invalid page meta
+   pages/index.tsx submitted incomplete papers
+
+   · Invalid type for "title": expected string, got number
+
+   → Check that all meta properties are properly formed

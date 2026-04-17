@@ -1,0 +1,4 @@
+❌ Layouts directory is empty
+   No layout files found in layouts
+
+   → Create at least default.jsx

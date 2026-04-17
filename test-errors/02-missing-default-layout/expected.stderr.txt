@@ -1,0 +1,4 @@
+❌ Missing default layout
+   default.jsx not found in layouts/
+
+   → Create layouts/default.jsx to continue

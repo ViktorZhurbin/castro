@@ -2,7 +2,23 @@
 
 Isolated test cases for Castro error DX, one per error code. Each is a minimal self-contained Castro site.
 
-## Running a test
+## Automated coverage
+
+```bash
+bun test:errors
+```
+
+Runs `castro build` in all 14 fixtures and compares stderr against committed goldens in `expected.stderr.txt`. Catches wrong error codes, leaked Bun stack frames, and broken rendering (missing hints, dropped notes, misaligned carets).
+
+To regenerate goldens after an intentional message change:
+
+```bash
+UPDATE_SNAPSHOTS=1 bun test:errors
+```
+
+Inspect the diff before committing — each golden should show clean structured output with no raw stack frames.
+
+## Manual inspection
 
 ```bash
 cd test-errors/NN-<name>

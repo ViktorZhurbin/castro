@@ -1,0 +1,5 @@
+Sabotage detected in pages/oops.tsx
+❌ Page has no default export
+   pages/oops.tsx must export a default function
+
+   → Add a default export to this page
