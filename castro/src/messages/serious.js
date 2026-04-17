@@ -37,11 +37,6 @@ export const serious = {
 
 	// Exceptions
 	errors: {
-		// Out of scope (v2+)
-		frameworkUnsupported: (name) =>
-			`❌ Framework "${name}" is not supported.\n` +
-			`   Built-in: preact, solid. Others require a framework plugin.`,
-
 		ROUTE_CONFLICT: ({ route1, route2, outputPath }) => ({
 			title: "Route conflict",
 			message: `Two pages map to the same route = ${outputPath}`,
@@ -98,9 +93,9 @@ export const serious = {
 			hint: "Check that all meta properties have correct types",
 		}),
 
-		BUNDLE_FAILED: () => ({
+		BUNDLE_FAILED: (tokens) => ({
 			title: "Build failed",
-			message: "Error during JavaScript compilation",
+			message: tokens?.error ?? "Error during JavaScript compilation",
 			hint: "Check the code frame and error location above",
 		}),
 

@@ -1,6 +1,6 @@
 Sabotage detected in pages/index.tsx
 ❌ Production halted
-   Error during JavaScript compilation
+   Bundle failed
 
    <FIXTURE>/pages/index.tsx:1:19
    > 1  import Ghost from "./components/Ghost.island.tsx";

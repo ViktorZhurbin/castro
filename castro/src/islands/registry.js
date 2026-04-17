@@ -143,9 +143,10 @@ async function detectFramework(sourcePath) {
 		scanned = transpiler.scan(code);
 	} catch (e) {
 		// BuildMessage: transpiler found a syntax error before compilation
-		throw new CastroError("BUNDLE_FAILED", {}, [
-			bunLogToFrame(/** @type {BuildMessage} */ (e)),
-		]);
+		const err = /** @type {BuildMessage} */ (e);
+		const frames = [bunLogToFrame(err)];
+
+		throw new CastroError("BUNDLE_FAILED", { error: err.message }, frames);
 	}
 
 	const fwConfigs = getLoadedFrameworkConfigs();
@@ -175,11 +176,6 @@ async function detectFramework(sourcePath) {
 		if (matched) return fwConfig.id;
 	}
 
-	/**
-	 * TODO:
-	 * A user who imports `vue` or `svelte` without a plugin gets silently
-	 * "misdetected" as Preact and fails with an opaque `BUNDLE_FAILED`.
-	 */
 	// Default to Preact
 	return "preact";
 }

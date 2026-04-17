@@ -19,14 +19,15 @@ export async function safeBunBuild(config) {
 
 		if (!result.success) {
 			const frames = result.logs.map(bunLogToFrame);
-			throw new CastroError("BUNDLE_FAILED", {}, frames);
+			throw new CastroError("BUNDLE_FAILED", undefined, frames);
 		}
 
 		return result;
 	} catch (error) {
 		if (error instanceof AggregateError) {
 			const frames = error.errors.map(bunLogToFrame);
-			throw new CastroError("BUNDLE_FAILED", {}, frames);
+
+			throw new CastroError("BUNDLE_FAILED", { error: error.message }, frames);
 		}
 
 		throw error;

@@ -38,11 +38,6 @@ export const satirical = {
 
 	// The Ministry of Errors (Exceptions)
 	errors: {
-		// Out of scope (v2+)
-		frameworkUnsupported: (name) =>
-			`❌ Framework "${name}" is not recognized by the Party.\n` +
-			`   Built-in: preact, solid. Others require a framework plugin.`,
-
 		ROUTE_CONFLICT: ({ route1, route2, outputPath }) => ({
 			title: "Route conflict",
 			message: `Two pages claim the same route - ${outputPath}`,
@@ -99,9 +94,9 @@ export const satirical = {
 			hint: "Check that all meta properties are properly formed",
 		}),
 
-		BUNDLE_FAILED: () => ({
+		BUNDLE_FAILED: (tokens) => ({
 			title: "Production halted",
-			message: "Error during JavaScript compilation",
+			message: tokens?.error ?? "Error during JavaScript compilation",
 			hint: "Check the code frame and error location above",
 		}),
 

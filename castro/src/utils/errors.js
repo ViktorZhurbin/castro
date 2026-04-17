@@ -6,21 +6,23 @@
 
 import { messages } from "../messages/index.js";
 
-/** @import { ErrorCode, CodeFrame, CastroErrorPayload } from "../types.d.ts" */
+/** @import { ErrorCode, ErrorTokens, CodeFrame, CastroErrorPayload } from "../types.d.ts" */
 
+/**
+ * @template {ErrorCode} K
+ */
 export class CastroError extends Error {
 	/**
-	 * @param {ErrorCode} code
-	 * @param {Record<string, string | string[]>} [tokens]
+	 * @param {K} code
+	 * @param {ErrorTokens[K]} tokens
 	 * @param {CodeFrame[]} [frames]
 	 */
-	constructor(code, tokens = {}, frames = []) {
-		const errorDef = messages.errors[code];
+	constructor(code, tokens, frames = []) {
+		const errorFn = messages.errors[code];
 
-		if (!errorDef) throw new Error(`Unknown error code: ${code}`);
+		if (!errorFn) throw new Error(`Unknown error code: ${code}`);
 
-		const errorContent =
-			typeof errorDef === "function" ? errorDef(tokens) : errorDef;
+		const errorContent = errorFn(tokens);
 
 		super(errorContent.title);
 

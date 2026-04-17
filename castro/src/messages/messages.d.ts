@@ -5,7 +5,7 @@
  * Both presets must implement this interface exactly.
  */
 
-import type { ErrorMessageDef } from "../errors.d.ts";
+import type { ErrorCode, ErrorContent, ErrorTokens } from "../errors.d.ts";
 
 export interface Messages {
 	// Dev server startup and runtime messages
@@ -37,29 +37,5 @@ export interface Messages {
 	ssrErrorTitle: string;
 
 	// Exception error messages — structured payloads for terminal and browser renderers.
-	// Shape: static object { title, hint } or function returning { title, message, hint, notes? }
-	errors: {
-		// Out of scope (v2+)
-		frameworkUnsupported: (name: string) => string;
-
-		ROUTE_CONFLICT: ErrorMessageDef;
-		LAYOUT_NOT_FOUND: ErrorMessageDef;
-		LAYOUT_MISSING_DEFAULT: ErrorMessageDef;
-		NO_LAYOUTS_DIR: ErrorMessageDef;
-		NO_LAYOUT_FILES: ErrorMessageDef;
-		LAYOUT_NO_DEFAULT_EXPORT: ErrorMessageDef;
-		PAGE_NO_DEFAULT_EXPORT: ErrorMessageDef;
-		YAML_PARSE_FAILED: ErrorMessageDef;
-		META_INVALID: ErrorMessageDef;
-		BUNDLE_FAILED: ErrorMessageDef;
-		MULTIPLE_DIRECTIVES: ErrorMessageDef;
-		ISLAND_NOT_FOUND: ErrorMessageDef;
-		NO_PAGES: ErrorMessageDef;
-		FRAMEWORK_CONFIG_INVALID: ErrorMessageDef;
-		FRAMEWORK_CONFIG_NO_DETECTION: ErrorMessageDef;
-		CACHE_WRITE_FAILED: ErrorMessageDef;
-		ISLAND_RENDER_FAILED: ErrorMessageDef;
-		FRAMEWORK_LOAD_FAILED: ErrorMessageDef;
-		UNEXPECTED: ErrorMessageDef;
-	};
+	errors: { [K in ErrorCode]: (tokens: ErrorTokens[K]) => ErrorContent };
 }

@@ -1,6 +1,6 @@
 Sabotage detected in pages/broken.tsx
 ❌ Production halted
-   Error during JavaScript compilation
+   Bundle failed
 
    <FIXTURE>/pages/broken.tsx:2:15
    > 2    return <div>Broken

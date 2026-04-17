@@ -6,8 +6,7 @@
 		"castro",
 		"packages/*",
 		"website",
-		"test-site",
-		"test-errors/*"
+		"test-site"
 	],
 	"scripts": {
 		"dev": "bun --filter website dev",
@@ -16,6 +15,7 @@
 		"check": "bun format && bun run --parallel --filter '*' --if-present type-check build knip && bun test && bun run test:errors",
 		"test:sites": "bun test ./test-site",
 		"test:errors": "bun test test-errors",
+		"test:errors:up": "UPDATE_SNAPSHOTS=1 bun test:errors",
 		"loc": "bunx cloc castro/src/ --exclude-dir=messages --not-match-f '.test'",
 		"loc-files": "bun run loc --by-file"
 	},

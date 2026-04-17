@@ -11,6 +11,7 @@ export type {
 	CastroErrorPayload,
 	CodeFrame,
 	ErrorCode,
+	ErrorTokens,
 } from "./errors.d.ts";
 export type { FrameworkConfig } from "./islands/frameworks/types.d.ts";
 

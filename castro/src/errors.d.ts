@@ -5,26 +5,29 @@
  * terminal (styleText) and browser (shadow DOM).
  */
 
-export type ErrorCode =
-	| "ROUTE_CONFLICT"
-	| "LAYOUT_NOT_FOUND"
-	| "LAYOUT_MISSING_DEFAULT"
-	| "NO_LAYOUTS_DIR"
-	| "NO_LAYOUT_FILES"
-	| "LAYOUT_NO_DEFAULT_EXPORT"
-	| "PAGE_NO_DEFAULT_EXPORT"
-	| "YAML_PARSE_FAILED"
-	| "META_INVALID"
-	| "BUNDLE_FAILED"
-	| "MULTIPLE_DIRECTIVES"
-	| "ISLAND_NOT_FOUND"
-	| "NO_PAGES"
-	| "FRAMEWORK_CONFIG_INVALID"
-	| "FRAMEWORK_CONFIG_NO_DETECTION"
-	| "CACHE_WRITE_FAILED"
-	| "ISLAND_RENDER_FAILED"
-	| "FRAMEWORK_LOAD_FAILED"
-	| "UNEXPECTED";
+export type ErrorTokens = {
+	ROUTE_CONFLICT: { route1: string; route2: string; outputPath: string };
+	LAYOUT_NOT_FOUND: { layoutName: string; sourceFilePath: string };
+	LAYOUT_MISSING_DEFAULT: undefined;
+	NO_LAYOUTS_DIR: undefined;
+	NO_LAYOUT_FILES: { dir: string };
+	LAYOUT_NO_DEFAULT_EXPORT: { file: string };
+	PAGE_NO_DEFAULT_EXPORT: { file: string };
+	YAML_PARSE_FAILED: { error: string; sourceFilePath: string };
+	META_INVALID: { file: string; issues: string[] };
+	BUNDLE_FAILED: { error: string } | undefined;
+	MULTIPLE_DIRECTIVES: { directives: string[] };
+	ISLAND_NOT_FOUND: { islandId: string };
+	NO_PAGES: { dir: string };
+	FRAMEWORK_CONFIG_INVALID: { pluginName: string; missing: string };
+	FRAMEWORK_CONFIG_NO_DETECTION: { pluginName: string };
+	CACHE_WRITE_FAILED: { path: string; error: string };
+	ISLAND_RENDER_FAILED: { islandId: string; error: string };
+	FRAMEWORK_LOAD_FAILED: { name: string; error: string };
+	UNEXPECTED: undefined;
+};
+
+export type ErrorCode = keyof ErrorTokens;
 
 /**
  * A source location with optional context line from file.
@@ -42,11 +45,6 @@ type ErrorContent = {
 	hint?: string; // actionable next step
 	notes?: string[]; // call-site bullets (conflicting files, invalid fields, etc.)
 };
-
-// Error message definition: static object or function taking tokens
-export type ErrorMessageDef =
-	| ErrorContent
-	| ((tokens: Record<string, any>) => ErrorContent);
 
 /**
  * Structured error payload: data + code, voice in messages/*.js.
