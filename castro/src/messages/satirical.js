@@ -2,7 +2,7 @@
  * Satirical preset - Communist-themed messages
  * One joke maximum per error, prioritizes clarity
  *
- * @type {import('./messages.d.ts').Messages}
+ * @type {import('./messages.js').Messages}
  */
 export const satirical = {
 	// CLI startup

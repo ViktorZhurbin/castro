@@ -42,7 +42,7 @@ Subdirectory roles — read each file's module docblock for its specific respons
 - `islands/plugins/` — internal plugins (island runtime injection, dependency vendoring)
 - `layouts/` — layout discovery and compilation
 - `dev/` — dev server (Bun.serve + watchers + SSE) and live-reload client
-- `messages/` — `communist.js` (satirical) and `serious.js` presets implementing `messages.d.ts`
+- `messages/` — `satirical.js` and `serious.js` presets implementing `messages.d.ts`
 - `components/ClientScript.tsx` — function-as-inline-IIFE serializer (zero-framework client behavior)
 - `utils/` — dependency externals, content-hashed module cache, island ID generation, page metadata validation, debounce, error building and terminal rendering
 - `errors.d.ts` — structured error payload types (`ErrorCode`, `CodeFrame`, `CastroErrorPayload`)
@@ -90,7 +90,7 @@ User plugins implement `CastroPlugin` (see [types.d.ts](castro/src/types.d.ts) f
 
 File watchers on `pages/`, `layouts/`, `components/`, `public/`, and any plugin `watchDirs` rebuild on change. Editor temp files and OS metadata are filtered via a denylist glob; everything else triggers a rebuild. Rapid changes are debounced so builds never overlap. Cache busting relies on content-hashed filenames (`post.tsx.a1b2c3d4.js`) because Bun's module loader ignores query strings.
 
-**Build error handling:** Errors are structured as `CastroErrorPayload` (see [errors.d.ts](castro/src/errors.d.ts)). Two independent renderers consume the payload: `renderErrorToTerminal()` colors the terminal output, and the browser overlay (`dev/liveReload.js`) renders a shadow DOM tree. On failure, the server logs to the terminal and sends the payload over SSE — no reload, keeping the last good page visible. On the next successful build, `reload` is sent. The payload shape decouples structure from voice — both `serious.js` and `communist.js` return the same payload shape with different title/hint text. Test-errors sandbox at `test-errors/` has 14 isolated error cases for manual verification.
+**Build error handling:** Errors are structured as `CastroErrorPayload` (see [errors.d.ts](castro/src/errors.d.ts)). Two independent renderers consume the payload: `renderErrorToTerminal()` colors the terminal output, and the browser overlay (`dev/liveReload.js`) renders a shadow DOM tree. On failure, the server logs to the terminal and sends the payload over SSE — no reload, keeping the last good page visible. On the next successful build, `reload` is sent. The payload shape decouples structure from voice — both `serious.js` and `satirical.js` return the same payload shape with different title/hint text. Test-errors sandbox at `test-errors/` has 14 isolated error cases for manual verification.
 
 ## Code Conventions
 
@@ -113,7 +113,7 @@ This is an educational codebase — comments matter, but they respect the reader
 
 ## Messages
 
-All user-facing strings live in `castro/src/messages/`. Both `communist.js` and `serious.js` implement the `Messages` interface from `messages.d.ts`. **Never use inline strings for user-facing output.** Use `styleText` from `node:util` for colored logs. Tone, satire, and emoji rules: see [castro/src/messages/README.md](castro/src/messages/README.md).
+All user-facing strings live in `castro/src/messages/`. Both `satirical.js` and `serious.js` implement the `Messages` interface from `messages.d.ts`. **Never use inline strings for user-facing output.** Use `styleText` from `node:util` for colored logs. Tone, satire, and emoji rules: see [castro/src/messages/README.md](castro/src/messages/README.md).
 
 **After changing any error message text**, regenerate the stderr goldens: `UPDATE_SNAPSHOTS=1 bun test:errors`. Inspect the diff before committing — each golden in `test-errors/NN-*/expected.stderr.txt` should show clean structured output.
 

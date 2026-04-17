@@ -32,7 +32,7 @@ If you hesitate on any question, remove the satire.
 - Emoji prefixes on status messages
 - Any emoji that adds visual noise without information
 
-## Satire Guidelines (Communist Preset)
+## Satirical Preset Guidelines
 
 ### ✓ Good Satire
 - **Opening/closing messages**: "Realizing the Five-Year Plan", "Delivered to the people"

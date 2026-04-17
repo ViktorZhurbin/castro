@@ -1,7 +1,7 @@
 /**
  * Message Configuration Type
  *
- * Defines the shape of message presets (serious and communist).
+ * Defines the shape of message presets (serious and satirical).
  * Both presets must implement this interface exactly.
  */
 
