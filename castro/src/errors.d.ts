@@ -24,6 +24,7 @@ export type ErrorTokens = {
 	CACHE_WRITE_FAILED: { path: string; error: string };
 	ISLAND_RENDER_FAILED: { islandId: string; error: string };
 	FRAMEWORK_LOAD_FAILED: { name: string; error: string };
+	CONFIG_LOAD_FAILED: { path: string; error: string };
 	UNEXPECTED: undefined;
 };
 

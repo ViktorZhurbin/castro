@@ -148,6 +148,12 @@ export const satirical = {
 			hint: "Check the plugin's frameworkConfig for initialization errors",
 		}),
 
+		CONFIG_LOAD_FAILED: ({ path, error }) => ({
+			title: "Config file failed to load",
+			message: `The Party's directives in ${path} could not be processed: ${error}`,
+			hint: "Fix the syntax or runtime error in your config file",
+		}),
+
 		UNEXPECTED: () => ({
 			title: "Unexpected error",
 			message: "The revolution has encountered an anomaly",
