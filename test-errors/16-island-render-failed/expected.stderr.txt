@@ -1,0 +1,4 @@
+❌ Island SSR failed
+   components/Broken.island.tsx collapsed on the server: Island failed to render
+
+   → The island will show an error box instead — fix the component to render correctly

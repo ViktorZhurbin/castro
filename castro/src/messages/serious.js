@@ -108,6 +108,36 @@ export const serious = {
 			hint: "Create at least one page file to continue",
 		}),
 
+		FRAMEWORK_CONFIG_INVALID: ({ pluginName, missing }) => ({
+			title: "Invalid framework config",
+			message: `Plugin "${pluginName}" frameworkConfig is missing required fields: ${missing}`,
+			hint: "Add the missing fields to the frameworkConfig",
+		}),
+
+		FRAMEWORK_CONFIG_NO_DETECTION: ({ pluginName }) => ({
+			title: "Framework config missing detection",
+			message: `Plugin "${pluginName}" frameworkConfig has no detection arrays`,
+			hint: "Declare detectImports, detectExports, or both",
+		}),
+
+		CACHE_WRITE_FAILED: ({ path, error }) => ({
+			title: "Cache write failed",
+			message: `Could not write compiled output to ${path}: ${error}`,
+			hint: "Check disk space and write permissions",
+		}),
+
+		ISLAND_RENDER_FAILED: ({ islandId, error }) => ({
+			title: "Island SSR failed",
+			message: `${islandId} failed to render server-side: ${error}`,
+			hint: "The island will show an error box instead — fix the component to render correctly",
+		}),
+
+		FRAMEWORK_LOAD_FAILED: ({ name, error }) => ({
+			title: "Framework failed to load",
+			message: `Plugin "${name}" threw during framework registration: ${error}`,
+			hint: "Check the plugin's frameworkConfig for initialization errors",
+		}),
+
 		UNEXPECTED: () => ({
 			title: "Unexpected error",
 			message: "An error occurred during the build",
@@ -118,21 +148,9 @@ export const serious = {
 		ssrErrorTitle: "⚠️ Server Rendering Error",
 
 		// Out of scope (v2+)
-		islandRenderFailed: (name, err) =>
-			`❌ Failed to render island "${name}": ${err}`,
-		cacheWriteFailed: (path, err) =>
-			`❌ Failed to write cache file: ${path}\n${err}`,
 		frameworkUnsupported: (name) =>
 			`❌ Framework "${name}" is not supported.\n` +
 			`   Built-in: preact, solid. Others require a framework plugin.`,
-		frameworkConfigInvalid: (pluginName, missing) =>
-			`❌ Plugin "${pluginName}" provides an invalid frameworkConfig.\n` +
-			`   Missing: ${missing}`,
-		frameworkConfigNoDetection: (pluginName) =>
-			`❌ Plugin "${pluginName}" framework config is missing detection.\n` +
-			`   Frameworks must declare detectImports, detectExports, or both.`,
-		frameworkLoadFailed: (name, err) =>
-			`❌ Failed to load framework "${name}".\n` + `   ${err}`,
 	},
 
 	// Commands

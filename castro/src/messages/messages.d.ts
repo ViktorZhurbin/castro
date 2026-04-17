@@ -45,18 +45,18 @@ export interface Messages {
 		MULTIPLE_DIRECTIVES: ErrorMessageDef;
 		ISLAND_NOT_FOUND: ErrorMessageDef;
 		NO_PAGES: ErrorMessageDef;
+		FRAMEWORK_CONFIG_INVALID: ErrorMessageDef;
+		FRAMEWORK_CONFIG_NO_DETECTION: ErrorMessageDef;
+		CACHE_WRITE_FAILED: ErrorMessageDef;
+		ISLAND_RENDER_FAILED: ErrorMessageDef;
+		FRAMEWORK_LOAD_FAILED: ErrorMessageDef;
 		UNEXPECTED: ErrorMessageDef;
 
 		// SSR error title — rendered inline in islands/marker.js, not thrown
 		ssrErrorTitle: string;
 
 		// Out of scope (v2+)
-		islandRenderFailed: (name: string, err: string) => string;
-		cacheWriteFailed: (path: string, err: string) => string;
 		frameworkUnsupported: (name: string) => string;
-		frameworkConfigInvalid: (pluginName: string, missing: string) => string;
-		frameworkConfigNoDetection: (pluginName: string) => string;
-		frameworkLoadFailed: (name: string, err: string) => string;
 	};
 
 	// CLI command messages

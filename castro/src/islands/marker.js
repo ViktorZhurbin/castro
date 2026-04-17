@@ -15,6 +15,7 @@
 import { h } from "preact";
 import { messages } from "../messages/index.js";
 import { CastroError } from "../utils/errors.js";
+import { renderErrorToTerminal } from "../utils/renderError.js";
 import { getFrameworkConfig } from "./frameworkConfig.js";
 import { islands } from "./registry.js";
 
@@ -75,7 +76,11 @@ export function renderMarker(islandId, props = {}) {
 	} catch (e) {
 		const err = /** @type {Bun.ErrorLike} */ (e);
 
-		console.error(messages.errors.islandRenderFailed(islandId, err.message));
+		const ssrErrPayload = new CastroError("ISLAND_RENDER_FAILED", {
+			islandId,
+			error: err.message,
+		}).castroPayload;
+		console.error(renderErrorToTerminal(ssrErrPayload));
 
 		// Error fallback always uses Preact's renderSSR since the SSRError
 		// component is a Preact component (uses h() from preact)

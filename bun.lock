@@ -176,6 +176,38 @@
         "preact": "^10",
       },
     },
+    "test-errors/14-framework-config-invalid": {
+      "name": "@test-errors/framework-config-invalid",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "test-errors/15-framework-config-no-detection": {
+      "name": "@test-errors/framework-config-no-detection",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "test-errors/16-island-render-failed": {
+      "name": "@test-errors/island-render-failed",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "test-errors/17-framework-load-failed": {
+      "name": "@test-errors/framework-load-failed",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
     "test-site": {
       "name": "test-site",
       "version": "1.0.0",
@@ -377,7 +409,15 @@
 
     "@test-errors/empty-layouts-dir": ["@test-errors/empty-layouts-dir@workspace:test-errors/04-empty-layouts-dir"],
 
+    "@test-errors/framework-config-invalid": ["@test-errors/framework-config-invalid@workspace:test-errors/14-framework-config-invalid"],
+
+    "@test-errors/framework-config-no-detection": ["@test-errors/framework-config-no-detection@workspace:test-errors/15-framework-config-no-detection"],
+
+    "@test-errors/framework-load-failed": ["@test-errors/framework-load-failed@workspace:test-errors/17-framework-load-failed"],
+
     "@test-errors/island-import-missing": ["@test-errors/island-import-missing@workspace:test-errors/12-island-import-missing"],
+
+    "@test-errors/island-render-failed": ["@test-errors/island-render-failed@workspace:test-errors/16-island-render-failed"],
 
     "@test-errors/island-syntax-error": ["@test-errors/island-syntax-error@workspace:test-errors/11-island-syntax-error"],
 

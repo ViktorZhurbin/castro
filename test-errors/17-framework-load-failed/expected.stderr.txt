@@ -1,0 +1,4 @@
+❌ Framework failed to load
+   Plugin "crashing-plugin" collapsed during registration: Plugin initialization failed
+
+   → Check the plugin's frameworkConfig for initialization errors

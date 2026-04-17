@@ -22,6 +22,7 @@ const defaults = {
 /** @type {CastroConfig} */
 let userConfig = {};
 
+// TODO: consider adding "CONFIG_LOAD_FAILED" error, and config validation
 for (const ext of [".ts", ".js", ".mjs"]) {
 	try {
 		const configPath = join(process.cwd(), `castro.config${ext}`);

@@ -9,7 +9,7 @@
  * because framework discovery is purely AST-based — no directory convention.
  */
 
-import { messages } from "../messages/index.js";
+import { CastroError } from "../utils/errors.js";
 import preactConfig from "./frameworks/preact.js";
 import vanillaConfig from "./frameworks/vanilla.js";
 
@@ -43,9 +43,10 @@ export function registerFramework(frameworkConfig, pluginName) {
 	const missing = REQUIRED_FIELDS.filter((f) => !frameworkConfig[f]);
 
 	if (missing.length > 0) {
-		throw new Error(
-			messages.errors.frameworkConfigInvalid(pluginName, missing.join(", ")),
-		);
+		throw new CastroError("FRAMEWORK_CONFIG_INVALID", {
+			pluginName,
+			missing: missing.join(", "),
+		});
 	}
 
 	const hasDetection =
@@ -53,7 +54,7 @@ export function registerFramework(frameworkConfig, pluginName) {
 		(frameworkConfig.detectExports?.length ?? 0) > 0;
 
 	if (!hasDetection) {
-		throw new Error(messages.errors.frameworkConfigNoDetection(pluginName));
+		throw new CastroError("FRAMEWORK_CONFIG_NO_DETECTION", { pluginName });
 	}
 
 	loadedConfigs.set(frameworkConfig.id, frameworkConfig);

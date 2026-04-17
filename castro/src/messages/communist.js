@@ -108,6 +108,36 @@ export const satirical = {
 			hint: "Create a .md or .jsx/.tsx file in pages/ to continue",
 		}),
 
+		FRAMEWORK_CONFIG_INVALID: ({ pluginName, missing }) => ({
+			title: "Invalid framework config",
+			message: `Plugin "${pluginName}" submitted incomplete papers — missing: ${missing}`,
+			hint: "Fill in the missing fields to pass inspection",
+		}),
+
+		FRAMEWORK_CONFIG_NO_DETECTION: ({ pluginName }) => ({
+			title: "Framework config missing detection",
+			message: `Plugin "${pluginName}" cannot identify its comrades — no detection declared`,
+			hint: "Declare detectImports, detectExports, or both",
+		}),
+
+		CACHE_WRITE_FAILED: ({ path, error }) => ({
+			title: "Cache write failed",
+			message: `The State could not stockpile compiled output at ${path}: ${error}`,
+			hint: "Check disk space and write permissions",
+		}),
+
+		ISLAND_RENDER_FAILED: ({ islandId, error }) => ({
+			title: "Island SSR failed",
+			message: `${islandId} collapsed on the server: ${error}`,
+			hint: "The island will show an error box instead — fix the component to render correctly",
+		}),
+
+		FRAMEWORK_LOAD_FAILED: ({ name, error }) => ({
+			title: "Framework failed to load",
+			message: `Plugin "${name}" collapsed during registration: ${error}`,
+			hint: "Check the plugin's frameworkConfig for initialization errors",
+		}),
+
 		UNEXPECTED: () => ({
 			title: "Unexpected error",
 			message: "The revolution has encountered an anomaly",
@@ -118,21 +148,9 @@ export const satirical = {
 		ssrErrorTitle: "⚠️ Counter-revolutionary logic detected",
 
 		// Out of scope (v2+)
-		islandRenderFailed: (name, err) =>
-			`❌ Failed to render island "${name}": ${err}`,
-		cacheWriteFailed: (path, err) =>
-			`❌ Failed to write cache file: ${path}\n${err}`,
 		frameworkUnsupported: (name) =>
 			`❌ Framework "${name}" is not recognized by the Party.\n` +
 			`   Built-in: preact, solid. Others require a framework plugin.`,
-		frameworkConfigInvalid: (pluginName, missing) =>
-			`❌ Plugin "${pluginName}" submitted incomplete papers.\n` +
-			`   Missing: ${missing}`,
-		frameworkConfigNoDetection: (pluginName) =>
-			`❌ Plugin "${pluginName}" framework lacks detection mechanism.\n` +
-			`   Frameworks must declare detectImports, detectExports, or both.`,
-		frameworkLoadFailed: (name, err) =>
-			`❌ Framework "${name}" collapsed during initialization.\n` + `   ${err}`,
 	},
 
 	// Commands
