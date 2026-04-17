@@ -18,6 +18,7 @@ import { allPlugins } from "../islands/plugins.js";
 import { islands } from "../islands/registry.js";
 import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
+import { buildError } from "../utils/errors.js";
 import { buildPage } from "./buildPage.js";
 
 /**
@@ -72,12 +73,9 @@ export async function buildAll() {
 			// Example: both foo.md and foo.jsx try to be foo.html
 			if (outputMap.has(outputPath)) {
 				const existingFile = outputMap.get(outputPath);
-				const errorMessage = messages.errors.routeConflict(
-					`${PAGES_DIR}/${existingFile}`,
-					`${PAGES_DIR}/${sourcePath}`,
-				);
-
-				throw new Error(errorMessage);
+				throw buildError("ROUTE_CONFLICT", {
+					files: [`${PAGES_DIR}/${existingFile}`, `${PAGES_DIR}/${sourcePath}`],
+				});
 			}
 
 			outputMap.set(outputPath, sourcePath);

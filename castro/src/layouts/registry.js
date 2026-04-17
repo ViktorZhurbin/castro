@@ -13,8 +13,8 @@ import { basename, extname, join } from "node:path";
 import { compileJSX } from "../builder/compileJsx.js";
 import { writeCSSFiles } from "../builder/writeCss.js";
 import { LAYOUTS_DIR, OUTPUT_DIR } from "../constants.js";
-import { messages } from "../messages/index.js";
 import { resolveTempDir } from "../utils/cache.js";
+import { buildError } from "../utils/errors.js";
 
 /**
  * @import { VNode } from "preact";
@@ -73,7 +73,7 @@ class LayoutsRegistry {
 			const err = /** @type {Bun.ErrorLike} */ (e);
 
 			if (err.code === "ENOENT") {
-				throw new Error(messages.errors.noLayoutsDir(LAYOUTS_DIR));
+				throw buildError("NO_LAYOUTS_DIR", { dir: LAYOUTS_DIR });
 			}
 
 			throw err;
@@ -95,40 +95,32 @@ class LayoutsRegistry {
 			/** @type {LayoutId} */
 			const layoutId = basename(fileName, extname(fileName));
 
-			try {
-				// Compile and extract CSS
-				const { module: layoutModule, cssFiles } =
-					await compileJSX(sourceFilePath);
+			// Compile and extract CSS
+			const { module: layoutModule, cssFiles } =
+				await compileJSX(sourceFilePath);
 
-				if (!layoutModule.default) {
-					throw new Error(messages.errors.noDefaultExport(fileName));
-				}
+			if (!layoutModule.default) {
+				throw buildError("LAYOUT_NO_DEFAULT_EXPORT", { file: fileName });
+			}
 
-				this.#layouts.set(layoutId, layoutModule.default);
+			this.#layouts.set(layoutId, layoutModule.default);
 
-				// Write layout CSS to dist/layouts/
-				const layoutsDir = join(OUTPUT_DIR, LAYOUTS_DIR);
-				const layoutCssAssets = await writeCSSFiles(cssFiles, layoutsDir);
+			// Write layout CSS to dist/layouts/
+			const layoutsDir = join(OUTPUT_DIR, LAYOUTS_DIR);
+			const layoutCssAssets = await writeCSSFiles(cssFiles, layoutsDir);
 
-				if (layoutCssAssets.length > 0) {
-					this.#cssAssets.set(layoutId, layoutCssAssets);
-				}
-			} catch (e) {
-				const err = /** @type {Bun.ErrorLike} */ (e);
-
-				throw new Error(
-					messages.errors.layoutBuildFailed(fileName, err.message),
-				);
+			if (layoutCssAssets.length > 0) {
+				this.#cssAssets.set(layoutId, layoutCssAssets);
 			}
 		}
 
 		// Validate
 		if (this.#layouts.size === 0) {
-			throw new Error(messages.errors.noLayoutFiles(LAYOUTS_DIR));
+			throw buildError("NO_LAYOUT_FILES", { dir: LAYOUTS_DIR });
 		}
 
 		if (!this.#layouts.has("default")) {
-			throw new Error(messages.errors.missingDefaultLayout());
+			throw buildError("LAYOUT_MISSING_DEFAULT", {});
 		}
 	}
 }

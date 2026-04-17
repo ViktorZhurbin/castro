@@ -28,9 +28,12 @@ import {
 import { allPlugins } from "../islands/plugins.js";
 import { messages } from "../messages/index.js";
 import { debounceAsync } from "../utils/debounceAsync.js";
+import { toPayload } from "../utils/errors.js";
+import { renderErrorToTerminal } from "../utils/renderError.js";
 
 /**
  * @import { FileChangeInfo } from "node:fs/promises";
+ * @import { CastroErrorPayload } from "../types.d.ts";
  */
 
 /**
@@ -167,9 +170,10 @@ export async function startDevServer() {
 			await buildAll();
 			notifyReload();
 		} catch (e) {
-			const err = /** @type {Bun.ErrorLike} */ (e);
-			console.error(styleText("red", err.message));
-			notifyBuildError(err.message);
+			const payload = toPayload(e);
+
+			console.error(renderErrorToTerminal(payload));
+			notifyBuildError(payload);
 		}
 	}, 80);
 
@@ -255,10 +259,10 @@ export async function startDevServer() {
 		}
 	}
 
-	/** @param {string} message */
-	function notifyBuildError(message) {
+	/** @param {CastroErrorPayload} payload */
+	function notifyBuildError(payload) {
 		const data = encoder.encode(
-			`event: build-error\ndata: ${JSON.stringify(message)}\n\n`,
+			`event: build-error\ndata: ${JSON.stringify(payload)}\n\n`,
 		);
 		for (const controller of controllers) {
 			try {

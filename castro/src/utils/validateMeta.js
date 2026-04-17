@@ -1,4 +1,4 @@
-import { messages } from "../messages/index.js";
+import { buildError } from "./errors.js";
 
 /** @import { PageMeta } from "../types.d.ts" */
 
@@ -27,7 +27,7 @@ export function validateMeta(meta, sourceFileName) {
 	}
 
 	if (issues.length > 0) {
-		throw new Error(messages.errors.invalidMeta(sourceFileName, issues));
+		throw buildError("META_INVALID", { file: sourceFileName, issues });
 	}
 
 	return meta;

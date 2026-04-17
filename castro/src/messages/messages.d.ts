@@ -5,6 +5,8 @@
  * Both presets must implement this interface exactly.
  */
 
+import type { ErrorMessageDef } from "../errors.d.ts";
+
 export interface Messages {
 	// Dev server startup and runtime messages
 	devServer: {
@@ -20,8 +22,6 @@ export interface Messages {
 		noFiles: string;
 		writingFile: (source: string, dest: string) => string;
 		fileFailure: (file: string, err: string) => string;
-		bundleFailed: (errors: string) => string;
-		noJsOutput: (source: string) => string;
 	};
 
 	// File operation messages
@@ -29,21 +29,29 @@ export interface Messages {
 		changed: (path: string) => string;
 	};
 
-	// Error messages
+	// Error messages — structured payloads for terminal and browser renderers.
+	// Shape: static object { title, hint } or function returning { title, message, hint, notes? }
 	errors: {
-		routeConflict: (file1: string, file2: string) => string;
-		layoutNotFound: (name: string, sourceFilePath: string) => string;
-		missingDefaultLayout: () => string;
-		noLayoutsDir: (dir: string) => string;
-		noDefaultExport: (file: string) => string;
-		layoutBuildFailed: (file: string, err: string) => string;
-		jsxNoExport: (filePath: string) => string;
-		invalidMeta: (file: string, issues: string[]) => string;
-		islandNotFoundRegistry: (name: string) => string;
-		islandRenderFailed: (name: string, err: string) => string;
+		// Build-time fatal errors (v1 scope)
+		ROUTE_CONFLICT: ErrorMessageDef;
+		LAYOUT_NOT_FOUND: ErrorMessageDef;
+		LAYOUT_MISSING_DEFAULT: ErrorMessageDef;
+		NO_LAYOUTS_DIR: ErrorMessageDef;
+		NO_LAYOUT_FILES: ErrorMessageDef;
+		LAYOUT_NO_DEFAULT_EXPORT: ErrorMessageDef;
+		PAGE_NO_DEFAULT_EXPORT: ErrorMessageDef;
+		YAML_PARSE_FAILED: ErrorMessageDef;
+		META_INVALID: ErrorMessageDef;
+		BUNDLE_FAILED: ErrorMessageDef;
+		MULTIPLE_DIRECTIVES: ErrorMessageDef;
+		ISLAND_NOT_FOUND: ErrorMessageDef;
+		UNEXPECTED: ErrorMessageDef;
+
+		// SSR error title — rendered inline in islands/marker.js, not thrown
 		ssrErrorTitle: string;
-		multipleDirectives: (directives: string) => string;
-		noLayoutFiles: (dir: string) => string;
+
+		// Out of scope (v2+)
+		islandRenderFailed: (name: string, err: string) => string;
 		cacheWriteFailed: (path: string, err: string) => string;
 		frameworkUnsupported: (name: string) => string;
 		frameworkConfigInvalid: (pluginName: string, missing: string) => string;

@@ -14,7 +14,7 @@
 		"format": "biome format --write",
 		"check": "bun format && bun run --parallel --filter '*' --if-present type-check build knip && bun test",
 		"test:sites": "bun test ./test-site",
-		"loc": "bunx cloc castro/src/ --exclude-dir=messages",
+		"loc": "bunx cloc castro/src/ --exclude-dir=messages --not-match-f '.test'",
 		"loc-files": "bun run loc --by-file"
 	},
 	"devDependencies": {

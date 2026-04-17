@@ -80,33 +80,27 @@ class IslandsRegistry {
 				"/",
 			);
 
-			try {
-				const component = await compileIsland({
-					sourcePath,
-					outputDir,
-					publicDir,
-					frameworkId,
-				});
+			const component = await compileIsland({
+				sourcePath,
+				outputDir,
+				publicDir,
+				frameworkId,
+			});
 
-				const islandId = getIslandId(sourcePath);
+			const islandId = getIslandId(sourcePath);
 
-				// Pre-load SSR module so renderMarker() can access it synchronously
-				// during renderToString() traversal
-				component.ssrModule = await getModule(
-					sourcePath,
-					component.ssrCode,
-					"ssr",
-				);
+			// Pre-load SSR module so renderMarker() can access it synchronously
+			// during renderToString() traversal
+			component.ssrModule = await getModule(
+				sourcePath,
+				component.ssrCode,
+				"ssr",
+			);
 
-				this.#islands.set(islandId, component);
+			this.#islands.set(islandId, component);
 
-				if (component.cssContent) {
-					this.#cssManifest.set(islandId, component.cssContent);
-				}
-			} catch (e) {
-				const err = /** @type {Bun.ErrorLike} */ (e);
-
-				throw new Error(err.message);
+			if (component.cssContent) {
+				this.#cssManifest.set(islandId, component.cssContent);
 			}
 		}
 	}

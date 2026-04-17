@@ -20,8 +20,6 @@ export const satirical = {
 		noFiles: "⚠️  No pages found to build.",
 		writingFile: (source, dest) => `Writing ${source} → ${dest}`,
 		fileFailure: (file, err) => `Sabotage detected in ${file}: ${err}`,
-		bundleFailed: (errors) => `Production halted\n${errors}`,
-		noJsOutput: (source) => `No JavaScript output generated for ${source}`,
 	},
 
 	// File operations
@@ -29,56 +27,94 @@ export const satirical = {
 		changed: (path) => `Revised: ${path}`,
 	},
 
-	// The Ministry of Errors
+	// The Ministry of Errors — structured payloads (v1 scope: build-time fatals only)
 	errors: {
-		// Route conflicts
-		routeConflict: (file1, file2) =>
-			`❌ Route conflict: Two pages claim the same route\n\n` +
-			`   · ${file1}\n` +
-			`   · ${file2}\n\n` +
-			`   The revolution cannot serve two masters.`,
+		ROUTE_CONFLICT: ({ files }) => ({
+			title: "Route conflict",
+			message: "Two pages claim the same revolution",
+			notes: /** @type {string[]} */ (files),
+			hint: "The workers cannot serve two masters — remove one",
+		}),
 
-		// Missing layouts
-		layoutNotFound: (layoutName, sourceFilePath) =>
-			`❌ Layout '${layoutName}' not found in layouts/\n` +
-			`   Create the missing layout file, or change layout for ${sourceFilePath}.`,
+		LAYOUT_NOT_FOUND: ({ layoutName, sourceFile }) => ({
+			title: "Layout not found",
+			message: `Layout '${layoutName}' has defected from layouts/`,
+			hint: `Create the layout, or re-educate ${sourceFile}`,
+		}),
 
-		missingDefaultLayout: () =>
-			`❌ Required layout 'default.jsx' not found in layouts/\n` +
-			`   Create layouts/default.jsx to continue.`,
+		LAYOUT_MISSING_DEFAULT: () => ({
+			title: "Missing default layout",
+			message: "layouts/default.jsx is mandatory for the collective",
+			hint: "Create layouts/default.jsx to continue",
+		}),
 
-		noLayoutsDir: (layoutsDir) =>
-			`❌ Layouts directory not found: ${layoutsDir}\n` +
-			`   Create the directory and add at least default.jsx`,
+		NO_LAYOUTS_DIR: ({ dir }) => ({
+			title: "Layouts directory missing",
+			message: `No layouts/ directory found at ${dir}`,
+			hint: "Create the directory with at least default.jsx",
+		}),
 
-		noDefaultExport: (fileName) =>
-			`⚠️  ${fileName} must export a default function.`,
+		NO_LAYOUT_FILES: ({ dir }) => ({
+			title: "Layouts directory is empty",
+			message: `No layout files found in ${dir}`,
+			hint: "Create at least default.jsx",
+		}),
 
-		// Layout build errors
-		layoutBuildFailed: (fileName, errorMessage) =>
-			`❌ Layout build failed (sabotage detected)\n\n` +
-			`   Layout: ${fileName}\n` +
-			`   Error: ${errorMessage}`,
+		LAYOUT_NO_DEFAULT_EXPORT: ({ file }) => ({
+			title: "Layout has no default export",
+			message: `${file} must export a default function`,
+			hint: "Add a default export to this layout",
+		}),
 
-		jsxNoExport: (filePath) =>
-			`❌ ${filePath} must export a default function.\n` +
-			`   Pages require a default export.`,
+		PAGE_NO_DEFAULT_EXPORT: ({ file }) => ({
+			title: "Page has no default export",
+			message: `${file} must export a default function`,
+			hint: "Add a default export to this page",
+		}),
 
-		invalidMeta: (fileName, issues) =>
-			`❌ Invalid page metadata\n\n` +
-			`   Page: ${fileName}\n` +
-			`   Issues:\n` +
-			issues.map((i) => `   - ${i}`).join("\n") +
-			`\n\n   Check the page 'meta' export.`,
-		islandNotFoundRegistry: (name) =>
-			`❌ Island "${name}" failed to load. This is a Castro bug.`,
+		YAML_PARSE_FAILED: ({ reason }) => ({
+			title: "Markdown frontmatter sabotage",
+			message: `YAML parsing failed: ${reason}`,
+			hint: "Check the frontmatter block for counter-revolutionary syntax",
+		}),
+
+		META_INVALID: ({ file, issues }) => ({
+			title: "Invalid page meta",
+			message: `${file} submitted incomplete papers`,
+			notes: /** @type {string[]} */ (issues),
+			hint: "Check that all meta properties are properly formed",
+		}),
+
+		BUNDLE_FAILED: () => ({
+			title: "Production halted",
+			message: "Error during JavaScript compilation",
+			hint: "Check the code frame and error location above",
+		}),
+
+		MULTIPLE_DIRECTIVES: ({ directives }) => ({
+			title: "Multiple hydration directives",
+			message: `Component cannot serve both ${/** @type {string[]} */ (directives).join(" and ")}`,
+			hint: "Use only one hydration directive per island",
+		}),
+
+		ISLAND_NOT_FOUND: ({ islandId }) => ({
+			title: "Island defected",
+			message: `Island '${islandId}' failed to load`,
+			hint: "This is a Castro internal error — please report it",
+		}),
+
+		UNEXPECTED: () => ({
+			title: "Unexpected error",
+			message: "The revolution has encountered an anomaly",
+			hint: "Check the error details above",
+		}),
+
+		// SSR error title — rendered inline in islands/marker.js, not thrown
+		ssrErrorTitle: "⚠️ Counter-revolutionary logic detected",
+
+		// Out of scope (v2+)
 		islandRenderFailed: (name, err) =>
 			`❌ Failed to render island "${name}": ${err}`,
-		ssrErrorTitle: "⚠️ Counter-revolutionary logic detected",
-		multipleDirectives: (directives) =>
-			`❌ Multiple directives on same component: ${directives}. Pick one.`,
-		noLayoutFiles: (dir) =>
-			`❌ No layout files found in ${dir}\nCreate at least default.jsx`,
 		cacheWriteFailed: (path, err) =>
 			`❌ Failed to write cache file: ${path}\n${err}`,
 		frameworkUnsupported: (name) =>

@@ -3,10 +3,10 @@ import {
 	castroExternalsPlugin,
 	islandMarkerPlugin,
 } from "../islands/buildPlugins.js";
-import { messages } from "../messages/index.js";
 import { safeBunBuild } from "../utils/build.js";
 import { getModule } from "../utils/cache.js";
 import { getProjectDependencies } from "../utils/dependencies.js";
+import { buildError } from "../utils/errors.js";
 
 /**
  * Compile JSX/TSX to JavaScript and import the module
@@ -46,7 +46,7 @@ export async function compileJSX(sourcePath) {
 	const cssFiles = result.outputs.filter((f) => f.path.endsWith(".css"));
 
 	if (!jsFile) {
-		throw new Error(messages.build.noJsOutput(sourcePath));
+		throw buildError("BUNDLE_FAILED", { source: sourcePath });
 	}
 
 	const jsText = await jsFile.text();

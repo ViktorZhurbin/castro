@@ -2,7 +2,7 @@ import { dirname, extname, join } from "node:path";
 import { h } from "preact";
 import { config } from "../config.js";
 import { OUTPUT_DIR, PAGES_DIR } from "../constants.js";
-import { messages } from "../messages/index.js";
+import { buildError } from "../utils/errors.js";
 import { validateMeta } from "../utils/validateMeta.js";
 import { compileJSX } from "./compileJsx.js";
 import { renderPage } from "./renderPage.js";
@@ -37,7 +37,7 @@ async function buildJSXPage(sourceFilePath, outputFilePath) {
 	const { module: pageModule, cssFiles } = await compileJSX(sourceFilePath);
 
 	if (!pageModule.default || typeof pageModule.default !== "function") {
-		throw new Error(messages.errors.jsxNoExport(sourceFilePath));
+		throw buildError("PAGE_NO_DEFAULT_EXPORT", { file: sourceFilePath });
 	}
 
 	// Write CSS files to output directory and collect assets
@@ -139,6 +139,6 @@ function parseFrontmatter(fileContent) {
 	} catch (e) {
 		const err = /** @type {Bun.ErrorLike} */ (e);
 
-		throw new Error(`Failed to parse YAML frontmatter: ${err.message}`);
+		throw buildError("YAML_PARSE_FAILED", { reason: err.message });
 	}
 }

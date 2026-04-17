@@ -51,6 +51,17 @@ If you hesitate on any question, remove the satire.
 - ✓ **Edges**: Opening, closing, error punchlines
 - ✗ **Middle**: Status updates, file operations, logs
 
+## Error Payload Shape
+
+`messages.errors.*` keys feed into `buildError()` in `utils/errors.js`. Each key is either:
+
+- A static object `{ title, hint? }` — when no call-site data is needed.
+- A function `(tokens) => { title, message?, hint?, notes? }` — when the message weaves in runtime values (file names, layout names, etc.).
+
+`buildError` merges the result with the call-site `tokens` and optional `CodeFrame[]` into a `CastroErrorPayload`. The payload is the single source of truth — two independent renderers consume it: `renderErrorToTerminal()` (terminal) and the shadow-DOM overlay in `dev/liveReload.js` (browser). Neither renderer parses strings; both read structured fields.
+
+Voice (title/hint text) lives here. Data (file paths, token values, frame positions) lives at the throw site.
+
 ## Error Message Structure
 
 ```javascript
