@@ -10,8 +10,14 @@
  * 3. Wraps it in a <castro-island> custom element for client hydration
  *
  * Also tracks which islands each page uses, so only their CSS gets injected.
+ *
+ * Island tracking is scoped per-page using AsyncLocalStorage. Each page build
+ * runs inside runWithPageState(), which provides a fresh context. This isolates
+ * pageState.usedIslands and pageState.usedFrameworks so parallel builds would be
+ * safe (though the build loop remains sequential for now).
  */
 
+import { AsyncLocalStorage } from "node:async_hooks";
 import { h } from "preact";
 import { CastroError } from "../utils/errors.js";
 import { getFrameworkConfig } from "./frameworkConfig.js";
@@ -23,26 +29,45 @@ import { islands } from "./registry.js";
  */
 
 /**
- * Per-page island tracking. Reset before each page render.
- * - usedIslands: all rendered islands (determines CSS injection and runtime injection)
- * - usedFrameworks: framework IDs encountered (determines which runtimes to emit)
- *
- * Safe as a module-level singleton because renderToString() is synchronous
- * and buildAll.js processes pages sequentially. Parallelizing page builds
- * (e.g. Promise.all) would cause race conditions here — pages would overwrite
- * each other's state. Fix would be AsyncLocalStorage or passing state explicitly.
+ * AsyncLocalStorage for per-page island tracking.
+ * @type {AsyncLocalStorage<{ usedIslands: Set<string>, usedFrameworks: Set<string> }>}
  */
-export const pageState = {
-	/** @type {Set<string>} */
-	usedIslands: new Set(),
-	/** @type {Set<string>} */
-	usedFrameworks: new Set(),
+const pageStateStore = new AsyncLocalStorage();
 
-	reset() {
-		this.usedIslands.clear();
-		this.usedFrameworks.clear();
-	},
-};
+/**
+ * Run a function with a fresh per-page tracking context.
+ * Returns the populated state so callers can aggregate across pages.
+ *
+ * @param {() => Promise<void>} fn
+ * @returns {Promise<{ usedIslands: Set<string>, usedFrameworks: Set<string> }>}
+ */
+export async function runWithPageState(fn) {
+	const state = {
+		/** @type {Set<string>} */
+		usedIslands: new Set(),
+		/** @type {Set<string>} */
+		usedFrameworks: new Set(),
+	};
+	await pageStateStore.run(state, fn);
+	return state;
+}
+
+/**
+ * Get the current page's tracking state.
+ * Must only be called inside runWithPageState().
+ *
+ * @returns {{ usedIslands: Set<string>, usedFrameworks: Set<string> }}
+ */
+export function getPageState() {
+	const state = pageStateStore.getStore();
+	if (!state) {
+		throw new Error(
+			"getPageState() called outside runWithPageState(). " +
+				"Every page render must be wrapped — see buildAll.js.",
+		);
+	}
+	return state;
+}
 
 /**
  * Render an island marker component
@@ -64,8 +89,9 @@ export function renderMarker(islandId, props = {}) {
 
 	const { directive, cleanProps } = processProps(props);
 
-	pageState.usedIslands.add(islandId);
-	pageState.usedFrameworks.add(island.frameworkId);
+	const state = getPageState();
+	state.usedIslands.add(islandId);
+	state.usedFrameworks.add(island.frameworkId);
 
 	let ssrHtml = "";
 

@@ -11,7 +11,7 @@
 
 import { basename } from "node:path";
 import { renderToString } from "preact-render-to-string";
-import { pageState } from "../islands/marker.js";
+import { getPageState } from "../islands/marker.js";
 import { layouts } from "../layouts/registry.js";
 import { CastroError } from "../utils/errors.js";
 import { writeHtmlPage } from "./writeHtmlPage.js";
@@ -38,8 +38,6 @@ export async function renderPage({
 	pageCssAssets = [],
 }) {
 	const pageAndLayoutCssAssets = [...pageCssAssets];
-
-	pageState.reset();
 
 	const contentVNode = createContentVNode();
 
@@ -73,9 +71,10 @@ export async function renderPage({
 
 	const finalHtml = renderToString(vnodeToRender);
 
+	const state = getPageState();
 	await writeHtmlPage(finalHtml, outputFilePath, {
-		usedIslands: pageState.usedIslands,
-		usedFrameworks: pageState.usedFrameworks,
+		usedIslands: state.usedIslands,
+		usedFrameworks: state.usedFrameworks,
 		pageCssAssets: pageAndLayoutCssAssets,
 	});
 }

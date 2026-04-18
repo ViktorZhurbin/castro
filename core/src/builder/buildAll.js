@@ -13,7 +13,7 @@
 import { cp, mkdir, rm } from "node:fs/promises";
 import { styleText } from "node:util";
 import { OUTPUT_DIR, PAGES_DIR, PUBLIC_DIR } from "../constants.js";
-import { pageState } from "../islands/marker.js";
+import { runWithPageState } from "../islands/marker.js";
 import { allPlugins } from "../islands/plugins.js";
 import { islands } from "../islands/registry.js";
 import { layouts } from "../layouts/registry.js";
@@ -70,12 +70,13 @@ export async function buildAll() {
 			);
 		}
 
-		await buildPage(sourcePath);
+		const { usedFrameworks } = await runWithPageState(() =>
+			buildPage(sourcePath),
+		);
 
 		// Merge per-page state into cross-page build context
-		buildContext.usedFrameworks = buildContext.usedFrameworks.union(
-			pageState.usedFrameworks,
-		);
+		buildContext.usedFrameworks =
+			buildContext.usedFrameworks.union(usedFrameworks);
 	}
 
 	// Post-build hooks: plugins can conditionally write assets based
