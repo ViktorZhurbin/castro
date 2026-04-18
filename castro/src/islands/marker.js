@@ -71,10 +71,10 @@ export function renderMarker(islandId, props = {}) {
 
 	try {
 		ssrHtml = frameworkConfig.renderSSR(island.ssrModule.default, cleanProps);
-	} catch (e) {
+	} catch (err) {
 		throw new CastroError("ISLAND_RENDER_FAILED", {
 			islandId,
-			error: /** @type {Error} */ (e).message,
+			errorMessage: err instanceof Error ? err.message : String(err),
 		});
 	}
 

@@ -144,7 +144,7 @@ function parseFrontmatter(fileContent, sourceFilePath) {
 		const err = /** @type {Bun.ErrorLike} */ (e);
 
 		throw new CastroError("YAML_PARSE_FAILED", {
-			error: err.message,
+			errorMessage: err instanceof Error ? err.message : String(err),
 			sourceFilePath,
 		});
 	}

@@ -84,10 +84,9 @@ export async function getModule(sourcePath, content, subpath) {
 	try {
 		await Bun.write(fullPath, content);
 	} catch (err) {
-		const error = /** @type {Error} */ (err);
 		throw new CastroError("CACHE_WRITE_FAILED", {
 			path: fullPath,
-			error: error.message,
+			errorMessage: err instanceof Error ? err.message : String(err),
 		});
 	}
 

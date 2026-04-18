@@ -144,16 +144,20 @@ async function detectFramework(sourcePath) {
 	} catch (e) {
 		// transpiler.scan() throws its own error shape on syntax errors
 		if (e instanceof AggregateError) {
-			const errorMessages = e.errors.map((e) => e.message).join("\n");
+			const errorMessage = e.errors.map((e) => e.message).join("\n");
 			const frames = [{ file: resolve(sourcePath) }];
 
-			throw new CastroError("BUNDLE_FAILED", { error: errorMessages }, frames);
+			throw new CastroError("BUNDLE_FAILED", { errorMessage }, frames);
 		}
 
 		const err = /** @type {BuildMessage} */ (e);
 		const frames = [bunLogToFrame(err)];
 
-		throw new CastroError("BUNDLE_FAILED", { error: err.message }, frames);
+		throw new CastroError(
+			"BUNDLE_FAILED",
+			{ errorMessage: err.message },
+			frames,
+		);
 	}
 
 	const fwConfigs = getLoadedFrameworkConfigs();

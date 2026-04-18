@@ -76,9 +76,10 @@ export const serious = {
 			hint: "Add a default export to this page",
 		}),
 
-		YAML_PARSE_FAILED: ({ error, sourceFilePath }) => ({
+		YAML_PARSE_FAILED: ({ errorMessage, sourceFilePath }) => ({
 			title: "Markdown frontmatter syntax error",
-			message: `Frontmatter parsing in ${sourceFilePath} failed: ${error}`,
+			message: `Frontmatter parsing in ${sourceFilePath} failed:`,
+			errorMessage,
 			hint: "Check the frontmatter block at the top of the file",
 		}),
 
@@ -91,7 +92,8 @@ export const serious = {
 
 		BUNDLE_FAILED: (tokens) => ({
 			title: "Build failed",
-			message: tokens?.error ?? "Error during JavaScript compilation",
+			message: "Error during JavaScript compilation:",
+			errorMessage: tokens?.errorMessage,
 			hint: "Check the code frame and error location above",
 		}),
 
@@ -119,27 +121,31 @@ export const serious = {
 			hint: "Declare detectImports, detectExports, or both",
 		}),
 
-		CACHE_WRITE_FAILED: ({ path, error }) => ({
+		CACHE_WRITE_FAILED: ({ path, errorMessage }) => ({
 			title: "Cache write failed",
-			message: `Could not write compiled output to ${path}: ${error}`,
+			message: `Could not write compiled output to ${path}:`,
+			errorMessage,
 			hint: "Check disk space and write permissions",
 		}),
 
-		ISLAND_RENDER_FAILED: ({ islandId, error }) => ({
+		ISLAND_RENDER_FAILED: ({ islandId, errorMessage }) => ({
 			title: "Island SSR failed",
-			message: `Island ${islandId} failed to render server-side: ${error}`,
+			message: `Island ${islandId} failed to render server-side:`,
+			errorMessage,
 			hint: "Check for browser-only APIs like 'window' or 'document'. Move them inside useEffect or a lifecycle hook.",
 		}),
 
-		FRAMEWORK_LOAD_FAILED: ({ name, error }) => ({
+		FRAMEWORK_LOAD_FAILED: ({ name, errorMessage }) => ({
 			title: "Framework failed to load",
-			message: `Plugin "${name}" threw during framework registration: ${error}`,
+			message: `Plugin "${name}" threw during framework registration:`,
+			errorMessage,
 			hint: "Check the plugin's frameworkConfig for initialization errors",
 		}),
 
-		CONFIG_LOAD_FAILED: ({ path, error }) => ({
+		CONFIG_LOAD_FAILED: ({ path, errorMessage }) => ({
 			title: "Config file failed to load",
-			message: `${path} threw an error during evaluation: ${error}`,
+			message: `${path} threw an error during evaluation:`,
+			errorMessage,
 			hint: "Fix the syntax or runtime error in your config file",
 		}),
 

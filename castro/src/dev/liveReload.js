@@ -72,6 +72,8 @@ class CastroErrorOverlay extends HTMLElement {
 
         .title { color: #ff5f57; font-size: 1.2rem; font-weight: bold; margin-bottom: 0.5rem; }
         .message { color: #fff; margin-bottom: 1rem; }
+        .raw-error { color: #ff8a80; background: rgba(255, 95, 87, 0.1); padding: 0.75rem; margin-bottom: 1rem; border-radius: 4px; border-left: 3px solid #ff5f57; }
+
 
         .notes { list-style: "· "; padding-left: 1.5rem; color: #bbb; margin-bottom: 1rem; }
 
@@ -91,6 +93,7 @@ class CastroErrorOverlay extends HTMLElement {
 
       <div class="title">❌ ${escapeHtml(this.payload.title)}</div>
       ${this.payload.message ? `<div class="message">${escapeHtml(this.payload.message)}</div>` : ""}
+      ${this.payload.errorMessage ? `<div class="raw-error">${escapeHtml(this.payload.errorMessage)}</div>` : ""}
 
       ${this.renderNotes(this.payload.notes)}
       ${this.payload.frames?.map((f) => this.renderFrame(f)).join("") || ""}

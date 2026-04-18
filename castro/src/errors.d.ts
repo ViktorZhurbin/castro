@@ -13,17 +13,17 @@ export type ErrorTokens = {
 	NO_LAYOUT_FILES: { dir: string };
 	LAYOUT_NO_DEFAULT_EXPORT: { file: string };
 	PAGE_NO_DEFAULT_EXPORT: { file: string };
-	YAML_PARSE_FAILED: { error: string; sourceFilePath: string };
 	META_INVALID: { file: string; issues: string[] };
-	BUNDLE_FAILED: { error: string } | undefined;
 	ISLAND_NOT_FOUND: { islandId: string };
 	NO_PAGES: { dir: string };
 	FRAMEWORK_CONFIG_INVALID: { pluginName: string; missing: string };
 	FRAMEWORK_CONFIG_NO_DETECTION: { pluginName: string };
-	CACHE_WRITE_FAILED: { path: string; error: string };
-	ISLAND_RENDER_FAILED: { islandId: string; error: string };
-	FRAMEWORK_LOAD_FAILED: { name: string; error: string };
-	CONFIG_LOAD_FAILED: { path: string; error: string };
+	BUNDLE_FAILED: { errorMessage: string } | undefined;
+	YAML_PARSE_FAILED: { errorMessage: string; sourceFilePath: string };
+	CACHE_WRITE_FAILED: { path: string; errorMessage: string };
+	ISLAND_RENDER_FAILED: { islandId: string; errorMessage: string };
+	FRAMEWORK_LOAD_FAILED: { name: string; errorMessage: string };
+	CONFIG_LOAD_FAILED: { path: string; errorMessage: string };
 	UNEXPECTED: undefined;
 };
 
@@ -44,6 +44,7 @@ export type ErrorContent = {
 	message?: string; // one-line explanation
 	hint?: string; // actionable next step
 	notes?: string[]; // call-site bullets (conflicting files, invalid fields, etc.)
+	errorMessage?: string; // error.message from a JavaScript exception
 };
 
 /**

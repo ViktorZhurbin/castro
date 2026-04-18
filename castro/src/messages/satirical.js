@@ -77,9 +77,10 @@ export const satirical = {
 			hint: "Add a default export to this page",
 		}),
 
-		YAML_PARSE_FAILED: ({ error, sourceFilePath }) => ({
+		YAML_PARSE_FAILED: ({ errorMessage, sourceFilePath }) => ({
 			title: "Invalid Markdown frontmatter",
-			message: `Frontmatter parsing in ${sourceFilePath} failed: ${error}`,
+			message: `Frontmatter parsing in ${sourceFilePath} failed:`,
+			errorMessage,
 			hint: "Check the frontmatter block for counter-revolutionary syntax",
 		}),
 
@@ -92,7 +93,8 @@ export const satirical = {
 
 		BUNDLE_FAILED: (tokens) => ({
 			title: "Production halted",
-			message: tokens?.error ?? "Error during JavaScript compilation",
+			message: "Error during JavaScript compilation:",
+			errorMessage: tokens?.errorMessage,
 			hint: "Check the code frame and error location above",
 		}),
 
@@ -120,27 +122,31 @@ export const satirical = {
 			hint: "Declare detectImports, detectExports, or both",
 		}),
 
-		CACHE_WRITE_FAILED: ({ path, error }) => ({
+		CACHE_WRITE_FAILED: ({ path, errorMessage }) => ({
 			title: "Cache write failed",
-			message: `The State could not stockpile compiled output at ${path}: ${error}`,
+			message: `The State could not stockpile compiled output at ${path}:`,
+			errorMessage,
 			hint: "Check disk space and write permissions",
 		}),
 
-		ISLAND_RENDER_FAILED: ({ islandId, error }) => ({
+		ISLAND_RENDER_FAILED: ({ islandId, errorMessage }) => ({
 			title: "Island SSR failed",
-			message: `Island ${islandId} collapsed on the server: ${error}`,
+			message: `Island ${islandId} collapsed on the server:`,
+			errorMessage,
 			hint: "Check for browser-only APIs like 'window' or 'document'. Move them inside useEffect or a lifecycle hook.",
 		}),
 
-		FRAMEWORK_LOAD_FAILED: ({ name, error }) => ({
+		FRAMEWORK_LOAD_FAILED: ({ name, errorMessage }) => ({
 			title: "Framework failed to load",
-			message: `Plugin "${name}" collapsed during registration: ${error}`,
+			message: `Plugin "${name}" collapsed during registration:`,
+			errorMessage,
 			hint: "Check the plugin's frameworkConfig for initialization errors",
 		}),
 
-		CONFIG_LOAD_FAILED: ({ path, error }) => ({
+		CONFIG_LOAD_FAILED: ({ path, errorMessage }) => ({
 			title: "Config file failed to load",
-			message: `The Party's directives in ${path} could not be processed: ${error}`,
+			message: `The Party's directives in ${path} could not be processed:`,
+			errorMessage,
 			hint: "Fix the syntax or runtime error in your config file",
 		}),
 

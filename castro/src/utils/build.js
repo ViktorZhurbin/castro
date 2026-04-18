@@ -27,7 +27,11 @@ export async function safeBunBuild(config) {
 		if (error instanceof AggregateError) {
 			const frames = error.errors.map(bunLogToFrame);
 
-			throw new CastroError("BUNDLE_FAILED", { error: error.message }, frames);
+			throw new CastroError(
+				"BUNDLE_FAILED",
+				{ errorMessage: error.message },
+				frames,
+			);
 		}
 
 		throw error;

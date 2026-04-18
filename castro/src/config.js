@@ -35,7 +35,7 @@ for (const ext of [".ts", ".js", ".mjs"]) {
 	} catch (err) {
 		throw new CastroError("CONFIG_LOAD_FAILED", {
 			path: `castro.config${ext}`,
-			error: err instanceof Error ? err.message : String(err),
+			errorMessage: err instanceof Error ? err.message : String(err),
 		});
 	}
 }

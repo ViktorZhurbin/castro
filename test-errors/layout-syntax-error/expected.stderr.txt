@@ -1,5 +1,5 @@
 ❌ Production halted
-   Error during JavaScript compilation
+   Error during JavaScript compilation:
 
    Bundle failed
 

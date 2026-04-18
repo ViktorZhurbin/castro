@@ -20,7 +20,7 @@ for (const plugin of userPlugins) {
 		if (err instanceof CastroError) throw err;
 		throw new CastroError("FRAMEWORK_LOAD_FAILED", {
 			name: plugin.name,
-			error: err instanceof Error ? err.message : String(err),
+			errorMessage: err instanceof Error ? err.message : String(err),
 		});
 	}
 }

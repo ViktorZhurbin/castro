@@ -23,6 +23,12 @@ export function renderErrorToTerminal(payload) {
 		lines.push(`   ${payload.message}`);
 	}
 
+	// Raw Error: isolated exception text
+	if (payload.errorMessage) {
+		lines.push("");
+		lines.push(styleText("redBright", `   ${payload.errorMessage}`));
+	}
+
 	// Notes: bulleted list (if present)
 	if (payload.notes && payload.notes.length > 0) {
 		lines.push("");
@@ -79,7 +85,8 @@ function renderFrame(frame) {
 
 		// Caret under the error column
 		if (frame.column !== undefined) {
-			const prefixOffset = LINE_MARKER.length + String(lineNum).length + LINE_SEPARATOR.length;
+			const prefixOffset =
+				LINE_MARKER.length + String(lineNum).length + LINE_SEPARATOR.length;
 			const caretPad = " ".repeat(prefixOffset + frame.column);
 			const caret = styleText("red", "^");
 			lines.push(`${caretPad}${caret}`);
