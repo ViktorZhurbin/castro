@@ -42,19 +42,6 @@ export class HtmlString {
 }
 
 /**
- * Escapes the four HTML-significant characters: & < > "
- * Single quotes are safe — attribute values are always double-quoted.
- * @param {string} str
- */
-function escapeHtml(str) {
-	return str
-		.replace(/&/g, "&amp;")
-		.replace(/</g, "&lt;")
-		.replace(/>/g, "&gt;")
-		.replace(/"/g, "&quot;");
-}
-
-/**
  * Resolves a child value to an HTML string. Server-side counterpart
  * to appendChild in jsx/dom.js. HtmlString passes through as safe
  * markup; everything else is escaped.
@@ -73,7 +60,7 @@ function resolveChild(child) {
 		return val.value;
 	}
 
-	return escapeHtml(String(val));
+	return Bun.escapeHTML(val);
 }
 
 /**
@@ -96,7 +83,7 @@ export function createElement(tag, props, ...children) {
 			return result;
 		}
 
-		return new HtmlString(escapeHtml(String(result ?? "")));
+		return new HtmlString(Bun.escapeHTML(result ?? ""));
 	}
 
 	let html = `<${tag}`;
@@ -114,9 +101,7 @@ export function createElement(tag, props, ...children) {
 		}
 
 		const propString =
-			resolved === true
-				? ` ${key}`
-				: ` ${key}="${escapeHtml(String(resolved))}"`;
+			resolved === true ? ` ${key}` : ` ${key}="${Bun.escapeHTML(resolved)}"`;
 
 		html += propString;
 	}
