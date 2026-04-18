@@ -115,7 +115,7 @@ This is an educational codebase — comments matter, but they respect the reader
 
 All user-facing strings live in `castro/src/messages/`. Both `satirical.js` and `serious.js` implement the `Messages` interface from `messages.d.ts`. **Never use inline strings for user-facing output.** Use `styleText` from `node:util` for colored logs. Tone, satire, and emoji rules: see [castro/src/messages/README.md](castro/src/messages/README.md).
 
-**After changing any error message text**, regenerate the stderr goldens: `UPDATE_SNAPSHOTS=1 bun test:errors`. Inspect the diff before committing — each golden in `test-errors/NN-*/expected.stderr.txt` should show clean structured output.
+**After changing any error message text**, regenerate the stderr goldens: `UPDATE_SNAPSHOTS=1 bun test:errors`. Inspect the diff before committing — each golden in `test-errors/*/expected.stderr.txt` should show clean structured output.
 
 ## Key Design Decisions
 

@@ -1,7 +1,7 @@
 /**
  * Error DX Regression Suite
  *
- * Runs `castro build` in each test-errors/NN-* fixture and asserts that stderr
+ * Runs `castro build` in each test-errors/* fixture and asserts that stderr
  * matches the committed golden. Catches wrong error codes, leaked Bun stack
  * frames, broken rendering (missing hints, dropped notes, misaligned carets),
  * and any other regression in the structured error output pipeline.
@@ -54,10 +54,10 @@ async function readOrUpdateGolden(goldenPath, actual) {
 	return (await f.text()).trimEnd();
 }
 
-const caseDirs = readdirSync(testErrorsDir)
-	.filter((name) => /^\d{2}-/.test(name))
-	.sort()
-	.map((name) => join(testErrorsDir, name));
+const caseDirs = readdirSync(testErrorsDir, { withFileTypes: true })
+	.filter((entry) => entry.isDirectory())
+	.map((entry) => join(testErrorsDir, entry.name))
+	.sort();
 
 for (const caseDir of caseDirs) {
 	const caseName = caseDir.split("/").pop();
