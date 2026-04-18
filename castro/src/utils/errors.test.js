@@ -40,6 +40,65 @@ test("CastroError creates structured payload with tokens", () => {
 	}
 });
 
+test("CastroError preserves frames in payload", () => {
+	/** @type {import("../errors.d.ts").CodeFrame[]} */
+	const frames = [
+		{ file: "/project/pages/about.md", line: 3, column: 1, lineText: "layout: missing" },
+		{ file: "/project/layouts/missing.jsx" },
+	];
+
+	const err = new CastroError(
+		"LAYOUT_NOT_FOUND",
+		{ layoutName: "missing", sourceFilePath: "pages/about.md" },
+		frames,
+	);
+
+	const payload = err.castroPayload;
+
+	if (!Array.isArray(payload.frames) || payload.frames.length !== 2) {
+		throw new Error(`Expected 2 frames, got ${payload.frames?.length}`);
+	}
+
+	const [first] = payload.frames;
+	if (first.file !== "/project/pages/about.md" || first.line !== 3 || first.lineText !== "layout: missing") {
+		throw new Error("Frame fields not preserved correctly");
+	}
+});
+
+test("CastroError defaults to empty frames array", () => {
+	const err = new CastroError("NO_LAYOUTS_DIR", undefined);
+
+	if (!Array.isArray(err.castroPayload.frames) || err.castroPayload.frames.length !== 0) {
+		throw new Error("Expected empty frames array by default");
+	}
+});
+
+test("CastroError surfaces errorMessage token in payload", () => {
+	const err = new CastroError("ISLAND_RENDER_FAILED", {
+		islandId: "Counter",
+		errorMessage: "window is not defined",
+	});
+
+	const payload = err.castroPayload;
+
+	if (payload.errorMessage !== "window is not defined") {
+		throw new Error(`Expected errorMessage to be "window is not defined", got ${payload.errorMessage}`);
+	}
+});
+
+test("toPayload passes through CastroError payload unchanged", () => {
+	const err = new CastroError("NO_PAGES", { dir: "pages/" });
+	const payload = toPayload(err);
+
+	if (payload !== err.castroPayload) {
+		throw new Error("toPayload should return the exact castroPayload reference");
+	}
+
+	if (payload.code !== "NO_PAGES") {
+		throw new Error(`Expected code NO_PAGES, got ${payload.code}`);
+	}
+});
+
 test("toPayload normalizes plain Error to UNEXPECTED", () => {
 	const plainErr = new Error("boom");
 	const payload = toPayload(plainErr);
@@ -50,5 +109,17 @@ test("toPayload normalizes plain Error to UNEXPECTED", () => {
 
 	if (payload.message !== "boom") {
 		throw new Error(`Expected message "boom", got ${payload.message}`);
+	}
+});
+
+test("toPayload normalizes non-Error thrown values", () => {
+	const payload = toPayload("something went wrong");
+
+	if (payload.code !== "UNEXPECTED") {
+		throw new Error(`Expected UNEXPECTED, got ${payload.code}`);
+	}
+
+	if (payload.message !== "something went wrong") {
+		throw new Error(`Expected string value as message, got ${payload.message}`);
 	}
 });
