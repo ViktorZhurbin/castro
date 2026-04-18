@@ -1,4 +1,4 @@
 ❌ Layout not found
-   Layout 'ghost' has defected from layouts/
+   Layout 'ghost' cannot be located — possible defection
 
    → Create the missing layout, or change layout for pages/index.tsx

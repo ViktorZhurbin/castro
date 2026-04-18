@@ -3,4 +3,4 @@
 
    YAML Parse error: Unexpected token
 
-   → Check the frontmatter block for counter-revolutionary syntax
+   → Check the frontmatter block at the top of the file

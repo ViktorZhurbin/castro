@@ -1,5 +1,5 @@
 ❌ Island SSR failed
-   Island components/Broken.island.tsx collapsed on the server:
+   Island components/Broken.island.tsx failed to fulfill its server-side obligations:
 
    Island failed to render
 

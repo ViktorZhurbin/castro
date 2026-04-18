@@ -1,5 +1,5 @@
 ❌ Framework failed to load
-   Plugin "crashing-plugin" collapsed during registration:
+   Plugin "crashing-plugin" failed to report for duty:
 
    Plugin initialization failed
 

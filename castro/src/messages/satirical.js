@@ -10,7 +10,8 @@ export const satirical = {
 		ready: (url) =>
 			`The revolution is live at ${url}\n` +
 			`The State is watching for changes...`,
-		serverError: (msg) => `Server has collapsed: ${msg}`,
+		serverError: (msg) =>
+			`The State apparatus has encountered difficulties: ${msg}`,
 		watchError: (dir, msg) => `Could not watch ${dir}: ${msg}`,
 	},
 
@@ -43,7 +44,7 @@ export const satirical = {
 
 		LAYOUT_NOT_FOUND: ({ layoutName, sourceFilePath }) => ({
 			title: "Layout not found",
-			message: `Layout '${layoutName}' has defected from layouts/`,
+			message: `Layout '${layoutName}' cannot be located — possible defection`,
 			hint: `Create the missing layout, or change layout for ${sourceFilePath}`,
 		}),
 
@@ -81,18 +82,11 @@ export const satirical = {
 			title: "Invalid Markdown frontmatter",
 			message: `Frontmatter parsing in ${sourceFilePath} failed:`,
 			errorMessage,
-			hint: "Check the frontmatter block for counter-revolutionary syntax",
-		}),
-
-		META_INVALID: ({ file, issues }) => ({
-			title: "Invalid page meta",
-			message: `${file} submitted incomplete papers`,
-			notes: issues,
-			hint: "Check that all meta properties are properly formed",
+			hint: "Check the frontmatter block at the top of the file",
 		}),
 
 		BUNDLE_FAILED: (tokens) => ({
-			title: "Production halted",
+			title: "Sabotage detected",
 			message: "Error during JavaScript compilation:",
 			errorMessage: tokens?.errorMessage,
 			hint: "Check the code frame and error location above",
@@ -110,9 +104,16 @@ export const satirical = {
 			hint: "Create a .md or .jsx/.tsx file in pages/ to continue",
 		}),
 
+		META_INVALID: ({ file, issues }) => ({
+			title: "Invalid page meta",
+			message: `${file} has incomplete papers`,
+			notes: issues,
+			hint: "Check that all meta properties are properly formed",
+		}),
+
 		FRAMEWORK_CONFIG_INVALID: ({ pluginName, missing }) => ({
 			title: "Invalid framework config",
-			message: `Plugin "${pluginName}" submitted incomplete papers — missing: ${missing}`,
+			message: `Plugin "${pluginName}" has incomplete papers — missing: ${missing}`,
 			hint: "Fill in the missing fields to pass inspection",
 		}),
 
@@ -124,30 +125,30 @@ export const satirical = {
 
 		CACHE_WRITE_FAILED: ({ path, errorMessage }) => ({
 			title: "Cache write failed",
-			message: `The State could not stockpile compiled output at ${path}:`,
+			message: `Compiled output at ${path} could not be requisitioned:`,
 			errorMessage,
 			hint: "Check disk space and write permissions",
 		}),
 
 		ISLAND_RENDER_FAILED: ({ islandId, errorMessage }) => ({
 			title: "Island SSR failed",
-			message: `Island ${islandId} collapsed on the server:`,
+			message: `Island ${islandId} failed to fulfill its server-side obligations:`,
 			errorMessage,
 			hint: "Check for browser-only APIs like 'window' or 'document'. Move them inside useEffect or a lifecycle hook.",
 		}),
 
 		FRAMEWORK_LOAD_FAILED: ({ name, errorMessage }) => ({
 			title: "Framework failed to load",
-			message: `Plugin "${name}" collapsed during registration:`,
+			message: `Plugin "${name}" failed to report for duty:`,
 			errorMessage,
 			hint: "Check the plugin's frameworkConfig for initialization errors",
 		}),
 
 		CONFIG_LOAD_FAILED: ({ path, errorMessage }) => ({
 			title: "Config file failed to load",
-			message: `The Party's directives in ${path} could not be processed:`,
+			message: `${path} threw an error during evaluation:`,
 			errorMessage,
-			hint: "Fix the syntax or runtime error in your config file",
+			hint: "Fix the syntax or runtime error in your config file — the Plan cannot proceed otherwise",
 		}),
 
 		UNEXPECTED: () => ({

@@ -1,4 +1,4 @@
-❌ Production halted
+❌ Sabotage detected
    Error during JavaScript compilation:
 
    Syntax Error

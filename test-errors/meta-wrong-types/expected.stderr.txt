@@ -1,5 +1,5 @@
 ❌ Invalid page meta
-   pages/index.tsx submitted incomplete papers
+   pages/index.tsx has incomplete papers
 
    · Invalid type for "title": expected string, got number
 

@@ -1,4 +1,4 @@
 ❌ Invalid framework config
-   Plugin "bad-framework-plugin" submitted incomplete papers — missing: getBuildConfig, clientDependencies, hydrateFnString, renderSSR
+   Plugin "bad-framework-plugin" has incomplete papers — missing: getBuildConfig, clientDependencies, hydrateFnString, renderSSR
 
    → Fill in the missing fields to pass inspection
