@@ -58,149 +58,108 @@ class CastroErrorOverlay extends HTMLElement {
 	connectedCallback() {
 		if (!this.shadowRoot || !this.payload) return;
 
-		const notes =
-			this.payload.notes && this.payload.notes.length > 0
-				? `<ul class="notes">${this.payload.notes.map((note) => `<li>${escapeHtml(note)}</li>`).join("")}</ul>`
-				: "";
-
-		const frames =
-			this.payload.frames && this.payload.frames.length > 0
-				? this.payload.frames.map((frame) => this.renderFrame(frame)).join("")
-				: "";
-
 		this.shadowRoot.innerHTML = `
-			<style>
-				:host {
-					position: fixed;
-					inset: 0;
-					z-index: 99999;
-					background: rgba(0,0,0,0.9);
-					color: #fff;
-					font-family: monospace;
-					font-size: 0.875rem;
-					padding: 2rem;
-					box-sizing: border-box;
-					overflow-y: auto;
-				}
-				.title {
-					color: #ff5f57;
-					font-weight: bold;
-					font-size: 1.2rem;
-					margin-bottom: 0.5rem;
-				}
-				.message {
-					color: #e8e8e8;
-					margin-bottom: 1rem;
-				}
-				.notes {
-					list-style: none;
-					padding: 0;
-					margin: 0.5rem 0 1rem 0;
-					color: #bbb;
-				}
-				.notes li {
-					padding-left: 1rem;
-					text-indent: -0.5rem;
-				}
-				.notes li:before {
-					content: "· ";
-				}
-				.frame {
-					margin: 1rem 0;
-					border: 1px solid #555;
-					border-radius: 4px;
-					background: rgba(50, 50, 50, 0.5);
-					padding: 0.75rem;
-				}
-				.frame-file {
-					color: #64b5f6;
-					margin-bottom: 0.5rem;
-					word-break: break-all;
-				}
-				.frame-file a {
-					color: #64b5f6;
-					text-decoration: none;
-				}
-				.frame-file a:hover {
-					text-decoration: underline;
-				}
-				.frame-code {
-					overflow-x: auto;
-					background: rgba(0,0,0,0.3);
-					padding: 0.5rem;
-					border-radius: 3px;
-					line-height: 1.5;
-				}
-				.line {
-					display: flex;
-				}
-				.line-number {
-					color: #666;
-					width: 3em;
-					text-align: right;
-					padding-right: 1em;
-					flex-shrink: 0;
-				}
-				.line-error .line-number {
-					color: #ff5f57;
-					background: rgba(255,95,87,0.1);
-				}
-				.line-text {
-					flex: 1;
-					color: #e8e8e8;
-				}
-				.line-error .line-text {
-					color: #fff;
-					background: rgba(255,95,87,0.1);
-				}
-				.caret-line {
-					color: #ff5f57;
-					padding-left: 1em;
-				}
-				.hint {
-					margin-top: 1.5rem;
-					padding-top: 1rem;
-					border-top: 1px solid #444;
-					color: #ffd54f;
-				}
-			</style>
-			<div class="title">❌ ${escapeHtml(this.payload.title)}</div>
-			${this.payload.message ? `<div class="message">${escapeHtml(this.payload.message)}</div>` : ""}
-			${notes}
-			${frames}
-			${this.payload.hint ? `<div class="hint">→ ${escapeHtml(this.payload.hint)}</div>` : ""}
-		`;
+      <style>
+        :host {
+          position: fixed; inset: 0; z-index: 99999;
+          background: rgba(10, 10, 10, 0.95); color: #ccc;
+          font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+          font-size: 0.875rem; line-height: 1.5;
+          padding: 2rem; box-sizing: border-box; overflow-y: auto;
+        }
+        a { color: #64b5f6; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .title { color: #ff5f57; font-size: 1.2rem; font-weight: bold; margin-bottom: 0.5rem; }
+        .message { color: #fff; margin-bottom: 1rem; }
+
+        .notes { list-style: "· "; padding-left: 1.5rem; color: #bbb; margin-bottom: 1rem; }
+
+        .frame { margin: 1rem 0; padding: 1rem; background: #222; border: 1px solid #444; border-radius: 4px; }
+        .frame-code { overflow-x: auto; margin-top: 0.75rem; background: #111; padding: 0.5rem; border-radius: 3px; }
+
+        .line { display: flex; }
+        .line-num { width: 3rem; text-align: right; padding-right: 1rem; color: #666; flex-shrink: 0; }
+        .line-text { white-space: pre; color: #e8e8e8; }
+
+        .error-row .line-num { color: #ff5f57; background: rgba(255, 95, 87, 0.1); }
+        .error-row .line-text { color: #fff; background: rgba(255, 95, 87, 0.1); flex: 1; }
+        .caret { color: #ff5f57; white-space: pre; }
+
+        .hint { color: #ffd54f; margin-top: 1.5rem; border-top: 1px solid #444; padding-top: 1rem; }
+      </style>
+
+      <div class="title">❌ ${escapeHtml(this.payload.title)}</div>
+      ${this.payload.message ? `<div class="message">${escapeHtml(this.payload.message)}</div>` : ""}
+
+      ${this.renderNotes(this.payload.notes)}
+      ${this.payload.frames?.map((f) => this.renderFrame(f)).join("") || ""}
+
+      ${this.payload.hint ? `<div class="hint">→ ${escapeHtml(this.payload.hint)}</div>` : ""}
+    `;
 	}
 
 	/**
-	 * Renders a single code frame as HTML.
+	 * @param {string[] | undefined} notes
+	 */
+	renderNotes(notes) {
+		if (!notes || !notes.length) return "";
+		return `<ul class="notes">${notes.map((n) => `<li>${escapeHtml(n)}</li>`).join("")}</ul>`;
+	}
+
+	/**
 	 * @param {CodeFrame} frame
-	 * @returns {string}
 	 */
 	renderFrame(frame) {
-		const absPath = frame.file;
-		const relPath = absPath.replace(/^.*\/(pages|layouts|components)/, "$1");
-		const location = `${relPath}${frame.line ? `:${frame.line}` : ""}${frame.column ? `:${frame.column}` : ""}`;
-		const vsCodeUrl = `vscode://file/${absPath}${frame.line ? `:${frame.line}` : ""}${frame.column ? `:${frame.column}` : ""}`;
+		let header = "";
 
-		const codeSnippet = frame.lineText
-			? `
-			<div class="frame-code">
-				<div class="line line-error">
-					<div class="line-number">${frame.line || 0}</div>
-					<div class="line-text">${escapeHtml(frame.lineText)}</div>
-				</div>
-				${frame.column !== undefined && frame.column > 0 ? `<div class="caret-line">${" ".repeat(frame.column)}^</div>` : ""}
-			</div>
-		`
-			: "";
+		// 1. Build the location header
+		if (frame.file) {
+			const relPath = frame.file.replace(
+				/^.*\/(pages|layouts|components)/,
+				"$1",
+			);
+			const suffix = `${frame.line ? `:${frame.line}` : ""}${frame.column ? `:${frame.column}` : ""}`;
 
+			const locationText = `${relPath}${suffix}`;
+			const vsCodeUrl = `vscode://file/${frame.file}${suffix}`;
+
+			header = `<a href="${vsCodeUrl}">${escapeHtml(locationText)}</a>`;
+		} else if (frame.line !== undefined) {
+			header = escapeHtml(
+				`Line ${frame.line}${frame.column ? `:${frame.column}` : ""}`,
+			);
+		}
+
+		// 2. Build the code snippet (with caret fix)
+		let codeSnippet = "";
+		if (frame.lineText) {
+			codeSnippet = `
+        <div class="frame-code">
+          <div class="line error-row">
+            <div class="line-num">${frame.line || 0}</div>
+            <div class="line-text">${escapeHtml(frame.lineText)}</div>
+          </div>
+          ${
+						frame.column
+							? `
+          <div class="line">
+            <div class="line-num"></div>
+            <div class="caret">${" ".repeat(frame.column)}^</div>
+          </div>`
+							: ""
+					}
+        </div>
+      `;
+		}
+
+		// 3. Assemble
 		return `
-			<div class="frame">
-				<div class="frame-file"><a href="${vsCodeUrl}">${escapeHtml(location)}</a></div>
-				${codeSnippet}
-			</div>
-		`;
+      <div class="frame">
+        ${header ? `<div>${header}</div>` : ""}
+        ${codeSnippet}
+      </div>
+    `;
 	}
 }
 

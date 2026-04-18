@@ -39,7 +39,7 @@ export const serious = {
 	errors: {
 		ROUTE_CONFLICT: ({ route1, route2, outputPath }) => ({
 			title: "Route conflict",
-			message: `Two pages map to the same route = ${outputPath}`,
+			message: `Two pages map to the same route - ${outputPath}`,
 			notes: [route1, route2],
 			hint: "Remove or rename one of these files",
 		}),

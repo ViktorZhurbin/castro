@@ -34,8 +34,12 @@ export function renderErrorToTerminal(payload) {
 	// Code frames: source location with context
 	if (payload.frames && payload.frames.length > 0) {
 		for (const frame of payload.frames) {
-			lines.push("");
-			lines.push(renderFrame(frame));
+			const frameStr = renderFrame(frame);
+
+			if (frameStr.length) {
+				lines.push("");
+				lines.push(frameStr);
+			}
 		}
 	}
 
@@ -58,7 +62,10 @@ function renderFrame(frame) {
 
 	// File location: gray, concise
 	const location = formatLocation(frame);
-	lines.push(styleText("gray", `   ${location}`));
+
+	if (location) {
+		lines.push(styleText("gray", `   ${location}`));
+	}
 
 	// Code snippet (if lineText is available)
 	if (frame.lineText) {
@@ -70,9 +77,11 @@ function renderFrame(frame) {
 
 		// Caret under the error column
 		if (frame.column !== undefined) {
-			const caretPad = " ".repeat(frame.column);
+			// "   > " (5) + lineNum length + "  " (2)
+			const prefixOffset = 7 + String(lineNum).length;
+			const caretPad = " ".repeat(prefixOffset + frame.column);
 			const caret = styleText("red", "^");
-			lines.push(`       ${caretPad}${caret}`);
+			lines.push(`${caretPad}${caret}`);
 		}
 	}
 
@@ -82,15 +91,19 @@ function renderFrame(frame) {
 /**
  * Formats a file location as "file:line:column"
  * @param {CodeFrame} frame
- * @returns {string}
+ * @returns {string | undefined}
  */
 function formatLocation(frame) {
-	let location = frame.file;
+	if (!frame.file && frame.line === undefined) return undefined;
+
+	let location = frame.file || "";
 	if (frame.line !== undefined) {
-		location += `:${frame.line}`;
+		location += location ? `:${frame.line}` : `Line ${frame.line}`;
+
 		if (frame.column !== undefined) {
 			location += `:${frame.column}`;
 		}
 	}
-	return location;
+
+	return location || undefined;
 }

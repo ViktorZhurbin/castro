@@ -34,7 +34,7 @@ export type ErrorCode = keyof ErrorTokens;
  * A source location with optional context line from file.
  */
 export interface CodeFrame {
-	file: string; // absolute path
+	file?: string; // absolute path
 	line?: number;
 	column?: number;
 	lineText?: string; // source line for display

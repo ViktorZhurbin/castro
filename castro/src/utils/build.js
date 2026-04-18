@@ -41,7 +41,7 @@ export async function safeBunBuild(config) {
  */
 export function bunLogToFrame(log) {
 	return {
-		file: log.position?.file || "unknown",
+		file: log.position?.file,
 		line: log.position?.line,
 		column: log.position?.column,
 		lineText: log.position?.lineText,
