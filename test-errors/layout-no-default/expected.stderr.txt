@@ -1,0 +1,4 @@
+❌ Layout has no default export
+   default.jsx must export a default function
+
+   → Add a default export to this layout

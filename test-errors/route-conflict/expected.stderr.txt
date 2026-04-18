@@ -1,0 +1,7 @@
+❌ Route conflict
+   Two pages claim the same route - about.html
+
+   · pages/about.md
+   · pages/about.tsx
+
+   → The revolution cannot serve two masters — remove the impostor

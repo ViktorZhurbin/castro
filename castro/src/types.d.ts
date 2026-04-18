@@ -7,6 +7,7 @@ export { ClientScript } from "./components/ClientScript";
  * Castro Type Definitions
  */
 
+export type * from "./errors.d.ts";
 export type { FrameworkConfig } from "./islands/frameworks/types.d.ts";
 
 export type Directive = "comrade:eager" | "comrade:patient" | "comrade:visible";

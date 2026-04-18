@@ -1,0 +1,13 @@
+{
+	"name": "@test-errors/island-syntax-error",
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "castro",
+		"build": "castro build"
+	},
+	"dependencies": {
+		"@vktrz/castro": "workspace:*",
+		"preact": "^10"
+	}
+}

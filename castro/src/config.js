@@ -11,6 +11,7 @@
 /** @import { CastroConfig, DefaultConfig } from './types' */
 
 import { join } from "node:path";
+import { CastroError } from "./utils/errors.js";
 
 /** @type {DefaultConfig} */
 const defaults = {
@@ -23,12 +24,19 @@ const defaults = {
 let userConfig = {};
 
 for (const ext of [".ts", ".js", ".mjs"]) {
+	const configPath = join(process.cwd(), `castro.config${ext}`);
+
+	if (!(await Bun.file(configPath).exists())) continue;
+
 	try {
-		const configPath = join(process.cwd(), `castro.config${ext}`);
 		userConfig = (await import(configPath)).default ?? {};
+
 		break;
-	} catch {
-		// Not found or failed — try next extension
+	} catch (err) {
+		throw new CastroError("CONFIG_LOAD_FAILED", {
+			path: `castro.config${ext}`,
+			errorMessage: err instanceof Error ? err.message : String(err),
+		});
 	}
 }
 

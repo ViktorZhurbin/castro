@@ -5,6 +5,7 @@
 		"src/dev/liveReload.js",
 		"src/islands/hydration.js",
 		"src/islands/marker.js",
-		"src/islands/frameworks/*.js"
+		"src/islands/frameworks/*.js",
+		"src/**/*.test.js"
 	]
 }

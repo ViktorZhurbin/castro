@@ -1,0 +1,6 @@
+❌ Invalid Markdown frontmatter
+   Frontmatter parsing in pages/post.md failed:
+
+   YAML Parse error: Unexpected token
+
+   → Check the frontmatter block at the top of the file

@@ -18,9 +18,9 @@
 
 import { basename, dirname, extname, resolve } from "node:path";
 import { config as castroConfig } from "../config.js";
-import { messages } from "../messages/index.js";
 import { safeBunBuild } from "../utils/build.js";
 import { getProjectDependencies } from "../utils/dependencies.js";
+import { CastroError } from "../utils/errors.js";
 import { getFrameworkConfig } from "./frameworkConfig.js";
 
 /**
@@ -57,7 +57,7 @@ export async function compileIsland({
 	const cssFile = clientResult.outputs.find((f) => f.path.endsWith(".css"));
 
 	if (!jsFile) {
-		throw new Error(messages.build.noJsOutput(sourcePath));
+		throw new CastroError("BUNDLE_FAILED", undefined);
 	}
 
 	// Construct public paths using the generated filenames

@@ -8,16 +8,18 @@
  */
 
 import { mkdir } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import {
 	COMPONENTS_DIR,
 	ISLANDS_OUTPUT_DIR,
 	OUTPUT_DIR,
 } from "../constants.js";
+import { bunLogToFrame } from "../utils/build.js";
 import { getModule } from "../utils/cache.js";
+import { CastroError } from "../utils/errors.js";
 import { getIslandId } from "../utils/ids.js";
 import { compileIsland } from "./compiler.js";
-import { getLoadedFrameworkConfigss } from "./frameworkConfig.js";
+import { getLoadedFrameworkConfigs } from "./frameworkConfig.js";
 
 /**
  * Transpiler for scanning imports and exports from component source files.
@@ -66,21 +68,19 @@ class IslandsRegistry {
 
 		const islandGlob = new Bun.Glob("**/*.island.{jsx,tsx}");
 
-		for await (const relativePath of islandGlob.scan(COMPONENTS_DIR)) {
-			const sourcePath = join(COMPONENTS_DIR, relativePath);
+		try {
+			for await (const relativePath of islandGlob.scan(COMPONENTS_DIR)) {
+				const sourcePath = join(COMPONENTS_DIR, relativePath);
 
-			// Determine which framework this island uses.
-			const frameworkId = await detectFramework(sourcePath);
+				// Determine which framework this island uses.
+				const frameworkId = await detectFramework(sourcePath);
 
-			// Preserve directory nesting in output (e.g., ui/Button → islands/ui/Button)
-			const relativeDir = dirname(relativePath);
-			const outputDir = join(outputIslandsDir, relativeDir);
-			const publicDir = `/${join(ISLANDS_OUTPUT_DIR, relativeDir)}`.replaceAll(
-				"\\",
-				"/",
-			);
+				// Preserve directory nesting in output (e.g., ui/Button → islands/ui/Button)
+				const relativeDir = dirname(relativePath);
+				const outputDir = join(outputIslandsDir, relativeDir);
+				const publicDir =
+					`/${join(ISLANDS_OUTPUT_DIR, relativeDir)}`.replaceAll("\\", "/");
 
-			try {
 				const component = await compileIsland({
 					sourcePath,
 					outputDir,
@@ -103,10 +103,13 @@ class IslandsRegistry {
 				if (component.cssContent) {
 					this.#cssManifest.set(islandId, component.cssContent);
 				}
-			} catch (e) {
-				const err = /** @type {Bun.ErrorLike} */ (e);
+			}
+		} catch (e) {
+			const err = /** @type {Bun.ErrorLike} */ (e);
 
-				throw new Error(err.message);
+			// ENOENT means COMPONENTS_DIR doesn't exist, which is fine
+			if (err.code !== "ENOENT") {
+				throw err;
 			}
 		}
 	}
@@ -134,8 +137,30 @@ export const islands = new IslandsRegistry();
  */
 async function detectFramework(sourcePath) {
 	const code = await Bun.file(sourcePath).text();
-	const scanned = transpiler.scan(code);
-	const fwConfigs = getLoadedFrameworkConfigss();
+
+	let scanned;
+	try {
+		scanned = transpiler.scan(code);
+	} catch (e) {
+		// transpiler.scan() throws its own error shape on syntax errors
+		if (e instanceof AggregateError) {
+			const errorMessage = e.errors.map((e) => e.message).join("\n");
+			const frames = [{ file: resolve(sourcePath) }];
+
+			throw new CastroError("BUNDLE_FAILED", { errorMessage }, frames);
+		}
+
+		const err = /** @type {BuildMessage} */ (e);
+		const frames = [bunLogToFrame(err)];
+
+		throw new CastroError(
+			"BUNDLE_FAILED",
+			{ errorMessage: err.message },
+			frames,
+		);
+	}
+
+	const fwConfigs = getLoadedFrameworkConfigs();
 
 	// Exports first: an explicit `export function hydrate` is the strongest signal.
 	// A vanilla island may import "preact" for SSR types — the hydrate export should win.

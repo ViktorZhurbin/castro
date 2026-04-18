@@ -1,0 +1,4 @@
+❌ Layout not found
+   Layout 'ghost' cannot be located — possible defection
+
+   → Create the missing layout, or change layout for pages/index.tsx

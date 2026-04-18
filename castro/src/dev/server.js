@@ -13,7 +13,7 @@
  * 4. Browser receives event and reloads the page
  */
 
-import { watch } from "node:fs/promises";
+import { stat, watch } from "node:fs/promises";
 import { join } from "node:path";
 import { styleText } from "node:util";
 import { buildAll } from "../builder/buildAll.js";
@@ -28,9 +28,12 @@ import {
 import { allPlugins } from "../islands/plugins.js";
 import { messages } from "../messages/index.js";
 import { debounceAsync } from "../utils/debounceAsync.js";
+import { toPayload } from "../utils/errors.js";
+import { renderErrorToTerminal } from "../utils/renderError.js";
 
 /**
  * @import { FileChangeInfo } from "node:fs/promises";
+ * @import { CastroErrorPayload } from "../types.d.ts";
  */
 
 /**
@@ -167,15 +170,30 @@ export async function startDevServer() {
 			await buildAll();
 			notifyReload();
 		} catch (e) {
-			const err = /** @type {Bun.ErrorLike} */ (e);
-			console.error(styleText("red", err.message));
-			notifyBuildError(err.message);
+			const payload = toPayload(e);
+
+			console.error(renderErrorToTerminal(payload));
+			notifyBuildError(payload);
 		}
 	}, 80);
 
 	// Watch pages directory
 	(async () => {
-		const watcher = watch(PAGES_DIR, { recursive: true });
+		/** @type {AsyncIterable<FileChangeInfo<string>>} */
+		let watcher;
+
+		try {
+			watcher = watch(PAGES_DIR, { recursive: true });
+		} catch (e) {
+			const err = /** @type {Bun.ErrorLike} */ (e);
+
+			// ENOENT = pages/ doesn't exist yet; the error overlay is already showing.
+			// User must restart dev after creating the directory.
+			if (err.code !== "ENOENT") {
+				console.warn(messages.devServer.watchError(PAGES_DIR, err.message));
+			}
+			return;
+		}
 
 		for await (const event of watcher) {
 			if (!event.filename || isIgnored(event.filename)) continue;
@@ -202,8 +220,29 @@ export async function startDevServer() {
 				return;
 			}
 
+			// Track modification times to prevent infinite loops from OS atime/indexing events
+			const mtimes = new Map();
+
 			for await (const event of watcher) {
 				if (!event.filename || isIgnored(event.filename)) continue;
+
+				const filePath = join(dir, event.filename);
+
+				try {
+					const stats = await stat(filePath);
+
+					// Ignore:
+					// - directory access events triggered by cp()
+					// - events where the file wasn't actually modified
+					if (stats.isDirectory() || mtimes.get(filePath) === stats.mtimeMs) {
+						continue;
+					}
+
+					mtimes.set(filePath, stats.mtimeMs);
+				} catch {
+					// File was deleted, proceed to rebuild
+					mtimes.delete(filePath);
+				}
 
 				logFileChanged(`${dir}/${event.filename}`);
 				rebuild.schedule();
@@ -255,10 +294,10 @@ export async function startDevServer() {
 		}
 	}
 
-	/** @param {string} message */
-	function notifyBuildError(message) {
+	/** @param {CastroErrorPayload} payload */
+	function notifyBuildError(payload) {
 		const data = encoder.encode(
-			`event: build-error\ndata: ${JSON.stringify(message)}\n\n`,
+			`event: build-error\ndata: ${JSON.stringify(payload)}\n\n`,
 		);
 		for (const controller of controllers) {
 			try {

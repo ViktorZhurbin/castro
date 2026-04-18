@@ -24,7 +24,8 @@
 			"Bash(bun:*)",
 			"mcp__ide__getDiagnostics",
 			"Bash(curl:*)",
-			"Skill(update-config)"
+			"Skill(update-config)",
+			"Bash(bunx tsc *)"
 		]
 	}
 }

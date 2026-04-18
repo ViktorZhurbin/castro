@@ -1,0 +1,10 @@
+❌ Sabotage detected
+   Error during JavaScript compilation:
+
+   Syntax Error
+
+   input.tsx:2:15
+   > 2    return <div>Count
+                       ^
+
+   → Check the code frame and error location above

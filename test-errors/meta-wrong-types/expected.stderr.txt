@@ -1,0 +1,6 @@
+❌ Invalid page meta
+   pages/index.tsx has incomplete papers
+
+   · Invalid type for "title": expected string, got number
+
+   → Check that all meta properties are properly formed

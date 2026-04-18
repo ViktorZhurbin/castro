@@ -5,7 +5,7 @@
  */
 
 import { config } from "../config.js";
-import { satirical } from "./communist.js";
+import { satirical } from "./satirical.js";
 import { serious } from "./serious.js";
 
 /** @type {Record<string, import("./messages.d.ts").Messages>} */

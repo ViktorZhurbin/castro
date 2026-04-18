@@ -1,0 +1,6 @@
+❌ Island SSR failed
+   Island components/Broken.island.tsx failed to fulfill its server-side obligations:
+
+   Island failed to render
+
+   → Check for browser-only APIs like 'window' or 'document'. Move them inside useEffect or a lifecycle hook.

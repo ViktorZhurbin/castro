@@ -21,7 +21,7 @@
 
 import { mkdirSync, rmSync } from "node:fs";
 import { join, parse, relative, resolve } from "node:path";
-import { messages } from "../messages/index.js";
+import { CastroError } from "./errors.js";
 
 const CACHE_DIR = join(process.cwd(), "node_modules/.cache/castro");
 
@@ -84,11 +84,10 @@ export async function getModule(sourcePath, content, subpath) {
 	try {
 		await Bun.write(fullPath, content);
 	} catch (err) {
-		const error = /** @type {Error} */ (err);
-
-		console.error(messages.errors.cacheWriteFailed(fullPath, error.message));
-
-		throw err;
+		throw new CastroError("CACHE_WRITE_FAILED", {
+			path: fullPath,
+			errorMessage: err instanceof Error ? err.message : String(err),
+		});
 	}
 
 	// file:// URL ensures Bun's module resolver can find bare imports

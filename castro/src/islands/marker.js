@@ -13,7 +13,7 @@
  */
 
 import { h } from "preact";
-import { messages } from "../messages/index.js";
+import { CastroError } from "../utils/errors.js";
 import { getFrameworkConfig } from "./frameworkConfig.js";
 import { islands } from "./registry.js";
 
@@ -55,10 +55,10 @@ export function renderMarker(islandId, props = {}) {
 	const island = islands.getIsland(islandId);
 
 	if (!island?.ssrModule) {
-		throw new Error(messages.errors.islandNotFoundRegistry(islandId));
+		throw new CastroError("ISLAND_NOT_FOUND", { islandId });
 	}
 
-	// Each island carries its framework id from compilation.
+	// Each island carries its framework id from compilation step.
 	// Resolve the config synchronously from the pre-loaded cache.
 	const frameworkConfig = getFrameworkConfig(island.frameworkId);
 
@@ -71,15 +71,11 @@ export function renderMarker(islandId, props = {}) {
 
 	try {
 		ssrHtml = frameworkConfig.renderSSR(island.ssrModule.default, cleanProps);
-	} catch (e) {
-		const err = /** @type {Bun.ErrorLike} */ (e);
-
-		console.error(messages.errors.islandRenderFailed(islandId, err.message));
-
-		// Error fallback always uses Preact's renderSSR since the SSRError
-		// component is a Preact component (uses h() from preact)
-		const defaultConfig = getFrameworkConfig("preact");
-		ssrHtml = defaultConfig.renderSSR(SSRError, { islandId, error: err });
+	} catch (err) {
+		throw new CastroError("ISLAND_RENDER_FAILED", {
+			islandId,
+			errorMessage: err instanceof Error ? err.message : String(err),
+		});
 	}
 
 	return h("castro-island", {
@@ -104,12 +100,6 @@ const DEFAULT_DIRECTIVE = "comrade:visible";
 function processProps(props = {}) {
 	const foundDirectives = DIRECTIVES.filter((d) => d in props);
 
-	if (foundDirectives.length > 1) {
-		throw new Error(
-			messages.errors.multipleDirectives(foundDirectives.join(", ")),
-		);
-	}
-
 	const cleanProps = { ...props };
 
 	if (foundDirectives.length > 0) {
@@ -120,53 +110,4 @@ function processProps(props = {}) {
 		cleanProps,
 		directive: foundDirectives[0] ?? DEFAULT_DIRECTIVE,
 	};
-}
-
-// ============================================================================
-// SSR Error Fallback
-// ============================================================================
-
-/**
- * @type {{ container: Partial<CSSStyleDeclaration>, detail: Partial<CSSStyleDeclaration>, pre: Partial<CSSStyleDeclaration> }}
- */
-const ERROR_STYLES = {
-	container: {
-		border: "2px dashed #c41e3a",
-		padding: "1rem",
-		color: "#c41e3a",
-		background: "#fff0f0",
-		fontFamily: "monospace",
-		fontSize: "0.9em",
-	},
-	detail: {
-		marginTop: "0.5rem",
-		opacity: "0.8",
-	},
-	pre: {
-		marginTop: "0.5rem",
-		whiteSpace: "pre-wrap",
-		wordBreak: "break-word",
-		maxHeight: "150px",
-		overflowY: "auto",
-	},
-};
-
-/**
- * Renders a visible error box when an island fails to SSR.
- * Keeps the build running while making the failure hard to miss.
- *
- * Uses h() directly because this file is imported by compiled pages
- * as plain JS — it doesn't go through the JSX compilation pipeline.
- *
- * @param {{ islandId: string, error: Error }} props
- * @returns {VNode}
- */
-function SSRError(props) {
-	return h(
-		"div",
-		{ style: ERROR_STYLES.container },
-		h("strong", null, messages.errors.ssrErrorTitle),
-		h("div", { style: ERROR_STYLES.detail }, `Error in ${props.islandId}`),
-		h("pre", { style: ERROR_STYLES.pre }, props.error.message),
-	);
 }
