@@ -32,9 +32,6 @@ export const satirical = {
 		usage: "Usage: castro [dev|build]",
 	},
 
-	// SSR error title — rendered inline in islands/marker.js, not thrown
-	ssrErrorTitle: "⚠️ Counter-revolutionary logic detected",
-
 	// The Ministry of Errors (Exceptions)
 	errors: {
 		ROUTE_CONFLICT: ({ route1, route2, outputPath }) => ({
@@ -131,8 +128,8 @@ export const satirical = {
 
 		ISLAND_RENDER_FAILED: ({ islandId, error }) => ({
 			title: "Island SSR failed",
-			message: `${islandId} collapsed on the server: ${error}`,
-			hint: "The island will show an error box instead — fix the component to render correctly",
+			message: `Island ${islandId} collapsed on the server: ${error}`,
+			hint: "Check for browser-only APIs like 'window' or 'document'. Move them inside useEffect or a lifecycle hook.",
 		}),
 
 		FRAMEWORK_LOAD_FAILED: ({ name, error }) => ({

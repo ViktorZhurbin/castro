@@ -8,9 +8,7 @@ import { messages } from "../messages/index.js";
 
 /** @import { ErrorCode, ErrorTokens, CodeFrame, CastroErrorPayload } from "../types.d.ts" */
 
-/**
- * @template {ErrorCode} K
- */
+/** @template {ErrorCode} K */
 export class CastroError extends Error {
 	/**
 	 * @param {K} code

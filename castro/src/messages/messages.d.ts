@@ -5,7 +5,7 @@
  * Both presets must implement this interface exactly.
  */
 
-import type { ErrorCode, ErrorContent, ErrorTokens } from "../errors.d.ts";
+import type { ErrorCode, ErrorContent, ErrorTokens } from "../types.d.ts";
 
 export interface Messages {
 	// Dev server startup and runtime messages
@@ -32,8 +32,6 @@ export interface Messages {
 		unknown: (cmd: string) => string;
 		usage: string;
 	};
-
-	ssrErrorTitle: string;
 
 	// Exception error messages — structured payloads for terminal and browser renderers.
 	errors: { [K in ErrorCode]: (tokens: ErrorTokens[K]) => ErrorContent };

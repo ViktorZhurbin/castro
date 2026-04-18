@@ -31,9 +31,6 @@ export const serious = {
 		usage: "Usage: castro [dev|build]",
 	},
 
-	// SSR error title — rendered inline in islands/marker.js, not thrown
-	ssrErrorTitle: "⚠️ Server Rendering Error",
-
 	// Exceptions
 	errors: {
 		ROUTE_CONFLICT: ({ route1, route2, outputPath }) => ({
@@ -130,8 +127,8 @@ export const serious = {
 
 		ISLAND_RENDER_FAILED: ({ islandId, error }) => ({
 			title: "Island SSR failed",
-			message: `${islandId} failed to render server-side: ${error}`,
-			hint: "The island will show an error box instead — fix the component to render correctly",
+			message: `Island ${islandId} failed to render server-side: ${error}`,
+			hint: "Check for browser-only APIs like 'window' or 'document'. Move them inside useEffect or a lifecycle hook.",
 		}),
 
 		FRAMEWORK_LOAD_FAILED: ({ name, error }) => ({
