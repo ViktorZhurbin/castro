@@ -29,8 +29,13 @@
 /* Constructivist step blocks */
 .step {
 	display: flex;
+	flex-direction: column;
 	border: var(--border-2);
 	background-color: var(--pico-background-color);
+
+	@media (min-width: 576px) {
+		flex-direction: row;
+	}
 }
 
 .step-number {
@@ -41,10 +46,14 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 5rem;
-	min-width: 5rem;
-	border-right: var(--border-2);
 	flex-shrink: 0;
+	border-bottom: var(--border-2);
+
+	@media (min-width: 576px) {
+		width: 5rem;
+		min-width: 5rem;
+		border-right: var(--border-2);
+	}
 
 	@media (min-width: 768px) {
 		width: 7rem;

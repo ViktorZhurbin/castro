@@ -6,7 +6,12 @@ path: /guide/quick-start
 
 # QUICK START
 
+
 Mobilize a static site with interactive islands in under three minutes. Follow the state-approved blueprint.
+
+## PREREQUISITES
+
+Castro runs on **Bun 1.3.8+**, so you'd need to [install](https://bun.sh) it. It uses Bun's build pipeline, dev server, Markdown and YAML parsers. Node will not work here. The old ways have failed.
 
 ## SCAFFOLD (RECOMMENDED)
 
@@ -24,11 +29,7 @@ bun run dev
 ```
 
 
-## MANUAL SETUP
-
-### PREREQUISITES
-
-Castro runs on Bun 1.3.8+, so you'd need to [install](https://bun.sh) it. It uses Bun's build pipeline, markdown parser, YAML parser, and dev server. Node will not work here. The old ways have failed.
+## DETAILS & MANUAL SETUP
 
 
 ### 1. INSTALLATION
@@ -64,16 +65,16 @@ my-site/
 
 ### 3. CREATE A LAYOUT
 
-Layouts wrap your page content in standard HTML. `layouts/default.tsx` is the required default.
+Layouts wrap your page content. `layouts/default.tsx` is required - it automatically wraps every page. You can add more layouts and use them by setting the file name in `meta.layout` in page file (see below).
 
 <aside class="alert">
-  Layouts and pages use Preact - Castro's engine for build-time rendering. No Preact ships to the browser unless you explicitly deploy an island.
+  Layouts and pages use Preact - Castro's engine for build-time rendering. No Preact ships to the browser unless you use a Preact island on the page (see <a href="/guide/components-islands">Components & Islands</a>).
   <br/>
   <br/>
   Layouts must use a <code>default export</code>.
 </aside>
 
-Each layout receives `children` prop which is a page content. You can pass other props from page components (see below).
+Each layout receives `children` prop which is a page content. You can pass other props from pages.
 
 ```tsx
 import type { ComponentChildren } from "preact";
@@ -126,14 +127,16 @@ export default function Home() {
   JSX pages require a <code>default export</code> for the component.
 </aside>
 
-The named <code>meta</code> export is optional - it allows to pass any custom props to the layout, or use a non-default layout. In Markdown, `frontmatter` serves the same purpose:
+The named <code>meta</code> export is optional - it allows to pass any custom props to the layout. It also allows to use a non-default layout - `meta.layout: string`. Or no layout at all - `meta.layout: "none" | false`.
+
+In Markdown, `frontmatter` serves the same purpose:
 
 #### MARKDOWN PAGE
 
 ```markdown
 ---
 title: About
-layout: special
+layout: none
 ---
 
 # About

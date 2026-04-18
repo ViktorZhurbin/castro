@@ -127,16 +127,21 @@ function initButton(dark: string, light: string) {
 }`}</code>
 			</pre>
 			<p>
+				Full source of the theme toggle used by this website:{" "}
+				<a href="https://github.com/ViktorZhurbin/castro/blob/main/website/src/components/theme/ThemeToggle.tsx">
+					ThemeToggle.tsx
+				</a>
+			</p>
+			<p>
 				The function is written and type-checked as normal TypeScript. It's only
 				serialized via <code>.toString()</code> when the page renders at build
 				time. Args must be JSON-serializable - functions and symbols will throw
 				an error. The above example renders to:
 			</p>
 			<pre>
-				<code>{`<button>Toggle</button>
-<script>(initButton initState(dark, light) {
-  ...
-})("dark", "light");
+				<code>{`<button id="toggle">Toggle</button>
+<script>
+	(initButton(dark, light) {...})("dark", "light");
 </script>`}</code>
 			</pre>
 
