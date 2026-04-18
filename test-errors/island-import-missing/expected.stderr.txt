@@ -1,4 +1,6 @@
 ❌ Production halted
+   Error during JavaScript compilation
+
    Bundle failed
 
    <FIXTURE>/pages/index.tsx:1:19

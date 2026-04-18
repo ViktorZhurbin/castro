@@ -64,15 +64,14 @@ for (const caseDir of caseDirs) {
 
 	test(`error case: ${caseName}`, async () => {
 		const metadataFile = Bun.file(join(caseDir, "metadata.json"));
-		const metadata = (await metadataFile.exists()) ? await metadataFile.json() : {};
-		const expectedExitCode = metadata.exitCode ?? 1;
+		const metadata = (await metadataFile.exists()) ? await metadataFile.json() : { exitCode: 1 };
 
 		const result = Bun.spawnSync(
 			[join(caseDir, "node_modules/.bin/castro"), "build"],
 			{ cwd: caseDir, stderr: "pipe", stdout: "pipe" },
 		);
 
-		expect(result.exitCode).toBe(expectedExitCode);
+		expect(result.exitCode).toBe(metadata.exitCode);
 
 		const normalized = normalizeStderr(result.stderr.toString(), caseDir);
 		const goldenPath = join(caseDir, "expected.stderr.txt");

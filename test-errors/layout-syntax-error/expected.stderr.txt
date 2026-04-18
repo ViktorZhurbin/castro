@@ -1,4 +1,6 @@
 ❌ Production halted
+   Error during JavaScript compilation
+
    Bundle failed
 
    <FIXTURE>/layouts/default.jsx:2:25
