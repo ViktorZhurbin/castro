@@ -9,7 +9,7 @@
         "typescript": "^6.0.2",
       },
     },
-    "castro": {
+    "core": {
       "name": "@vktrz/castro",
       "version": "0.1.0",
       "bin": {
@@ -62,6 +62,142 @@
         "@vktrz/castro": "workspace:*",
         "postcss": "^8",
         "tailwindcss": "^4",
+      },
+    },
+    "test-errors/empty-layouts-dir": {
+      "name": "@test-errors/empty-layouts-dir",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "test-errors/framework-config-invalid": {
+      "name": "@test-errors/framework-config-invalid",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "test-errors/framework-config-no-detection": {
+      "name": "@test-errors/framework-config-no-detection",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "test-errors/framework-load-failed": {
+      "name": "@test-errors/framework-load-failed",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "test-errors/island-import-missing": {
+      "name": "@test-errors/island-import-missing",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "test-errors/island-render-failed": {
+      "name": "@test-errors/island-render-failed",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "test-errors/island-syntax-error": {
+      "name": "@test-errors/island-syntax-error",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "test-errors/layout-no-default": {
+      "name": "@test-errors/layout-no-default",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "test-errors/layout-not-found": {
+      "name": "@test-errors/layout-not-found",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "test-errors/layout-syntax-error": {
+      "name": "@test-errors/layout-syntax-error",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "test-errors/meta-wrong-types": {
+      "name": "@test-errors/meta-wrong-types",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "test-errors/missing-default-layout": {
+      "name": "@test-errors/missing-default-layout",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "test-errors/no-layouts-dir": {
+      "name": "@test-errors/no-layouts-dir",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "test-errors/page-no-default-export": {
+      "name": "@test-errors/page-no-default-export",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "test-errors/page-syntax-error": {
+      "name": "@test-errors/page-syntax-error",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "test-errors/route-conflict": {
+      "name": "@test-errors/route-conflicts",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "test-errors/yaml-broken": {
+      "name": "@test-errors/yaml-broken",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
       },
     },
     "test-site": {
@@ -263,6 +399,40 @@
 
     "@tailwindcss/postcss": ["@tailwindcss/postcss@4.2.0", "", { "dependencies": { "@alloc/quick-lru": "^5.2.0", "@tailwindcss/node": "4.2.0", "@tailwindcss/oxide": "4.2.0", "postcss": "^8.5.6", "tailwindcss": "4.2.0" } }, "sha512-u6YBacGpOm/ixPfKqfgrJEjMfrYmPD7gEFRoygS/hnQaRtV0VCBdpkx5Ouw9pnaLRwwlgGCuJw8xLpaR0hOrQg=="],
 
+    "@test-errors/empty-layouts-dir": ["@test-errors/empty-layouts-dir@workspace:test-errors/empty-layouts-dir"],
+
+    "@test-errors/framework-config-invalid": ["@test-errors/framework-config-invalid@workspace:test-errors/framework-config-invalid"],
+
+    "@test-errors/framework-config-no-detection": ["@test-errors/framework-config-no-detection@workspace:test-errors/framework-config-no-detection"],
+
+    "@test-errors/framework-load-failed": ["@test-errors/framework-load-failed@workspace:test-errors/framework-load-failed"],
+
+    "@test-errors/island-import-missing": ["@test-errors/island-import-missing@workspace:test-errors/island-import-missing"],
+
+    "@test-errors/island-render-failed": ["@test-errors/island-render-failed@workspace:test-errors/island-render-failed"],
+
+    "@test-errors/island-syntax-error": ["@test-errors/island-syntax-error@workspace:test-errors/island-syntax-error"],
+
+    "@test-errors/layout-no-default": ["@test-errors/layout-no-default@workspace:test-errors/layout-no-default"],
+
+    "@test-errors/layout-not-found": ["@test-errors/layout-not-found@workspace:test-errors/layout-not-found"],
+
+    "@test-errors/layout-syntax-error": ["@test-errors/layout-syntax-error@workspace:test-errors/layout-syntax-error"],
+
+    "@test-errors/meta-wrong-types": ["@test-errors/meta-wrong-types@workspace:test-errors/meta-wrong-types"],
+
+    "@test-errors/missing-default-layout": ["@test-errors/missing-default-layout@workspace:test-errors/missing-default-layout"],
+
+    "@test-errors/no-layouts-dir": ["@test-errors/no-layouts-dir@workspace:test-errors/no-layouts-dir"],
+
+    "@test-errors/page-no-default-export": ["@test-errors/page-no-default-export@workspace:test-errors/page-no-default-export"],
+
+    "@test-errors/page-syntax-error": ["@test-errors/page-syntax-error@workspace:test-errors/page-syntax-error"],
+
+    "@test-errors/route-conflicts": ["@test-errors/route-conflicts@workspace:test-errors/route-conflict"],
+
+    "@test-errors/yaml-broken": ["@test-errors/yaml-broken@workspace:test-errors/yaml-broken"],
+
     "@tybys/wasm-util": ["@tybys/wasm-util@0.10.1", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg=="],
 
     "@types/babel__core": ["@types/babel__core@7.20.5", "", { "dependencies": { "@babel/parser": "^7.20.7", "@babel/types": "^7.20.7", "@types/babel__generator": "*", "@types/babel__template": "*", "@types/babel__traverse": "*" } }, "sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA=="],
@@ -277,7 +447,7 @@
 
     "@types/node": ["@types/node@25.2.1", "", { "dependencies": { "undici-types": "~7.16.0" } }, "sha512-CPrnr8voK8vC6eEtyRzvMpgp3VyVRhgclonE7qYi6P9sXwYb59ucfrnmFBTaP0yUi8Gk4yZg/LlTJULGxvTNsg=="],
 
-    "@vktrz/castro": ["@vktrz/castro@workspace:castro"],
+    "@vktrz/castro": ["@vktrz/castro@workspace:core"],
 
     "@vktrz/castro-jsx": ["@vktrz/castro-jsx@workspace:packages/castro-jsx"],
 

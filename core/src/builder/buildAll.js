@@ -1,0 +1,133 @@
+/**
+ * Build Orchestrator
+ *
+ * Coordinates the full site build:
+ * 1. Wipe and recreate output dir
+ * 2. Copy public dir to output dir
+ * 3. Run plugin pre-build hooks (onPageBuild)
+ * 4. Compile and load islands and layouts
+ * 5. Scan pages, detect route conflicts, build each page
+ * 6. Run plugin post-build hooks (onAfterBuild) with build context
+ */
+
+import { cp, mkdir, rm } from "node:fs/promises";
+import { styleText } from "node:util";
+import { OUTPUT_DIR, PAGES_DIR, PUBLIC_DIR } from "../constants.js";
+import { pageState } from "../islands/marker.js";
+import { allPlugins } from "../islands/plugins.js";
+import { islands } from "../islands/registry.js";
+import { layouts } from "../layouts/registry.js";
+import { messages } from "../messages/index.js";
+import { CastroError } from "../utils/errors.js";
+import { buildPage } from "./buildPage.js";
+
+/**
+ * @import { BuildContext } from "../types.js"
+ */
+
+export async function buildAll() {
+	const isProd = process.env.NODE_ENV === "production";
+
+	console.info(messages.build.starting);
+
+	// Fresh build: wipe and recreate output dir.
+	await rm(OUTPUT_DIR, { recursive: true, force: true });
+	await mkdir(OUTPUT_DIR, { recursive: true });
+
+	// Copy static assets from public → output dir
+	try {
+		await cp(PUBLIC_DIR, OUTPUT_DIR, { recursive: true });
+	} catch (e) {
+		const err = /** @type {Bun.ErrorLike} */ (e);
+
+		// ENOENT means PUBLIC_DIR doesn't exist, which is fine
+		if (err.code !== "ENOENT") {
+			throw err;
+		}
+	}
+
+	for (const plugin of allPlugins) {
+		if (plugin.onPageBuild) {
+			await plugin.onPageBuild();
+		}
+	}
+
+	await islands.load();
+	await layouts.load();
+	const pagesMap = await scanPages();
+
+	// Accumulate build context across pages for onAfterBuild hooks
+	/** @type {BuildContext} */
+	const buildContext = { usedFrameworks: new Set() };
+
+	for (const [outputPath, sourcePath] of pagesMap.entries()) {
+		if (isProd) {
+			console.info(
+				messages.build.writingFile(
+					styleText("cyan", sourcePath),
+					styleText("gray", outputPath),
+				),
+			);
+		}
+
+		await buildPage(sourcePath);
+
+		// Merge per-page state into cross-page build context
+		buildContext.usedFrameworks = buildContext.usedFrameworks.union(
+			pageState.usedFrameworks,
+		);
+	}
+
+	// Post-build hooks: plugins can conditionally write assets based
+	// on which frameworks were actually used across all pages
+	for (const plugin of allPlugins) {
+		if (plugin.onAfterBuild) {
+			await plugin.onAfterBuild(buildContext);
+		}
+	}
+
+	console.info(messages.build.success(`${pagesMap.size}`));
+}
+
+/**
+ * Glob all pages, skip private paths, detect route conflicts.
+ * @returns {Promise<Map<string, string>>} outputPath → sourcePath
+ */
+async function scanPages() {
+	/** @type {Map<string, string>} */
+	const pagesMap = new Map();
+	const pageGlob = new Bun.Glob("**/*.{md,jsx,tsx}");
+
+	try {
+		for await (const sourcePath of pageGlob.scan(PAGES_DIR)) {
+			// Skip files/folders prefixed with `_` (private convention, e.g. _drafts/, _partial.tsx)
+			if (sourcePath.split("/").some((segment) => segment.startsWith("_"))) {
+				continue;
+			}
+
+			const outputPath = sourcePath.replace(/\.(md|[jt]sx)$/, ".html");
+
+			// Example: both foo.md and foo.jsx try to be foo.html
+			if (pagesMap.has(outputPath)) {
+				const existingFile = pagesMap.get(outputPath);
+				const route1 = `${PAGES_DIR}/${existingFile}`;
+				const route2 = `${PAGES_DIR}/${sourcePath}`;
+
+				throw new CastroError("ROUTE_CONFLICT", { route1, route2, outputPath });
+			}
+
+			pagesMap.set(outputPath, sourcePath);
+		}
+	} catch (e) {
+		const err = /** @type {Bun.ErrorLike} */ (e);
+
+		if (err.code !== "ENOENT") throw err;
+	}
+
+	// Covers both: PAGES_DIR missing entirely (ENOENT swallowed above) or empty
+	if (pagesMap.size === 0) {
+		throw new CastroError("NO_PAGES", { dir: PAGES_DIR });
+	}
+
+	return pagesMap;
+}
