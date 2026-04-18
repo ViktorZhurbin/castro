@@ -37,14 +37,14 @@ Subdirectory roles — read each file's module docblock for its specific respons
 
 - `cli.js`, `config.js`, `constants.js` — entry point, config loader, shared path constants
 - `builder/` — page build pipeline (orchestration, JSX/Markdown compilation, render, HTML assembly, CSS extraction)
-- `islands/` — island compilation, registry, build-time marker, runtime hydration custom element, framework configs, plugin registry
+- `islands/` — island compilation, registry, island ID generation, build-time marker, runtime hydration custom element, framework configs, plugin registry
 - `islands/frameworks/` — built-in framework configs (Preact, vanilla)
 - `islands/plugins/` — internal plugins (island runtime injection, dependency vendoring)
 - `layouts/` — layout discovery and compilation
 - `dev/` — dev server (Bun.serve + watchers + SSE) and live-reload client
 - `messages/` — `satirical.js` and `serious.js` presets implementing `messages.d.ts`
 - `components/ClientScript.tsx` — function-as-inline-IIFE serializer (zero-framework client behavior)
-- `utils/` — dependency externals, content-hashed module cache, island ID generation, page metadata validation, debounce, error building and terminal rendering
+- `utils/` — dependency externals, content-hashed module cache, Bun.build wrapper, debounce, error building and terminal rendering
 - `errors.d.ts` — structured error payload types (`ErrorCode`, `CodeFrame`, `CastroErrorPayload`)
 - `types.d.ts`, `jsx.d.ts` — shared types and JSX namespace for custom directives
 

@@ -15,7 +15,7 @@
  */
 
 import { dirname, resolve } from "node:path";
-import { getIslandId } from "../utils/ids.js";
+import { getIslandId } from "./islandId.js";
 
 const CASTRO_SRC = resolve(dirname(import.meta.path), "..");
 

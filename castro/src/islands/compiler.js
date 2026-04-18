@@ -18,7 +18,7 @@
 
 import { basename, dirname, extname, resolve } from "node:path";
 import { config as castroConfig } from "../config.js";
-import { safeBunBuild } from "../utils/build.js";
+import { safeBunBuild } from "../utils/bunBuild.js";
 import { getProjectDependencies } from "../utils/dependencies.js";
 import { CastroError } from "../utils/errors.js";
 import { getFrameworkConfig } from "./frameworkConfig.js";

@@ -14,12 +14,12 @@ import {
 	ISLANDS_OUTPUT_DIR,
 	OUTPUT_DIR,
 } from "../constants.js";
-import { bunLogToFrame } from "../utils/build.js";
+import { bunLogToFrame } from "../utils/bunBuild.js";
 import { getModule } from "../utils/cache.js";
 import { CastroError } from "../utils/errors.js";
-import { getIslandId } from "../utils/ids.js";
 import { compileIsland } from "./compiler.js";
 import { getLoadedFrameworkConfigs } from "./frameworkConfig.js";
+import { getIslandId } from "./islandId.js";
 
 /**
  * Transpiler for scanning imports and exports from component source files.

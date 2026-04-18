@@ -43,7 +43,12 @@ test("CastroError creates structured payload with tokens", () => {
 test("CastroError preserves frames in payload", () => {
 	/** @type {import("../errors.d.ts").CodeFrame[]} */
 	const frames = [
-		{ file: "/project/pages/about.md", line: 3, column: 1, lineText: "layout: missing" },
+		{
+			file: "/project/pages/about.md",
+			line: 3,
+			column: 1,
+			lineText: "layout: missing",
+		},
 		{ file: "/project/layouts/missing.jsx" },
 	];
 
@@ -60,7 +65,11 @@ test("CastroError preserves frames in payload", () => {
 	}
 
 	const [first] = payload.frames;
-	if (first.file !== "/project/pages/about.md" || first.line !== 3 || first.lineText !== "layout: missing") {
+	if (
+		first.file !== "/project/pages/about.md" ||
+		first.line !== 3 ||
+		first.lineText !== "layout: missing"
+	) {
 		throw new Error("Frame fields not preserved correctly");
 	}
 });
@@ -68,7 +77,10 @@ test("CastroError preserves frames in payload", () => {
 test("CastroError defaults to empty frames array", () => {
 	const err = new CastroError("NO_LAYOUTS_DIR", undefined);
 
-	if (!Array.isArray(err.castroPayload.frames) || err.castroPayload.frames.length !== 0) {
+	if (
+		!Array.isArray(err.castroPayload.frames) ||
+		err.castroPayload.frames.length !== 0
+	) {
 		throw new Error("Expected empty frames array by default");
 	}
 });
@@ -82,7 +94,9 @@ test("CastroError surfaces errorMessage token in payload", () => {
 	const payload = err.castroPayload;
 
 	if (payload.errorMessage !== "window is not defined") {
-		throw new Error(`Expected errorMessage to be "window is not defined", got ${payload.errorMessage}`);
+		throw new Error(
+			`Expected errorMessage to be "window is not defined", got ${payload.errorMessage}`,
+		);
 	}
 });
 
@@ -91,7 +105,9 @@ test("toPayload passes through CastroError payload unchanged", () => {
 	const payload = toPayload(err);
 
 	if (payload !== err.castroPayload) {
-		throw new Error("toPayload should return the exact castroPayload reference");
+		throw new Error(
+			"toPayload should return the exact castroPayload reference",
+		);
 	}
 
 	if (payload.code !== "NO_PAGES") {

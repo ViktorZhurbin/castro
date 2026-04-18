@@ -3,10 +3,11 @@ import { h } from "preact";
 import { config } from "../config.js";
 import { OUTPUT_DIR, PAGES_DIR } from "../constants.js";
 import { CastroError } from "../utils/errors.js";
-import { validateMeta } from "../utils/validateMeta.js";
 import { compileJSX } from "./compileJsx.js";
 import { renderPage } from "./renderPage.js";
 import { writeCSSFiles } from "./writeCss.js";
+
+/** @import { PageMeta } from "../types.d.ts" */
 
 /**
  * @param {string} relativeSourcePath - Relative path of source file
@@ -148,4 +149,35 @@ function parseFrontmatter(fileContent, sourceFilePath) {
 			sourceFilePath,
 		});
 	}
+}
+
+/**
+ * @param {PageMeta} meta
+ * @param {string} sourceFileName
+ * @returns {PageMeta}
+ */
+function validateMeta(meta, sourceFileName) {
+	const issues = [];
+
+	if (meta.title && typeof meta.title !== "string") {
+		issues.push(
+			`Invalid type for "title": expected string, got ${typeof meta.title}`,
+		);
+	}
+
+	// Check layout (string, boolean, or undefined)
+	if (meta.layout !== undefined) {
+		const type = typeof meta.layout;
+		if (type !== "string" && type !== "boolean") {
+			issues.push(
+				`Invalid type for "layout": expected string or boolean, got ${type}`,
+			);
+		}
+	}
+
+	if (issues.length > 0) {
+		throw new CastroError("META_INVALID", { file: sourceFileName, issues });
+	}
+
+	return meta;
 }

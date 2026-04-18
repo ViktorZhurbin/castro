@@ -3,7 +3,7 @@ import {
 	castroExternalsPlugin,
 	islandMarkerPlugin,
 } from "../islands/buildPlugins.js";
-import { safeBunBuild } from "../utils/build.js";
+import { safeBunBuild } from "../utils/bunBuild.js";
 import { getModule } from "../utils/cache.js";
 import { getProjectDependencies } from "../utils/dependencies.js";
 import { CastroError } from "../utils/errors.js";
