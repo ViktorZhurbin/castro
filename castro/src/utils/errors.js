@@ -30,8 +30,7 @@ export class CastroError extends Error {
 		this.castroPayload = { code, frames, ...errorContent };
 		this.name = "CastroError";
 
-		// Optional: explicitly strip the constructor from the stack trace
-		// (Bun/V8 specific, makes it even cleaner)
+		// Makes stack traces point to the throw site, not this constructor.
 		if (Error.captureStackTrace) {
 			Error.captureStackTrace(this, CastroError);
 		}

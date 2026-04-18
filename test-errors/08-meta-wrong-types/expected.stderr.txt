@@ -1,4 +1,3 @@
-Sabotage detected in pages/index.tsx
 ❌ Invalid page meta
    pages/index.tsx submitted incomplete papers
 

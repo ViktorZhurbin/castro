@@ -119,15 +119,15 @@ class CastroErrorOverlay extends HTMLElement {
 				/^.*\/(pages|layouts|components)/,
 				"$1",
 			);
-			const suffix = `${frame.line ? `:${frame.line}` : ""}${frame.column ? `:${frame.column}` : ""}`;
+			const suffix = `${frame.line !== undefined ? `:${frame.line}` : ""}${frame.column !== undefined ? `:${frame.column}` : ""}`;
 
 			const locationText = `${relPath}${suffix}`;
 			const vsCodeUrl = `vscode://file/${frame.file}${suffix}`;
 
-			header = `<a href="${vsCodeUrl}">${escapeHtml(locationText)}</a>`;
+			header = `<a href="${escapeHtml(vsCodeUrl)}">${escapeHtml(locationText)}</a>`;
 		} else if (frame.line !== undefined) {
 			header = escapeHtml(
-				`Line ${frame.line}${frame.column ? `:${frame.column}` : ""}`,
+				`Line ${frame.line}${frame.column !== undefined ? `:${frame.column}` : ""}`,
 			);
 		}
 
@@ -141,7 +141,7 @@ class CastroErrorOverlay extends HTMLElement {
             <div class="line-text">${escapeHtml(frame.lineText)}</div>
           </div>
           ${
-						frame.column
+						frame.column !== undefined
 							? `
           <div class="line">
             <div class="line-num"></div>

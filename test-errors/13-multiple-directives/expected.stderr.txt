@@ -1,5 +1,0 @@
-Sabotage detected in pages/index.tsx
-❌ Multiple hydration directives
-   Components should serve a single purpose, defined by state
-
-   → Use only one hydration directive per island

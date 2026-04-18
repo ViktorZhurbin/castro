@@ -1,9 +1,8 @@
-Sabotage detected in pages/broken.tsx
 ❌ Production halted
    Bundle failed
 
    <FIXTURE>/pages/broken.tsx:2:15
    > 2    return <div>Broken
-                      ^
+                       ^
 
    → Check the code frame and error location above

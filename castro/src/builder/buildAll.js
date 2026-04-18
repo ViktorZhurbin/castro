@@ -70,17 +70,7 @@ export async function buildAll() {
 			);
 		}
 
-		try {
-			await buildPage(sourcePath);
-		} catch (e) {
-			const err = /** @type {Bun.ErrorLike} */ (e);
-			const sourceFilePath = `${PAGES_DIR}/${sourcePath}`;
-
-			console.error(
-				styleText("red", messages.build.fileFailure(sourceFilePath)),
-			);
-			throw err;
-		}
+		await buildPage(sourcePath);
 
 		// Merge per-page state into cross-page build context
 		buildContext.usedFrameworks = buildContext.usedFrameworks.union(

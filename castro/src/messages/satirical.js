@@ -18,7 +18,6 @@ export const satirical = {
 		starting: "Realizing the Five-Year Plan...",
 		success: (count) => `✓ Delivered ${count} pages to the people.`,
 		writingFile: (source, dest) => `Writing ${source} → ${dest}`,
-		fileFailure: (file) => `Sabotage detected in ${file}`,
 	},
 
 	// File operations
@@ -98,12 +97,6 @@ export const satirical = {
 			title: "Production halted",
 			message: tokens?.error ?? "Error during JavaScript compilation",
 			hint: "Check the code frame and error location above",
-		}),
-
-		MULTIPLE_DIRECTIVES: () => ({
-			title: "Multiple hydration directives",
-			message: `Components should serve a single purpose, defined by state`,
-			hint: "Use only one hydration directive per island",
 		}),
 
 		ISLAND_NOT_FOUND: ({ islandId }) => ({

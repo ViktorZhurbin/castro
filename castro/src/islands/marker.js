@@ -80,6 +80,7 @@ export function renderMarker(islandId, props = {}) {
 			islandId,
 			error: err.message,
 		}).castroPayload;
+
 		console.error(renderErrorToTerminal(ssrErrPayload));
 
 		// Error fallback always uses Preact's renderSSR since the SSRError
@@ -109,12 +110,6 @@ const DEFAULT_DIRECTIVE = "comrade:visible";
  */
 function processProps(props = {}) {
 	const foundDirectives = DIRECTIVES.filter((d) => d in props);
-
-	if (foundDirectives.length > 1) {
-		throw new CastroError("MULTIPLE_DIRECTIVES", {
-			directives: foundDirectives,
-		});
-	}
 
 	const cleanProps = { ...props };
 

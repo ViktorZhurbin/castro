@@ -20,7 +20,6 @@ export interface Messages {
 		starting: string;
 		success: (count: string) => string;
 		writingFile: (source: string, dest: string) => string;
-		fileFailure: (file: string) => string;
 	};
 
 	// File operation messages

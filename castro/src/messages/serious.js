@@ -17,7 +17,6 @@ export const serious = {
 		starting: "Building site...",
 		success: (count) => `✓ Build complete: ${count} pages.`,
 		writingFile: (source, dest) => `Writing ${source} → ${dest}`,
-		fileFailure: (file) => `✗ Failed to build ${file}`,
 	},
 
 	// File operations
@@ -97,12 +96,6 @@ export const serious = {
 			title: "Build failed",
 			message: tokens?.error ?? "Error during JavaScript compilation",
 			hint: "Check the code frame and error location above",
-		}),
-
-		MULTIPLE_DIRECTIVES: ({ directives }) => ({
-			title: "Multiple hydration directives",
-			message: `Component has both ${directives.join(" and ")}`,
-			hint: "Use only one hydration directive per island",
 		}),
 
 		ISLAND_NOT_FOUND: ({ islandId }) => ({

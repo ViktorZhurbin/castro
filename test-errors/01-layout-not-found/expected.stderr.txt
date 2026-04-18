@@ -1,4 +1,3 @@
-Sabotage detected in pages/index.tsx
 ❌ Layout not found
    Layout 'ghost' has defected from layouts/
 

@@ -46,13 +46,13 @@ To verify fixes work, edit the broken file in place — the dev server will rebu
 | `10-layout-syntax-error` | Layout has syntax error | `BUNDLE_FAILED` | `layouts/default.jsx` unclosed brace |
 | `11-island-syntax-error` | Island has syntax error | `BUNDLE_FAILED` | `components/Counter.island.tsx` unclosed brace |
 | `12-island-import-missing` | Page imports non-existent island | `BUNDLE_FAILED` | imports `./components/Ghost.island.tsx` which doesn't exist |
-| `13-multiple-directives` | Island has multiple hydration directives | `MULTIPLE_DIRECTIVES` | `<Counter comrade:eager comrade:visible />` |
+
 
 ## Verification Checklist
 
 For each error, verify in the terminal and browser:
 
-- **Terminal**: 
+- **Terminal**:
   - New structured error format (title, message, hint)
   - Code frame with line numbers where applicable
   - Color applied correctly (red title, yellow hint, gray frames)

@@ -16,7 +16,6 @@ export type ErrorTokens = {
 	YAML_PARSE_FAILED: { error: string; sourceFilePath: string };
 	META_INVALID: { file: string; issues: string[] };
 	BUNDLE_FAILED: { error: string } | undefined;
-	MULTIPLE_DIRECTIVES: { directives: string[] };
 	ISLAND_NOT_FOUND: { islandId: string };
 	NO_PAGES: { dir: string };
 	FRAMEWORK_CONFIG_INVALID: { pluginName: string; missing: string };
@@ -40,7 +39,7 @@ export interface CodeFrame {
 	lineText?: string; // source line for display
 }
 
-type ErrorContent = {
+export type ErrorContent = {
 	title: string; // "Route conflict", "Layout not found", etc.
 	message?: string; // one-line explanation
 	hint?: string; // actionable next step

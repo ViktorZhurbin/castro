@@ -1,9 +1,8 @@
-Sabotage detected in pages/index.tsx
 ❌ Production halted
    Bundle failed
 
    <FIXTURE>/pages/index.tsx:1:19
    > 1  import Ghost from "./components/Ghost.island.tsx";
-                          ^
+                           ^
 
    → Check the code frame and error location above

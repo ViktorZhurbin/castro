@@ -142,16 +142,15 @@ async function detectFramework(sourcePath) {
 	try {
 		scanned = transpiler.scan(code);
 	} catch (e) {
-		// transpiler found a syntax error before compilation
-		const err = /** @type {BuildMessage | AggregateError} */ (e);
-
-		if (err instanceof AggregateError) {
-			const errorMessages = err.errors.map((e) => e.message).join("\n");
+		// transpiler.scan() throws its own error shape on syntax errors
+		if (e instanceof AggregateError) {
+			const errorMessages = e.errors.map((e) => e.message).join("\n");
 			const frames = [{ file: resolve(sourcePath) }];
 
 			throw new CastroError("BUNDLE_FAILED", { error: errorMessages }, frames);
 		}
 
+		const err = /** @type {BuildMessage} */ (e);
 		const frames = [bunLogToFrame(err)];
 
 		throw new CastroError("BUNDLE_FAILED", { error: err.message }, frames);

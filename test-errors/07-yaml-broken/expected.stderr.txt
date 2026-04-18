@@ -1,4 +1,3 @@
-Sabotage detected in pages/post.md
 ❌ Invalid Markdown frontmatter
    Frontmatter parsing in pages/post.md failed: YAML Parse error: Unexpected token
 
