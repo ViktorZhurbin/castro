@@ -72,13 +72,14 @@ function renderFrame(frame) {
 		const lineNum = frame.line || 0;
 
 		// Show error line with highlight
-		const errLinePrefix = styleText("red", `   > ${lineNum}`);
-		lines.push(`${errLinePrefix}  ${frame.lineText}`);
+		const LINE_MARKER = "   > ";
+		const LINE_SEPARATOR = "  ";
+		const errLinePrefix = styleText("red", `${LINE_MARKER}${lineNum}`);
+		lines.push(`${errLinePrefix}${LINE_SEPARATOR}${frame.lineText}`);
 
 		// Caret under the error column
 		if (frame.column !== undefined) {
-			// "   > " (5) + lineNum length + "  " (2)
-			const prefixOffset = 7 + String(lineNum).length;
+			const prefixOffset = LINE_MARKER.length + String(lineNum).length + LINE_SEPARATOR.length;
 			const caretPad = " ".repeat(prefixOffset + frame.column);
 			const caret = styleText("red", "^");
 			lines.push(`${caretPad}${caret}`);
