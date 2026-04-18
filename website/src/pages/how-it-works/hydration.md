@@ -68,7 +68,7 @@ The browser loads `castro-island.js` and registers a `<castro-island>` custom el
   </div>
 </div>
 
-→ [hydration.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/hydration.js)
+→ [hydration.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/hydration.js)
 
 
 ## THE IMPORT
@@ -127,7 +127,7 @@ Keys like `"preact"` and `"date-fns"` are bundled into `/dist/vendor/` at build 
 </script>
 ```
 
-→ [compiler.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/compiler.js) · [writeHtmlPage.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/builder/writeHtmlPage.js)
+→ [compiler.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/compiler.js) · [writeHtmlPage.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/builder/writeHtmlPage.js)
 
 
 ## THE MOUNT
@@ -154,7 +154,7 @@ await module.default(this, props);
 this.setAttribute("ready", "");
 ```
 
-→ [compiler.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/compiler.js) · [frameworks/preact.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/frameworks/preact.js)
+→ [compiler.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/compiler.js) · [frameworks/preact.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/frameworks/preact.js)
 
 
 ## SUMMARY

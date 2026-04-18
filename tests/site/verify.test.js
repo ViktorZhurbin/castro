@@ -5,7 +5,7 @@
  * Tests cover static pages, all three directives, component composition,
  * CSS modules, markdown, and multi-framework (Preact + Solid) islands.
  *
- * Usage: bun test test-site/verify.test.js
+ * Usage: bun test:site
  */
 
 import { beforeAll, expect, test } from "bun:test";

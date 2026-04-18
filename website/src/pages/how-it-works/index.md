@@ -55,7 +55,7 @@ Islands compile before any pages are processed. Each `.island.tsx` file goes thr
   </div>
 </div>
 
-→ [compiler.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/compiler.js) · [registry.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/registry.js)
+→ [compiler.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/compiler.js) · [registry.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/registry.js)
 
 <aside class="alert">
   Islands can import CSS too. The build extracts each island's styles and injects them per-page - only CSS for islands actually rendered on a given page gets included.
@@ -96,7 +96,7 @@ export default function Page() {
 }
 ```
 
-→ [buildPlugins.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/buildPlugins.js)
+→ [buildPlugins.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/buildPlugins.js)
 
 
 ## THE ASSEMBLY
@@ -133,7 +133,7 @@ export default function Page() {
   The <code>&lt;castro-island&gt;</code> custom element wraps server-rendered HTML. The <code>import</code> attribute points to the client JS bundle. The <code>directive</code> attribute controls when it hydrates.
 </aside>
 
-→ [marker.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/marker.js) · [renderPage.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/builder/renderPage.js)
+→ [marker.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/marker.js) · [renderPage.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/builder/renderPage.js)
 
 
 ## THE EXCEPTION

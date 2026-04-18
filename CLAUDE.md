@@ -20,18 +20,18 @@ bun run build        # production build (website playground)
 bun format           # Biome formatter (tabs, double quotes)
 bun check            # format + core checks + site tests (run before committing)
 bun test:sites       # build and verify test sites only
-bun test:errors      # run error DX golden suite (test-errors/)
+bun test:errors      # run error DX golden suite (tests/errors/)
 bun loc              # LOC count (core only, excludes messages/)
 ```
 
 ## Monorepo Layout
 
-- `castro/` — core SSG engine (the npm package `@vktrz/castro`)
+- `core/` — core SSG engine (the npm package `@vktrz/castro`)
 - `packages/` — packages and plugins (e.g., `@vktrz/castro-jsx`, `@vktrz/castro-solid`, `@vktrz/castro-tailwind`)
 - `website/` — demo playground that consumes castro
-- `test-site/` — minimal test site exercising castro-jsx, Solid (via plugin), Preact, and signal libraries
+- `tests/site/` — minimal test site exercising castro-jsx, Solid (via plugin), Preact, and signal libraries
 
-### Core Module Structure (`castro/src/`)
+### Core Module Structure (`core/src/`)
 
 Subdirectory roles — read each file's module docblock for its specific responsibility.
 
@@ -48,7 +48,7 @@ Subdirectory roles — read each file's module docblock for its specific respons
 - `errors.d.ts` — structured error payload types (`ErrorCode`, `CodeFrame`, `CastroErrorPayload`)
 - `types.d.ts`, `jsx.d.ts` — shared types and JSX namespace for custom directives
 
-The reference implementations for hydration patterns are [castro/src/islands/hydration.js](castro/src/islands/hydration.js) and [castro/src/islands/compiler.js](castro/src/islands/compiler.js) — read them before changing how islands work.
+The reference implementations for hydration patterns are [core/src/islands/hydration.js](core/src/islands/hydration.js) and [core/src/islands/compiler.js](core/src/islands/compiler.js) — read them before changing how islands work.
 
 
 ## Reference Documentation
@@ -57,13 +57,13 @@ The reference implementations for hydration patterns are [castro/src/islands/hyd
 
 | Working on...                          | Read / look at                                              |
 |----------------------------------------|-------------------------------------------------------------|
-| Bun.build, bundler, compilation        | `bun-bundler.md` + `builder/compileJsx.js` (real usage)    |
-| Bun.build plugins, onLoad/onResolve    | `bun-plugins.md` + `islands/buildPlugins.js` (real usage)  |
-| Bun.Transpiler, AST import scanning    | `bun-transpiler.md` + `islands/buildPlugins.js`            |
+| Bun.build, bundler, compilation        | `bun-bundler.md` + `core/src/builder/compileJsx.js` (real usage)    |
+| Bun.build plugins, onLoad/onResolve    | `bun-plugins.md` + `core/src/islands/buildPlugins.js` (real usage)  |
+| Bun.Transpiler, AST import scanning    | `bun-transpiler.md` + `core/src/islands/buildPlugins.js`            |
 | Bun.serve, Bun.file, Glob, import.meta | `bun-apis.md`                                              |
-| Dev server (SSE, file watching)        | `dev/server.js` (read the source)                          |
+| Dev server (SSE, file watching)        | `core/src/dev/server.js` (read the source)                          |
 | Markdown processing                    | `bun-markdown.md`                                          |
-| Island hydration, custom elements      | `islands/hydration.js` (read the source)                   |
+| Island hydration, custom elements      | `core/src/islands/hydration.js` (read the source)                   |
 
 
 ## Architecture
@@ -72,7 +72,7 @@ Cross-file invariants. For per-step build mechanics, read the relevant module do
 
 ### Build Pipeline
 
-`cli.js` → `buildAll()` orchestrates the build (see [buildAll.js](castro/src/builder/buildAll.js) docblock for the step list). Two `Bun.build` plugins are always active: `castroExternalsPlugin` (keeps Castro internals external for singleton sharing) and `islandMarkerPlugin` (replaces `.island.tsx` imports with marker stubs). Compiled page modules are loaded via `getModule()` with content-hashed file paths to bust Bun's import cache (Bun caches by path, not query string). The full VNode tree — page + layout + islands — renders in a single synchronous `renderToString()` pass; SSR modules must be pre-loaded.
+`cli.js` → `buildAll()` orchestrates the build (see [buildAll.js](core/src/builder/buildAll.js) docblock for the step list). Two `Bun.build` plugins are always active: `castroExternalsPlugin` (keeps Castro internals external for singleton sharing) and `islandMarkerPlugin` (replaces `.island.tsx` imports with marker stubs). Compiled page modules are loaded via `getModule()` with content-hashed file paths to bust Bun's import cache (Bun caches by path, not query string). The full VNode tree — page + layout + islands — renders in a single synchronous `renderToString()` pass; SSR modules must be pre-loaded.
 
 ### Island Tracking
 
@@ -84,13 +84,13 @@ Framework dependencies are vendored to `/dist/vendor/` by the internal `vendorDe
 
 ### User Plugins
 
-User plugins implement `CastroPlugin` (see [types.d.ts](castro/src/types.d.ts) for the full hook contract). Hooks: `getPageAssets`, `getImportMap`, `onPageBuild`, `onAfterBuild`, plus optional `frameworkConfig` and `watchDirs`. They run alongside internal plugins in the same lifecycle. In dev mode, `onPageBuild()` re-runs on every save for user plugins.
+User plugins implement `CastroPlugin` (see [types.d.ts](core/src/types.d.ts) for the full hook contract). Hooks: `getPageAssets`, `getImportMap`, `onPageBuild`, `onAfterBuild`, plus optional `frameworkConfig` and `watchDirs`. They run alongside internal plugins in the same lifecycle. In dev mode, `onPageBuild()` re-runs on every save for user plugins.
 
 ### Dev Server
 
 File watchers on `pages/`, `layouts/`, `components/`, `public/`, and any plugin `watchDirs` rebuild on change. Editor temp files and OS metadata are filtered via a denylist glob; everything else triggers a rebuild. Rapid changes are debounced so builds never overlap. Cache busting relies on content-hashed filenames (`post.tsx.a1b2c3d4.js`) because Bun's module loader ignores query strings.
 
-**Build error handling:** Errors are structured as `CastroErrorPayload` (see [errors.d.ts](castro/src/errors.d.ts)). Two independent renderers consume the payload: `renderErrorToTerminal()` colors the terminal output, and the browser overlay (`dev/liveReload.js`) renders a shadow DOM tree. On failure, the server logs to the terminal and sends the payload over SSE — no reload, keeping the last good page visible. On the next successful build, `reload` is sent. The payload shape decouples structure from voice — both `serious.js` and `satirical.js` return the same payload shape with different title/hint text. Test-errors sandbox at `test-errors/` has 14 isolated error cases for manual verification.
+**Build error handling:** Errors are structured as `CastroErrorPayload` (see [errors.d.ts](core/src/errors.d.ts)). Two independent renderers consume the payload: `renderErrorToTerminal()` colors the terminal output, and the browser overlay (`core/src/dev/liveReload.js`) renders a shadow DOM tree. On failure, the server logs to the terminal and sends the payload over SSE — no reload, keeping the last good page visible. On the next successful build, `reload` is sent. The payload shape decouples structure from voice — both `serious.js` and `satirical.js` return the same payload shape with different title/hint text. Test-errors sandbox at `tests/errors/` has 14 isolated error cases for manual verification.
 
 ## Code Conventions
 
@@ -109,13 +109,13 @@ This is an educational codebase — comments matter, but they respect the reader
 - **Inline comments**: earn their place by answering "why?" or "why not the obvious way?". Delete comments that restate what the code says.
 - **JSDoc on functions**: type signatures required; prose only when name + types aren't enough.
 - **Never condescend.** No "Educational note:" or "Simply put:" prefixes — the reader is a developer.
-- **Benchmark**: [compiler.js](castro/src/islands/compiler.js) and [hydration.js](castro/src/islands/hydration.js) set the standard for comment quality.
+- **Benchmark**: [compiler.js](core/src/islands/compiler.js) and [hydration.js](core/src/islands/hydration.js) set the standard for comment quality.
 
 ## Messages
 
-All user-facing strings live in `castro/src/messages/`. Both `satirical.js` and `serious.js` implement the `Messages` interface from `messages.d.ts`. **Never use inline strings for user-facing output.** Use `styleText` from `node:util` for colored logs. Tone, satire, and emoji rules: see [castro/src/messages/README.md](castro/src/messages/README.md).
+All user-facing strings live in `core/src/messages/`. Both `satirical.js` and `serious.js` implement the `Messages` interface from `messages.d.ts`. **Never use inline strings for user-facing output.** Use `styleText` from `node:util` for colored logs. Tone, satire, and emoji rules: see [core/src/messages/README.md](core/src/messages/README.md).
 
-**After changing any error message text**, regenerate the stderr goldens: `UPDATE_SNAPSHOTS=1 bun test:errors`. Inspect the diff before committing — each golden in `test-errors/*/expected.stderr.txt` should show clean structured output.
+**After changing any error message text**, regenerate the stderr goldens: `UPDATE_SNAPSHOTS=1 bun test:errors`. Inspect the diff before committing — each golden in `tests/errors/*/expected.stderr.txt` should show clean structured output.
 
 ## Key Design Decisions
 
@@ -132,7 +132,7 @@ All user-facing strings live in `castro/src/messages/`. Both `satirical.js` and 
 
 ## Configuration
 
-Optional `castro.config.{ts,js,mjs}` exports a default `CastroConfig`. The loader tries `.ts`, `.js`, `.mjs` in that order. All options live on the `CastroConfig` type in [castro/src/types.d.ts](castro/src/types.d.ts) — that file is the source of truth.
+Optional `castro.config.{ts,js,mjs}` exports a default `CastroConfig`. The loader tries `.ts`, `.js`, `.mjs` in that order. All options live on the `CastroConfig` type in [core/src/types.d.ts](core/src/types.d.ts) — that file is the source of truth.
 
 Use `defineConfig` (re-exported from `@vktrz/castro`) for type inference in `.ts`/`.js` configs without needing a JSDoc hint. It's an identity function.
 
@@ -142,13 +142,13 @@ Two options worth flagging because their behavior isn't obvious from the type:
 
 ## Testing
 
-`bun test:sites` builds and verifies `test-site/`, which exercises the full pipeline across castro-jsx, Preact, Solid, and vanilla islands (all directives, multi-framework pages, CSS modules, component composition). The site mirrors a real project's structure — **use it as the reference for expected patterns** when you're unsure how something should be wired up.
+`bun test:sites` builds and verifies `tests/site/`, which exercises the full pipeline across castro-jsx, Preact, Solid, and vanilla islands (all directives, multi-framework pages, CSS modules, component composition). The site mirrors a real project's structure — **use it as the reference for expected patterns** when you're unsure how something should be wired up.
 
 ## What NOT to Change
 
 - Code must stay educational and well-commented — every file should explain "why"
 - Satire belongs in messages/docs/CLI output only, never in the code logic itself
-- `website/dist/` and `test-site/dist/` are ephemeral, cleaned on every build
+- `website/dist/` and `tests/site/dist/` are ephemeral, cleaned on every build
 - Island imports must use relative paths, not tsconfig aliases (documented in `compileJsx.js`)
 
 ## Website Playground (`website/`)

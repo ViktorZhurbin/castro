@@ -6,8 +6,7 @@
 		"core",
 		"packages/*",
 		"website",
-		"test-site",
-		"test-errors/*"
+		"tests/**/*"
 	],
 	"scripts": {
 		"dev": "bun --filter website dev",
@@ -15,13 +14,13 @@
 		"format": "biome format --write",
 		"check": "bun format && bun check:analyze && bun test && bun check:build",
 		"check:format": "bun format",
-		"check:analyze": "bun run --parallel --filter '!@test-errors/*' --if-present type-check knip",
+		"check:analyze": "bun run --parallel --filter '*' --if-present type-check knip",
 		"check:build": "bun run --parallel --filter '!@test-errors/*' --if-present build",
-		"test:sites": "bun test ./test-site",
-		"test:errors": "bun test ./test-errors",
+		"test:site": "bun test tests/site",
+		"test:errors": "bun test tests/errors",
 		"test:errors:up": "UPDATE_SNAPSHOTS=1 bun test:errors",
 		"loc": "bunx cloc core/src/ --exclude-dir=messages --not-match-f '.test'",
-		"loc-files": "bun run loc --by-file"
+		"loc:files": "bunx run loc --by-file"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.11",

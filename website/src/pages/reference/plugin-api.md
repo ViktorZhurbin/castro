@@ -21,7 +21,7 @@ type CastroPlugin = {
 };
 ```
 
-→ [plugins.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/islands/plugins.js) · [types.d.ts](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/types.d.ts) · [frameworks/](https://github.com/ViktorZhurbin/castro/tree/main/castro/src/islands/frameworks) · [castro-jsx/](https://github.com/ViktorZhurbin/castro/tree/main/packages/castro-jsx)
+→ [plugins.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/plugins.js) · [types.d.ts](https://github.com/ViktorZhurbin/castro/blob/main/core/src/types.d.ts) · [frameworks/](https://github.com/ViktorZhurbin/castro/tree/main/core/src/islands/frameworks) · [castro-jsx/](https://github.com/ViktorZhurbin/castro/tree/main/packages/castro-jsx)
 
 
 ### `name`
@@ -93,7 +93,7 @@ earns its keep - the same interface that ships Preact is available to anyone.
 frameworkConfig?: FrameworkConfig
 ```
 
-See [frameworks/](https://github.com/ViktorZhurbin/castro/tree/main/castro/src/islands/frameworks) for built-in configs, and [castro-jsx](https://github.com/ViktorZhurbin/castro/tree/main/packages/castro-jsx) as an example of an external framework plugin.
+See [frameworks/](https://github.com/ViktorZhurbin/castro/tree/main/core/src/islands/frameworks) for built-in configs, and [castro-jsx](https://github.com/ViktorZhurbin/castro/tree/main/packages/castro-jsx) as an example of an external framework plugin.
 
 
 ### `Asset` Type

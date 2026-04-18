@@ -10,9 +10,8 @@ Communist satire wraps serious, well-commented code. Preact for rendering, Bun f
 ## Quick Start
 
 ```bash
-mkdir my-site && cd my-site
-bun init -y
-bun add @vktrz/castro preact
+bunx create-castro
+cd my-castro-site
 ```
 
 ```bash
@@ -24,7 +23,7 @@ bun castro build  # → dist/
 
 **[castro.vktrz.workers.dev](https://castro.vktrz.workers.dev)** — quick start, configuration, plugins, build pipeline, hydration.
 
-**Learn by reading code:** every file in `castro/src/` has comments explaining the implementation.
+**Learn by reading code:** every file in `core/src/` has comments explaining the implementation.
 
 ## Contributing
 

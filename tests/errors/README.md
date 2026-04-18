@@ -21,7 +21,7 @@ Inspect the diff before committing — each golden should show clean structured 
 ## Manual inspection
 
 ```bash
-cd test-errors/<name>
+cd tests/errors/<name>
 bun castro dev
 ```
 

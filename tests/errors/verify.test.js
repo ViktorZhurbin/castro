@@ -1,14 +1,14 @@
 /**
  * Error DX Regression Suite
  *
- * Runs `castro build` in each test-errors/* fixture and asserts that stderr
+ * Runs `castro build` in each test/errors/* fixture and asserts that stderr
  * matches the committed golden. Catches wrong error codes, leaked Bun stack
  * frames, broken rendering (missing hints, dropped notes, misaligned carets),
  * and any other regression in the structured error output pipeline.
  *
  * Usage:
- *   bun test test-errors              # compare against goldens
- *   UPDATE_SNAPSHOTS=1 bun test test-errors  # regenerate goldens
+ *   bun test:errors              # compare against goldens
+ *   UPDATE_SNAPSHOTS=1 bun test:errors  # regenerate goldens
  */
 
 import { expect, test } from "bun:test";
@@ -48,7 +48,7 @@ async function readOrUpdateGolden(goldenPath, actual) {
 	const f = Bun.file(goldenPath);
 	if (!(await f.exists())) {
 		throw new Error(
-			`Missing golden: ${goldenPath}\nRun UPDATE_SNAPSHOTS=1 bun test test-errors to generate.`,
+			`Missing golden: ${goldenPath}\nRun test errors command with UPDATE_SNAPSHOTS=1 to generate.`,
 		);
 	}
 	return (await f.text()).trimEnd();
@@ -64,7 +64,9 @@ for (const caseDir of caseDirs) {
 
 	test(`error case: ${caseName}`, async () => {
 		const metadataFile = Bun.file(join(caseDir, "metadata.json"));
-		const metadata = (await metadataFile.exists()) ? await metadataFile.json() : { exitCode: 1 };
+		const metadata = (await metadataFile.exists())
+			? await metadataFile.json()
+			: { exitCode: 1 };
 
 		const result = Bun.spawnSync(
 			[join(caseDir, "node_modules/.bin/castro"), "build"],

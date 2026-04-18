@@ -21,7 +21,7 @@ type CastroConfig = {
 }
 ```
 
-→ [config.js](https://github.com/ViktorZhurbin/castro/blob/main/castro/src/config.js)
+→ [config.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/config.js)
 
 
 
