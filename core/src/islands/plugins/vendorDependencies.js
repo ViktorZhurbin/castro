@@ -1,7 +1,7 @@
-import { createRequire } from "node:module";
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { config } from "../../config.js";
 import { OUTPUT_DIR } from "../../constants.js";
+import { safeBunBuild } from "../../utils/bunBuild.js";
 import { resolveTempDir } from "../../utils/cache.js";
 import { getFrameworkConfig } from "../frameworkConfig.js";
 
@@ -10,7 +10,6 @@ import { getFrameworkConfig } from "../frameworkConfig.js";
  */
 
 const VENDOR_OUTPUT_DIR = "vendor";
-const require = createRequire(import.meta.url);
 
 /**
  * Vendors client dependencies and maps them to import specifiers.
@@ -68,7 +67,7 @@ export function vendorDependencies() {
 			}
 
 			// Bundle and write to `virtualRoot` directory
-			const result = await Bun.build({
+			await safeBunBuild({
 				entrypoints,
 				files,
 				root: virtualRoot,
@@ -83,13 +82,9 @@ export function vendorDependencies() {
 					"process.env.NODE_ENV": JSON.stringify("production"),
 				},
 			});
-
-			if (!result.success) {
-				console.error("Failed to vendor dependencies:", result.logs);
-			}
 		},
 
-		getImportMap({ usedFrameworks }) {
+		async getImportMap({ usedFrameworks }) {
 			const configDeps = config.clientDependencies || [];
 			const frameworkDeps = [...usedFrameworks].flatMap(
 				(id) => getFrameworkConfig(id).clientDependencies || [],
@@ -102,18 +97,10 @@ export function vendorDependencies() {
 			for (const dep of allClientDeps) {
 				const safeName = getSafePkgName(dep);
 
-				try {
-					// Resolve the root package name to find its package.json.
-					const [part1, part2] = dep.split("/");
-
-					// "@vktrz/castro-jsx/dom" → "@vktrz/castro-jsx", "preact/hooks" → "preact"
-					const pkgRoot = dep.startsWith("@") ? `${part1}/${part2}` : part1;
-					const version = require(`${pkgRoot}/package.json`).version;
-
-					importMap[dep] = `/${VENDOR_OUTPUT_DIR}/${safeName}.js?v=${version}`;
-				} catch {
-					importMap[dep] = `/${VENDOR_OUTPUT_DIR}/${safeName}.js`;
-				}
+				const version = await resolvePkgVersion(dep);
+				importMap[dep] = version
+					? `/${VENDOR_OUTPUT_DIR}/${safeName}.js?v=${version}`
+					: `/${VENDOR_OUTPUT_DIR}/${safeName}.js`;
 			}
 
 			return importMap;
@@ -130,4 +117,36 @@ export function vendorDependencies() {
  */
 function getSafePkgName(name) {
 	return name.replace(/[@/]/g, "_");
+}
+
+/**
+ * Resolves a package version by walking up from its entry point to find
+ * package.json. Avoids require(pkg/package.json), which throws
+ * ERR_PACKAGE_PATH_NOT_EXPORTED when a package's exports map doesn't include
+ * "./package.json".
+ *
+ * @param {string} dep - full specifier, e.g. "preact/hooks" or "@vktrz/castro-jsx"
+ * @returns {Promise<string | undefined>}
+ */
+async function resolvePkgVersion(dep) {
+	const [part1, part2] = dep.split("/");
+	// "@vktrz/castro-jsx/dom" → "@vktrz/castro-jsx", "preact/hooks" → "preact"
+	const pkgRoot = dep.startsWith("@") ? `${part1}/${part2}` : part1;
+
+	try {
+		let dir = dirname(Bun.resolveSync(pkgRoot, process.cwd()));
+		while (dir !== dirname(dir)) {
+			const candidate = join(dir, "package.json");
+			const file = Bun.file(candidate);
+			if (await file.exists()) {
+				const pkg = await file.json();
+				// Skip structural package.json files (e.g. {"type":"module"}) that
+				// lack a name — only the real package root has a matching name field.
+				if (pkg.name === pkgRoot) return pkg.version;
+			}
+			dir = dirname(dir);
+		}
+	} catch {
+		// package not resolvable — version omitted, URL still valid
+	}
 }

@@ -97,7 +97,7 @@ File watchers on `pages/`, `layouts/`, `components/`, `public/`, and any plugin 
 - **ES Modules** (import/export), Bun 1.3.8+
 - **Biome** for formatting: tabs, double quotes. Run `bun format` before committing.
 - **JSDoc** for all types and function intent. `.d.ts` files only for shared/reusable types.
-- **Dependencies**: Prefer built-in Bun APIs. Keep the footprint minimal.
+- **Dependencies**: Prefer built-in Bun APIs. Keep the footprint minimal. Prefer native Bun async file APIs (`Bun.file().exists()`, `Bun.file().json()`, etc.) over Node equivalents — even if it requires making a caller async. Suggest that change explicitly rather than silently falling back to Node.
 - **No `createElement`** — use JSX or `h()` from preact.
 - **No non-null assertions** (e.g. `foo!.bar`) in TypeScript.
 

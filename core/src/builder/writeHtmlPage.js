@@ -70,7 +70,7 @@ async function resolvePageContext({
 		// Import maps are only needed on pages with islands — no point building them
 		// for static pages. Plugins add entries based on usedFrameworks.
 		if (hasIslands && plugin.getImportMap) {
-			const pluginImportMap = plugin.getImportMap({ usedFrameworks });
+			const pluginImportMap = await plugin.getImportMap({ usedFrameworks });
 
 			Object.assign(importMap, pluginImportMap);
 		}
