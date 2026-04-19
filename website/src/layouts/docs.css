@@ -3,8 +3,6 @@
 	display: flex;
 	flex-direction: column;
 	flex: 1;
-	min-height: 0; /* Prevents flex blowout */
-	overflow: hidden;
 	position: relative;
 
 	@media (min-width: 1024px) {
@@ -16,7 +14,6 @@
 .docs-content {
 	flex: 1;
 	min-width: 0;
-	overflow-y: hidden;
 	display: flex;
 	flex-direction: column;
 
@@ -26,21 +23,21 @@
 	}
 }
 
-.docs-scrolled-content {
-	overflow-y: auto;
-}
-
 /* ─── MOBILE TOGGLE BAR ───────────────────────────────────────── */
 .docs-mobile-bar {
-	display: none;
+	display: flex;
+	align-items: center;
+	padding: 0 var(--spacing);
+	border-bottom: var(--border-2);
+	background-color: var(--pico-background-color);
+	flex-shrink: 0;
 
-	@media (max-width: 1023px) {
-		display: flex;
-		align-items: center;
-		padding: var(--spacing-2xs) var(--spacing);
-		border-bottom: var(--border-2);
-		background-color: var(--pico-background-color);
-		flex-shrink: 0;
+	position: sticky;
+	top: var(--header-height);
+	z-index: 40;
+
+	@media (min-width: 1024px) {
+		display: none;
 	}
 }
 
@@ -53,6 +50,13 @@
 	flex-direction: column;
 	flex-shrink: 0;
 	overflow-y: auto;
+
+	/* Pin the sidebar to the viewport on desktop so it doesn't scroll away */
+	@media (min-width: 1024px) {
+		position: sticky;
+		top: var(--header-height);
+		height: calc(100vh - var(--header-height));
+	}
 
 	@media (max-width: 1023px) {
 		position: fixed;

@@ -98,7 +98,7 @@ export default function DocsLayout({ title, path, children }: DocsLayoutProps) {
 						</label>
 					</div>
 
-					<div class="docs-scrolled-content">
+					<div>
 						<main class="container">{children}</main>
 						<Footer />
 					</div>
