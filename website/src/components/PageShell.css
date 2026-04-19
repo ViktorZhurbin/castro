@@ -7,7 +7,7 @@ html {
 	scroll-padding-top: calc(var(--header-height) + 3rem);
 
 	@media (min-width: 1024px) {
-		scroll-padding-top: var(--header-height);
+		scroll-padding-top: calc(var(--header-height) + 1rem);
 	}
 }
 
