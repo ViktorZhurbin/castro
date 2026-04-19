@@ -19,7 +19,7 @@ bun run dev          # dev server with live reload (website playground)
 bun run build        # production build (website playground)
 bun format           # Biome formatter (tabs, double quotes)
 bun check            # format + core checks + site tests (run before committing)
-bun test:sites       # build and verify test sites only
+bun test:site        # build and verify test sites only
 bun test:errors      # run error DX golden suite (tests/errors/)
 bun loc              # LOC count (core only, excludes messages/)
 ```
@@ -76,7 +76,7 @@ Cross-file invariants. For per-step build mechanics, read the relevant module do
 
 ### Island Tracking
 
-`marker.js` maintains a module-level `usedIslands` Set, reset per page render. Only CSS for islands actually rendered on a page gets injected; the `<castro-island>` runtime script is also gated on island usage.
+`marker.js` tracks which islands each page uses via AsyncLocalStorage — each page build runs inside `runWithPageState()`, which provides a fresh `{ usedIslands, usedFrameworks }` context scoped to that async call tree. This isolation is what makes parallel builds safe. Only CSS for islands actually rendered on a page gets injected; the `<castro-island>` runtime script is also gated on island usage.
 
 ### Import Map & Dependency Vendoring
 
@@ -142,7 +142,7 @@ Two options worth flagging because their behavior isn't obvious from the type:
 
 ## Testing
 
-`bun test:sites` builds and verifies `tests/site/`, which exercises the full pipeline across castro-jsx, Preact, Solid, and vanilla islands (all directives, multi-framework pages, CSS modules, component composition). The site mirrors a real project's structure — **use it as the reference for expected patterns** when you're unsure how something should be wired up.
+`bun test:site` builds and verifies `tests/site/`, which exercises the full pipeline across castro-jsx, Preact, Solid, and vanilla islands (all directives, multi-framework pages, CSS modules, component composition). The site mirrors a real project's structure — **use it as the reference for expected patterns** when you're unsure how something should be wired up.
 
 ## What NOT to Change
 

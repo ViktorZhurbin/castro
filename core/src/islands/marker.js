@@ -13,8 +13,7 @@
  *
  * Island tracking is scoped per-page using AsyncLocalStorage. Each page build
  * runs inside runWithPageState(), which provides a fresh context. This isolates
- * pageState.usedIslands and pageState.usedFrameworks so parallel builds would be
- * safe (though the build loop remains sequential for now).
+ * pageState.usedIslands and pageState.usedFrameworks across concurrent page builds.
  */
 
 import { AsyncLocalStorage } from "node:async_hooks";

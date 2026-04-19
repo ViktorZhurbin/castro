@@ -12,6 +12,7 @@
 
 import { cp, mkdir, rm } from "node:fs/promises";
 import { styleText } from "node:util";
+import { config } from "../config.js";
 import { OUTPUT_DIR, PAGES_DIR, PUBLIC_DIR } from "../constants.js";
 import { runWithPageState } from "../islands/marker.js";
 import { allPlugins } from "../islands/plugins.js";
@@ -60,21 +61,37 @@ export async function buildAll() {
 	/** @type {BuildContext} */
 	const buildContext = { usedFrameworks: new Set() };
 
-	for (const [outputPath, sourcePath] of pagesMap.entries()) {
-		if (isProd) {
-			console.info(
-				messages.build.writingFile(
-					styleText("cyan", sourcePath),
-					styleText("gray", outputPath),
-				),
-			);
-		}
+	const limit =
+		Number(process.env.CASTRO_CONCURRENCY) ||
+		config.concurrency ||
+		navigator.hardwareConcurrency ||
+		4;
 
-		const { usedFrameworks } = await runWithPageState(() =>
-			buildPage(sourcePath),
-		);
+	const tasks = [...pagesMap.entries()].map(
+		([outputPath, sourcePath]) =>
+			async () => {
+				const { usedFrameworks } = await runWithPageState(() =>
+					buildPage(sourcePath),
+				);
 
-		// Merge per-page state into cross-page build context
+				// Log on completion so lines appear in the order pages actually finish
+				if (isProd) {
+					console.info(
+						messages.build.writingFile(
+							styleText("cyan", sourcePath),
+							styleText("gray", outputPath),
+						),
+					);
+				}
+
+				return { usedFrameworks };
+			},
+	);
+
+	const results = await runPool(limit, tasks);
+
+	for (const { usedFrameworks } of results) {
+		// Merge per-page state into cross-page build context; union order doesn't matter
 		buildContext.usedFrameworks =
 			buildContext.usedFrameworks.union(usedFrameworks);
 	}
@@ -88,6 +105,42 @@ export async function buildAll() {
 	}
 
 	console.info(messages.build.success(`${pagesMap.size}`));
+}
+
+/**
+ * Bounded concurrent task runner. Runs at most `limit` tasks simultaneously,
+ * preserving result order. Fail-fast: first rejection stops new tasks from
+ * starting; in-flight tasks complete before the error surfaces.
+ *
+ * Bounded rather than a bare Promise.all because Bun.build is internally
+ * worker-pooled — stacking unlimited concurrent calls adds memory pressure
+ * without adding throughput.
+ *
+ * @template T
+ * @param {number} limit
+ * @param {Array<() => Promise<T>>} tasks
+ * @returns {Promise<T[]>}
+ */
+async function runPool(limit, tasks) {
+	const results = new Array(tasks.length);
+	let next = 0;
+	let failed = false;
+	const workers = Array.from(
+		{ length: Math.min(limit, tasks.length) },
+		async () => {
+			while (next < tasks.length && !failed) {
+				const i = next++;
+				try {
+					results[i] = await tasks[i]();
+				} catch (e) {
+					failed = true;
+					throw e;
+				}
+			}
+		},
+	);
+	await Promise.all(workers);
+	return results;
 }
 
 /**
