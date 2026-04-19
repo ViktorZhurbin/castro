@@ -19,7 +19,7 @@
  * strings. We use content-hashed filenames so changed code gets a new path.
  */
 
-import { mkdirSync, rmSync } from "node:fs";
+import { rmSync } from "node:fs";
 import { join, parse, relative, resolve } from "node:path";
 import { CastroError } from "./errors.js";
 
@@ -35,18 +35,16 @@ export function cleanupCacheDir() {
 }
 
 /**
- * Ensures a cache subdirectory exists and returns its path.
+ * Returns a cache subdirectory path. Callers rely on Bun.write / Bun.build
+ * to create the directory on first use.
  * @param {string} subpath
  * @returns {string}
  */
 export function resolveTempDir(subpath) {
 	const resolvedSubpath = resolve(process.cwd(), subpath);
 	const relativeSubpath = relative(process.cwd(), resolvedSubpath);
-	const dirPath = join(CACHE_DIR, relativeSubpath);
 
-	mkdirSync(dirPath, { recursive: true });
-
-	return dirPath;
+	return join(CACHE_DIR, relativeSubpath);
 }
 
 /**

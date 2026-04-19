@@ -7,7 +7,6 @@
  * into memory so renderMarker() can access them synchronously.
  */
 
-import { mkdir } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import {
 	COMPONENTS_DIR,
@@ -64,7 +63,6 @@ class IslandsRegistry {
 		this.#cssManifest.clear();
 
 		const outputIslandsDir = join(OUTPUT_DIR, ISLANDS_OUTPUT_DIR);
-		await mkdir(outputIslandsDir, { recursive: true });
 
 		const islandGlob = new Bun.Glob("**/*.island.{jsx,tsx}");
 

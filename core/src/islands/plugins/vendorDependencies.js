@@ -1,3 +1,4 @@
+import { mkdir } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { config } from "../../config.js";
 import { OUTPUT_DIR } from "../../constants.js";
@@ -52,6 +53,7 @@ export function vendorDependencies() {
 			const files = {};
 
 			const virtualRoot = resolveTempDir("vendor-dependencies");
+			await mkdir(virtualRoot, { recursive: true });
 
 			// Each dependency gets a virtual entry module that re-exports everything
 			// from the real package. Bun.build resolves 'preact' from node_modules,
