@@ -2,6 +2,7 @@ import { MoreIcon } from "./icons/MoreIcon";
 import { StarIcon } from "./icons/StarIcon";
 import { ThemeToggle } from "./theme/ThemeToggle";
 import "./Header.css";
+import { GithubIcon } from "./icons/GithubIcon";
 
 export function Header({ activePath }: { activePath?: string }) {
 	const navLinks = [
@@ -43,7 +44,11 @@ export function Header({ activePath }: { activePath?: string }) {
 					<ul class="menu">{navLinks}</ul>
 				</details>
 			</div>
-			<div>
+
+			<div class="navbar-end">
+				<a class="btn-square" href="https://github.com/ViktorZhurbin/castro">
+					<GithubIcon />
+				</a>
 				<ThemeToggle comrade:eager />
 			</div>
 		</header>

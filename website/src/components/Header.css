@@ -22,6 +22,13 @@
 	gap: var(--spacing);
 }
 
+.navbar-end {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: var(--spacing-xs);
+}
+
 .desktop-nav {
 	display: none;
 	align-items: center;
