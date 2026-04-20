@@ -15,7 +15,7 @@ export default function Home() {
 			<section class="feature-section">
 				<div class="container">
 					<div class="feature-section-header">
-						<h2>WHAT THE PARTY OFFERS</h2>
+						<h2>BUILT FOR CLARITY</h2>
 						<p>
 							A working static site generator you can read in an afternoon and
 							understand completely.

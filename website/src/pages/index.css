@@ -11,6 +11,10 @@
 		color: var(--pico-primary);
 		margin-bottom: var(--spacing);
 	}
+
+	p {
+		font-size: var(--text-xl);
+	}
 }
 
 .how-it-works-section {
