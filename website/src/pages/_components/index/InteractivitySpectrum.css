@@ -13,6 +13,7 @@
 	grid-template-columns: 1fr;
 	gap: var(--spacing);
 	text-align: left;
+	margin-top: var(--spacing-xl);
 
 	@media (min-width: 576px) {
 		grid-template-columns: repeat(2, 1fr);
@@ -26,29 +27,55 @@
 .spectrum-card {
 	display: flex;
 	flex-direction: column;
-	gap: var(--spacing-sm);
+	gap: var(--spacing-xs);
 	padding: var(--spacing-lg);
 	background-color: var(--pico-code-background-color);
 	border: var(--border-2);
-	border-top-width: 8px;
+	border-top: var(--border-primary-8);
 }
 
 .spectrum-card-level {
 	font-family: var(--font-display);
 	font-size: var(--text-2xl);
+	color: var(--pico-primary);
 }
 
 .spectrum-card-title {
 	font-size: var(--text-2xl);
 	font-family: var(--font-display);
+	letter-spacing: 0.05em;
 }
 
-.spectrum-card-js {
+/* ─── JS weight meter ─── */
+
+.spectrum-card-bottom {
+	/* Forces the meter to align at the absolute bottom of the card */
+	margin-top: auto;
+	padding-top: var(--spacing);
+}
+
+.spectrum-card-meter {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 4px;
+	margin-bottom: var(--spacing-sm);
+
+	> span {
+		height: 12px;
+		border: var(--border-2);
+	}
+
+	> span.on {
+		background: var(--pico-primary);
+		border-color: var(--pico-primary);
+	}
+}
+
+.spectrum-card-meter-label {
+	display: block;
+	text-align: center;
 	font-family: var(--pico-font-family-monospace);
 	font-size: var(--text-xs);
-	font-weight: 700;
 	text-transform: uppercase;
-	letter-spacing: 0.05em;
-	border: 1px solid currentColor;
-	padding: var(--spacing-xs);
+	letter-spacing: 0.1em;
 }
