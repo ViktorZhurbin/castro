@@ -174,4 +174,7 @@ That's island architecture: static HTML by default, JavaScript delivered exactly
   <a href="/how-it-works" class="btn btn-base">
     ← Back to The Build Pipeline
   </a>
+  <a href="/how-it-works/source" class="btn btn-base">
+    Next: Reading the Source →
+  </a>
 </div>

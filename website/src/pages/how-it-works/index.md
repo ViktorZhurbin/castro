@@ -161,6 +161,9 @@ mandatory.
   <a href="/how-it-works/hydration" class="btn btn-base">
     Next: Hydration →
   </a>
+  <a href="/how-it-works/source" class="btn btn-base">
+    Reading the Source →
+  </a>
   <a href="/guide/quick-start" class="btn btn-base">
     Quick Start Guide →
   </a>
