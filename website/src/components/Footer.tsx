@@ -1,33 +1,72 @@
 import "./Footer.css";
 
+const guideLinks = [
+	{ href: "/guide/quick-start", label: "Quick Start" },
+	{ href: "/guide/components-islands", label: "Components & Islands" },
+	{ href: "/guide/plugins", label: "Plugins" },
+];
+
+const howItWorksLinks = [
+	{ href: "/how-it-works", label: "Build Pipeline" },
+	{ href: "/how-it-works/source", label: "Reading the Source" },
+	{ href: "/how-it-works/hydration", label: "Hydration" },
+];
+
+const referenceLinks = [
+	{ href: "/reference/config", label: "Config" },
+	{ href: "/reference/plugin-api", label: "Plugin API" },
+	{ href: "/about", label: "About" },
+];
+
 export function Footer() {
 	return (
 		<footer class="footer">
-			<div class="container">
-				{/* Slogan locked hard left */}
-				<div class="footer-slogan">
-					<p>WORKERS OF THE WEB, UNITE!</p>
-					<p>SEIZE THE MEANS OF RENDERING.</p>
+			<div class="container footer-grid">
+				<div class="footer-brand">
+					<p class="footer-mark">CASTRO</p>
+					<p class="footer-desc">SSG that teaches island architecture.</p>
+					<a
+						class="btn btn-base"
+						href="https://github.com/ViktorZhurbin/castro"
+						target="_blank"
+						rel="noopener"
+					>
+						GitHub
+					</a>
 				</div>
 
-				{/* Utilities anchored right */}
-				<div class="footer-nav-section">
-					<nav class="footer-nav">
-						<a href="/about">About</a>
-						<a
-							href="https://github.com/ViktorZhurbin/castro"
-							target="_blank"
-							rel="noopener"
-						>
-							GitHub
-						</a>
-					</nav>
-					<p class="footer-info">
-						Built with Castro <br />
-						The People's Framework
-					</p>
-				</div>
+				<FooterNavColumn title="Guide" links={guideLinks} />
+				<FooterNavColumn title="How It Works" links={howItWorksLinks} />
+				<FooterNavColumn title="Reference" links={referenceLinks} />
+			</div>
+			<hr class="divider" />
+			<div class="container footer-baseline">
+				<span class="footer-slogan-small">Workers of the web, unite!</span>
+				<span class="footer-meta">
+					Built with Castro · MIT · © 2026-present
+				</span>
 			</div>
 		</footer>
+	);
+}
+
+function FooterNavColumn({
+	title,
+	links,
+}: {
+	title: string;
+	links: { href: string; label: string }[];
+}) {
+	return (
+		<nav class="footer-col">
+			<h4>{title}</h4>
+			<ul>
+				{links.map((l) => (
+					<li>
+						<a href={l.href}>{l.label}</a>
+					</li>
+				))}
+			</ul>
+		</nav>
 	);
 }

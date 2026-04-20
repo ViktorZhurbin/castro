@@ -12,20 +12,11 @@ export default function Home() {
 		<>
 			<Hero />
 
-			<section class="feature-section">
-				<div class="container">
-					<div class="feature-section-header">
-						<h2>BUILT FOR CLARITY</h2>
-						<p>
-							A working static site generator you can read in an afternoon and
-							understand completely.
-						</p>
-					</div>
-
-					<InteractivitySpectrum />
-					<AlsoIncluded />
-				</div>
+			<section class="spectrum-section">
+				<InteractivitySpectrum />
 			</section>
+
+			<AlsoIncluded />
 
 			<section class="how-it-works-section">
 				<HowItWorks />

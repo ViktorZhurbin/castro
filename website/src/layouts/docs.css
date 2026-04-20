@@ -7,6 +7,10 @@
 
 	@media (min-width: 1024px) {
 		flex-direction: row;
+
+		.container {
+			padding-inline: var(--spacing-2xl);
+		}
 	}
 }
 
@@ -18,7 +22,7 @@
 	flex-direction: column;
 
 	main {
-		padding: var(--spacing-3xl) var(--spacing-xl);
+		padding-block: var(--spacing-3xl);
 		flex: 1; /* Pushes the footer down if the content is short */
 	}
 }

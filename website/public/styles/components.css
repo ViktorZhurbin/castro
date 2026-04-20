@@ -20,6 +20,10 @@
 	border-style: dashed;
 }
 
+.divider {
+	border-top: var(--border-2);
+}
+
 .alert {
 	background-color: var(--pico-code-background-color);
 	border: var(--border-2);

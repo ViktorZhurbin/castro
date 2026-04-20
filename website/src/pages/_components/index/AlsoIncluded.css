@@ -1,3 +1,19 @@
+.also-included-section {
+	background-color: var(--pico-contrast-background);
+
+	.container {
+		padding: var(--spacing-2xl) var(--spacing-xl);
+	}
+}
+
+.also-included-label {
+	font-family: var(--font-display);
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	opacity: 0.85;
+	margin-bottom: var(--spacing-2xl);
+}
+
 .also-included-grid {
 	display: grid;
 	grid-template-columns: 1fr;
@@ -8,32 +24,16 @@
 	}
 }
 
-.also-included-item {
-	border: var(--border-2);
-	border-left-width: 6px;
-	padding: var(--spacing-xl);
-
-	h3 {
-		font-size: var(--text-2xl);
-		margin-bottom: var(--spacing-xs);
-	}
+.also-included-label,
+.also-included-item p {
+	color: var(--pico-contrast-inverse);
 }
 
-.also-included-divider {
-	display: flex;
-	align-items: center;
-	gap: var(--spacing);
-	margin: var(--spacing-3xl) 0;
-	font-family: var(--font-display);
-	font-size: var(--text-xl);
-	letter-spacing: 0.05em;
-	color: var(--pico-color);
-
-	&::before,
-	&::after {
-		content: "";
-		flex: 1;
-		height: 2px;
-		background-color: var(--pico-muted-border-color);
+.also-included-item {
+	> p:first-of-type {
+		font-family: var(--font-display);
+		letter-spacing: 0.05em;
+		font-size: var(--text-2xl);
+		margin-bottom: var(--spacing-xs);
 	}
 }

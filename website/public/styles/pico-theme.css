@@ -61,7 +61,7 @@
 
 	/* Metals & Minerals (Greys & Greens) */
 	--color-iron: oklch(25% 0.02 250);
-	--color-concrete: oklch(35% 0.01 250);
+	--color-concrete: oklch(45% 0.01 250);
 
 	--color-pine: oklch(48% 0.12 150); /* Deep green for light mode success */
 	--color-sage: oklch(70% 0.15 150); /* Pale green for dark mode success */
