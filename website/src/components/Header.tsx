@@ -1,26 +1,22 @@
+import { navSections } from "@/nav";
+import { GithubIcon } from "./icons/GithubIcon";
 import { MoreIcon } from "./icons/MoreIcon";
 import { StarIcon } from "./icons/StarIcon";
 import { ThemeToggle } from "./theme/ThemeToggle";
 import "./Header.css";
-import { GithubIcon } from "./icons/GithubIcon";
 
 export function Header({ activePath }: { activePath?: string }) {
-	const navLinks = [
-		{ href: "/guide/quick-start", label: "GUIDE" },
-		{ href: "/how-it-works", label: "HOW IT WORKS" },
-		{ href: "/reference/config", label: "REFERENCE" },
-	].map((link) => {
-		const [, pathRoot] = link.href.split("/");
-		const isActive = !!pathRoot && activePath?.startsWith(`/${pathRoot}`);
+	const navLinks = navSections.map(({ key, title, href }) => {
+		const isActive = !!key && activePath?.startsWith(`/${key}`);
 
 		return (
-			<li key={link.href}>
+			<li key={href}>
 				<a
-					href={link.href}
+					href={href}
 					class={isActive ? "active" : undefined}
 					aria-current={isActive ? "page" : undefined}
 				>
-					{link.label}
+					{title.toUpperCase()}
 				</a>
 			</li>
 		);

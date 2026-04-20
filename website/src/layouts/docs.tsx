@@ -2,6 +2,7 @@ import type { ComponentChildren } from "preact";
 import { Footer } from "@/components/Footer";
 import { MenuIcon } from "@/components/icons/MenuIcon";
 import { PageShell } from "@/components/PageShell";
+import { navSections } from "@/nav";
 import "./docs.css";
 
 export interface DocsLayoutProps {
@@ -9,37 +10,6 @@ export interface DocsLayoutProps {
 	path?: string;
 	children: ComponentChildren;
 }
-
-type SectionKey = "how-it-works" | "guide" | "reference";
-
-const sidebarSections: Record<
-	SectionKey,
-	{ title: string; links: { href: string; label: string }[] }
-> = {
-	guide: {
-		title: "GUIDE",
-		links: [
-			{ href: "/guide/quick-start", label: "Quick Start" },
-			{ href: "/guide/components-islands", label: "Components & Islands" },
-			{ href: "/guide/plugins", label: "Plugins" },
-		],
-	},
-	"how-it-works": {
-		title: "HOW IT WORKS",
-		links: [
-			{ href: "/how-it-works", label: "1. Build Pipeline" },
-			{ href: "/how-it-works/hydration", label: "2. Island Hydration" },
-			{ href: "/how-it-works/source", label: "3. Reading the Source" },
-		],
-	},
-	reference: {
-		title: "REFERENCE",
-		links: [
-			{ href: "/reference/config", label: "Configuration" },
-			{ href: "/reference/plugin-api", label: "Plugin API" },
-		],
-	},
-};
 
 export default function DocsLayout({ title, path, children }: DocsLayoutProps) {
 	return (
@@ -66,9 +36,9 @@ export default function DocsLayout({ title, path, children }: DocsLayoutProps) {
 				{/* Sidebar Navigation */}
 				<aside class="docs-sidebar">
 					<nav>
-						{Object.values(sidebarSections).map(({ title, links }) => (
-							<div class="docs-sidebar-section" key={title}>
-								<h3>{title}</h3>
+						{navSections.map(({ key, title, links }) => (
+							<div class="docs-sidebar-section" key={key}>
+								<h3>{title.toUpperCase()}</h3>
 								<ul>
 									{links.map((link) => (
 										<li key={link.href}>

@@ -1,22 +1,7 @@
+import { navSections } from "@/nav";
 import "./Footer.css";
 
-const guideLinks = [
-	{ href: "/guide/quick-start", label: "Quick Start" },
-	{ href: "/guide/components-islands", label: "Components & Islands" },
-	{ href: "/guide/plugins", label: "Plugins" },
-];
-
-const howItWorksLinks = [
-	{ href: "/how-it-works", label: "Build Pipeline" },
-	{ href: "/how-it-works/source", label: "Reading the Source" },
-	{ href: "/how-it-works/hydration", label: "Hydration" },
-];
-
-const referenceLinks = [
-	{ href: "/reference/config", label: "Config" },
-	{ href: "/reference/plugin-api", label: "Plugin API" },
-	{ href: "/about", label: "About" },
-];
+const aboutLink = { href: "/about", label: "About" };
 
 export function Footer() {
 	return (
@@ -35,9 +20,13 @@ export function Footer() {
 					</a>
 				</div>
 
-				<FooterNavColumn title="Guide" links={guideLinks} />
-				<FooterNavColumn title="How It Works" links={howItWorksLinks} />
-				<FooterNavColumn title="Reference" links={referenceLinks} />
+				{navSections.map(({ key, title, links }) => (
+					<FooterNavColumn
+						key={key}
+						title={title}
+						links={key === "reference" ? [...links, aboutLink] : links}
+					/>
+				))}
 			</div>
 			<hr class="divider" />
 			<div class="container footer-baseline">
