@@ -42,6 +42,7 @@
 .desktop-nav {
 	li a {
 		font-family: var(--font-display);
+		letter-spacing: 0.05rem;
 		font-size: var(--text-xl);
 		color: var(--pico-contrast);
 		text-decoration-color: transparent;
