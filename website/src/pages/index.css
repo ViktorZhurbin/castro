@@ -1,20 +1,6 @@
-.feature-section,
+.spectrum-section,
 .how-it-works-section {
 	padding: var(--spacing-6xl) var(--spacing-xl);
-}
-
-.feature-section-header {
-	text-align: center;
-	margin-bottom: var(--spacing-4xl);
-
-	h2 {
-		color: var(--pico-primary);
-		margin-bottom: var(--spacing);
-	}
-
-	p {
-		font-size: var(--text-xl);
-	}
 }
 
 .how-it-works-section {

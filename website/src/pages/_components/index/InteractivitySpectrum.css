@@ -1,3 +1,17 @@
+.spectrum-section-header {
+	text-align: center;
+	margin-bottom: var(--spacing-4xl);
+
+	h2 {
+		color: var(--pico-primary);
+		margin-bottom: var(--spacing);
+	}
+
+	p {
+		font-size: var(--text-xl);
+	}
+}
+
 .spectrum-grid {
 	margin-inline: auto;
 	text-align: center;
