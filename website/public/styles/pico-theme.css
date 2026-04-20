@@ -107,7 +107,7 @@
 
 	/* Component Specifics (Deviating from base paper) */
 	--pico-code-color: var(--ink-black);
-	--pico-code-background-color: var(--canvas-newsprint);
+	--pico-code-background-color: var(--canvas-cardboard);
 
 	/* Form elements */
 	--pico-form-element-background-color: var(--canvas-cream);
