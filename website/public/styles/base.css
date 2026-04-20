@@ -51,11 +51,20 @@ body {
 	--pico-dropdown-border-color: var(--pico-muted-border-color);
 }
 
+table {
+	border: var(--border-4);
+}
+
 a {
 	& {
+		--pico-text-decoration: none;
+		transition: none;
 		text-decoration-thickness: 3px;
 		text-underline-offset: 3px;
-		transition: none;
+
+		&:hover {
+			--pico-text-decoration: underline;
+		}
 	}
 }
 
@@ -113,4 +122,9 @@ h2 {
 
 pre {
 	border: var(--border-2);
+
+	> code {
+		padding: var(--spacing) var(--spacing-xl);
+		overflow: auto;
+	}
 }
