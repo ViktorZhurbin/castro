@@ -10,16 +10,11 @@ export function Hero() {
 					<StarIcon />
 				</div>
 				<h1>CASTRO</h1>
-				<p class="subtitle">THE PEOPLE'S FRAMEWORK</p>
 
 				<hr class="hero-hr" />
 
-				<p class="hero-tagline">
-					Your Five-Year Plan to Learn Island Architecture
-				</p>
-				<p class="hero-quote">
-					"The satire is optional. The knowledge is real."
-				</p>
+				<h2>Your Five-Year Plan to Learn Island Architecture</h2>
+				<p class="hero-quote">The satire is optional. The knowledge is real.</p>
 				<CTAButtons />
 			</div>
 		</div>
