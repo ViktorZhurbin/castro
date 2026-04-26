@@ -1,7 +1,7 @@
 ---
 title: Quick Start - Castro Guide
 layout: docs
-path: /guide/quick-start
+path: /build/quick-start
 ---
 
 # QUICK START
@@ -68,7 +68,7 @@ my-site/
 Layouts wrap your page content. `layouts/default.tsx` is required - it automatically wraps every page. You can add more layouts and use them by setting the file name in `meta.layout` in page file (see below).
 
 <aside class="alert">
-  Layouts and pages use Preact - Castro's engine for build-time rendering. No Preact ships to the browser unless you use a Preact island on the page (see <a href="/guide/components-islands">Components & Islands</a>).
+  Layouts and pages use Preact - Castro's engine for build-time rendering. No Preact ships to the browser unless you use a Preact island on the page (see <a href="/build/components-islands">Components & Islands</a>).
   <br/>
   <br/>
   Layouts must use a <code>default export</code>.
@@ -164,7 +164,9 @@ export function Card({ title, body }: { title: string; body: string }) {
 
 ### 6. ADD AN ISLAND
 
-You only need an island when a component requires client-side interactivity. Name it `*.island.tsx` - it gets pre-rendered at build time and hydrated in the browser.
+New to island architecture? [Start here](/concept/island-architecture).
+
+Name an island file `*.island.tsx` — it gets pre-rendered at build time and hydrated in the browser.
 
 ```tsx
 // components/Counter.island.tsx
@@ -198,7 +200,7 @@ export default function Home() {
 }
 ```
 
-For details on islands, directives, and alternative frameworks see [Components & Islands →](/guide/components-islands)
+For details on islands, directives, and alternative frameworks see [Components & Islands →](/build/components-islands)
 
 ### 7. CONFIGURATION (OPTIONAL)
 
@@ -216,6 +218,6 @@ The dev server watches for changes and reloads automatically. The build produces
 ### WHAT'S NEXT
 
 <div class="btn-group">
-  <a href="/guide/components-islands" class="btn btn-base">COMPONENTS & ISLANDS →</a>
+  <a href="/build/components-islands" class="btn btn-base">COMPONENTS & ISLANDS →</a>
   <a href="/reference/config" class="btn btn-base">CONFIGURATION →</a>
 </div>

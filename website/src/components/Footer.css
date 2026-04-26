@@ -14,8 +14,9 @@
 	gap: var(--spacing-2xl);
 
 	@media (min-width: 768px) {
-		grid-template-columns: 1.5fr max-content max-content max-content;
+		grid-template-columns: 1.5fr repeat(2, max-content);
 		column-gap: var(--spacing-4xl);
+		row-gap: var(--spacing-2xl);
 	}
 }
 
@@ -26,6 +27,10 @@
 	flex-direction: column;
 	align-items: flex-start;
 	gap: var(--spacing-sm);
+
+	@media (min-width: 768px) {
+		grid-row: span 2;
+	}
 }
 
 .footer-mark {

@@ -1,12 +1,12 @@
-.also-included-section {
+.foundation-section {
 	background-color: var(--pico-contrast-background);
 
 	.container {
-		padding: var(--spacing-2xl) var(--spacing-xl);
+		padding: var(--spacing-4xl) var(--spacing-xl);
 	}
 }
 
-.also-included-label {
+.foundation-label {
 	font-family: var(--font-display);
 	letter-spacing: 0.15em;
 	text-transform: uppercase;
@@ -14,7 +14,7 @@
 	margin-bottom: var(--spacing-2xl);
 }
 
-.also-included-grid {
+.foundation-grid {
 	display: grid;
 	grid-template-columns: 1fr;
 	gap: var(--spacing-xl);
@@ -24,12 +24,12 @@
 	}
 }
 
-.also-included-label,
-.also-included-item p {
+.foundation-label,
+.foundation-item p {
 	color: var(--pico-contrast-inverse);
 }
 
-.also-included-item {
+.foundation-item {
 	> p:first-of-type {
 		font-family: var(--font-display);
 		letter-spacing: 0.05em;

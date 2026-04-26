@@ -12,13 +12,11 @@ export interface NavSection {
 
 export const navSections: NavSection[] = [
 	{
-		key: "guide",
-		title: "Guide",
-		href: "/guide/quick-start",
+		key: "concept",
+		title: "Concept",
+		href: "/concept/island-architecture",
 		links: [
-			{ href: "/guide/quick-start", label: "Quick Start" },
-			{ href: "/guide/components-islands", label: "Components & Islands" },
-			{ href: "/guide/plugins", label: "Plugins" },
+			{ href: "/concept/island-architecture", label: "Island Architecture" },
 		],
 	},
 	{
@@ -29,6 +27,16 @@ export const navSections: NavSection[] = [
 			{ href: "/how-it-works", label: "Build Pipeline" },
 			{ href: "/how-it-works/hydration", label: "Island Hydration" },
 			{ href: "/how-it-works/source", label: "Reading the Source" },
+		],
+	},
+	{
+		key: "build",
+		title: "Build",
+		href: "/build/quick-start",
+		links: [
+			{ href: "/build/quick-start", label: "Quick Start" },
+			{ href: "/build/components-islands", label: "Components & Islands" },
+			{ href: "/build/plugins", label: "Plugins" },
 		],
 	},
 	{

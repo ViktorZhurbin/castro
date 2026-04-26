@@ -1,0 +1,46 @@
+.two-state-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--spacing);
+	margin-top: var(--spacing-xl);
+
+	@media (min-width: 576px) {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+.two-state-card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-xs);
+	padding: var(--spacing-lg);
+	background-color: var(--pico-code-background-color);
+	border: var(--border-2);
+	border-top: var(--border-primary-8);
+
+	h3 {
+		margin: 0;
+		font-family: var(--font-display);
+		font-size: var(--text-2xl);
+		letter-spacing: 0.05em;
+	}
+
+	p:last-child {
+		margin: 0;
+	}
+}
+
+.two-state-label {
+	font-family: var(--pico-font-family-monospace);
+	font-size: var(--text-xs);
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	color: var(--pico-primary);
+	margin: 0;
+}
+
+.two-state-footnote {
+	text-align: center;
+	margin-top: var(--spacing-2xl);
+	color: var(--pico-muted-color);
+}

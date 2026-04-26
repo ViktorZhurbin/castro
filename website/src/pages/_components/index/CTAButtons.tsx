@@ -3,19 +3,19 @@ import "./CTAButtons.css";
 export function CTAButtons() {
 	return (
 		<div class="cta-buttons-container">
-			<a href="/guide/quick-start" class="btn btn-primary">
-				GET STARTED
-			</a>
-			<a href="/how-it-works" class="btn btn-neutral">
-				HOW IT WORKS
+			<a href="/concept/island-architecture" class="btn btn-primary">
+				LEARN THE PATTERN
 			</a>
 			<a
 				href="https://github.com/ViktorZhurbin/castro"
 				target="_blank"
 				rel="noopener"
-				class="btn btn-base"
+				class="btn btn-neutral"
 			>
-				VIEW SOURCE
+				READ THE CODE
+			</a>
+			<a href="/build/quick-start" class="btn btn-base">
+				BUILD SOMETHING
 			</a>
 		</div>
 	);

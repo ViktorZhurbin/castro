@@ -14,6 +14,10 @@ export function Hero() {
 				<hr class="hero-hr" />
 
 				<h2>Your Five-Year Plan to Learn Island Architecture</h2>
+				<p class="hero-subtitle">
+					A working static site generator small enough to read in an afternoon.
+					Learn island architecture by reading the source.
+				</p>
 				<p class="hero-quote">The satire is optional. The knowledge is real.</p>
 				<CTAButtons />
 			</div>
