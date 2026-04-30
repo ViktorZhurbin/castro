@@ -1,5 +1,4 @@
 import { h } from "preact";
-import type { AnyFunction } from "../types";
 
 /**
  * Serializes a function and executes it immediately in the browser.
@@ -9,12 +8,12 @@ export function ClientScript({
 	fn,
 	args = [],
 }: {
-	fn: AnyFunction;
+	fn: (...args: never) => unknown;
 	args?: unknown[];
 }) {
 	const argsString = args.map(serializeArg).join(", ");
 
-	// Stringify the function invokation with args (IIFE)
+	// Stringify the function invocation with args (IIFE)
 	const scriptContent = `(${fn.toString()})(${argsString});`;
 
 	return h("script", {

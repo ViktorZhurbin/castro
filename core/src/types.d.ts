@@ -1,8 +1,6 @@
 /// <reference types="bun" />
 /// <reference path="./jsx.d.ts" />
 
-export { ClientScript } from "./components/ClientScript";
-
 /**
  * Castro Type Definitions
  */

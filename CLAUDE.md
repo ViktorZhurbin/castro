@@ -43,7 +43,6 @@ Subdirectory roles — read each file's module docblock for its specific respons
 - `layouts/` — layout discovery and compilation
 - `dev/` — dev server (Bun.serve + watchers + SSE) and live-reload client
 - `messages/` — `satirical.js` and `serious.js` presets implementing `messages.d.ts`
-- `components/ClientScript.tsx` — function-as-inline-IIFE serializer (zero-framework client behavior)
 - `utils/` — dependency externals, content-hashed module cache, Bun.build wrapper, debounce, error building and terminal rendering
 - `errors.d.ts` — structured error payload types (`ErrorCode`, `CodeFrame`, `CastroErrorPayload`)
 - `types.d.ts`, `jsx.d.ts` — shared types and JSX namespace for custom directives
@@ -126,7 +125,6 @@ All user-facing strings live in `core/src/messages/`. Both `satirical.js` and `s
 - **Island imports must use relative paths**, not tsconfig aliases. The `islandMarkerPlugin` intercepts imports at the AST level; tsconfig path aliases resolve after Bun's AST walk, so aliased imports don't trigger island detection.
 - **tsconfig.json path aliases** are supported natively in page imports. `getProjectDependencies()` externalizes all `package.json` dependencies, so Bun resolves local alias paths normally.
 - **Multi-framework type checking** requires per-file `/** @jsxImportSource */` pragmas for non-default frameworks (e.g. `/** @jsxImportSource solid-js */` for Solid). The pragma is the only mechanism `tsc` honors per-file — TypeScript uses the root tsconfig's JSX settings for all transitively imported files regardless of any nested tsconfig.
-- **`ClientScript` for zero-framework client behavior.** Accepts a plain function and optional JSON-serializable args, serializes them as an inline IIFE `<script>`. The escape hatch between "static component" and "full island."
 - **Vanilla islands for island lifecycle without framework runtime.** Full island experience (directives, prop serialization, lazy loading) but zero client dependencies. Default export is Preact JSX for SSR; named `hydrate` export is plain JS for the browser. Perfect for D3, Three.js, or localized interactivity.
 - **Three hydration directives: `comrade:eager`, `comrade:patient`, `comrade:visible` (default).** `comrade:eager` hydrates immediately. `comrade:visible` hydrates on intersection. `comrade:patient` uses `requestIdleCallback` with load-event gating and Safari fallback.
 

@@ -55,13 +55,6 @@ export default function ComponentsIslands() {
 							<td>Your code, no framework</td>
 							<td>Third-party libs, localized interactions</td>
 						</tr>
-						<tr>
-							<td>
-								<code>ClientScript</code>
-							</td>
-							<td>One inlined function</td>
-							<td>DOM touch without reactive state</td>
-						</tr>
 					</tbody>
 				</table>
 			</div>
@@ -232,7 +225,7 @@ export function hydrate(container: HTMLElement, props: { data: number[] }) {
 				<code>{`import Chart from "../components/Chart.island.tsx";
 
 export default function Page() {
-  return <Chart data={[1, 2, 3]} comrade:visible />;
+  return <Chart data={[1, 2, 3]} />;
 }`}</code>
 			</pre>
 			<p>
@@ -240,58 +233,6 @@ export default function Page() {
 				interactions that don't need reactive state. Full island lifecycle, zero
 				framework bytes.
 			</p>
-
-			<h3>CLIENT SCRIPT</h3>
-			<p>
-				Not every interactive element needs a framework or even an island. Theme
-				toggles, scroll handlers, and DOM queries often need a simple function —{" "}
-				<code>ClientScript</code> serializes a plain function as an inline{" "}
-				<code>{"<script>"}</code> IIFE. No bundler, no hydration, no runtime.
-			</p>
-			<pre>
-				<code>{`import { ClientScript } from "@vktrz/castro";
-
-export default function DummyThemeToggle() {
-  return (
-    <>
-      <button id="toggle">Toggle</button>
-
-      {/* pass the function and its arguments */}
-      <ClientScript fn={initButton} args={["dark", "light"]} />
-    </>
-  );
-}
-
-// plain JS/TS function, and direct DOM manipulation
-function initButton(dark: string, light: string) {
-  const button = document.querySelector<HTMLButtonElement>("#toggle");
-
-  button?.addEventListener("change", () => {
-    const current = document.documentElement.getAttribute("data-theme") || light;
-    const next = current === light ? dark : light;
-
-    document.documentElement.setAttribute("data-theme", next);
-  });
-}`}</code>
-			</pre>
-			<p>
-				Full source of the theme toggle used by this website:{" "}
-				<a href="https://github.com/ViktorZhurbin/castro/blob/main/website/src/components/theme/ThemeToggle.tsx">
-					ThemeToggle.tsx
-				</a>
-			</p>
-			<p>
-				The function is written and type-checked as normal TypeScript. It's only
-				serialized via <code>.toString()</code> when the page renders at build
-				time. Args must be JSON-serializable — functions and symbols will throw
-				an error.
-			</p>
-
-			<aside class="alert">
-				Function arguments must come through <code>args</code>.{" "}
-				<code>ClientScript</code> can't close over variables from the
-				surrounding module — it runs in a separate browser scope.
-			</aside>
 
 			{/* ─── ALTERNATIVE FRAMEWORKS ──────────────────────────────── */}
 			<h2>ALTERNATIVE FRAMEWORKS</h2>

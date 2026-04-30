@@ -1,4 +1,4 @@
-import { ClientScript } from "@vktrz/castro";
+import { ClientScript } from "../ClientScript";
 import { DARK, LIGHT, STORAGE_KEY } from "./constants";
 
 export function ThemeScript() {
