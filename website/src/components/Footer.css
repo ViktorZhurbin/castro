@@ -14,8 +14,9 @@
 	gap: var(--spacing-2xl);
 
 	@media (min-width: 768px) {
-		grid-template-columns: 1.5fr max-content max-content max-content;
+		grid-template-columns: 1.5fr repeat(2, max-content);
 		column-gap: var(--spacing-4xl);
+		row-gap: var(--spacing-2xl);
 	}
 }
 

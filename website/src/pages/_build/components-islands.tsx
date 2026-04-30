@@ -3,7 +3,7 @@ import Redactor from "@/components/islandExamples/Redactor.island";
 export const meta = {
 	title: "Components & Islands - Castro Guide",
 	layout: "docs",
-	path: "/guide/components-islands",
+	path: "/build/components-islands",
 };
 
 export default function ComponentsIslands() {
@@ -12,21 +12,21 @@ export default function ComponentsIslands() {
 			{/* ─── HEADER ─────────────────────────────────────────────── */}
 			<h1>COMPONENTS & ISLANDS</h1>
 			<p>
-				Every component in Castro starts as static HTML - rendered at build
-				time, shipped to the browser as plain markup, zero JavaScript. You add
-				interactivity by choosing how far up the spectrum to go.
+				New to island architecture?{" "}
+				<a href="/concept/island-architecture">Start here</a> — this page covers
+				the mechanics.
 			</p>
 			<p>
-				Four levels. Each adds capability and ships more JavaScript. The right
-				choice is the lowest level that meets your needs.
+				Every component in Castro starts as static HTML. You add interactivity
+				by choosing the right tool for the job.
 			</p>
 
-			{/* Spectrum summary table */}
+			{/* Summary table */}
 			<div class="overflow-auto">
 				<table>
 					<thead>
 						<tr>
-							<th>Level</th>
+							<th>Tool</th>
 							<th>JS shipped</th>
 							<th>When to use</th>
 						</tr>
@@ -43,10 +43,10 @@ export default function ComponentsIslands() {
 						</tr>
 						<tr>
 							<td>
-								<code>ClientScript</code>
+								<strong>Framework island</strong>
 							</td>
-							<td>One inlined function</td>
-							<td>DOM touch without reactive state</td>
+							<td>Your code + framework runtime</td>
+							<td>Reactive state, complex UI</td>
 						</tr>
 						<tr>
 							<td>
@@ -57,17 +57,17 @@ export default function ComponentsIslands() {
 						</tr>
 						<tr>
 							<td>
-								<strong>Framework island</strong>
+								<code>ClientScript</code>
 							</td>
-							<td>Your code + framework runtime</td>
-							<td>Reactive state, complex UI</td>
+							<td>One inlined function</td>
+							<td>DOM touch without reactive state</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
 
-			{/* ─── LEVEL 1: STATIC COMPONENTS ─────────────────────────── */}
-			<h2>LEVEL 1 - STATIC COMPONENTS</h2>
+			{/* ─── STATIC COMPONENTS ───────────────────────────────────── */}
+			<h2>STATIC COMPONENTS</h2>
 			<p>
 				Pages, layouts, and components are plain <code>.tsx</code> files. They
 				are rendered at build time and delivered as plain HTML. Write regular
@@ -92,131 +92,27 @@ export default function Index() {
 }`}</code>
 			</pre>
 
-			{/* ─── LEVEL 2: CLIENTSCRIPT ───────────────────────────────── */}
-			<h2>LEVEL 2 - Client Script</h2>
-			<p>
-				Not every interactive element needs a framework. Theme toggles, scroll
-				handlers, and DOM queries often need a simple function -{" "}
-				<code>ClientScript</code> serializes a plain function as an inline{" "}
-				<code>{"<script>"}</code> IIFE. No bundler, no hydration, no runtime.
-			</p>
-			<pre>
-				<code>{`import { ClientScript } from "@vktrz/castro";
-
-export default function DummyThemeToggle() {
-  return (
-    <>
-      <button id="toggle">Toggle</button>
-
-	  {/* pass the function and its arguments */}
-      <ClientScript fn={initButton} args={["dark", "light"]} />
-    </>
-  );
-}
-
-// plain JS/TS function, and direct DOM manipulation
-function initButton(dark: string, light: string) {
-  const button = document.querySelector<HTMLButtonElement>("#toggle");
-
-  button?.addEventListener("change", () => {
-    const current = document.documentElement.getAttribute("data-theme") || light;
-    const next = current === light ? dark : light;
-
-    document.documentElement.setAttribute("data-theme", next);
-  });
-}`}</code>
-			</pre>
-			<p>
-				Full source of the theme toggle used by this website:{" "}
-				<a href="https://github.com/ViktorZhurbin/castro/blob/main/website/src/components/theme/ThemeToggle.tsx">
-					ThemeToggle.tsx
-				</a>
-			</p>
-			<p>
-				The function is written and type-checked as normal TypeScript. It's only
-				serialized via <code>.toString()</code> when the page renders at build
-				time. Args must be JSON-serializable - functions and symbols will throw
-				an error. The above example renders to:
-			</p>
-			<pre>
-				<code>{`<button id="toggle">Toggle</button>
-<script>
-	(initButton(dark, light) {...})("dark", "light");
-</script>`}</code>
-			</pre>
-
-			<aside class="alert">
-				Function arguments must come through <code>args</code>.{" "}
-				<code>ClientScript</code> can't close over variables from the
-				surrounding module - it runs in a separate browser scope.
-			</aside>
-
-			{/* ─── ISLANDS BRIDGE ──────────────────────────────────────── */}
+			{/* ─── ISLANDS ─────────────────────────────────────────────── */}
 			<h2>THE HYDRATION LINE</h2>
 			<p>
 				An <code>.island.tsx</code> file is where Castro crosses from static
 				markup into client interactivity.
 			</p>
 			<p>
-				At build time, an island is server-rendered exactly like a Level 1
-				component - producing static HTML with zero JavaScript. But in the
-				browser, it hydrates in place, attaching to the existing HTML. You
-				dictate exactly <b>when</b> this happens using a client directive.
+				At build time, an island is server-rendered to static HTML with zero
+				JavaScript. In the browser, it hydrates in place, attaching to the
+				existing HTML. You dictate exactly <b>when</b> this happens using a
+				client directive.
 			</p>
 
-			{/* ─── LEVEL 3: VANILLA ISLANDS ────────────────────────────── */}
-			<div>
-				<h2>LEVEL 3 - "VANILLA" ISLANDS</h2>
-				<p>
-					The lifecycle above applies to all islands. "Vanilla" islands are a
-					specific case: full lifecycle - prop serialization, lazy loading,
-					directives - with zero framework runtime. The default export is Preact
-					JSX for the server render; the named <code>hydrate</code> export is
-					plain JavaScript for the browser. Nothing else ships:
-				</p>
-				<pre>
-					<code>{`// components/Chart.island.tsx
-
-// Rendered at build time to plain HTML
-export default function Chart(props: { data: number[] }) {
-  return (
-    <div class="chart-container">
-      <canvas class="chart-canvas" />
-    </div>
-  );
-}
-
-// Only this JS ships to the browser, no framework runtime
-export function hydrate(container: HTMLElement, props: { data: number[] }) {
-  const canvas = container.querySelector<HTMLCanvasElement>(".chart-canvas");
-  // mount your D3 chart, Three.js scene, etc.
-}`}</code>
-				</pre>
-				<pre>
-					<code>{`import Chart from "../components/Chart.island.tsx";
-
-export default function Page() {
-  return <Chart data={[1, 2, 3]} comrade:visible />;
-}`}</code>
-				</pre>
-				<p>
-					Vanilla islands are the right choice when you're wiring up a
-					third-party library (D3, Three.js, Matter.js) or handling a localized
-					interaction that doesn't need reactive state. Full island lifecycle,
-					zero framework bytes.
-				</p>
-			</div>
-
-			{/* ─── LEVEL 4: PREACT ISLANDS ─────────────────────────── */}
-			<div>
-				<h2>LEVEL 4 - PREACT ISLANDS</h2>
-				<p>
-					Preact islands work the same way - server-rendered at build time,
-					hydrated on the client - except the framework runtime ships to the
-					browser too. Use them when you need reactive state.
-				</p>
-				<pre>
-					<code>{`// components/Counter.island.tsx
+			{/* ─── FRAMEWORK ISLANDS ───────────────────────────────────── */}
+			<h2>FRAMEWORK ISLANDS</h2>
+			<p>
+				The standard island: server-rendered at build time, hydrated on the
+				client with a framework runtime. Use when you need reactive state.
+			</p>
+			<pre>
+				<code>{`// components/Counter.island.tsx
 import { useState } from "preact/hooks";
 
 export default function Counter({ initial = 0 }) {
@@ -235,15 +131,13 @@ import Counter from "../components/Counter.island.tsx";
 export default function Index() {
   return <Counter initial={5} />;
 }`}</code>
-				</pre>
-			</div>
+			</pre>
 
 			{/* ─── CLIENT DIRECTIVES ─────────────────────────── */}
 			<h2>CLIENT DIRECTIVES</h2>
 			<p>
-				You have the components. Now you can orchestrate them. Castro provides
-				three directives to control exactly when an island's JavaScript is
-				fetched and executed.
+				Castro provides three directives to control exactly when an island's
+				JavaScript is fetched and executed.
 			</p>
 
 			<h3>
@@ -301,6 +195,103 @@ export default function Page() {
   return <Redactor />;
 }`}</code>
 			</pre>
+
+			{/* ─── BEYOND ISLANDS ──────────────────────────────────────── */}
+			<h2>BEYOND ISLANDS</h2>
+			<p>
+				Castro also gives you two related tools that aren't strictly island
+				architecture but solve adjacent problems.
+			</p>
+
+			<h3>VANILLA ISLANDS</h3>
+			<p>
+				Full island lifecycle — prop serialization, lazy loading, directives —
+				with zero framework runtime. The default export is Preact JSX for the
+				server render; the named <code>hydrate</code> export is plain JavaScript
+				for the browser. Nothing else ships:
+			</p>
+			<pre>
+				<code>{`// components/Chart.island.tsx
+
+// Rendered at build time to plain HTML
+export default function Chart(props: { data: number[] }) {
+  return (
+    <div class="chart-container">
+      <canvas class="chart-canvas" />
+    </div>
+  );
+}
+
+// Only this JS ships to the browser, no framework runtime
+export function hydrate(container: HTMLElement, props: { data: number[] }) {
+  const canvas = container.querySelector<HTMLCanvasElement>(".chart-canvas");
+  // mount your D3 chart, Three.js scene, etc.
+}`}</code>
+			</pre>
+			<pre>
+				<code>{`import Chart from "../components/Chart.island.tsx";
+
+export default function Page() {
+  return <Chart data={[1, 2, 3]} comrade:visible />;
+}`}</code>
+			</pre>
+			<p>
+				Right for third-party libraries (D3, Three.js, Matter.js) or localized
+				interactions that don't need reactive state. Full island lifecycle, zero
+				framework bytes.
+			</p>
+
+			<h3>CLIENT SCRIPT</h3>
+			<p>
+				Not every interactive element needs a framework or even an island. Theme
+				toggles, scroll handlers, and DOM queries often need a simple function —{" "}
+				<code>ClientScript</code> serializes a plain function as an inline{" "}
+				<code>{"<script>"}</code> IIFE. No bundler, no hydration, no runtime.
+			</p>
+			<pre>
+				<code>{`import { ClientScript } from "@vktrz/castro";
+
+export default function DummyThemeToggle() {
+  return (
+    <>
+      <button id="toggle">Toggle</button>
+
+      {/* pass the function and its arguments */}
+      <ClientScript fn={initButton} args={["dark", "light"]} />
+    </>
+  );
+}
+
+// plain JS/TS function, and direct DOM manipulation
+function initButton(dark: string, light: string) {
+  const button = document.querySelector<HTMLButtonElement>("#toggle");
+
+  button?.addEventListener("change", () => {
+    const current = document.documentElement.getAttribute("data-theme") || light;
+    const next = current === light ? dark : light;
+
+    document.documentElement.setAttribute("data-theme", next);
+  });
+}`}</code>
+			</pre>
+			<p>
+				Full source of the theme toggle used by this website:{" "}
+				<a href="https://github.com/ViktorZhurbin/castro/blob/main/website/src/components/theme/ThemeToggle.tsx">
+					ThemeToggle.tsx
+				</a>
+			</p>
+			<p>
+				The function is written and type-checked as normal TypeScript. It's only
+				serialized via <code>.toString()</code> when the page renders at build
+				time. Args must be JSON-serializable — functions and symbols will throw
+				an error.
+			</p>
+
+			<aside class="alert">
+				Function arguments must come through <code>args</code>.{" "}
+				<code>ClientScript</code> can't close over variables from the
+				surrounding module — it runs in a separate browser scope.
+			</aside>
 
 			{/* ─── ALTERNATIVE FRAMEWORKS ──────────────────────────────── */}
 			<h2>ALTERNATIVE FRAMEWORKS</h2>
@@ -361,14 +352,14 @@ export default function Counter() {
 
 			<p>
 				For building your own framework plugin, see{" "}
-				<a href="/guide/plugins">Plugins →</a>
+				<a href="/build/plugins">Plugins →</a>
 			</p>
 
 			<div class="btn-group">
-				<a href="/guide/quick-start" class="btn btn-base">
+				<a href="/build/quick-start" class="btn btn-base">
 					← Quick Start
 				</a>
-				<a href="/guide/plugins" class="btn btn-base">
+				<a href="/build/plugins" class="btn btn-base">
 					Plugins →
 				</a>
 			</div>

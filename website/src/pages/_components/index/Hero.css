@@ -40,6 +40,13 @@
 	margin: var(--spacing-2-5xl) auto;
 }
 
+.hero-subtitle {
+	color: var(--pico-muted-color);
+	font-size: var(--text-lg);
+	max-width: 36rem;
+	margin-bottom: var(--spacing-xl);
+}
+
 .hero-quote {
 	position: relative;
 	font-style: italic;

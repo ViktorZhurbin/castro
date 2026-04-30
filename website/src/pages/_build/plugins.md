@@ -1,7 +1,7 @@
 ---
 title: Plugins - Castro Guide
 layout: docs
-path: /guide/plugins
+path: /build/plugins
 ---
 
 # PLUGINS
@@ -68,7 +68,7 @@ That's the full plugin. For complete plugin examples see [packages/](https://git
 -----
 
 <div class="btn-group">
-  <a href="/guide/components-islands" class="btn btn-base">
+  <a href="/build/components-islands" class="btn btn-base">
     ← Components & Islands
   </a>
   <a href="/reference/plugin-api" class="btn btn-base">

@@ -1,8 +1,6 @@
 import { navSections } from "@/nav";
 import "./Footer.css";
 
-const aboutLink = { href: "/about", label: "About" };
-
 export function Footer() {
 	return (
 		<footer class="footer">
@@ -24,7 +22,7 @@ export function Footer() {
 					<FooterNavColumn
 						key={key}
 						title={title}
-						links={key === "reference" ? [...links, aboutLink] : links}
+						links={links}
 					/>
 				))}
 			</div>

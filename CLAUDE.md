@@ -157,6 +157,8 @@ Demo site that consumes castro. Uses PicoCSS v2 (CDN) plus three co-located styl
 
 **Read [website/DESIGN.md](website/DESIGN.md) before any UI change** — it documents the color system, typography, layout conventions, and the structure of the three style files. Customization & CSS variable references: [.claude/docs/pico.md](.claude/docs/pico.md), [.claude/docs/pico-variables-css.md](.claude/docs/pico-variables-css.md).
 
-**Docs page `path` contract.** Pages under `src/pages/how-it-works/`, `src/pages/guide/`, `src/pages/reference/` export a `meta` with `layout: "docs"` and `path: "<exact-url>"`. The `path` drives sidebar active state and header highlighting — **update it whenever the page's URL changes**, or the nav silently goes wrong.
+**Docs page `path` contract.** Pages under `src/pages/concept/`, `src/pages/how-it-works/`, `src/pages/build/`, `src/pages/reference/` export a `meta` with `layout: "docs"` and `path: "<exact-url>"`. The `path` drives sidebar active state and header highlighting — **update it whenever the page's URL changes**, or the nav silently goes wrong.
+
+**Site information architecture.** The site is education-first: **Concept → How It Works → Build → Reference**. The concept page (`/concept/island-architecture`) is the entry point for new readers. Build section (`/build/`) is the hands-on docs for people who want to install and use Castro. The homepage primary CTA points at the concept page, not the Build section.
 
 **Canonical tsconfig.** [website/tsconfig.json](website/tsconfig.json) is the source of truth; [packages/create-castro/template/tsconfig.json](packages/create-castro/template/tsconfig.json) shares the same `compilerOptions` but uses root-level `pages/`/`layouts/` (no `srcDir`) instead of the website's `src/` layout.

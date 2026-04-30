@@ -7,7 +7,7 @@ section: reference
 
 # PLUGIN API
 
-Complete API reference for `CastroPlugin`. For usage examples, see [Plugins →](/guide/plugins).
+Complete API reference for `CastroPlugin`. For usage examples, see [Plugins →](/build/plugins).
 
 ```typescript
 type CastroPlugin = {
