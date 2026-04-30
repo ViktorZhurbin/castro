@@ -2,7 +2,7 @@ import { navSections } from "@/nav";
 import { GithubIcon } from "./icons/GithubIcon";
 import { MoreIcon } from "./icons/MoreIcon";
 import { StarIcon } from "./icons/StarIcon";
-import { ThemeToggle } from "./theme/ThemeToggle";
+import ThemeToggle from "./theme/ThemeToggle.island";
 import "./Header.css";
 
 export function Header({ activePath }: { activePath?: string }) {

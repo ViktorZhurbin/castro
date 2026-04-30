@@ -1,33 +1,29 @@
-import { ClientScript } from "@vktrz/castro";
 import { DARK, LIGHT, STORAGE_KEY } from "./constants";
 import "./ThemeToggle.css";
 
-export function ThemeToggle() {
+export default function ThemeToggle() {
 	return (
-		<>
-			<button id="theme-toggle" class="btn-square" aria-label="Toggle theme">
-				<SunIcon />
-				<MoonIcon />
-			</button>
-
-			<ClientScript fn={initState} args={[STORAGE_KEY, DARK, LIGHT]} />
-		</>
+		<button id="theme-toggle" class="btn-square" aria-label="Toggle theme">
+			<SunIcon />
+			<MoonIcon />
+		</button>
 	);
 }
 
-function initState(storageKey: string, dark: string, light: string) {
-	const btn = document.getElementById(
-		"theme-toggle",
-	) as HTMLButtonElement | null;
+export function hydrate(
+	container: HTMLElement,
+	props: { storageKey: string; dark: string; light: string },
+) {
+	const btn = container.querySelector<HTMLButtonElement>("#theme-toggle");
 
 	if (!btn) return;
 
 	btn.addEventListener("click", () => {
 		const current = document.documentElement.getAttribute("data-theme");
-		const next = current === dark ? light : dark;
+		const next = current === props.dark ? props.light : props.dark;
 
 		document.documentElement.setAttribute("data-theme", next);
-		localStorage.setItem(storageKey, next);
+		localStorage.setItem(props.storageKey, next);
 	});
 }
 
