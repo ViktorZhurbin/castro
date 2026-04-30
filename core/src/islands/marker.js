@@ -123,16 +123,12 @@ const DEFAULT_DIRECTIVE = "comrade:visible";
  * @returns {{ directive: Directive, cleanProps: Record<string, any> }}
  */
 function processProps(props = {}) {
-	const foundDirectives = DIRECTIVES.filter((d) => d in props);
+	const specifiedDirective = DIRECTIVES.find((d) => d in props);
 
 	const cleanProps = { ...props };
-
-	if (foundDirectives.length > 0) {
-		delete cleanProps[foundDirectives[0]];
+	for (const directive of DIRECTIVES) {
+		delete cleanProps[directive];
 	}
 
-	return {
-		cleanProps,
-		directive: foundDirectives[0] ?? DEFAULT_DIRECTIVE,
-	};
+	return { cleanProps, directive: specifiedDirective ?? DEFAULT_DIRECTIVE };
 }
