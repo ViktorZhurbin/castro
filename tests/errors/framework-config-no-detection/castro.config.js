@@ -7,7 +7,7 @@ export default {
 			clientDependencies: [],
 			hydrateFnString: "// hydrate",
 			renderSSR: () => "",
-			// detectImports and detectExports both absent
+			// detectImports absent
 		}
 	}]
 };

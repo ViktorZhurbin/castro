@@ -118,7 +118,7 @@ export const serious = {
 		FRAMEWORK_CONFIG_NO_DETECTION: ({ pluginName }) => ({
 			title: "Framework config missing detection",
 			message: `Plugin "${pluginName}" frameworkConfig has no detection arrays`,
-			hint: "Declare detectImports, detectExports, or both",
+			hint: "Declare detectImports",
 		}),
 
 		CACHE_WRITE_FAILED: ({ path, errorMessage }) => ({

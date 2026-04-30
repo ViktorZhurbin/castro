@@ -118,17 +118,8 @@ export const islands = new IslandsRegistry();
 /**
  * Detect the framework for an island.
  *
- * Scans the file's AST for imports and exports, then checks each loaded
- * framework's detection arrays. Detection order:
- *
- * 1. Export signature: explicit exports like `hydrate` are the strongest
- *    signal — they override any import-based match. A vanilla island that
- *    imports "preact" for SSR props must still be treated as vanilla.
- * 2. Import scanning: package-level import matching (e.g., "solid-js").
- * 3. Default: Preact.
- *
- * All frameworks must declare at least one detection method (detectImports
- * or detectExports) so AST-based detection always succeeds.
+ * Scans the file's AST for imports, then matches against each loaded
+ * framework's detectImports array. Falls back to Preact.
  *
  * @param {string} sourcePath - Absolute path to the island source file
  * @returns {Promise<string>} Framework id
@@ -160,15 +151,7 @@ async function detectFramework(sourcePath) {
 
 	const fwConfigs = getLoadedFrameworkConfigs();
 
-	// Exports first: an explicit `export function hydrate` is the strongest signal.
-	// A vanilla island may import "preact" for SSR types — the hydrate export should win.
-	for (const fwConfig of fwConfigs) {
-		if (fwConfig.detectExports?.some((exp) => scanned.exports.includes(exp))) {
-			return fwConfig.id;
-		}
-	}
-
-	// Imports second: match package-level prefixes.
+	// Match package-level import prefixes.
 	// E.g., "solid-js/web" matches the "solid-js" detector.
 	const importPaths = scanned.imports.map((i) => i.path);
 

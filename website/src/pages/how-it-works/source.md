@@ -48,9 +48,9 @@ The island system is the core of what makes Castro interesting. Read these in or
 
 [islands/plugins.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/plugins.js) — the plugin registry. Internal plugins (island runtime, vendor bundling) and user plugins from config all go through here.
 
-[islands/frameworkConfig.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/frameworkConfig.js) — loads and caches framework configs. Each framework (Preact, vanilla, Solid, castro-jsx) is a config object, not a special code path.
+[islands/frameworkConfig.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/frameworkConfig.js) — loads and caches framework configs. Each framework (Preact, Solid, castro-jsx) is a config object, not a special code path.
 
-[islands/frameworks/](https://github.com/ViktorZhurbin/castro/tree/main/core/src/islands/frameworks/) — the built-in framework configs. [preact.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/frameworks/preact.js) and [vanilla.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/frameworks/vanilla.js) are the reference implementations. Read these after `frameworkConfig.js` — they're short and show exactly what a framework contributes.
+[islands/frameworks/](https://github.com/ViktorZhurbin/castro/tree/main/core/src/islands/frameworks/) — the built-in framework configs. [preact.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/frameworks/preact.js) is the reference implementation. Read it after `frameworkConfig.js` — it's short and shows exactly what a framework contributes.
 
 
 ## INFRASTRUCTURE

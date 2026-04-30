@@ -48,13 +48,6 @@ export default function ComponentsIslands() {
 							<td>Your code + framework runtime</td>
 							<td>Reactive state, complex UI</td>
 						</tr>
-						<tr>
-							<td>
-								<strong>Vanilla island</strong>
-							</td>
-							<td>Your code, no framework</td>
-							<td>Third-party libs, localized interactions</td>
-						</tr>
 					</tbody>
 				</table>
 			</div>
@@ -188,51 +181,6 @@ export default function Page() {
   return <Redactor />;
 }`}</code>
 			</pre>
-
-			{/* ─── BEYOND ISLANDS ──────────────────────────────────────── */}
-			<h2>BEYOND ISLANDS</h2>
-			<p>
-				Castro also gives you two related tools that aren't strictly island
-				architecture but solve adjacent problems.
-			</p>
-
-			<h3>VANILLA ISLANDS</h3>
-			<p>
-				Full island lifecycle — prop serialization, lazy loading, directives —
-				with zero framework runtime. The default export is Preact JSX for the
-				server render; the named <code>hydrate</code> export is plain JavaScript
-				for the browser. Nothing else ships:
-			</p>
-			<pre>
-				<code>{`// components/Chart.island.tsx
-
-// Rendered at build time to plain HTML
-export default function Chart(props: { data: number[] }) {
-  return (
-    <div class="chart-container">
-      <canvas class="chart-canvas" />
-    </div>
-  );
-}
-
-// Only this JS ships to the browser, no framework runtime
-export function hydrate(container: HTMLElement, props: { data: number[] }) {
-  const canvas = container.querySelector<HTMLCanvasElement>(".chart-canvas");
-  // mount your D3 chart, Three.js scene, etc.
-}`}</code>
-			</pre>
-			<pre>
-				<code>{`import Chart from "../components/Chart.island.tsx";
-
-export default function Page() {
-  return <Chart data={[1, 2, 3]} />;
-}`}</code>
-			</pre>
-			<p>
-				Right for third-party libraries (D3, Three.js, Matter.js) or localized
-				interactions that don't need reactive state. Full island lifecycle, zero
-				framework bytes.
-			</p>
 
 			{/* ─── ALTERNATIVE FRAMEWORKS ──────────────────────────────── */}
 			<h2>ALTERNATIVE FRAMEWORKS</h2>

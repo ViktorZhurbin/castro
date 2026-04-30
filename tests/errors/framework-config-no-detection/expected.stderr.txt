@@ -1,4 +1,4 @@
 ❌ Framework config missing detection
    Plugin "no-detection-plugin" cannot identify its comrades — no detection declared
 
-   → Declare detectImports, detectExports, or both
+   → Declare detectImports

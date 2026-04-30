@@ -98,12 +98,8 @@ async function compileIslandClient({ sourcePath, outputDir, frameworkId }) {
 	// bundler as if they were real files (same concept as Vite/Rollup virtual modules).
 	const frameworkConfig = getFrameworkConfig(frameworkId);
 
-	const importLine = frameworkConfig.virtualEntryImport
-		? frameworkConfig.virtualEntryImport(basename(sourcePath))
-		: `import Component from './${basename(sourcePath)}';`;
-
 	const virtualEntry = `
-		${importLine}
+		import Component from './${basename(sourcePath)}';
 
 		export default async (container, props = {}) => {
 			${frameworkConfig.hydrateFnString}

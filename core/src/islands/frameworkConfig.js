@@ -1,17 +1,16 @@
 /**
  * Framework Config Registry
  *
- * Built-in frameworks (preact, vanilla) are registered at module load.
+ * The built-in preact framework is registered at module load.
  * User plugins provide additional framework configs via registerFramework(),
  * called from plugins.js before any builds run.
  *
- * All frameworks must declare detection arrays (detectImports or detectExports)
- * because framework discovery is purely AST-based — no directory convention.
+ * All frameworks must declare `detectImports` because framework discovery
+ * is purely AST-based — no directory convention.
  */
 
 import { CastroError } from "../utils/errors.js";
 import preactConfig from "./frameworks/preact.js";
-import vanillaConfig from "./frameworks/vanilla.js";
 
 /**
  * @import { FrameworkConfig } from "./frameworks/types.js"
@@ -49,9 +48,7 @@ export function registerFramework(frameworkConfig, pluginName) {
 		});
 	}
 
-	const hasDetection =
-		(frameworkConfig.detectImports?.length ?? 0) > 0 ||
-		(frameworkConfig.detectExports?.length ?? 0) > 0;
+	const hasDetection = (frameworkConfig.detectImports?.length ?? 0) > 0;
 
 	if (!hasDetection) {
 		throw new CastroError("FRAMEWORK_CONFIG_NO_DETECTION", { pluginName });
@@ -93,4 +90,3 @@ export function getLoadedFrameworkConfigs() {
 
 // Register built-in frameworks at module load
 registerFramework(preactConfig, "castro-preact");
-registerFramework(vanillaConfig, "castro-vanilla");

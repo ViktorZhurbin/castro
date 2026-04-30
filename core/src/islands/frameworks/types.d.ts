@@ -24,20 +24,9 @@ export type FrameworkConfig = {
 	clientDependencies: string[];
 
 	/**
-	 * Exported names to scan for automatic framework detection.
-	 * E.g. ["hydrate"] means any island exporting a `hydrate` function
-	 * will use this framework.
-	 *
-	 * Checked before detectImports.
-	 */
-	detectExports?: string[];
-
-	/**
 	 * Package names to scan imports for automatic framework detection.
 	 * E.g. ["solid-js"] means any island importing "solid-js" or "solid-js/web"
 	 * will use this framework.
-	 *
-	 * Checked after detectExports.
 	 */
 	detectImports?: string[];
 
@@ -47,15 +36,6 @@ export type FrameworkConfig = {
 	 * Only included on pages that actually render islands from this framework.
 	 */
 	headAssets?: Asset[];
-
-	/**
-	 * Custom import statement for the virtual entry point.
-	 * By default, compiler.js generates `import Component from './${basename}'`.
-	 * Frameworks that don't need the full default export (e.g., vanilla) can
-	 * override this to import only what hydrateFnString needs, enabling
-	 * tree-shaking of unused SSR code.
-	 */
-	virtualEntryImport?: (basename: string) => string;
 
 	/**
 	 * Client-side hydration code string.

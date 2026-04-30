@@ -19,11 +19,7 @@ export function Footer() {
 				</div>
 
 				{navSections.map(({ key, title, links }) => (
-					<FooterNavColumn
-						key={key}
-						title={title}
-						links={links}
-					/>
+					<FooterNavColumn key={key} title={title} links={links} />
 				))}
 			</div>
 			<hr class="divider" />

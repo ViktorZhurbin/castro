@@ -38,7 +38,7 @@ Subdirectory roles — read each file's module docblock for its specific respons
 - `cli.js`, `config.js`, `constants.js` — entry point, config loader, shared path constants
 - `builder/` — page build pipeline (orchestration, JSX/Markdown compilation, render, HTML assembly, CSS extraction)
 - `islands/` — island compilation, registry, island ID generation, build-time marker, runtime hydration custom element, framework configs, plugin registry
-- `islands/frameworks/` — built-in framework configs (Preact, vanilla)
+- `islands/frameworks/` — built-in framework configs (Preact)
 - `islands/plugins/` — internal plugins (island runtime injection, dependency vendoring)
 - `layouts/` — layout discovery and compilation
 - `dev/` — dev server (Bun.serve + watchers + SSE) and live-reload client
@@ -121,11 +121,10 @@ All user-facing strings live in `core/src/messages/`. Both `satirical.js` and `s
 - **Preact is permanently the page/layout rendering engine.** Pages and layouts always use Preact for SSR and VNode tree construction. Preact is a build-time dependency only — never shipped to the browser for static pages. Other frameworks (castro-jsx, Solid) are limited to islands.
 - **Multi-framework is a plugin-level capability, not a headline feature.** Islands can use different frameworks, but they can't nest, share state across frameworks, or avoid TypeScript pragmas.
 - **Layouts receive `children` (VNode)**, not a pre-rendered `content` HTML string. The entire tree renders in a single `renderToString()` pass.
-- **Framework detection via AST scanning.** Detection order: exports first (strongest signal — vanilla's `hydrate` wins even if importing `preact`), imports second, Preact default. Plugins register additional frameworks via `CastroPlugin.frameworkConfig`.
+- **Framework detection via AST scanning.** Each framework declares `detectImports` (e.g. `["solid-js"]`); the registry scans an island's imports and picks the first match, defaulting to Preact. Plugins register additional frameworks via `CastroPlugin.frameworkConfig`.
 - **Island imports must use relative paths**, not tsconfig aliases. The `islandMarkerPlugin` intercepts imports at the AST level; tsconfig path aliases resolve after Bun's AST walk, so aliased imports don't trigger island detection.
 - **tsconfig.json path aliases** are supported natively in page imports. `getProjectDependencies()` externalizes all `package.json` dependencies, so Bun resolves local alias paths normally.
 - **Multi-framework type checking** requires per-file `/** @jsxImportSource */` pragmas for non-default frameworks (e.g. `/** @jsxImportSource solid-js */` for Solid). The pragma is the only mechanism `tsc` honors per-file — TypeScript uses the root tsconfig's JSX settings for all transitively imported files regardless of any nested tsconfig.
-- **Vanilla islands for island lifecycle without framework runtime.** Full island experience (directives, prop serialization, lazy loading) but zero client dependencies. Default export is Preact JSX for SSR; named `hydrate` export is plain JS for the browser. Perfect for D3, Three.js, or localized interactivity.
 - **Three hydration directives: `comrade:eager`, `comrade:patient`, `comrade:visible` (default).** `comrade:eager` hydrates immediately. `comrade:visible` hydrates on intersection. `comrade:patient` uses `requestIdleCallback` with load-event gating and Safari fallback.
 
 ## Configuration
@@ -140,7 +139,7 @@ Two options worth flagging because their behavior isn't obvious from the type:
 
 ## Testing
 
-`bun test:site` builds and verifies `tests/site/`, which exercises the full pipeline across castro-jsx, Preact, Solid, and vanilla islands (all directives, multi-framework pages, CSS modules, component composition). The site mirrors a real project's structure — **use it as the reference for expected patterns** when you're unsure how something should be wired up.
+`bun test:site` builds and verifies `tests/site/`, which exercises the full pipeline across castro-jsx, Preact, and Solid (all directives, multi-framework pages, CSS modules, component composition). The site mirrors a real project's structure — **use it as the reference for expected patterns** when you're unsure how something should be wired up.
 
 ## What NOT to Change
 

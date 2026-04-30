@@ -93,21 +93,6 @@ export default async (container, props = {}) => {
 
 The `import("preact")` call is a bare specifier - resolved by the import map, not bundled.
 
-**Vanilla island** - imports only the named `hydrate` export. The default export (JSX) is never referenced, so Bun's tree-shaking eliminates the SSR code and its Preact dependency entirely:
-
-```javascript
-// virtual entry for Chart.island.tsx
-import { hydrate } from './Chart.island.tsx';
-
-export default async (container, props = {}) => {
-  if (hydrate) {
-    hydrate(container, props);
-  }
-};
-```
-
-Zero framework bytes shipped.
-
 ### IMPORT MAP
 
 Injected into every page that uses islands. Framework defaults are merged with any entries from `importMap` in your config (user entries win on conflict).
@@ -164,7 +149,7 @@ HTML arrives
   → <castro-island> connects to DOM
     → directive decides timing
       → JS imports on demand
-        → framework hydrate() or vanilla hydrate(container, props)
+        → framework hydrate()
           → interactive
 ```
 

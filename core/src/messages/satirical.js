@@ -120,7 +120,7 @@ export const satirical = {
 		FRAMEWORK_CONFIG_NO_DETECTION: ({ pluginName }) => ({
 			title: "Framework config missing detection",
 			message: `Plugin "${pluginName}" cannot identify its comrades — no detection declared`,
-			hint: "Declare detectImports, detectExports, or both",
+			hint: "Declare detectImports",
 		}),
 
 		CACHE_WRITE_FAILED: ({ path, errorMessage }) => ({
