@@ -78,7 +78,7 @@ export type IslandComponent = {
 };
 
 export type PageMeta = {
-	layout?: string | "none" | false;
+	layout?: string | false;
 	title?: string;
 	[key: string]: unknown;
 };

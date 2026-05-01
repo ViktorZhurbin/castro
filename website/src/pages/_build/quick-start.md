@@ -127,7 +127,7 @@ export default function Home() {
   JSX pages require a <code>default export</code> for the component.
 </aside>
 
-The named <code>meta</code> export is optional - it allows to pass any custom props to the layout. It also allows to use a non-default layout - `meta.layout: string`. Or no layout at all - `meta.layout: "none" | false`.
+The named <code>meta</code> export is optional - it allows to pass any custom props to the layout. It also allows to use a non-default layout - `meta.layout: string`. Or no layout at all - `meta.layout: false`.
 
 In Markdown, `frontmatter` serves the same purpose:
 
@@ -136,7 +136,7 @@ In Markdown, `frontmatter` serves the same purpose:
 ```markdown
 ---
 title: About
-layout: none
+layout: false
 ---
 
 # About

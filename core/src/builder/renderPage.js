@@ -41,10 +41,10 @@ export async function renderPage({
 
 	const contentVNode = createContentVNode();
 
-	// Pages can opt out of layouts with `layout: false` or `layout: "none"`
+	// Pages can opt out of layouts with `layout: false`
 	let vnodeToRender;
 
-	if (pageMeta.layout === false || pageMeta.layout === "none") {
+	if (pageMeta.layout === false) {
 		vnodeToRender = contentVNode;
 	} else {
 		const layoutName =
