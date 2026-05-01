@@ -12,7 +12,7 @@ import { render } from "preact-render-to-string";
 
 /**
  * @import * as preact from "preact"
- * @import { FrameworkConfig } from "./types.js"
+ * @import { FrameworkConfig } from "../../types.d.ts"
  */
 
 /** @type {FrameworkConfig} */

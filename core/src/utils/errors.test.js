@@ -41,7 +41,7 @@ test("CastroError creates structured payload with tokens", () => {
 });
 
 test("CastroError preserves frames in payload", () => {
-	/** @type {import("../errors.js").CodeFrame[]} */
+	/** @type {import("../types.d.ts").CodeFrame[]} */
 	const frames = [
 		{
 			file: "/project/pages/about.md",
