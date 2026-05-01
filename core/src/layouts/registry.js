@@ -73,7 +73,7 @@ class LayoutsRegistry {
 			const err = /** @type {Bun.ErrorLike} */ (e);
 
 			if (err.code === "ENOENT") {
-				throw new CastroError("NO_LAYOUTS_DIR", undefined);
+				throw new CastroError("NO_LAYOUTS_DIR");
 			}
 
 			throw err;
@@ -120,7 +120,7 @@ class LayoutsRegistry {
 		}
 
 		if (!this.#layouts.has("default")) {
-			throw new CastroError("LAYOUT_MISSING_DEFAULT", undefined);
+			throw new CastroError("LAYOUT_MISSING_DEFAULT");
 		}
 	}
 }

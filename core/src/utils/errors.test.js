@@ -68,6 +68,7 @@ test("CastroError preserves frames in payload", () => {
 	if (
 		first.file !== "/project/pages/about.md" ||
 		first.line !== 3 ||
+		first.column !== 1 ||
 		first.lineText !== "layout: missing"
 	) {
 		throw new Error("Frame fields not preserved correctly");
@@ -75,7 +76,7 @@ test("CastroError preserves frames in payload", () => {
 });
 
 test("CastroError defaults to empty frames array", () => {
-	const err = new CastroError("NO_LAYOUTS_DIR", undefined);
+	const err = new CastroError("NO_LAYOUTS_DIR");
 
 	if (
 		!Array.isArray(err.castroPayload.frames) ||

@@ -8,30 +8,31 @@ import { messages } from "../messages/index.js";
 
 /** @import { ErrorCode, ErrorTokens, CodeFrame, CastroErrorPayload } from "../types.d.ts" */
 
-/** @template {ErrorCode} K */
 export class CastroError extends Error {
+	/** @type {CastroErrorPayload} */
+	castroPayload;
+
 	/**
-	 * @param {K} code
-	 * @param {ErrorTokens[K]} tokens
+	 * @param {ErrorCode} code
+	 * @param {ErrorTokens[ErrorCode]} [tokens]
 	 * @param {CodeFrame[]} [frames]
 	 */
 	constructor(code, tokens, frames = []) {
 		const errorFn = messages.errors[code];
 
-		if (!errorFn) throw new Error(`Unknown error code: ${code}`);
+		if (!errorFn) {
+			throw new Error(`Unknown error code: ${code}`);
+		}
 
-		const errorContent = errorFn(tokens);
+		const errorContent = errorFn(/** @type {never} */ (tokens));
 
 		super(errorContent.title);
 
-		/** @type {CastroErrorPayload} */
-		this.castroPayload = { code, frames, ...errorContent };
 		this.name = "CastroError";
+		this.castroPayload = { ...errorContent, code, frames };
 
 		// Makes stack traces point to the throw site, not this constructor.
-		if (Error.captureStackTrace) {
-			Error.captureStackTrace(this, CastroError);
-		}
+		Error.captureStackTrace(this, CastroError);
 	}
 }
 

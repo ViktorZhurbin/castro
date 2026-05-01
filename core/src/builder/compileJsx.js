@@ -46,7 +46,7 @@ export async function compileJSX(sourcePath) {
 	const cssFiles = result.outputs.filter((f) => f.path.endsWith(".css"));
 
 	if (!jsFile) {
-		throw new CastroError("BUNDLE_FAILED", undefined);
+		throw new CastroError("BUNDLE_FAILED");
 	}
 
 	const jsText = await jsFile.text();
