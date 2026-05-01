@@ -40,9 +40,9 @@ export const serious = {
 			hint: "Remove or rename one of these files",
 		}),
 
-		LAYOUT_NOT_FOUND: ({ layoutName, sourceFilePath }) => ({
+		LAYOUT_NOT_FOUND: ({ layoutId, sourceFilePath }) => ({
 			title: "Layout not found",
-			message: `Layout '${layoutName}' does not exist in layouts/`,
+			message: `Layout '${layoutId}' does not exist in layouts/`,
 			hint: `Create the layout, or change the layout for ${sourceFilePath}`,
 		}),
 

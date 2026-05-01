@@ -54,7 +54,7 @@ test("CastroError preserves frames in payload", () => {
 
 	const err = new CastroError(
 		"LAYOUT_NOT_FOUND",
-		{ layoutName: "missing", sourceFilePath: "pages/about.md" },
+		{ layoutId: "missing", sourceFilePath: "pages/about.md" },
 		frames,
 	);
 

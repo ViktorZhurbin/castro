@@ -7,8 +7,7 @@
  * like headers, footers, and navigation.
  */
 
-import { rmSync } from "node:fs";
-import { access } from "node:fs/promises";
+import { access, rm } from "node:fs/promises";
 import { basename, extname, join } from "node:path";
 import { compileJSX } from "../builder/compileJsx.js";
 import { writeCSSFiles } from "../builder/writeCss.js";
@@ -46,10 +45,16 @@ class LayoutsRegistry {
 	#cssAssets = new Map();
 
 	/**
-	 * @param {LayoutId} id
+	 * Resolve a page's `layout` meta field to a concrete layout component.
+	 * Anything other than a string falls back to `"default"`.
+	 *
+	 * @param {unknown} layout
+	 * @returns {{ id: LayoutId, component: LayoutComponent | undefined }}
 	 */
-	getLayout(id) {
-		return this.#layouts.get(id);
+	resolve(layout) {
+		const id = typeof layout === "string" ? layout : "default";
+
+		return { id, component: this.#layouts.get(id) };
 	}
 
 	/**
@@ -66,7 +71,7 @@ class LayoutsRegistry {
 		this.#layouts.clear();
 		this.#cssAssets.clear();
 
-		// Check if layouts directory exists
+		// Bun.file().exists() returns false for directories, so use fs.access here.
 		try {
 			await access(LAYOUTS_DIR);
 		} catch (e) {
@@ -79,33 +84,26 @@ class LayoutsRegistry {
 			throw err;
 		}
 
-		// Clean cache dir to ensure fresh compilation.
-		// In dev mode, stale cached layouts can cause issues when files change.
-		const tempDirPath = resolveTempDir(LAYOUTS_DIR);
+		// Clear cached compilations so dev-mode edits to layouts pick up.
+		await rm(resolveTempDir(LAYOUTS_DIR), { recursive: true, force: true });
 
-		rmSync(tempDirPath, { recursive: true, force: true });
-
-		// Process layouts
 		const layoutGlob = new Bun.Glob("**/*.{jsx,tsx}");
 
 		for await (const relativePath of layoutGlob.scan(LAYOUTS_DIR)) {
 			const sourceFilePath = join(LAYOUTS_DIR, relativePath);
-			const fileName = basename(sourceFilePath);
+			const layoutId = basename(relativePath, extname(relativePath));
 
-			/** @type {LayoutId} */
-			const layoutId = basename(fileName, extname(fileName));
-
-			// Compile and extract CSS
 			const { module: layoutModule, cssFiles } =
 				await compileJSX(sourceFilePath);
 
 			if (!layoutModule.default) {
-				throw new CastroError("LAYOUT_NO_DEFAULT_EXPORT", { file: fileName });
+				throw new CastroError("LAYOUT_NO_DEFAULT_EXPORT", {
+					file: relativePath,
+				});
 			}
 
 			this.#layouts.set(layoutId, layoutModule.default);
 
-			// Write layout CSS to dist/layouts/
 			const layoutsDir = join(OUTPUT_DIR, LAYOUTS_DIR);
 			const layoutCssAssets = await writeCSSFiles(cssFiles, layoutsDir);
 
@@ -114,7 +112,6 @@ class LayoutsRegistry {
 			}
 		}
 
-		// Validate
 		if (this.#layouts.size === 0) {
 			throw new CastroError("NO_LAYOUT_FILES", { dir: LAYOUTS_DIR });
 		}

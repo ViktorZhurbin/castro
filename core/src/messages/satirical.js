@@ -42,9 +42,9 @@ export const satirical = {
 			hint: "The revolution cannot serve two masters — remove the impostor",
 		}),
 
-		LAYOUT_NOT_FOUND: ({ layoutName, sourceFilePath }) => ({
+		LAYOUT_NOT_FOUND: ({ layoutId, sourceFilePath }) => ({
 			title: "Layout not found",
-			message: `Layout '${layoutName}' cannot be located — possible defection`,
+			message: `Layout '${layoutId}' cannot be located — possible defection`,
 			hint: `Create the missing layout, or change layout for ${sourceFilePath}`,
 		}),
 

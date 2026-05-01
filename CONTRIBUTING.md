@@ -27,7 +27,7 @@ const cssFileName = originalName.replace(/\.(jsx|tsx|js|ts)\.css$/, ".css");
 
 ```js
 // Get the layout component from the registry
-const layoutComponent = layouts.getLayout(layoutName);
+const layout = layouts.resolve(layoutId);
 
 // Write CSS to disk
 await Bun.write(cssOutputPath, cssText);

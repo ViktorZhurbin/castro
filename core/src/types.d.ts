@@ -16,7 +16,7 @@
 
 export type ErrorTokens = {
 	ROUTE_CONFLICT: { route1: string; route2: string; outputPath: string };
-	LAYOUT_NOT_FOUND: { layoutName: string; sourceFilePath: string };
+	LAYOUT_NOT_FOUND: { layoutId: string; sourceFilePath: string };
 	LAYOUT_MISSING_DEFAULT: undefined;
 	NO_LAYOUTS_DIR: undefined;
 	NO_LAYOUT_FILES: { dir: string };

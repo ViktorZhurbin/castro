@@ -47,22 +47,22 @@ export async function renderPage({
 	if (pageMeta.layout === false) {
 		vnodeToRender = contentVNode;
 	} else {
-		const layoutName =
-			typeof pageMeta.layout === "string" ? pageMeta.layout : "default";
+		const layout = layouts.resolve(pageMeta.layout);
 
-		const layoutComponent = layouts.getLayout(layoutName);
-
-		if (!layoutComponent) {
-			throw new CastroError("LAYOUT_NOT_FOUND", { layoutName, sourceFilePath });
+		if (!layout.component) {
+			throw new CastroError("LAYOUT_NOT_FOUND", {
+				layoutId: layout.id,
+				sourceFilePath,
+			});
 		}
 
-		const layoutCssAssets = layouts.getCssAssets(layoutName) ?? [];
+		const layoutCssAssets = layouts.getCssAssets(layout.id) ?? [];
 		pageAndLayoutCssAssets.push(...layoutCssAssets);
 
 		const title =
 			pageMeta.title || basename(sourceFilePath).replace(/\.(md|[jt]sx)$/, "");
 
-		vnodeToRender = layoutComponent({
+		vnodeToRender = layout.component({
 			...pageMeta,
 			title,
 			children: contentVNode,
