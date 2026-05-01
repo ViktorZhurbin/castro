@@ -115,12 +115,6 @@ export const serious = {
 			hint: "Add the missing fields to the frameworkConfig",
 		}),
 
-		FRAMEWORK_CONFIG_NO_DETECTION: ({ pluginName }) => ({
-			title: "Framework config missing detection",
-			message: `Plugin "${pluginName}" frameworkConfig has no detection arrays`,
-			hint: "Declare detectImports",
-		}),
-
 		CACHE_WRITE_FAILED: ({ path, errorMessage }) => ({
 			title: "Cache write failed",
 			message: `Could not write compiled output to ${path}:`,

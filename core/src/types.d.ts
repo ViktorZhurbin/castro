@@ -26,7 +26,6 @@ export type ErrorTokens = {
 	ISLAND_NOT_FOUND: { islandId: string };
 	NO_PAGES: { dir: string };
 	FRAMEWORK_CONFIG_INVALID: { pluginName: string; missing: string };
-	FRAMEWORK_CONFIG_NO_DETECTION: { pluginName: string };
 	BUNDLE_FAILED: { errorMessage: string } | undefined;
 	YAML_PARSE_FAILED: { errorMessage: string; sourceFilePath: string };
 	CACHE_WRITE_FAILED: { path: string; errorMessage: string };
@@ -85,7 +84,7 @@ export type FrameworkConfig = {
 	 * E.g. ["solid-js"] means any island importing "solid-js" or "solid-js/web"
 	 * will use this framework.
 	 */
-	detectImports?: string[];
+	detectImports: string[];
 
 	/**
 	 * Assets injected into <head> for pages using this framework.

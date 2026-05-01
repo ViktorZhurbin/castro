@@ -7,6 +7,7 @@
  * into memory so renderMarker() can access them synchronously.
  */
 
+import { access } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import {
 	COMPONENTS_DIR,
@@ -19,12 +20,6 @@ import { CastroError } from "../utils/errors.js";
 import { compileIsland } from "./compiler.js";
 import { getLoadedFrameworkConfigs } from "./frameworkConfig.js";
 import { getIslandId } from "./islandId.js";
-
-/**
- * Transpiler for scanning imports and exports from component source files.
- * Reused across all island compilations for efficiency.
- */
-const transpiler = new Bun.Transpiler({ loader: "tsx" });
 
 /**
  * @import { IslandComponent } from '../types.d.ts'
@@ -42,10 +37,6 @@ class IslandsRegistry {
 	 */
 	#cssManifest = new Map();
 
-	count() {
-		return this.#islands.size;
-	}
-
 	/** @param {IslandId} id */
 	getIsland(id) {
 		return this.#islands.get(id);
@@ -62,58 +53,68 @@ class IslandsRegistry {
 		this.#islands.clear();
 		this.#cssManifest.clear();
 
-		const outputIslandsDir = join(OUTPUT_DIR, ISLANDS_OUTPUT_DIR);
-
-		const islandGlob = new Bun.Glob("**/*.island.{jsx,tsx}");
-
+		// Islands are optional — a project with no components/ dir is valid.
 		try {
-			for await (const relativePath of islandGlob.scan(COMPONENTS_DIR)) {
-				const sourcePath = join(COMPONENTS_DIR, relativePath);
-
-				// Determine which framework this island uses.
-				const frameworkId = await detectFramework(sourcePath);
-
-				// Preserve directory nesting in output (e.g., ui/Button → islands/ui/Button)
-				const relativeDir = dirname(relativePath);
-				const outputDir = join(outputIslandsDir, relativeDir);
-				const publicDir =
-					`/${join(ISLANDS_OUTPUT_DIR, relativeDir)}`.replaceAll("\\", "/");
-
-				const component = await compileIsland({
-					sourcePath,
-					outputDir,
-					publicDir,
-					frameworkId,
-				});
-
-				const islandId = getIslandId(sourcePath);
-
-				// Pre-load SSR module so renderMarker() can access it synchronously
-				// during renderToString() traversal
-				component.ssrModule = await getModule(
-					sourcePath,
-					component.ssrCode,
-					"ssr",
-				);
-
-				this.#islands.set(islandId, component);
-
-				if (component.cssContent) {
-					this.#cssManifest.set(islandId, component.cssContent);
-				}
-			}
+			await access(COMPONENTS_DIR);
 		} catch (e) {
 			const err = /** @type {Bun.ErrorLike} */ (e);
 
-			// ENOENT means COMPONENTS_DIR doesn't exist, which is fine
-			if (err.code !== "ENOENT") {
-				throw err;
+			if (err.code === "ENOENT") return;
+
+			throw err;
+		}
+
+		const outputIslandsDir = join(OUTPUT_DIR, ISLANDS_OUTPUT_DIR);
+		const islandGlob = new Bun.Glob("**/*.island.{jsx,tsx}");
+
+		for await (const relativePath of islandGlob.scan(COMPONENTS_DIR)) {
+			const sourcePath = join(COMPONENTS_DIR, relativePath);
+
+			// Determine which framework this island uses.
+			const frameworkId = await detectFramework(sourcePath);
+
+			// Preserve directory nesting in output (e.g., ui/Button → islands/ui/Button)
+			const relativeDir = dirname(relativePath);
+			const outputDir = join(outputIslandsDir, relativeDir);
+			// Normalize Windows separators — public URLs are always posix.
+			const publicDir = `/${join(ISLANDS_OUTPUT_DIR, relativeDir)}`.replaceAll(
+				"\\",
+				"/",
+			);
+
+			const component = await compileIsland({
+				sourcePath,
+				outputDir,
+				publicDir,
+				frameworkId,
+			});
+
+			const islandId = getIslandId(sourcePath);
+
+			// Pre-load SSR module so renderMarker() can access it synchronously
+			// during renderToString() traversal
+			component.ssrModule = await getModule(
+				sourcePath,
+				component.ssrCode,
+				"ssr",
+			);
+
+			this.#islands.set(islandId, component);
+
+			if (component.cssContent) {
+				this.#cssManifest.set(islandId, component.cssContent);
 			}
 		}
 	}
 }
 
 export const islands = new IslandsRegistry();
+
+/**
+ * Reused across all island compilations for efficiency — Bun.Transpiler
+ * holds onto compiled regex/state internally.
+ */
+const transpiler = new Bun.Transpiler({ loader: "tsx" });
 
 /**
  * Detect the framework for an island.
@@ -132,21 +133,19 @@ async function detectFramework(sourcePath) {
 		scanned = transpiler.scan(code);
 	} catch (e) {
 		// transpiler.scan() throws its own error shape on syntax errors
-		if (e instanceof AggregateError) {
-			const errorMessage = e.errors.map((e) => e.message).join("\n");
-			const frames = [{ file: resolve(sourcePath) }];
+		let errorMessage;
+		let frames;
 
-			throw new CastroError("BUNDLE_FAILED", { errorMessage }, frames);
+		if (e instanceof AggregateError) {
+			errorMessage = e.errors.map((err) => err.message).join("\n");
+			frames = [{ file: resolve(sourcePath) }];
+		} else {
+			const err = /** @type {BuildMessage} */ (e);
+			errorMessage = err.message;
+			frames = [bunLogToFrame(err)];
 		}
 
-		const err = /** @type {BuildMessage} */ (e);
-		const frames = [bunLogToFrame(err)];
-
-		throw new CastroError(
-			"BUNDLE_FAILED",
-			{ errorMessage: err.message },
-			frames,
-		);
+		throw new CastroError("BUNDLE_FAILED", { errorMessage }, frames);
 	}
 
 	const fwConfigs = getLoadedFrameworkConfigs();
@@ -156,8 +155,6 @@ async function detectFramework(sourcePath) {
 	const importPaths = scanned.imports.map((i) => i.path);
 
 	for (const fwConfig of fwConfigs) {
-		if (!fwConfig.detectImports) continue;
-
 		const matched = fwConfig.detectImports.some((detector) =>
 			importPaths.some(
 				(importPath) =>

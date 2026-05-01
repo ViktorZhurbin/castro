@@ -117,12 +117,6 @@ export const satirical = {
 			hint: "Fill in the missing fields to pass inspection",
 		}),
 
-		FRAMEWORK_CONFIG_NO_DETECTION: ({ pluginName }) => ({
-			title: "Framework config missing detection",
-			message: `Plugin "${pluginName}" cannot identify its comrades — no detection declared`,
-			hint: "Declare detectImports",
-		}),
-
 		CACHE_WRITE_FAILED: ({ path, errorMessage }) => ({
 			title: "Cache write failed",
 			message: `Compiled output at ${path} could not be requisitioned:`,

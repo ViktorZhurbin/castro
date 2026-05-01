@@ -25,6 +25,7 @@ const loadedConfigs = new Map();
 /** @type {(keyof FrameworkConfig)[]} */
 const REQUIRED_FIELDS = [
 	"id",
+	"detectImports",
 	"getBuildConfig",
 	"clientDependencies",
 	"hydrateFnString",
@@ -46,12 +47,6 @@ export function registerFramework(frameworkConfig, pluginName) {
 			pluginName,
 			missing: missing.join(", "),
 		});
-	}
-
-	const hasDetection = (frameworkConfig.detectImports?.length ?? 0) > 0;
-
-	if (!hasDetection) {
-		throw new CastroError("FRAMEWORK_CONFIG_NO_DETECTION", { pluginName });
 	}
 
 	loadedConfigs.set(frameworkConfig.id, frameworkConfig);
