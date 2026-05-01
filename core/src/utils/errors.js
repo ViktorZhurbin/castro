@@ -46,12 +46,10 @@ export function toPayload(err) {
 		return err.castroPayload;
 	}
 
-	const message = err instanceof Error ? err.message : String(err);
-
 	return {
 		code: "UNEXPECTED",
 		title: "Unexpected error",
-		message,
 		frames: [],
+		message: err instanceof Error ? err.message : String(err),
 	};
 }

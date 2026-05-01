@@ -5,7 +5,7 @@ import { CastroError } from "./errors.js";
 /**
  * Wraps Bun.build to standardize error handling.
  *
- * Bun.build can fail in two shapes. Both paths now emit structured
+ * Bun.build can fail in two shapes. Both paths will emit structured
  * BUNDLE_FAILED errors with code frames extracted from build logs:
  *
  *  - Soft failure: returns `{ success: false, logs: [...] }`
@@ -25,13 +25,10 @@ export async function safeBunBuild(config) {
 		return result;
 	} catch (error) {
 		if (error instanceof AggregateError) {
+			const errorMessage = error.message;
 			const frames = error.errors.map(bunLogToFrame);
 
-			throw new CastroError(
-				"BUNDLE_FAILED",
-				{ errorMessage: error.message },
-				frames,
-			);
+			throw new CastroError("BUNDLE_FAILED", { errorMessage }, frames);
 		}
 
 		throw error;

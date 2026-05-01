@@ -29,9 +29,7 @@ const CACHE_DIR = join(process.cwd(), "node_modules/.cache/castro");
  * Clean cache directory. Called once at startup to ensure fresh state.
  */
 export function cleanupCacheDir() {
-	try {
-		rmSync(CACHE_DIR, { recursive: true, force: true });
-	} catch {}
+	rmSync(CACHE_DIR, { recursive: true, force: true });
 }
 
 /**
@@ -77,17 +75,18 @@ function createTempPath(sourcePath, content, subpath = "") {
  * @returns {Promise<any>} The imported module
  */
 export async function getModule(sourcePath, content, subpath) {
-	const fullPath = createTempPath(sourcePath, content, subpath);
+	const path = createTempPath(sourcePath, content, subpath);
 
 	try {
-		await Bun.write(fullPath, content);
+		await Bun.write(path, content);
 	} catch (err) {
-		throw new CastroError("CACHE_WRITE_FAILED", {
-			path: fullPath,
-			errorMessage: err instanceof Error ? err.message : String(err),
-		});
+		const errorMessage = err instanceof Error ? err.message : String(err);
+
+		throw new CastroError("CACHE_WRITE_FAILED", { path, errorMessage });
 	}
 
 	// file:// URL ensures Bun's module resolver can find bare imports
-	return import(Bun.pathToFileURL(fullPath).href);
+	const fileUrl = Bun.pathToFileURL(path);
+
+	return import(fileUrl.href);
 }
