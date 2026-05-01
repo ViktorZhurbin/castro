@@ -30,7 +30,6 @@ export type ErrorTokens = {
 	YAML_PARSE_FAILED: { errorMessage: string; sourceFilePath: string };
 	CACHE_WRITE_FAILED: { path: string; errorMessage: string };
 	ISLAND_RENDER_FAILED: { islandId: string; errorMessage: string };
-	FRAMEWORK_LOAD_FAILED: { name: string; errorMessage: string };
 	CONFIG_LOAD_FAILED: { path: string; errorMessage: string };
 	UNEXPECTED: undefined;
 };

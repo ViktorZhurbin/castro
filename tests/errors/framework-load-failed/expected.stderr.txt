@@ -1,6 +1,0 @@
-❌ Framework failed to load
-   Plugin "crashing-plugin" failed to report for duty:
-
-   Plugin initialization failed
-
-   → Check the plugin's frameworkConfig for initialization errors

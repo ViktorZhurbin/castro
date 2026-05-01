@@ -18,28 +18,26 @@
 const ELEMENT_TAG = "castro-island";
 
 class CastroIsland extends HTMLElement {
-	constructor() {
-		super();
-		this._hydrated = false;
-	}
+	#hydrated = false;
+	/** @type {IntersectionObserver | null} */
+	#observer = null;
 
 	async connectedCallback() {
 		// Only hydrate once
-		if (this._hydrated) return;
+		if (this.#hydrated) return;
 
-		// Get directive from attribute
-		const directive = this.getAttribute("directive") || "comrade:visible";
+		const directive = this.getAttribute("directive");
 
 		// Wait for trigger condition based on directive
-		if (directive === "comrade:visible") {
-			// Lazy load when scrolled into view
-			await this.waitVisible();
-		} else if (directive === "comrade:patient") {
-			// Hydrate when browser is idle after page load
-			await this.waitIdle();
-		} else if (directive === "comrade:eager") {
-			// Immediate hydration, no waiting
-			// (fall through to hydrate())
+		switch (directive) {
+			case "comrade:patient":
+				await this.waitIdle();
+				break;
+			case "comrade:eager":
+				break; // Some comrades wait, this one doesn't
+			default:
+				await this.waitVisible(); // covers explicit "comrade:visible", incorrect directive and no directive
+				break;
 		}
 
 		// Load and mount component
@@ -82,10 +80,11 @@ class CastroIsland extends HTMLElement {
 	 */
 	waitVisible() {
 		return new Promise((resolve) => {
-			const observer = new IntersectionObserver(
+			this.#observer = new IntersectionObserver(
 				(entries) => {
 					if (entries[0].isIntersecting) {
-						observer.disconnect();
+						this.#observer?.disconnect();
+						this.#observer = null;
 						resolve();
 					}
 				},
@@ -93,8 +92,15 @@ class CastroIsland extends HTMLElement {
 				// start loading 100px before element enters viewport.
 				{ rootMargin: "100px" },
 			);
-			observer.observe(this);
+			this.#observer.observe(this);
 		});
+	}
+
+	disconnectedCallback() {
+		// If we were waiting on visibility and got removed first, free the observer.
+		// The hydrate Promise stays pending forever, but no DOM ref is held.
+		this.#observer?.disconnect();
+		this.#observer = null;
 	}
 
 	/**
@@ -104,9 +110,9 @@ class CastroIsland extends HTMLElement {
 	 * The HTML was rendered at build time, now we're making it interactive.
 	 */
 	async hydrate() {
-		if (this._hydrated) return;
+		if (this.#hydrated) return;
 
-		this._hydrated = true;
+		this.#hydrated = true;
 
 		try {
 			// Parse props from JSON

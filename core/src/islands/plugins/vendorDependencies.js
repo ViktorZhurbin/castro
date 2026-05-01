@@ -37,14 +37,9 @@ export function vendorDependencies() {
 		name: "vendor-dependencies",
 
 		async onAfterBuild({ usedFrameworks }) {
-			const configDeps = config.clientDependencies || [];
-			const frameworkDeps = [...usedFrameworks].flatMap(
-				(id) => getFrameworkConfig(id).clientDependencies || [],
-			);
+			const allClientDeps = collectClientDeps(usedFrameworks);
 
-			if (!configDeps.length && !frameworkDeps.length) return;
-
-			const allClientDeps = new Set([...configDeps, ...frameworkDeps]);
+			if (!allClientDeps.size) return;
 
 			/** @type { string[] } */
 			const entrypoints = [];
@@ -63,7 +58,10 @@ export function vendorDependencies() {
 
 				entrypoints.push(virtualPath);
 
-				// Re-export both named and default exports
+				// Re-export both named and default exports.
+				// Many ESM-only packages (e.g. preact/hooks) have no default export;
+				// in that case we re-export the namespace so `import x from 'preact/hooks'`
+				// at least resolves to something usable instead of undefined.
 				files[virtualPath] =
 					`import * as m from '${pkg}'; export * from '${pkg}'; export default m.default || m;`;
 			}
@@ -87,12 +85,7 @@ export function vendorDependencies() {
 		},
 
 		async getImportMap({ usedFrameworks }) {
-			const configDeps = config.clientDependencies || [];
-			const frameworkDeps = [...usedFrameworks].flatMap(
-				(id) => getFrameworkConfig(id).clientDependencies || [],
-			);
-
-			const allClientDeps = new Set([...configDeps, ...frameworkDeps]);
+			const allClientDeps = collectClientDeps(usedFrameworks);
 			/** @type {ImportsMap} */
 			const importMap = {};
 
@@ -108,6 +101,23 @@ export function vendorDependencies() {
 			return importMap;
 		},
 	};
+}
+
+/**
+ * Union of user-configured client deps and the deps of every framework
+ * actually used on a built page. Both hooks must agree on this set —
+ * onAfterBuild bundles the files, getImportMap points at them.
+ *
+ * @param {Set<string>} usedFrameworks
+ * @returns {Set<string>}
+ */
+function collectClientDeps(usedFrameworks) {
+	const configDeps = config.clientDependencies || [];
+	const frameworkDeps = [...usedFrameworks].flatMap(
+		(id) => getFrameworkConfig(id).clientDependencies || [],
+	);
+
+	return new Set([...configDeps, ...frameworkDeps]);
 }
 
 /**

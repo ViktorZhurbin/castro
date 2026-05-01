@@ -24,7 +24,9 @@ import { islands } from "./registry.js";
 
 /**
  * @import { VNode } from "preact"
- * @import { Directive } from "../types.d.ts"
+ * @import { Directive, IslandComponent } from "../types.d.ts"
+ *
+ * @typedef {IslandComponent & { ssrModule: NonNullable<IslandComponent["ssrModule"]> }} LoadedIsland
  */
 
 /**
@@ -55,6 +57,10 @@ export async function runWithPageState(fn) {
  * Get the current page's tracking state.
  * Must only be called inside runWithPageState().
  *
+ * Throws a plain Error (not CastroError): this only fires if the build
+ * pipeline forgot to wrap a render in runWithPageState() — a Castro-internal
+ * bug that should surface as a stack trace, not a user-facing error card.
+ *
  * @returns {{ usedIslands: Set<string>, usedFrameworks: Set<string> }}
  */
 export function getPageState() {
@@ -69,40 +75,30 @@ export function getPageState() {
 }
 
 /**
- * Render an island marker component
+ * Render an island marker component.
+ *
+ * Three steps, each in its own function below: look the island up, render its
+ * SSR HTML, wrap the result in a <castro-island> VNode for client hydration.
  *
  * @param {string} islandId - e.g., "components/Counter.island.tsx"
  * @param {Record<string, any>} props - Component props including directives
  * @returns {VNode}
  */
 export function renderMarker(islandId, props = {}) {
-	const island = islands.getIsland(islandId);
-
-	if (!island?.ssrModule) {
-		throw new CastroError("ISLAND_NOT_FOUND", { islandId });
-	}
-
-	// Each island carries its framework id from compilation step.
-	// Resolve the config synchronously from the pre-loaded cache.
-	const frameworkConfig = getFrameworkConfig(island.frameworkId);
-
+	const island = lookupIsland(islandId);
 	const { directive, cleanProps } = processProps(props);
 
 	const state = getPageState();
 	state.usedIslands.add(islandId);
 	state.usedFrameworks.add(island.frameworkId);
 
-	let ssrHtml = "";
+	const ssrHtml = renderIslandSSR(island, islandId, cleanProps);
 
-	try {
-		ssrHtml = frameworkConfig.renderSSR(island.ssrModule.default, cleanProps);
-	} catch (err) {
-		throw new CastroError("ISLAND_RENDER_FAILED", {
-			islandId,
-			errorMessage: err instanceof Error ? err.message : String(err),
-		});
-	}
-
+	/**
+	 * Build the <castro-island> VNode that the hydration runtime upgrades in the
+	 * browser. The SSR HTML is injected as the element's children so the page is
+	 * interactive-looking before any JS runs.
+	 */
 	return h("castro-island", {
 		directive,
 		import: island.publicJsPath,
@@ -111,13 +107,52 @@ export function renderMarker(islandId, props = {}) {
 	});
 }
 
+/**
+ * Look up a compiled island and assert its SSR module is loaded.
+ *
+ * @param {string} islandId
+ * @returns {LoadedIsland}
+ */
+function lookupIsland(islandId) {
+	const island = islands.getIsland(islandId);
+
+	if (!island?.ssrModule) {
+		throw new CastroError("ISLAND_NOT_FOUND", { islandId });
+	}
+
+	return /** @type {LoadedIsland} */ (island);
+}
+
+/**
+ * Render the island's pre-loaded SSR module to HTML using its framework's
+ * renderer. Wraps any framework-side throw in a CastroError so the build
+ * surfaces a structured error instead of a raw stack.
+ *
+ * @param {LoadedIsland} island
+ * @param {string} islandId
+ * @param {Record<string, any>} cleanProps
+ * @returns {string}
+ */
+function renderIslandSSR(island, islandId, cleanProps) {
+	const frameworkConfig = getFrameworkConfig(island.frameworkId);
+
+	try {
+		return frameworkConfig.renderSSR(island.ssrModule.default, cleanProps);
+	} catch (err) {
+		throw new CastroError("ISLAND_RENDER_FAILED", {
+			islandId,
+			errorMessage: err instanceof Error ? err.message : String(err),
+		});
+	}
+}
+
 /** @type {Directive[]} */
 const DIRECTIVES = ["comrade:eager", "comrade:patient", "comrade:visible"];
 /** @type {Directive} */
 const DEFAULT_DIRECTIVE = "comrade:visible";
 
 /**
- * Extract and validate directive from props
+ * Separate directive from props
  *
  * @param {Record<string, any> | undefined} props
  * @returns {{ directive: Directive, cleanProps: Record<string, any> }}

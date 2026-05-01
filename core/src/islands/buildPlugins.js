@@ -15,9 +15,10 @@
  */
 
 import { dirname, resolve } from "node:path";
-import { getIslandId } from "./islandId.js";
+import { getIslandId } from "./utils.js";
 
 const CASTRO_SRC = resolve(dirname(import.meta.path), "..");
+const MARKER_PATH = resolve(CASTRO_SRC, "islands/marker.js");
 
 /**
  * Generates stub code that replaces the real island source during compilation.
@@ -27,8 +28,6 @@ const CASTRO_SRC = resolve(dirname(import.meta.path), "..");
  * @returns {string} JavaScript source code
  */
 function generateMarkerCode(islandId) {
-	const MARKER_PATH = resolve(CASTRO_SRC, "islands/marker.js");
-
 	return `
     import { renderMarker } from "${MARKER_PATH}";
     export default (props) => renderMarker(${JSON.stringify(islandId)}, props);

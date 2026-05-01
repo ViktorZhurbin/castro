@@ -131,13 +131,6 @@ export const satirical = {
 			hint: "Check for browser-only APIs like 'window' or 'document'. Move them inside useEffect or a lifecycle hook.",
 		}),
 
-		FRAMEWORK_LOAD_FAILED: ({ name, errorMessage }) => ({
-			title: "Framework failed to load",
-			message: `Plugin "${name}" failed to report for duty:`,
-			errorMessage,
-			hint: "Check the plugin's frameworkConfig for initialization errors",
-		}),
-
 		CONFIG_LOAD_FAILED: ({ path, errorMessage }) => ({
 			title: "Config file failed to load",
 			message: `${path} threw an error during evaluation:`,

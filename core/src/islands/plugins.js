@@ -1,5 +1,4 @@
 import { userPlugins } from "../config.js";
-import { CastroError } from "../utils/errors.js";
 import { registerFramework } from "./frameworkConfig.js";
 import { castroIslandRuntime } from "./plugins/castroIslandRuntime.js";
 import { vendorDependencies } from "./plugins/vendorDependencies.js";
@@ -12,16 +11,8 @@ import { vendorDependencies } from "./plugins/vendorDependencies.js";
 // Must happen before island discovery so all framework detection arrays
 // are available when registry.js scans islands for AST-based detection.
 for (const plugin of userPlugins) {
-	try {
-		if (plugin.frameworkConfig) {
-			registerFramework(plugin.frameworkConfig, plugin.name);
-		}
-	} catch (err) {
-		if (err instanceof CastroError) throw err;
-		throw new CastroError("FRAMEWORK_LOAD_FAILED", {
-			name: plugin.name,
-			errorMessage: err instanceof Error ? err.message : String(err),
-		});
+	if (plugin.frameworkConfig) {
+		registerFramework(plugin.frameworkConfig, plugin.name);
 	}
 }
 

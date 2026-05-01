@@ -22,9 +22,10 @@ import { safeBunBuild } from "../utils/bunBuild.js";
 import { getProjectDependencies } from "../utils/dependencies.js";
 import { CastroError } from "../utils/errors.js";
 import { getFrameworkConfig } from "./frameworkConfig.js";
+import { toPosix } from "./utils.js";
 
 /**
- * @import { IslandComponent } from "../types.d.ts"
+ * @import { IslandComponent, FrameworkConfig } from "../types.d.ts"
  */
 
 /**
@@ -57,15 +58,12 @@ export async function compileIsland({
 	const cssFile = clientResult.outputs.find((f) => f.path.endsWith(".css"));
 
 	if (!jsFile) {
-		throw new CastroError("BUNDLE_FAILED");
+		throw new CastroError("BUNDLE_FAILED", {
+			errorMessage: `Island ${sourcePath} compiled with no .js output`,
+		});
 	}
 
-	// Construct public paths using the generated filenames
-	// Normalize to forward slashes for cross-platform URL compatibility
-	const publicJsPath = `${publicDir}/${basename(jsFile.path)}`.replaceAll(
-		"\\",
-		"/",
-	);
+	const publicJsPath = toPosix(`${publicDir}/${basename(jsFile.path)}`);
 
 	// CSS kept as a string (not written to disk) — it's inlined per-page
 	// in writeHtmlPage.js, since each page uses a different island subset.
@@ -107,21 +105,7 @@ async function compileIslandClient({ sourcePath, outputDir, frameworkId }) {
 	`.trim();
 
 	const buildConfig = frameworkConfig.getBuildConfig();
-
-	// Calculate externals: framework defaults + user config dependencies + import map keys.
-	// We strip trailing slashes from import map keys so Bun can treat them as package names.
-	const userImportMapKeys = Object.keys(castroConfig.importMap ?? {}).map(
-		(key) => key.replace(/\/$/, ""),
-	);
-
-	const external = [
-		...new Set([
-			...(buildConfig.external ?? []),
-			...(frameworkConfig.clientDependencies ?? []),
-			...(castroConfig.clientDependencies ?? []),
-			...userImportMapKeys,
-		]),
-	];
+	const external = getClientExternals(frameworkConfig, buildConfig);
 
 	// Path must be absolute and in the same directory as the island source,
 	// so the relative import ('./${basename}') resolves to the real file
@@ -205,4 +189,31 @@ async function compileIslandSSR({ sourcePath, frameworkId }) {
 	const output = result.outputs[0];
 
 	return output ? await output.text() : "";
+}
+
+/**
+ * Build the deduplicated `external` list for the client compile step.
+ *
+ * Anything in the import map ships as a browser import the user resolves
+ * themselves, so it must not be bundled. Trailing slashes (used by the import
+ * map for path-prefix entries like `"preact/"`) are stripped so Bun matches
+ * them as bare specifiers.
+ *
+ * @param {FrameworkConfig} frameworkConfig
+ * @param {Partial<Bun.BuildConfig>} buildConfig
+ * @returns {string[]}
+ */
+function getClientExternals(frameworkConfig, buildConfig) {
+	const userImportMapKeys = Object.keys(castroConfig.importMap ?? {}).map(
+		(key) => key.replace(/\/$/, ""),
+	);
+
+	return [
+		...new Set([
+			...(buildConfig.external ?? []),
+			...(frameworkConfig.clientDependencies ?? []),
+			...(castroConfig.clientDependencies ?? []),
+			...userImportMapKeys,
+		]),
+	];
 }

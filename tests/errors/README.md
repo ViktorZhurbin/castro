@@ -47,9 +47,7 @@ To verify fixes work, edit the broken file in place — the dev server will rebu
 | `island-syntax-error` | Island has syntax error | `BUNDLE_FAILED` | `components/Counter.island.tsx` unclosed brace |
 | `island-import-missing` | Page imports non-existent island | `BUNDLE_FAILED` | imports `./components/Ghost.island.tsx` which doesn't exist |
 | `framework-config-invalid` | Framework config has invalid structure | `BUNDLE_FAILED` | malformed config object |
-| `framework-config-no-detection` | Framework not detected properly | `BUNDLE_FAILED` | missing exports/imports for detection |
 | `island-render-failed` | Island render fails at build time | `BUNDLE_FAILED` | hydrate export throws error |
-| `framework-load-failed` | Framework module fails to load | `BUNDLE_FAILED` | missing framework dependency |
 
 
 ## Verification Checklist

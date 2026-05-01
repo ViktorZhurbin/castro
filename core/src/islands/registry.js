@@ -19,7 +19,7 @@ import { getModule } from "../utils/cache.js";
 import { CastroError } from "../utils/errors.js";
 import { compileIsland } from "./compiler.js";
 import { getLoadedFrameworkConfigs } from "./frameworkConfig.js";
-import { getIslandId } from "./islandId.js";
+import { getIslandId, toPosix } from "./utils.js";
 
 /**
  * @import { IslandComponent } from '../types.d.ts'
@@ -64,23 +64,12 @@ class IslandsRegistry {
 			throw err;
 		}
 
-		const outputIslandsDir = join(OUTPUT_DIR, ISLANDS_OUTPUT_DIR);
 		const islandGlob = new Bun.Glob("**/*.island.{jsx,tsx}");
 
 		for await (const relativePath of islandGlob.scan(COMPONENTS_DIR)) {
 			const sourcePath = join(COMPONENTS_DIR, relativePath);
-
-			// Determine which framework this island uses.
 			const frameworkId = await detectFramework(sourcePath);
-
-			// Preserve directory nesting in output (e.g., ui/Button → islands/ui/Button)
-			const relativeDir = dirname(relativePath);
-			const outputDir = join(outputIslandsDir, relativeDir);
-			// Normalize Windows separators — public URLs are always posix.
-			const publicDir = `/${join(ISLANDS_OUTPUT_DIR, relativeDir)}`.replaceAll(
-				"\\",
-				"/",
-			);
+			const { outputDir, publicDir } = derivePaths(relativePath);
 
 			const component = await compileIsland({
 				sourcePath,
@@ -111,9 +100,22 @@ class IslandsRegistry {
 export const islands = new IslandsRegistry();
 
 /**
- * Reused across all island compilations for efficiency — Bun.Transpiler
- * holds onto compiled regex/state internally.
+ * Derive the on-disk output directory and the public URL prefix for an island,
+ * preserving its source-tree nesting (e.g. `ui/Button.island.tsx` →
+ * `dist/islands/ui/`, `/islands/ui`). Public paths are normalized to posix
+ * since they ship to the browser.
+ *
+ * @param {string} relativePath - Path of the island source relative to COMPONENTS_DIR
+ * @returns {{ outputDir: string, publicDir: string }}
  */
+function derivePaths(relativePath) {
+	const relativeDir = dirname(relativePath);
+	return {
+		outputDir: join(OUTPUT_DIR, ISLANDS_OUTPUT_DIR, relativeDir),
+		publicDir: toPosix(`/${join(ISLANDS_OUTPUT_DIR, relativeDir)}`),
+	};
+}
+
 const transpiler = new Bun.Transpiler({ loader: "tsx" });
 
 /**
