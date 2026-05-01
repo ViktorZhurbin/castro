@@ -8,6 +8,19 @@ import { styleText } from "node:util";
 
 /** @import { CastroErrorPayload, CodeFrame } from "../types.d.ts"; */
 
+const COLORS = /** @type {const} */ ({
+	title: "red",
+	rawError: "redBright",
+	note: "gray",
+	location: "gray",
+	lineNumber: "red",
+	caret: "red",
+	hint: "yellow",
+});
+
+const LINE_MARKER = "   > ";
+const LINE_SEPARATOR = "  ";
+
 /**
  * @param {CastroErrorPayload} payload
  * @returns {string}
@@ -15,44 +28,36 @@ import { styleText } from "node:util";
 export function renderErrorToTerminal(payload) {
 	const lines = [];
 
-	// Title: red, bold, with ❌ prefix
-	lines.push(styleText("red", `❌ ${payload.title}`));
+	lines.push(styleText(COLORS.title, `❌ ${payload.title}`));
 
-	// Message: primary explanation
 	if (payload.message) {
 		lines.push(`   ${payload.message}`);
 	}
 
-	// Raw Error: isolated exception text
 	if (payload.errorMessage) {
-		lines.push("");
-		lines.push(styleText("redBright", `   ${payload.errorMessage}`));
+		lines.push("", styleText(COLORS.rawError, `   ${payload.errorMessage}`));
 	}
 
-	// Notes: bulleted list (if present)
 	if (payload.notes && payload.notes.length > 0) {
-		lines.push("");
-		for (const note of payload.notes) {
-			lines.push(styleText("gray", `   · ${note}`));
-		}
+		const notes = payload.notes.map((note) =>
+			styleText(COLORS.note, `   · ${note}`),
+		);
+
+		lines.push("", ...notes);
 	}
 
-	// Code frames: source location with context
 	if (payload.frames && payload.frames.length > 0) {
 		for (const frame of payload.frames) {
-			const frameStr = renderFrame(frame);
+			const frameLines = renderFrame(frame);
 
-			if (frameStr.length) {
-				lines.push("");
-				lines.push(frameStr);
+			if (frameLines) {
+				lines.push("", ...frameLines);
 			}
 		}
 	}
 
-	// Hint: actionable footer (if present)
 	if (payload.hint) {
-		lines.push("");
-		lines.push(styleText("yellow", `   → ${payload.hint}`));
+		lines.push("", styleText(COLORS.hint, `   → ${payload.hint}`));
 	}
 
 	return lines.join("\n");
@@ -60,40 +65,39 @@ export function renderErrorToTerminal(payload) {
 
 /**
  * Renders a single code frame with line numbers and caret.
+ * Returns null when the frame has nothing to display.
  * @param {CodeFrame} frame
- * @returns {string}
+ * @returns {string[] | null}
  */
 function renderFrame(frame) {
 	const lines = [];
 
-	// File location: gray, concise
 	const location = formatLocation(frame);
-
 	if (location) {
-		lines.push(styleText("gray", `   ${location}`));
+		lines.push(styleText(COLORS.location, `   ${location}`));
 	}
 
-	// Code snippet (if lineText is available)
-	if (frame.lineText) {
-		const lineNum = frame.line || 0;
-
-		// Show error line with highlight
-		const LINE_MARKER = "   > ";
-		const LINE_SEPARATOR = "  ";
-		const errLinePrefix = styleText("red", `${LINE_MARKER}${lineNum}`);
+	// Skip the snippet if we have no line number to anchor it to —
+	// rendering "> 0  <code>" would be misleading.
+	if (frame.lineText && frame.line !== undefined) {
+		const lineNum = frame.line;
+		const errLinePrefix = styleText(
+			COLORS.lineNumber,
+			`${LINE_MARKER}${lineNum}`,
+		);
 		lines.push(`${errLinePrefix}${LINE_SEPARATOR}${frame.lineText}`);
 
-		// Caret under the error column
+		// Bun's position.column is 1-based; subtract 1 so column 1 lands
+		// directly under the first character of lineText.
 		if (frame.column !== undefined) {
-			const prefixOffset =
+			const prefixWidth =
 				LINE_MARKER.length + String(lineNum).length + LINE_SEPARATOR.length;
-			const caretPad = " ".repeat(prefixOffset + frame.column);
-			const caret = styleText("red", "^");
-			lines.push(`${caretPad}${caret}`);
+			const caretPad = " ".repeat(prefixWidth + frame.column - 1);
+			lines.push(`${caretPad}${styleText(COLORS.caret, "^")}`);
 		}
 	}
 
-	return lines.join("\n");
+	return lines.length ? lines : null;
 }
 
 /**
