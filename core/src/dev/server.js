@@ -33,7 +33,7 @@ import { renderErrorToTerminal } from "../utils/renderError.js";
 
 /**
  * @import { FileChangeInfo } from "node:fs/promises";
- * @import { CastroErrorPayload } from "../types.js";
+ * @import { CastroErrorPayload } from "../types.d.ts";
  */
 
 /**

@@ -8,7 +8,9 @@ import { config } from "../config.js";
 import { satirical } from "./satirical.js";
 import { serious } from "./serious.js";
 
-/** @type {Record<string, import("./messages.js").Messages>} */
+/** @import { Messages } from "./messages.d.ts" */
+
+/** @type {Record<"satirical" | "serious", Messages>} */
 const presets = { satirical, serious };
 
 export const messages = presets[config.messages] ?? satirical;

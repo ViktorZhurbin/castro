@@ -8,7 +8,7 @@ import { basename, join, relative } from "node:path";
 import { OUTPUT_DIR } from "../constants.js";
 
 /**
- * @import { Asset } from '../types.js'
+ * @import { Asset } from '../types.d.ts'
  */
 
 /**

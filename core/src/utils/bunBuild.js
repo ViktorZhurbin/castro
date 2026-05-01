@@ -1,6 +1,6 @@
 import { CastroError } from "./errors.js";
 
-/** @import { CodeFrame } from "../types.js" */
+/** @import { CodeFrame } from "../types.d.ts" */
 
 /**
  * Wraps Bun.build to standardize error handling.

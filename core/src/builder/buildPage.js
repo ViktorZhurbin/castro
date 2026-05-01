@@ -7,7 +7,7 @@ import { compileJSX } from "./compileJsx.js";
 import { renderPage } from "./renderPage.js";
 import { writeCSSFiles } from "./writeCss.js";
 
-/** @import { PageMeta } from "../types.js" */
+/** @import { PageMeta } from "../types.d.ts" */
 
 /**
  * @param {string} relativeSourcePath - Relative path of source file

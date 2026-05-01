@@ -5,7 +5,7 @@
  * Both presets must implement this interface exactly.
  */
 
-import type { ErrorCode, ErrorContent, ErrorTokens } from "../types.js";
+import type { ErrorCode, ErrorContent, ErrorTokens } from "../types.d.ts";
 
 export interface Messages {
 	// Dev server startup and runtime messages

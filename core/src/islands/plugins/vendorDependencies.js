@@ -7,7 +7,7 @@ import { resolveTempDir } from "../../utils/cache.js";
 import { getFrameworkConfig } from "../frameworkConfig.js";
 
 /**
- * @import { CastroPlugin, ImportsMap } from '../../types.js'
+ * @import { CastroPlugin, ImportsMap } from '../../types.d.ts'
  */
 
 const VENDOR_OUTPUT_DIR = "vendor";

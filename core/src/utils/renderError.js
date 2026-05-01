@@ -6,7 +6,7 @@
 
 import { styleText } from "node:util";
 
-/** @import { CastroErrorPayload, CodeFrame } from "../types.js"; */
+/** @import { CastroErrorPayload, CodeFrame } from "../types.d.ts"; */
 
 /**
  * @param {CastroErrorPayload} payload

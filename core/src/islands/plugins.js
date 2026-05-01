@@ -5,7 +5,7 @@ import { castroIslandRuntime } from "./plugins/castroIslandRuntime.js";
 import { vendorDependencies } from "./plugins/vendorDependencies.js";
 
 /**
- * @import { CastroPlugin } from '../types.js'
+ * @import { CastroPlugin } from '../types.d.ts'
  */
 
 // Register any frameworks provided by user plugins.

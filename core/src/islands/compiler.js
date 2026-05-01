@@ -24,7 +24,7 @@ import { CastroError } from "../utils/errors.js";
 import { getFrameworkConfig } from "./frameworkConfig.js";
 
 /**
- * @import { IslandComponent } from "../types.js"
+ * @import { IslandComponent } from "../types.d.ts"
  */
 
 /**

@@ -13,7 +13,7 @@ import { CastroError } from "../utils/errors.js";
 import preactConfig from "./frameworks/preact.js";
 
 /**
- * @import { FrameworkConfig } from "../types.js"
+ * @import { FrameworkConfig } from "../types.d.ts"
  */
 
 /**

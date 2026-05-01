@@ -24,7 +24,7 @@ import { islands } from "./registry.js";
 
 /**
  * @import { VNode } from "preact"
- * @import { Directive } from "../types.js"
+ * @import { Directive } from "../types.d.ts"
  */
 
 /**

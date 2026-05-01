@@ -2,7 +2,7 @@
  * Serious preset - Straightforward technical messages
  * No satire, just clear information
  *
- * @type {import('./messages.js').Messages}
+ * @type {import('./messages.d.ts').Messages}
  */
 export const serious = {
 	// CLI startup

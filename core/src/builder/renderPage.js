@@ -17,7 +17,7 @@ import { CastroError } from "../utils/errors.js";
 import { writeHtmlPage } from "./writeHtmlPage.js";
 
 /**
- * @import { Asset, PageMeta } from "../types.js"
+ * @import { Asset, PageMeta } from "../types.d.ts"
  * @import { VNode } from "preact"
  */
 

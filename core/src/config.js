@@ -8,7 +8,7 @@
  * so they can be wired into the build pipeline without polluting config.
  */
 
-/** @import { CastroConfig, DefaultConfig } from './types.js' */
+/** @import { CastroConfig, DefaultConfig } from './types' */
 
 import { join } from "node:path";
 import { CastroError } from "./utils/errors.js";

@@ -23,7 +23,7 @@ import { CastroError } from "../utils/errors.js";
 import { buildPage } from "./buildPage.js";
 
 /**
- * @import { BuildContext } from "../types.js"
+ * @import { BuildContext } from "../types.d.ts"
  */
 
 export async function buildAll() {

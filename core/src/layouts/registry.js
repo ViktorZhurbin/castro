@@ -18,7 +18,7 @@ import { CastroError } from "../utils/errors.js";
 
 /**
  * @import { VNode } from "preact";
- * @import { Asset } from '../types.js'
+ * @import { Asset } from '../types.d.ts'
  *
  * @typedef {(props: {
  * 		title: string;

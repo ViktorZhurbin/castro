@@ -2,7 +2,7 @@ import { join } from "node:path";
 import { OUTPUT_DIR } from "../../constants.js";
 
 /**
- * @import { CastroPlugin } from '../../types.js'
+ * @import { CastroPlugin } from '../../types.d.ts'
  */
 
 /**

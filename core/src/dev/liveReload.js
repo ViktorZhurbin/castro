@@ -17,7 +17,7 @@
  * server→client messaging.
  */
 
-/** @import { CastroErrorPayload, CodeFrame } from "../types.js" */
+/** @import { CastroErrorPayload, CodeFrame } from "../types.d.ts" */
 
 // Connect to SSE endpoint
 const events = new EventSource("/events");
