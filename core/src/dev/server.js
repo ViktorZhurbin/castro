@@ -27,7 +27,6 @@ import {
 } from "../constants.js";
 import { allPlugins } from "../islands/plugins.js";
 import { messages } from "../messages/index.js";
-import { debounceAsync } from "../utils/debounceAsync.js";
 import { toPayload } from "../utils/errors.js";
 import { renderErrorToTerminal } from "../utils/renderError.js";
 
@@ -165,7 +164,7 @@ export async function startDevServer() {
 	// into a single buildAll(). Serialized so builds never overlap.
 	// Only reloads the browser on success; errors are sent as a separate SSE
 	// event so the console message isn't lost to an immediate reload.
-	const rebuild = debounceAsync(async () => {
+	const rebuild = debounceRebuilds(async () => {
 		try {
 			await buildAll();
 			notifyReload();
@@ -221,7 +220,7 @@ export async function startDevServer() {
 			}
 
 			// Track modification times to prevent infinite loops from OS atime/indexing events
-			const mtimes = new Map();
+			const modTimes = new Map();
 
 			for await (const event of watcher) {
 				if (!event.filename || isIgnored(event.filename)) continue;
@@ -234,14 +233,14 @@ export async function startDevServer() {
 					// Ignore:
 					// - directory access events triggered by cp()
 					// - events where the file wasn't actually modified
-					if (stats.isDirectory() || mtimes.get(filePath) === stats.mtimeMs) {
+					if (stats.isDirectory() || modTimes.get(filePath) === stats.mtimeMs) {
 						continue;
 					}
 
-					mtimes.set(filePath, stats.mtimeMs);
+					modTimes.set(filePath, stats.mtimeMs);
 				} catch {
 					// File was deleted, proceed to rebuild
-					mtimes.delete(filePath);
+					modTimes.delete(filePath);
 				}
 
 				logFileChanged(`${dir}/${event.filename}`);
@@ -318,4 +317,50 @@ export async function startDevServer() {
 	function isIgnored(filename) {
 		return !filename || IGNORE.match(filename.split("/").pop() ?? "");
 	}
+}
+
+/**
+ * Debounced async runner.
+ *
+ * Collapses rapid `schedule()` calls into a single execution of `fn`.
+ * If `schedule()` is called while `fn` is running, `fn` runs once more
+ * after the current pass finishes. Builds never overlap.
+ *
+ * @param {() => Promise<void>} fn - Async work to run
+ * @param {number} ms - Debounce delay in milliseconds
+ */
+function debounceRebuilds(fn, ms) {
+	/** @type {NodeJS.Timeout | null} */
+	let timer = null;
+
+	/**
+	 * Resolves when the current fn() call finishes. Null when idle.
+	 * @type {Promise<void> | null}
+	 */
+	let active = null;
+
+	async function flush() {
+		timer = null;
+
+		// Wait for any in-progress run, then go again
+		if (active) {
+			await active;
+
+			return flush();
+		}
+
+		active = fn();
+		await active;
+		active = null;
+	}
+
+	return {
+		schedule() {
+			if (timer) {
+				clearTimeout(timer);
+			}
+
+			timer = setTimeout(flush, ms);
+		},
+	};
 }
