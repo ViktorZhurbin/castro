@@ -80,22 +80,6 @@
         "preact": "^10",
       },
     },
-    "tests/errors/framework-config-no-detection": {
-      "name": "@test-errors/framework-config-no-detection",
-      "version": "0.0.0",
-      "dependencies": {
-        "@vktrz/castro": "workspace:*",
-        "preact": "^10",
-      },
-    },
-    "tests/errors/framework-load-failed": {
-      "name": "@test-errors/framework-load-failed",
-      "version": "0.0.0",
-      "dependencies": {
-        "@vktrz/castro": "workspace:*",
-        "preact": "^10",
-      },
-    },
     "tests/errors/island-import-missing": {
       "name": "@test-errors/island-import-missing",
       "version": "0.0.0",
@@ -402,10 +386,6 @@
     "@test-errors/empty-layouts-dir": ["@test-errors/empty-layouts-dir@workspace:tests/errors/empty-layouts-dir"],
 
     "@test-errors/framework-config-invalid": ["@test-errors/framework-config-invalid@workspace:tests/errors/framework-config-invalid"],
-
-    "@test-errors/framework-config-no-detection": ["@test-errors/framework-config-no-detection@workspace:tests/errors/framework-config-no-detection"],
-
-    "@test-errors/framework-load-failed": ["@test-errors/framework-load-failed@workspace:tests/errors/framework-load-failed"],
 
     "@test-errors/island-import-missing": ["@test-errors/island-import-missing@workspace:tests/errors/island-import-missing"],
 
