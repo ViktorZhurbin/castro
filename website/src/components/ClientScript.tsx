@@ -1,43 +1,16 @@
 import { h } from "preact";
 
 /**
- * Serializes a function and executes it immediately in the browser.
- * Perfect for 0kb interactive elements that don't need a framework runtime.
+ * A way to add an inline script in JSX with SSR.
  */
-export function ClientScript({
-	fn,
-	args = [],
-}: {
-	fn: (...args: never) => unknown;
-	args?: unknown[];
+export function ClientScript(props: {
+	args?: readonly unknown[];
+	fn: (...args: any[]) => unknown;
 }) {
-	const argsString = args.map(serializeArg).join(", ");
-
-	// Stringify the function invocation with args (IIFE)
-	const scriptContent = `(${fn.toString()})(${argsString});`;
+	const { fn, args = [] } = props;
+	const argsString = args.map((a) => JSON.stringify(a)).join(", ");
 
 	return h("script", {
-		dangerouslySetInnerHTML: { __html: scriptContent },
+		dangerouslySetInnerHTML: { __html: `(${fn.toString()})(${argsString});` },
 	});
-}
-
-/**
- * Safely serializes arguments for cross-network boundary execution.
- * Handles `undefined` correctly to prevent syntax errors (e.g., `fn(1,,3)`).
- * Throws at build time if the user tries to pass an unserializable type.
- */
-function serializeArg(arg: unknown): string {
-	if (arg === undefined) {
-		return "undefined";
-	}
-
-	const type = typeof arg;
-	if (type === "function" || type === "symbol") {
-		throw new Error(
-			`ClientScript: Cannot pass ${type}s as arguments. ` +
-				`Arguments must be JSON-serializable to cross the server/client boundary.`,
-		);
-	}
-
-	return JSON.stringify(arg);
 }
