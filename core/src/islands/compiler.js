@@ -21,7 +21,6 @@ import { config as castroConfig } from "../config.js";
 import { safeBunBuild } from "../utils/bunBuild.js";
 import { getProjectDependencies } from "../utils/dependencies.js";
 import { CastroError } from "../utils/errors.js";
-import { toPosix } from "../utils/paths.js";
 import { getFrameworkConfig } from "./frameworkConfig.js";
 
 /**
@@ -63,7 +62,7 @@ export async function compileIsland({
 		});
 	}
 
-	const publicJsPath = `${publicDir}/${basename(toPosix(jsFile.path))}`;
+	const publicJsPath = `${publicDir}/${basename(jsFile.path)}`;
 
 	// CSS kept as a string (not written to disk) — it's inlined per-page
 	// in writeHtmlPage.js, since each page uses a different island subset.

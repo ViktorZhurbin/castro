@@ -12,7 +12,6 @@ import { config as castroConfig } from "../config.js";
 import { getFrameworkConfig } from "../islands/frameworkConfig.js";
 import { allPlugins } from "../islands/plugins.js";
 import { islands } from "../islands/registry.js";
-import { toPosix } from "../utils/paths.js";
 
 /**
  * @import { Asset, ImportsMap } from '../types.d.ts'
@@ -110,7 +109,7 @@ let _liveReloadCache = null;
 async function getLiveReloadAsset() {
 	if (!_liveReloadCache) {
 		_liveReloadCache = await Bun.file(
-			join(toPosix(import.meta.dir), "../dev/liveReload.js"),
+			join(import.meta.dir, "../dev/liveReload.js"),
 		).text();
 	}
 	return {

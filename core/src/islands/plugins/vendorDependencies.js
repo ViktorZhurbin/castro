@@ -4,7 +4,6 @@ import { config } from "../../config.js";
 import { OUTPUT_DIR } from "../../constants.js";
 import { safeBunBuild } from "../../utils/bunBuild.js";
 import { resolveTempDir } from "../../utils/cache.js";
-import { PROJECT_ROOT, toPosix } from "../../utils/paths.js";
 import { getFrameworkConfig } from "../frameworkConfig.js";
 
 /**
@@ -147,7 +146,7 @@ async function resolvePkgVersion(dep) {
 	const pkgRoot = dep.startsWith("@") ? `${part1}/${part2}` : part1;
 
 	try {
-		let dir = dirname(toPosix(Bun.resolveSync(pkgRoot, PROJECT_ROOT)));
+		let dir = dirname(Bun.resolveSync(pkgRoot, process.cwd()));
 		while (dir !== dirname(dir)) {
 			const candidate = join(dir, "package.json");
 			const file = Bun.file(candidate);

@@ -17,7 +17,6 @@ import {
 import { bunLogToFrame } from "../utils/bunBuild.js";
 import { getModule } from "../utils/cache.js";
 import { CastroError } from "../utils/errors.js";
-import { posixJoin } from "../utils/paths.js";
 import { compileIsland } from "./compiler.js";
 import { getLoadedFrameworkConfigs } from "./frameworkConfig.js";
 import { getIslandId } from "./utils.js";
@@ -113,7 +112,7 @@ function derivePaths(relativePath) {
 	const relativeDir = dirname(relativePath);
 	return {
 		outputDir: join(OUTPUT_DIR, ISLANDS_OUTPUT_DIR, relativeDir),
-		publicDir: posixJoin("/", ISLANDS_OUTPUT_DIR, relativeDir),
+		publicDir: join("/", ISLANDS_OUTPUT_DIR, relativeDir),
 	};
 }
 

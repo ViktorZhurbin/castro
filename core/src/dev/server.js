@@ -28,7 +28,6 @@ import {
 import { allPlugins } from "../islands/plugins.js";
 import { messages } from "../messages/index.js";
 import { toPayload } from "../utils/errors.js";
-import { toPosix } from "../utils/paths.js";
 import { renderErrorToTerminal } from "../utils/renderError.js";
 
 /**
@@ -198,7 +197,7 @@ export async function startDevServer() {
 		for await (const event of watcher) {
 			if (!event.filename || isIgnored(event.filename)) continue;
 
-			logFileChanged(join(PAGES_DIR, toPosix(event.filename)));
+			logFileChanged(join(PAGES_DIR, event.filename));
 			rebuild.schedule();
 		}
 	})();
@@ -226,7 +225,7 @@ export async function startDevServer() {
 			for await (const event of watcher) {
 				if (!event.filename || isIgnored(event.filename)) continue;
 
-				const filePath = join(dir, toPosix(event.filename));
+				const filePath = join(dir, event.filename);
 
 				try {
 					const stats = await stat(filePath);
@@ -244,7 +243,7 @@ export async function startDevServer() {
 					modTimes.delete(filePath);
 				}
 
-				logFileChanged(`${dir}/${toPosix(event.filename)}`);
+				logFileChanged(`${dir}/${event.filename}`);
 				rebuild.schedule();
 			}
 		})();
@@ -269,7 +268,7 @@ export async function startDevServer() {
 				for await (const event of watcher) {
 					if (!event.filename || isIgnored(event.filename)) continue;
 
-					logFileChanged(join(dir, toPosix(event.filename)));
+					logFileChanged(join(dir, event.filename));
 					rebuild.schedule();
 				}
 			})();
