@@ -164,102 +164,17 @@ export async function startDevServer() {
 		}
 	}, 80);
 
-	// Watch pages directory
-	(async () => {
-		/** @type {AsyncIterable<FileChangeInfo<string>>} */
-		let watcher;
+	watchDir(PAGES_DIR);
+	watchDir(LAYOUTS_DIR);
+	watchDir(COMPONENTS_DIR);
+	watchDir(PUBLIC_DIR);
 
-		try {
-			watcher = watch(PAGES_DIR, { recursive: true });
-		} catch (e) {
-			const err = /** @type {Bun.ErrorLike} */ (e);
-
-			// ENOENT = pages/ doesn't exist yet; the error overlay is already showing.
-			// User must restart dev after creating the directory.
-			if (err.code !== "ENOENT") {
-				console.warn(messages.devServer.watchError(PAGES_DIR, err.message));
-			}
-			return;
-		}
-
-		for await (const event of watcher) {
-			if (!event.filename || isIgnored(event.filename)) continue;
-
-			logFileChanged(join(PAGES_DIR, event.filename));
-			rebuild.schedule();
-		}
-	})();
-
-	for (const dir of [LAYOUTS_DIR, COMPONENTS_DIR, PUBLIC_DIR]) {
-		(async () => {
-			/** @type {AsyncIterable<FileChangeInfo<string>>} */
-			let watcher;
-
-			try {
-				watcher = watch(dir, { recursive: true });
-			} catch (e) {
-				const err = /** @type {Bun.ErrorLike} */ (e);
-
-				// ENOENT = directory doesn't exist yet, which is fine
-				if (err.code !== "ENOENT") {
-					console.warn(messages.devServer.watchError(dir, err.message));
-				}
-				return;
-			}
-
-			// Track modification times to prevent infinite loops from OS atime/indexing events
-			const modTimes = new Map();
-
-			for await (const event of watcher) {
-				if (!event.filename || isIgnored(event.filename)) continue;
-
-				const filePath = join(dir, event.filename);
-
-				try {
-					const stats = await stat(filePath);
-
-					// Ignore:
-					// - directory access events triggered by cp()
-					// - events where the file wasn't actually modified
-					if (stats.isDirectory() || modTimes.get(filePath) === stats.mtimeMs) {
-						continue;
-					}
-
-					modTimes.set(filePath, stats.mtimeMs);
-				} catch {
-					// File was deleted, proceed to rebuild
-					modTimes.delete(filePath);
-				}
-
-				logFileChanged(`${dir}/${event.filename}`);
-				rebuild.schedule();
-			}
-		})();
-	}
-
-	// Watch directories declared by user plugins.
+	// Directories declared by user plugins.
 	// Changes trigger the plugin's onPageBuild() and a browser reload.
 	for (const plugin of allPlugins) {
 		if (!plugin.watchDirs?.length) continue;
-
 		for (const dir of plugin.watchDirs) {
-			(async () => {
-				/** @type {AsyncIterable<FileChangeInfo<string>>} */
-				let watcher;
-
-				try {
-					watcher = watch(dir);
-				} catch {
-					return;
-				}
-
-				for await (const event of watcher) {
-					if (!event.filename || isIgnored(event.filename)) continue;
-
-					logFileChanged(join(dir, event.filename));
-					rebuild.schedule();
-				}
-			})();
+			watchDir(dir);
 		}
 	}
 
@@ -304,6 +219,55 @@ export async function startDevServer() {
 	 */
 	function isIgnored(filename) {
 		return !filename || IGNORE.match(filename.split("/").pop() ?? "");
+	}
+
+	/**
+	 * Watch a directory and schedule a rebuild on changes.
+	 *
+	 * The mtime filter exists because cp() (and some editors/indexers) trigger
+	 * watcher events for atime/metadata reads that don't actually modify the
+	 * file. Without it, those no-op events feed back into the build output and
+	 * trip a rebuild loop.
+	 *
+	 * @param {string} dir
+	 */
+	async function watchDir(dir) {
+		/** @type {AsyncIterable<FileChangeInfo<string>>} */
+		let watcher;
+
+		try {
+			watcher = watch(dir, { recursive: true });
+		} catch (e) {
+			const err = /** @type {Bun.ErrorLike} */ (e);
+
+			// ENOENT = directory doesn't exist yet.
+			if (err.code !== "ENOENT") {
+				console.warn(messages.devServer.watchError(dir, err.message));
+			}
+			return;
+		}
+
+		const modTimes = new Map();
+
+		for await (const event of watcher) {
+			if (!event.filename || isIgnored(event.filename)) continue;
+
+			const filePath = join(dir, event.filename);
+
+			try {
+				const stats = await stat(filePath);
+				if (stats.isDirectory() || modTimes.get(filePath) === stats.mtimeMs) {
+					continue;
+				}
+				modTimes.set(filePath, stats.mtimeMs);
+			} catch {
+				// File was deleted, proceed to rebuild
+				modTimes.delete(filePath);
+			}
+
+			logFileChanged(filePath);
+			rebuild.schedule();
+		}
 	}
 }
 
