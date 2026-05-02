@@ -1,5 +1,5 @@
 import { mkdir } from "node:fs/promises";
-import { dirname, join, resolve } from "node:path/posix";
+import { join, resolve } from "node:path/posix";
 import { config } from "../../config.js";
 import { OUTPUT_DIR } from "../../constants.js";
 import { safeBunBuild } from "../../utils/bunBuild.js";
@@ -23,9 +23,7 @@ const VENDOR_OUTPUT_DIR = "vendor";
  *
  * Phase 2: getImportMap() — generates the import map that tells browsers where
  *   those files live. Called per-page, only for pages with islands. Returns
- *   specifier→URL entries (e.g., "preact" → "/vendor/preact.js?v=10.28.3").
- *   Uses version query strings for cache busting: when a package upgrades,
- *   the URL changes and browsers re-fetch instead of serving stale code.
+ *   specifier→URL entries (e.g., "preact" → "/vendor/preact.js").
  *
  * Both phases use getSafePkgName() to derive filenames — they must agree or
  * the import map will reference files that don't exist.
@@ -90,12 +88,7 @@ export function vendorDependencies() {
 			const importMap = {};
 
 			for (const dep of allClientDeps) {
-				const safeName = getSafePkgName(dep);
-
-				const version = await resolvePkgVersion(dep);
-				importMap[dep] = version
-					? `/${VENDOR_OUTPUT_DIR}/${safeName}.js?v=${version}`
-					: `/${VENDOR_OUTPUT_DIR}/${safeName}.js`;
+				importMap[dep] = `/${VENDOR_OUTPUT_DIR}/${getSafePkgName(dep)}.js`;
 			}
 
 			return importMap;
@@ -129,36 +122,4 @@ function collectClientDeps(usedFrameworks) {
  */
 function getSafePkgName(name) {
 	return name.replace(/[@/]/g, "_");
-}
-
-/**
- * Resolves a package version by walking up from its entry point to find
- * package.json. Avoids require(pkg/package.json), which throws
- * ERR_PACKAGE_PATH_NOT_EXPORTED when a package's exports map doesn't include
- * "./package.json".
- *
- * @param {string} dep - full specifier, e.g. "preact/hooks" or "@vktrz/castro-jsx"
- * @returns {Promise<string | undefined>}
- */
-async function resolvePkgVersion(dep) {
-	const [part1, part2] = dep.split("/");
-	// "@vktrz/castro-jsx/dom" → "@vktrz/castro-jsx", "preact/hooks" → "preact"
-	const pkgRoot = dep.startsWith("@") ? `${part1}/${part2}` : part1;
-
-	try {
-		let dir = dirname(Bun.resolveSync(pkgRoot, process.cwd()));
-		while (dir !== dirname(dir)) {
-			const candidate = join(dir, "package.json");
-			const file = Bun.file(candidate);
-			if (await file.exists()) {
-				const pkg = await file.json();
-				// Skip structural package.json files (e.g. {"type":"module"}) that
-				// lack a name — only the real package root has a matching name field.
-				if (pkg.name === pkgRoot) return pkg.version;
-			}
-			dir = dirname(dir);
-		}
-	} catch {
-		// package not resolvable — version omitted, URL still valid
-	}
 }
