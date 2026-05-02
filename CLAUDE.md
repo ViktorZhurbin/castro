@@ -131,23 +131,15 @@ Two non-obvious behaviors: `srcDir` shifts where pages/layouts/components are re
 
 ## Non-Goals
 
-Castro is a working SSG, but not a hardened one. The following are deliberately not handled, and code that defends against them should be cut, not added:
+See ./NON-GOALS.md
 
-- **Windows native support.** Internal paths are posix. We don't normalize Windows separators in core code.
-- **Graceful recovery from missing required directories.** `pages/` missing throws naturally — fatal error, not a warning. (`public/` is optional by design; its absence is silently skipped.)
-- **Cross-process or cross-machine cache busting.** No `?v=…` on vendored URLs. Hard-refresh on package upgrade.
-- **Production-grade concurrency.** All page builds run via `Promise.all`. Real SSGs cap concurrency to bound memory; we don't.
-- **Hostile or unusual filesystems.** No retry on transient I/O. No defense against atime feedback loops, network mounts, or case-insensitive collisions.
-- **Runtime validation of TypeScript-typed configuration.** If TypeScript catches it, we don't re-check at runtime.
-- **Backwards compatibility.** Pre-1.0; breaking changes land freely.
-
-When evaluating any defensive code path, ask whether it teaches framework machinery or whether it survives one of the cases above. If the latter, it's a candidate for deletion with a comment pointing here.
+When evaluating any defensive code path, ask whether it teaches framework machinery or whether it survives one of the cases listed. If the latter, it's a candidate for deletion with a comment pointing here.
 
 
 ## What NOT to Change
 
 - Every file should explain "why" — the subsystem framing and module docblocks are load-bearing documentation.
-- Comments may declare what Castro deliberately doesn't handle (see Non-Goals). Such comments are preferred over defensive code paths.
+- Comments may declare what Castro deliberately doesn't handle (see ./NON-GOALS.md). Such comments are preferred over defensive code paths.
 - Satire belongs in messages/docs/CLI output only, never in the code logic itself.
 - `website/dist/` and `tests/site/dist/` are ephemeral, cleaned on every build.
 

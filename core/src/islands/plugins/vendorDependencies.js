@@ -88,7 +88,7 @@ export function vendorDependencies() {
 			const importMap = {};
 
 			for (const dep of allClientDeps) {
-				// No cache busting — see Non-Goals.
+				// No cache busting — see NON-GOALS.md.
 				importMap[dep] = `/${VENDOR_OUTPUT_DIR}/${getSafePkgName(dep)}.js`;
 			}
 
