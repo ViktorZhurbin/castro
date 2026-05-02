@@ -8,7 +8,7 @@ Isolated test cases for Castro error DX, one per error code. Each is a minimal s
 bun test:errors
 ```
 
-Runs `castro build` in all 14 fixtures and compares stderr against committed goldens in `expected.stderr.txt`. Catches wrong error codes, leaked Bun stack frames, and broken rendering (missing hints, dropped notes, misaligned carets).
+Runs `castro build` in all fixtures and compares stderr against committed goldens in `expected.stderr.txt`. Catches wrong error codes, leaked Bun stack frames, and broken rendering (missing hints, dropped notes, misaligned carets).
 
 To regenerate goldens after an intentional message change:
 
@@ -41,7 +41,6 @@ To verify fixes work, edit the broken file in place — the dev server will rebu
 | `page-no-default-export` | Page has no default export | `PAGE_NO_DEFAULT_EXPORT` | `pages/oops.tsx` has only named exports |
 | `layout-no-default` | Layout has no default export | `LAYOUT_NO_DEFAULT_EXPORT` | `layouts/default.jsx` has only named exports |
 | `yaml-broken` | Markdown frontmatter syntax error | `YAML_PARSE_FAILED` | `pages/post.md` has `title: [unclosed` |
-| `meta-wrong-types` | Meta object has wrong types | `META_INVALID` | `export const meta = { title: 42 }` |
 | `page-syntax-error` | Page has syntax error | `BUNDLE_FAILED` | `pages/broken.tsx` unclosed brace |
 | `layout-syntax-error` | Layout has syntax error | `BUNDLE_FAILED` | `layouts/default.jsx` unclosed brace |
 | `island-syntax-error` | Island has syntax error | `BUNDLE_FAILED` | `components/Counter.island.tsx` unclosed brace |

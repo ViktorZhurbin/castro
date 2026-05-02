@@ -22,8 +22,7 @@ export type ErrorTokens = {
 	NO_LAYOUT_FILES: { dir: string };
 	LAYOUT_NO_DEFAULT_EXPORT: { file: string };
 	PAGE_NO_DEFAULT_EXPORT: { file: string };
-	META_INVALID: { file: string; issues: string[] };
-	ISLAND_NOT_FOUND: { islandId: string };
+ISLAND_NOT_FOUND: { islandId: string };
 	NO_PAGES: { dir: string };
 	FRAMEWORK_CONFIG_INVALID: { pluginName: string; missing: string };
 	BUNDLE_FAILED: { errorMessage: string } | undefined;

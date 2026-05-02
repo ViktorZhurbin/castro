@@ -45,19 +45,13 @@ async function buildJSXPage(sourceFilePath, outputFilePath) {
 	const outputDir = dirname(outputFilePath);
 	const pageCssAssets = await writeCSSFiles(cssFiles, outputDir);
 
-	// Extract metadata (includes layout preference)
-	const meta = pageModule.meta || {};
-
-	// Validate metadata against schema
-	const validatedMeta = validateMeta(meta, sourceFilePath);
-
 	// Use shared rendering pipeline
 	// Pass the page component function to be called to get a VNode
 	await renderPage({
 		createContentVNode: pageModule.default,
 		outputFilePath,
 		sourceFilePath,
-		pageMeta: validatedMeta,
+		pageMeta: pageModule.meta || {},
 		pageCssAssets,
 	});
 }
@@ -78,9 +72,6 @@ async function buildMarkdownPage(sourceFilePath, outputFilePath) {
 		sourceFilePath,
 	);
 
-	// Type assertion: we know meta is valid PageMeta after validation
-	const validatedMeta = validateMeta(meta, sourceFilePath);
-
 	// Convert markdown to HTML using configured options
 	const contentHtml = Bun.markdown.html(
 		markdown,
@@ -95,7 +86,7 @@ async function buildMarkdownPage(sourceFilePath, outputFilePath) {
 			}),
 		outputFilePath,
 		sourceFilePath,
-		pageMeta: validatedMeta,
+		pageMeta: meta,
 	});
 }
 
@@ -149,35 +140,4 @@ function parseFrontmatter(fileContent, sourceFilePath) {
 			sourceFilePath,
 		});
 	}
-}
-
-/**
- * @param {PageMeta} meta
- * @param {string} sourceFileName
- * @returns {PageMeta}
- */
-function validateMeta(meta, sourceFileName) {
-	const issues = [];
-
-	if (meta.title && typeof meta.title !== "string") {
-		issues.push(
-			`Invalid type for "title": expected string, got ${typeof meta.title}`,
-		);
-	}
-
-	// Check layout (string, boolean, or undefined)
-	if (meta.layout !== undefined) {
-		const type = typeof meta.layout;
-		if (type !== "string" && type !== "boolean") {
-			issues.push(
-				`Invalid type for "layout": expected string or boolean, got ${type}`,
-			);
-		}
-	}
-
-	if (issues.length > 0) {
-		throw new CastroError("META_INVALID", { file: sourceFileName, issues });
-	}
-
-	return meta;
 }

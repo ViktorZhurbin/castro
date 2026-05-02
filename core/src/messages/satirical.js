@@ -104,14 +104,7 @@ export const satirical = {
 			hint: "Create a .md or .jsx/.tsx file in pages/ to continue",
 		}),
 
-		META_INVALID: ({ file, issues }) => ({
-			title: "Invalid page meta",
-			message: `${file} has incomplete papers`,
-			notes: issues,
-			hint: "Check that all meta properties are properly formed",
-		}),
-
-		FRAMEWORK_CONFIG_INVALID: ({ pluginName, missing }) => ({
+FRAMEWORK_CONFIG_INVALID: ({ pluginName, missing }) => ({
 			title: "Invalid framework config",
 			message: `Plugin "${pluginName}" has incomplete papers — missing: ${missing}`,
 			hint: "Fill in the missing fields to pass inspection",
