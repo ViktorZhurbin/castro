@@ -4,8 +4,9 @@
  * Used by both page and layout compilation.
  */
 
-import { basename, join, relative } from "node:path";
+import { basename, join, relative } from "node:path/posix";
 import { OUTPUT_DIR } from "../constants.js";
+import { toPosix } from "../utils/paths.js";
 
 /**
  * @import { Asset } from '../types.d.ts'
@@ -23,7 +24,7 @@ export async function writeCSSFiles(cssFiles, outputDir) {
 
 	for (const cssFile of cssFiles) {
 		// Bun names CSS outputs like "page.tsx.css" — strip the source extension
-		const originalName = basename(cssFile.path);
+		const originalName = basename(toPosix(cssFile.path));
 		const cssFileName = originalName.replace(/\.(jsx|tsx|js|ts)\.css$/, ".css");
 
 		const cssOutputPath = join(outputDir, cssFileName);

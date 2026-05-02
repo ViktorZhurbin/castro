@@ -43,7 +43,10 @@ export function tailwind({ input }) {
 		getPageAssets() {
 			return inputs.map((file) => ({
 				tag: "link",
-				attrs: { rel: "stylesheet", href: `/${basename(file)}` },
+				attrs: {
+					rel: "stylesheet",
+					href: `/${basename(file).replaceAll("\\", "/")}`,
+				},
 			}));
 		},
 	};

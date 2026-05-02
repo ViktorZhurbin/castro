@@ -9,7 +9,7 @@
  * renderToString() pass, which is why island SSR modules must be pre-loaded.
  */
 
-import { basename } from "node:path";
+import { basename } from "node:path/posix";
 import { renderToString } from "preact-render-to-string";
 import { getPageState } from "../islands/marker.js";
 import { layouts } from "../layouts/registry.js";

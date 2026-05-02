@@ -10,8 +10,8 @@
 
 /** @import { CastroConfig, DefaultConfig } from './types' */
 
-import { join } from "node:path";
 import { CastroError } from "./utils/errors.js";
+import { PROJECT_ROOT, posixJoin } from "./utils/paths.js";
 
 /** @type {DefaultConfig} */
 const defaults = {
@@ -24,7 +24,7 @@ const defaults = {
 let userConfig = {};
 
 for (const ext of [".ts", ".js", ".mjs"]) {
-	const configPath = join(process.cwd(), `castro.config${ext}`);
+	const configPath = posixJoin(PROJECT_ROOT, `castro.config${ext}`);
 
 	if (!(await Bun.file(configPath).exists())) continue;
 

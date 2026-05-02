@@ -8,7 +8,7 @@
  */
 
 import { access, rm } from "node:fs/promises";
-import { basename, extname, join } from "node:path";
+import { basename, extname, join } from "node:path/posix";
 import { compileJSX } from "../builder/compileJsx.js";
 import { writeCSSFiles } from "../builder/writeCss.js";
 import { LAYOUTS_DIR, OUTPUT_DIR } from "../constants.js";

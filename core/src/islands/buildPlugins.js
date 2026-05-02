@@ -14,10 +14,11 @@
  *    (registry, island tracking) are shared across all compiled pages
  */
 
-import { dirname, resolve } from "node:path";
+import { dirname, resolve } from "node:path/posix";
+import { toPosix } from "../utils/paths.js";
 import { getIslandId } from "./utils.js";
 
-const CASTRO_SRC = resolve(dirname(import.meta.path), "..");
+const CASTRO_SRC = resolve(dirname(toPosix(import.meta.path)), "..");
 const MARKER_PATH = resolve(CASTRO_SRC, "islands/marker.js");
 
 /**

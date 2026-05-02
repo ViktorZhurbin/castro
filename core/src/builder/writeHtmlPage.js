@@ -7,11 +7,12 @@
  * 3. Writes the file to disk
  */
 
-import { join } from "node:path";
+import { join } from "node:path/posix";
 import { config as castroConfig } from "../config.js";
 import { getFrameworkConfig } from "../islands/frameworkConfig.js";
 import { allPlugins } from "../islands/plugins.js";
 import { islands } from "../islands/registry.js";
+import { toPosix } from "../utils/paths.js";
 
 /**
  * @import { Asset, ImportsMap } from '../types.d.ts'
@@ -109,7 +110,7 @@ let _liveReloadCache = null;
 async function getLiveReloadAsset() {
 	if (!_liveReloadCache) {
 		_liveReloadCache = await Bun.file(
-			join(import.meta.dir, "../dev/liveReload.js"),
+			join(toPosix(import.meta.dir), "../dev/liveReload.js"),
 		).text();
 	}
 	return {

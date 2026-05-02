@@ -2,7 +2,7 @@
  * Shared constants — safe to import from anywhere (no I/O, no module dependencies).
  */
 
-import { join } from "node:path";
+import { join } from "node:path/posix";
 import { config } from "./config.js";
 
 export const OUTPUT_DIR = "dist";

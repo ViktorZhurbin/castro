@@ -8,7 +8,7 @@
  */
 
 import { access } from "node:fs/promises";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path/posix";
 import {
 	COMPONENTS_DIR,
 	ISLANDS_OUTPUT_DIR,
@@ -17,9 +17,10 @@ import {
 import { bunLogToFrame } from "../utils/bunBuild.js";
 import { getModule } from "../utils/cache.js";
 import { CastroError } from "../utils/errors.js";
+import { posixJoin } from "../utils/paths.js";
 import { compileIsland } from "./compiler.js";
 import { getLoadedFrameworkConfigs } from "./frameworkConfig.js";
-import { getIslandId, toPosix } from "./utils.js";
+import { getIslandId } from "./utils.js";
 
 /**
  * @import { IslandComponent } from '../types.d.ts'
@@ -112,7 +113,7 @@ function derivePaths(relativePath) {
 	const relativeDir = dirname(relativePath);
 	return {
 		outputDir: join(OUTPUT_DIR, ISLANDS_OUTPUT_DIR, relativeDir),
-		publicDir: toPosix(`/${join(ISLANDS_OUTPUT_DIR, relativeDir)}`),
+		publicDir: posixJoin("/", ISLANDS_OUTPUT_DIR, relativeDir),
 	};
 }
 

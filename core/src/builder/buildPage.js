@@ -1,4 +1,4 @@
-import { dirname, extname, join } from "node:path";
+import { dirname, extname, join } from "node:path/posix";
 import { h } from "preact";
 import { config } from "../config.js";
 import { OUTPUT_DIR, PAGES_DIR } from "../constants.js";
