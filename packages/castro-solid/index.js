@@ -69,10 +69,7 @@ const frameworkConfig = {
 
 	detectImports: ["solid-js"],
 
-	hydrateFnString: `
-		const { hydrate } = await import("solid-js/web");
-		hydrate(() => Component(props), container);
-	`,
+	hydrateClientPath: new URL("./hydrate.client.js", import.meta.url).pathname,
 
 	renderSSR: (Component, props) => renderToString(() => Component(props)),
 };

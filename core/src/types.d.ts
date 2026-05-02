@@ -93,17 +93,19 @@ export type FrameworkConfig = {
 	headAssets?: Asset[];
 
 	/**
-	 * Client-side hydration code string.
+	 * Absolute path to the framework's browser-side hydration module.
 	 *
-	 * Injected into the compiled island bundle by compiler.js.
-	 * Runs in the browser when the island's <castro-island> triggers hydration.
+	 * Read by compiler.js and inlined verbatim into the per-island bundle.
+	 * The file must export a named function with this exact signature:
 	 *
-	 * Variables available at runtime (provided by the virtual entry wrapper):
-	 * - Component: the imported island component function (if using default import)
-	 * - props: deserialized from data-props attribute
-	 * - container: the <castro-island> DOM element
+	 *   export async function hydrate(container, props, Component) { ... }
+	 *
+	 * Constraints: no Node-only imports, no captured closure variables — the
+	 * source is copy-pasted into a Bun.build virtual entry and bundled for the
+	 * browser. Use `new URL("./my.client.js", import.meta.url).pathname` so the
+	 * path is correct regardless of working directory.
 	 */
-	hydrateFnString: string;
+	hydrateClientPath: string;
 
 	/**
 	 * Server-side rendering function.

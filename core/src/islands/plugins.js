@@ -12,7 +12,7 @@ import { vendorDependencies } from "./plugins/vendorDependencies.js";
 // are available when registry.js scans islands for AST-based detection.
 for (const plugin of userPlugins) {
 	if (plugin.frameworkConfig) {
-		registerFramework(plugin.frameworkConfig, plugin.name);
+		await registerFramework(plugin.frameworkConfig, plugin.name);
 	}
 }
 

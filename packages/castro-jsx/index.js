@@ -78,17 +78,7 @@ const frameworkConfig = {
 
 	detectImports: ["@vktrz/castro-jsx"],
 
-	/**
-	 * Client-side hydration: clear SSR HTML and mount fresh reactive DOM.
-	 * Simpler than Preact's hydrate() (which walks existing DOM) or Solid's
-	 * (which uses compiled markers). The tradeoff: a brief moment where the
-	 * SSR HTML is replaced. For small islands this is imperceptible.
-	 */
-	hydrateFnString: `
-		container.innerHTML = "";
-		const dom = Component(props);
-		if (dom instanceof Node) container.appendChild(dom);
-	`,
+	hydrateClientPath: new URL("./hydrate.client.js", import.meta.url).pathname,
 
 	renderSSR: (Component, props) => {
 		const result = Component(props);

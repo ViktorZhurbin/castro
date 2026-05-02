@@ -94,14 +94,17 @@ async function compileIslandClient({ sourcePath, outputDir, frameworkId }) {
 	// and wraps it in a mounting function for hydration. This file never exists
 	// on disk — Bun's `files` option lets us feed code strings directly into the
 	// bundler as if they were real files (same concept as Vite/Rollup virtual modules).
+	//
+	// The framework's client file exports `hydrate(container, props, Component)`.
+	// We inline its source verbatim, then write a default export that wires the
+	// statically-imported Component into the call.
 	const frameworkConfig = getFrameworkConfig(frameworkId);
+	const clientSource = await Bun.file(frameworkConfig.hydrateClientPath).text();
 
 	const virtualEntry = `
 		import Component from './${basename(sourcePath)}';
-
-		export default async (container, props = {}) => {
-			${frameworkConfig.hydrateFnString}
-		}
+		${clientSource}
+		export default (container, props = {}) => hydrate(container, props, Component);
 	`.trim();
 
 	const buildConfig = frameworkConfig.getBuildConfig();

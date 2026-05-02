@@ -28,7 +28,7 @@ const REQUIRED_FIELDS = [
 	"detectImports",
 	"getBuildConfig",
 	"clientDependencies",
-	"hydrateFnString",
+	"hydrateClientPath",
 	"renderSSR",
 ];
 
@@ -39,13 +39,20 @@ const REQUIRED_FIELDS = [
  * @param {FrameworkConfig} frameworkConfig
  * @param {string} pluginName - Name of the plugin providing this config
  */
-export function registerFramework(frameworkConfig, pluginName) {
+export async function registerFramework(frameworkConfig, pluginName) {
 	const missing = REQUIRED_FIELDS.filter((f) => !frameworkConfig[f]);
 
 	if (missing.length > 0) {
 		throw new CastroError("FRAMEWORK_CONFIG_INVALID", {
 			pluginName,
 			missing: missing.join(", "),
+		});
+	}
+
+	if (!(await Bun.file(frameworkConfig.hydrateClientPath).exists())) {
+		throw new CastroError("FRAMEWORK_CONFIG_INVALID", {
+			pluginName,
+			missing: `hydrateClientPath points to non-existent file: ${frameworkConfig.hydrateClientPath}`,
 		});
 	}
 
@@ -84,4 +91,4 @@ export function getLoadedFrameworkConfigs() {
 }
 
 // Register built-in frameworks at module load
-registerFramework(preactConfig, "castro-preact");
+await registerFramework(preactConfig, "castro-preact");

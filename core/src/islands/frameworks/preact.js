@@ -31,10 +31,7 @@ export default {
 
 	detectImports: ["preact"],
 
-	hydrateFnString: `
-		const { h, hydrate } = await import("preact");
-		hydrate(h(Component, props), container);
-	`,
+	hydrateClientPath: new URL("./preact.client.js", import.meta.url).pathname,
 
 	renderSSR: (Component, props) =>
 		render(h(/** @type {preact.ComponentType<any>} */ (Component), props)),
