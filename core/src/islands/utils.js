@@ -1,4 +1,5 @@
 import { relative } from "node:path/posix";
+import { PROJECT_ROOT } from "../constants";
 
 /**
  * Generate a stable ID from a file path.
@@ -10,5 +11,5 @@ import { relative } from "node:path/posix";
  * @example "src/islands/ui/Button.tsx"
  */
 export function getIslandId(filePath) {
-	return relative(process.cwd(), filePath);
+	return relative(PROJECT_ROOT, filePath);
 }

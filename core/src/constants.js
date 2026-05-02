@@ -11,3 +11,5 @@ export const ISLANDS_OUTPUT_DIR = "islands";
 export const LAYOUTS_DIR = join(config.srcDir, "layouts");
 export const PAGES_DIR = join(config.srcDir, "pages");
 export const COMPONENTS_DIR = join(config.srcDir, "components");
+
+export const PROJECT_ROOT = process.cwd();

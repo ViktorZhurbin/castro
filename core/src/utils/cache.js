@@ -21,9 +21,10 @@
 
 import { rmSync } from "node:fs";
 import { join, parse, relative, resolve } from "node:path/posix";
+import { PROJECT_ROOT } from "../constants.js";
 import { CastroError } from "./errors.js";
 
-const CACHE_DIR = join(process.cwd(), "node_modules/.cache/castro");
+const CACHE_DIR = join(PROJECT_ROOT, "node_modules/.cache/castro");
 
 /**
  * Clean cache directory. Called once at startup to ensure fresh state.
@@ -39,8 +40,8 @@ export function cleanupCacheDir() {
  * @returns {string}
  */
 export function resolveTempDir(subpath) {
-	const resolvedSubpath = resolve(process.cwd(), subpath);
-	const relativeSubpath = relative(process.cwd(), resolvedSubpath);
+	const resolvedSubpath = resolve(PROJECT_ROOT, subpath);
+	const relativeSubpath = relative(PROJECT_ROOT, resolvedSubpath);
 
 	return join(CACHE_DIR, relativeSubpath);
 }
