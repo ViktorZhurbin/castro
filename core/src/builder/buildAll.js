@@ -152,33 +152,27 @@ async function scanPages() {
 	const pagesMap = new Map();
 	const pageGlob = new Bun.Glob("**/*.{md,jsx,tsx}");
 
-	try {
-		for await (const sourcePath of pageGlob.scan(PAGES_DIR)) {
-			// Skip files/folders prefixed with `_` (private convention, e.g. _drafts/, _partial.tsx)
-			if (sourcePath.split("/").some((segment) => segment.startsWith("_"))) {
-				continue;
-			}
-
-			const outputPath = sourcePath.replace(/\.(md|[jt]sx)$/, ".html");
-
-			// Example: both foo.md and foo.jsx try to be foo.html
-			if (pagesMap.has(outputPath)) {
-				const existingFile = pagesMap.get(outputPath);
-				const route1 = `${PAGES_DIR}/${existingFile}`;
-				const route2 = `${PAGES_DIR}/${sourcePath}`;
-
-				throw new CastroError("ROUTE_CONFLICT", { route1, route2, outputPath });
-			}
-
-			pagesMap.set(outputPath, sourcePath);
+	for await (const sourcePath of pageGlob.scan(PAGES_DIR)) {
+		// Skip files/folders prefixed with `_` (private convention, e.g. _drafts/, _partial.tsx)
+		if (sourcePath.split("/").some((segment) => segment.startsWith("_"))) {
+			continue;
 		}
-	} catch (e) {
-		const err = /** @type {Bun.ErrorLike} */ (e);
 
-		if (err.code !== "ENOENT") throw err;
+		const outputPath = sourcePath.replace(/\.(md|[jt]sx)$/, ".html");
+
+		// Example: both foo.md and foo.jsx try to be foo.html
+		if (pagesMap.has(outputPath)) {
+			const existingFile = pagesMap.get(outputPath);
+			const route1 = `${PAGES_DIR}/${existingFile}`;
+			const route2 = `${PAGES_DIR}/${sourcePath}`;
+
+			throw new CastroError("ROUTE_CONFLICT", { route1, route2, outputPath });
+		}
+
+		pagesMap.set(outputPath, sourcePath);
 	}
 
-	// Covers both: PAGES_DIR missing entirely (ENOENT swallowed above) or empty
+	// pages/ present but empty — distinct from missing, which throws above
 	if (pagesMap.size === 0) {
 		throw new CastroError("NO_PAGES", { dir: PAGES_DIR });
 	}

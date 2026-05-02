@@ -36,12 +36,6 @@ events.addEventListener("build-error", (event) => {
 	showOverlay(payload);
 });
 
-/** @type EventSource["onerror"] */
-events.onerror = () => {
-	// Server disconnected - try to reconnect
-	console.log("[castro] Lost connection, attempting to reconnect...");
-};
-
 // ─── Overlay ─────────────────────────────────────────────────────────────────
 
 const OVERLAY_TAG = "castro-error-overlay";

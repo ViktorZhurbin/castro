@@ -134,7 +134,7 @@ Two non-obvious behaviors: `srcDir` shifts where pages/layouts/components are re
 Castro is a working SSG, but not a hardened one. The following are deliberately not handled, and code that defends against them should be cut, not added:
 
 - **Windows native support.** Internal paths are posix. We don't normalize Windows separators in core code.
-- **Graceful recovery from missing required directories.** Missing `pages/` is a fatal error, not a warning.
+- **Graceful recovery from missing required directories.** `pages/` missing throws naturally — fatal error, not a warning. (`public/` is optional by design; its absence is silently skipped.)
 - **Cross-process or cross-machine cache busting.** No `?v=…` on vendored URLs. Hard-refresh on package upgrade.
 - **Production-grade concurrency.** All page builds run via `Promise.all`. Real SSGs cap concurrency to bound memory; we don't.
 - **Hostile or unusual filesystems.** No retry on transient I/O. No defense against atime feedback loops, network mounts, or case-insensitive collisions.
