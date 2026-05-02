@@ -150,10 +150,18 @@ async function compileIslandSSR({ sourcePath, frameworkId }) {
 	const frameworkConfig = getFrameworkConfig(frameworkId);
 	const buildConfig = frameworkConfig.getBuildConfig("ssr");
 
-	// Stub regular CSS imports — they're side-effectful (no exports needed)
-	// and would fail in Bun's SSR environment. CSS module imports (.module.css)
-	// are left alone so Bun compiles them normally, providing the class name
-	// mapping that components need during SSR.
+	// Replace plain `.css` imports with an empty module during SSR. The client
+	// compile already extracted island CSS into a separate artifact (inlined
+	// per-page in writeHtmlPage.js); SSR only runs the component to produce
+	// HTML, so the stylesheet bytes are dead weight here — and Bun's `bun`
+	// target has no CSS loader, so resolving them would either error or pull
+	// the file through the loader chain for nothing.
+	//
+	// CSS Modules (`.module.css`) are deliberately not stubbed: their default
+	// export is the class-name map (`styles.button` → "button_x7f3"), and SSR
+	// needs that map so server-rendered `className` strings match what the
+	// hydrated client expects. The negative lookbehind in the filter is what
+	// splits the two cases.
 	/** @type {Bun.BunPlugin} */
 	const cssStubPlugin = {
 		name: "css-stub",

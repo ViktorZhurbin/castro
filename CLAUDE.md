@@ -100,7 +100,7 @@ File watchers on `pages/`, `layouts/`, `components/`, `public/`, and any plugin 
 
 ## Messages
 
-All user-facing strings live in `core/src/messages/`. Voice is pluggable — `satirical.js` and `serious.js` are two implementations of the same `Messages` interface, demonstrating that error structure and error tone are fully decoupled. **Never use inline strings for user-facing output.** Use `styleText` from `node:util` for colored logs. Tone, satire, and emoji rules: see [core/src/messages/README.md](core/src/messages/README.md).
+All user-facing strings live in `core/src/messages/`. Voice is pluggable — `satirical.js` and `serious.js` are two implementations of the same `Messages` interface, demonstrating that error structure and error tone are fully decoupled. **Never use inline strings for user-facing output.** Use `styleText` from `node:util` for colored logs. Tone, satire, and emoji rules: see messages [README.md](core/src/messages/README.md).
 
 **After changing any error message text**, regenerate the stderr goldens: `UPDATE_SNAPSHOTS=1 bun test:errors`. Inspect the diff before committing — each golden in `tests/errors/*/expected.stderr.txt` should show clean structured output.
 
