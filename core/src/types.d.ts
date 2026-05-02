@@ -140,8 +140,6 @@ export type CastroConfig = {
 	clientDependencies?: string[];
 	markdown?: { options?: Bun.markdown.Options };
 	srcDir?: string;
-	/** Max concurrent page builds. Defaults to CPU count. Override with CASTRO_CONCURRENCY env var. */
-	concurrency?: number;
 };
 
 export type DefaultConfig = Required<
