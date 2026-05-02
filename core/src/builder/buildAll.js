@@ -152,6 +152,8 @@ async function scanPages() {
 	const pagesMap = new Map();
 	const pageGlob = new Bun.Glob("**/*.{md,jsx,tsx}");
 
+	// Missing pages/ throws here naturally — see Non-Goals.
+	// Empty pages/ falls through to NO_PAGES below.
 	for await (const sourcePath of pageGlob.scan(PAGES_DIR)) {
 		// Skip files/folders prefixed with `_` (private convention, e.g. _drafts/, _partial.tsx)
 		if (sourcePath.split("/").some((segment) => segment.startsWith("_"))) {

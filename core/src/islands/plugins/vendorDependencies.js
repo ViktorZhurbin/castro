@@ -23,7 +23,7 @@ const VENDOR_OUTPUT_DIR = "vendor";
  *
  * Phase 2: getImportMap() — generates the import map that tells browsers where
  *   those files live. Called per-page, only for pages with islands. Returns
- *   specifier→URL entries (e.g., "preact" → "/vendor/preact.js").
+ *   specifier → URL entries (e.g., "preact" → "/vendor/preact.js").
  *
  * Both phases use getSafePkgName() to derive filenames — they must agree or
  * the import map will reference files that don't exist.
@@ -88,6 +88,7 @@ export function vendorDependencies() {
 			const importMap = {};
 
 			for (const dep of allClientDeps) {
+				// No cache busting — see Non-Goals.
 				importMap[dep] = `/${VENDOR_OUTPUT_DIR}/${getSafePkgName(dep)}.js`;
 			}
 

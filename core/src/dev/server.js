@@ -83,9 +83,13 @@ export async function startDevServer() {
 					});
 				}
 
+				// Static file serving with clean URLs
+				// Real SSGs handle more variations; see Non-Goals.
+
 				const basePath = join(OUTPUT_DIR, url.pathname);
 
 				if (url.pathname.endsWith("/")) {
+					// Trailing slash (e.g. /blog/) is an explicit directory request.
 					return new Response(Bun.file(join(basePath, "index.html")));
 				}
 
@@ -94,12 +98,17 @@ export async function startDevServer() {
 					return new Response(Bun.file(basePath));
 				}
 
-				// Clean URL: /about → about.html; /blog → blog/index.html
+				// Clean URL: /about → about.html
 				const htmlFile = Bun.file(`${basePath}.html`);
-				if (await htmlFile.exists()) return new Response(htmlFile);
+				if (await htmlFile.exists()) {
+					return new Response(htmlFile);
+				}
 
+				// Clean URL: /blog → blog/index.html
 				const indexFile = Bun.file(join(basePath, "index.html"));
-				if (await indexFile.exists()) return new Response(indexFile);
+				if (await indexFile.exists()) {
+					return new Response(indexFile);
+				}
 
 				// 404 fallback - serve 404.html for HTML requests (navigation, not assets)
 				const acceptsHtml = req.headers.get("accept")?.includes("text/html");
