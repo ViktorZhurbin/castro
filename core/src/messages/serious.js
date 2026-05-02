@@ -83,7 +83,7 @@ export const serious = {
 			hint: "Check the frontmatter block at the top of the file",
 		}),
 
-BUNDLE_FAILED: (tokens) => ({
+		BUNDLE_FAILED: (tokens) => ({
 			title: "Build failed",
 			message: "Error during JavaScript compilation:",
 			errorMessage: tokens?.errorMessage,
