@@ -14,7 +14,7 @@
  */
 
 import { stat, watch } from "node:fs/promises";
-import { join } from "node:path/posix";
+import { extname, join } from "node:path/posix";
 import { styleText } from "node:util";
 import { buildAll } from "../builder/buildAll.js";
 import { config } from "../config.js";
@@ -83,44 +83,23 @@ export async function startDevServer() {
 					});
 				}
 
-				/**
-				 * Static file serving with clean URLs
-				 *
-				 * We resolve paths to support Clean URLs:
-				 *	- /about      -> dist/about.html
-				 *	- /blog       -> dist/blog/index.html
-				 *	- /style.css  -> dist/style.css
-				 */
-
 				const basePath = join(OUTPUT_DIR, url.pathname);
 
-				/** @type {string[]} */
-				let candidates = [];
-
 				if (url.pathname.endsWith("/")) {
-					// Trailing slash (e.g. /blog/) implies an explicit directory request.
-					// We strictly only look for the index file.
-					candidates = [join(basePath, "index.html")];
-				} else {
-					// Clean URL Strategy:
-					// 1. Exact match: Priorities assets (.css, .js) and files with extensions.
-					// 2. HTML suffix: Handles /about -> about.html.
-					// 3. Index fallback: Handles /blog -> blog/index.html (if user omitted slash).
-					candidates = [
-						basePath,
-						`${basePath}.html`,
-						join(basePath, "index.html"),
-					];
+					return new Response(Bun.file(join(basePath, "index.html")));
 				}
 
-				// Check candidates in order and serve the first one that exists
-				for (const path of candidates) {
-					const file = Bun.file(path);
-
-					if (await file.exists()) {
-						return new Response(file);
-					}
+				// Assets (/style.css, /app.js) are served at their exact path.
+				if (extname(url.pathname)) {
+					return new Response(Bun.file(basePath));
 				}
+
+				// Clean URL: /about → about.html; /blog → blog/index.html
+				const htmlFile = Bun.file(`${basePath}.html`);
+				if (await htmlFile.exists()) return new Response(htmlFile);
+
+				const indexFile = Bun.file(join(basePath, "index.html"));
+				if (await indexFile.exists()) return new Response(indexFile);
 
 				// 404 fallback - serve 404.html for HTML requests (navigation, not assets)
 				const acceptsHtml = req.headers.get("accept")?.includes("text/html");
