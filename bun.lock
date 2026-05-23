@@ -128,14 +128,6 @@
         "preact": "^10",
       },
     },
-    "tests/errors/meta-wrong-types": {
-      "name": "@test-errors/meta-wrong-types",
-      "version": "0.0.0",
-      "dependencies": {
-        "@vktrz/castro": "workspace:*",
-        "preact": "^10",
-      },
-    },
     "tests/errors/missing-default-layout": {
       "name": "@test-errors/missing-default-layout",
       "version": "0.0.0",
@@ -398,8 +390,6 @@
     "@test-errors/layout-not-found": ["@test-errors/layout-not-found@workspace:tests/errors/layout-not-found"],
 
     "@test-errors/layout-syntax-error": ["@test-errors/layout-syntax-error@workspace:tests/errors/layout-syntax-error"],
-
-    "@test-errors/meta-wrong-types": ["@test-errors/meta-wrong-types@workspace:tests/errors/meta-wrong-types"],
 
     "@test-errors/missing-default-layout": ["@test-errors/missing-default-layout@workspace:tests/errors/missing-default-layout"],
 
