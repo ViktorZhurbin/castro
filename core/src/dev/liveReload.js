@@ -19,7 +19,6 @@
 
 /** @import { CastroErrorPayload, CodeFrame } from "../types.d.ts" */
 
-// Connect to SSE endpoint
 const events = new EventSource("/events");
 
 /** @type EventSource["onmessage"] */
@@ -110,7 +109,6 @@ class CastroErrorOverlay extends HTMLElement {
 	renderFrame(frame) {
 		let header = "";
 
-		// 1. Build the location header
 		if (frame.file) {
 			const relPath = frame.file.replace(
 				/^.*\/(pages|layouts|components)/,
@@ -128,7 +126,6 @@ class CastroErrorOverlay extends HTMLElement {
 			);
 		}
 
-		// 2. Build the code snippet (with caret fix)
 		let codeSnippet = "";
 		if (frame.lineText) {
 			codeSnippet = `
@@ -150,7 +147,6 @@ class CastroErrorOverlay extends HTMLElement {
       `;
 		}
 
-		// 3. Assemble
 		return `
       <div class="frame">
         ${header ? `<div>${header}</div>` : ""}
