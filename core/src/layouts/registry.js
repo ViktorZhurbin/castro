@@ -7,12 +7,11 @@
  * like headers, footers, and navigation.
  */
 
-import { access, rm } from "node:fs/promises";
+import { access } from "node:fs/promises";
 import { basename, extname, join } from "node:path/posix";
 import { compileJSX } from "../builder/compileJsx.js";
 import { writeCSSFiles } from "../builder/writeCss.js";
 import { LAYOUTS_DIR, OUTPUT_DIR } from "../constants.js";
-import { resolveTempDir } from "../utils/cache.js";
 import { CastroError } from "../utils/errors.js";
 
 /**
@@ -83,9 +82,6 @@ class LayoutsRegistry {
 
 			throw err;
 		}
-
-		// Clear cached compilations so dev-mode edits to layouts pick up.
-		await rm(resolveTempDir(LAYOUTS_DIR), { recursive: true, force: true });
 
 		const layoutGlob = new Bun.Glob("**/*.{jsx,tsx}");
 
