@@ -9,14 +9,13 @@
 
 import { join } from "node:path/posix";
 import { ISLAND_RUNTIME_FILE } from "../constants.js";
-import { getFrameworkConfig } from "../islands/frameworkConfig.js";
 import { islands } from "../islands/registry.js";
 import { getIslandImportMap } from "./vendor.js";
 
 /**
  * @import { Asset, ImportsMap } from '../types.d.ts'
  *
- * @typedef {{ pageCssAssets?: Asset[]; usedIslands: Set<string>; usedFrameworks: Set<string>; }} Options
+ * @typedef {{ pageCssAssets?: Asset[]; usedIslands: Set<string>; }} Options
  */
 
 /**
@@ -42,26 +41,14 @@ export async function writeHtmlPage(rawHtml, outputPath, options) {
 /**
  * @param {Options} options
  */
-async function resolvePageContext({
-	usedIslands,
-	usedFrameworks,
-	pageCssAssets = [],
-}) {
+async function resolvePageContext({ usedIslands, pageCssAssets = [] }) {
 	const hasIslands = usedIslands.size > 0;
 	const assets = [...pageCssAssets];
 
-	for (const id of usedFrameworks) {
-		const config = getFrameworkConfig(id);
-
-		if (config.headAssets) {
-			assets.push(...config.headAssets);
-		}
-	}
-
 	// Island pages load the hydration runtime and an import map pointing at the
-	// vendored framework dependencies. Static pages get neither.
+	// vendored Preact dependencies. Static pages get neither.
 	/** @type {ImportsMap} */
-	const importMap = hasIslands ? getIslandImportMap(usedFrameworks) : {};
+	const importMap = hasIslands ? getIslandImportMap() : {};
 
 	if (hasIslands) {
 		assets.push({

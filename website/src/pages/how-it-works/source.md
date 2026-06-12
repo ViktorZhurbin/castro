@@ -44,13 +44,11 @@ The island system is the core of what makes Castro interesting. Read these in or
 [islands/hydration.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/hydration.js) — client-side only. The `<castro-island>` custom element: reads the directive, waits accordingly, imports the client bundle, calls the mounting function. This is the browser half of the pipeline.
 
 
-## THE FRAMEWORK CONFIG
+## VENDORING & PREACT
 
-[islands/frameworkConfig.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/frameworkConfig.js) — loads and caches the framework config. Preact is the only framework; it's a config object, not a special code path — a remnant of the multi-framework phase that keeps the contract explicit.
+[builder/vendor.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/builder/vendor.js) — bundles Preact's client dependencies into `/dist/vendor/` and builds the import map that points the browser at them. Runs once after all pages, only when an island was actually rendered.
 
-[islands/frameworks/preact.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/frameworks/preact.js) — the built-in config. Read it after `frameworkConfig.js` — it's short and shows exactly what a framework contributes: build settings, client dependencies, an SSR renderer, a hydration module.
-
-[builder/vendor.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/builder/vendor.js) — bundles the framework's client dependencies into `dist/vendor/` and emits the import map that points browsers at them. Runs once, after all pages build, and only if a page actually rendered an island.
+[islands/preact.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/preact.js) — the small set of Preact-specific values the island build needs: the JSX build config, the deps to vendor, the browser hydration path, and the SSR renderer. Short — read it to see exactly what the one framework contributes. Castro is Preact-only and has no plugin or framework-registry indirection.
 
 
 ## INFRASTRUCTURE
@@ -73,8 +71,8 @@ These are worth reading but not the main thread.
 | How the build intercepts imports | [islands/buildPlugins.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/buildPlugins.js) |
 | How hydration timing works | [islands/hydration.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/hydration.js) |
 | How pages become HTML | [builder/renderPage.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/builder/renderPage.js) |
-| How framework code reaches the browser | [builder/vendor.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/builder/vendor.js) |
-| What a framework config contributes | [islands/frameworks/preact.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/frameworks/preact.js) |
+| How deps get vendored | [builder/vendor.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/builder/vendor.js) |
+| What Preact contributes to the build | [islands/preact.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/preact.js) |
 | How errors are structured | [utils/errors.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/utils/errors.js) + [errors.d.ts](https://github.com/ViktorZhurbin/castro/blob/main/core/src/errors.d.ts) |
 
 <div class="btn-group">

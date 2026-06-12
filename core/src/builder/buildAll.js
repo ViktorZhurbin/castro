@@ -52,14 +52,10 @@ export async function buildAll() {
 	await layouts.load();
 	const pagesMap = await scanPages();
 
-	// Frameworks rendered on at least one page, accumulated across all pages.
-	/** @type {Set<string>} */
-	const usedFrameworks = new Set();
-
 	const tasks = [...pagesMap.entries()].map(
 		([outputPath, sourcePath]) =>
 			async () => {
-				const { usedFrameworks } = await runWithPageState(() =>
+				const { usedIslands } = await runWithPageState(() =>
 					buildPage(sourcePath),
 				);
 
@@ -73,23 +69,18 @@ export async function buildAll() {
 					);
 				}
 
-				return { usedFrameworks };
+				return { hasIslands: usedIslands.size > 0 };
 			},
 	);
 
 	// Real SSGs cap concurrency to bound Bun.build's memory pressure; see NON-GOALS.md
 	const results = await Promise.all(tasks.map((task) => task()));
 
-	for (const { usedFrameworks: frameworkIds } of results) {
-		// Union order doesn't matter — we only need the set of frameworks seen.
-		for (const id of frameworkIds) usedFrameworks.add(id);
-	}
-
 	// Island output is conditional: a site that rendered no islands ships
-	// neither the hydration runtime nor any vendored framework code.
-	if (usedFrameworks.size) {
+	// neither the hydration runtime nor any vendored Preact code.
+	if (results.some((result) => result.hasIslands)) {
 		await copyIslandRuntime();
-		await vendorClientDeps(usedFrameworks);
+		await vendorClientDeps();
 	}
 
 	console.info(messages.build.success(`${pagesMap.size}`));

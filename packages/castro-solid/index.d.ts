@@ -1,6 +1,18 @@
-import type { FrameworkConfig } from "@vktrz/castro";
+// Legacy: the framework-config shape Castro's removed plugin API consumed,
+// inlined here since core no longer exports it.
+type FrameworkConfig = {
+	id: string;
+	getBuildConfig: (target?: string) => object;
+	clientDependencies: string[];
+	detectImports: string[];
+	headAssets?: string[];
+	hydrateClientPath: string;
+	renderSSR: (
+		Component: (props: object) => unknown,
+		props: Record<string, unknown>,
+	) => string;
+};
 
-// Legacy: returns the shape Castro's removed plugin API consumed.
 export function castroSolid(): {
 	name: string;
 	frameworkConfig: FrameworkConfig;

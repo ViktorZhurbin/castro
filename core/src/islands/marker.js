@@ -13,13 +13,13 @@
  *
  * Island tracking is scoped per-page using AsyncLocalStorage. Each page build
  * runs inside runWithPageState(), which provides a fresh context. This isolates
- * pageState.usedIslands and pageState.usedFrameworks across concurrent page builds.
+ * pageState.usedIslands across concurrent page builds.
  */
 
 import { AsyncLocalStorage } from "node:async_hooks";
 import { h } from "preact";
 import { CastroError } from "../utils/errors.js";
-import { getFrameworkConfig } from "./frameworkConfig.js";
+import { renderIslandToString } from "./preact.js";
 import { islands } from "./registry.js";
 
 /**
@@ -31,7 +31,7 @@ import { islands } from "./registry.js";
 
 /**
  * AsyncLocalStorage for per-page island tracking.
- * @type {AsyncLocalStorage<{ usedIslands: Set<string>, usedFrameworks: Set<string> }>}
+ * @type {AsyncLocalStorage<{ usedIslands: Set<string> }>}
  */
 const pageStateStore = new AsyncLocalStorage();
 
@@ -40,14 +40,12 @@ const pageStateStore = new AsyncLocalStorage();
  * Returns the populated state so callers can aggregate across pages.
  *
  * @param {() => Promise<void>} fn
- * @returns {Promise<{ usedIslands: Set<string>, usedFrameworks: Set<string> }>}
+ * @returns {Promise<{ usedIslands: Set<string> }>}
  */
 export async function runWithPageState(fn) {
 	const state = {
 		/** @type {Set<string>} */
 		usedIslands: new Set(),
-		/** @type {Set<string>} */
-		usedFrameworks: new Set(),
 	};
 	await pageStateStore.run(state, fn);
 	return state;
@@ -61,7 +59,7 @@ export async function runWithPageState(fn) {
  * pipeline forgot to wrap a render in runWithPageState() — a Castro-internal
  * bug that should surface as a stack trace, not a user-facing error card.
  *
- * @returns {{ usedIslands: Set<string>, usedFrameworks: Set<string> }}
+ * @returns {{ usedIslands: Set<string> }}
  */
 export function getPageState() {
 	const state = pageStateStore.getStore();
@@ -90,7 +88,6 @@ export function renderMarker(islandId, props = {}) {
 
 	const state = getPageState();
 	state.usedIslands.add(islandId);
-	state.usedFrameworks.add(island.frameworkId);
 
 	const ssrHtml = renderIslandSSR(island, islandId, cleanProps);
 
@@ -124,9 +121,8 @@ function lookupIsland(islandId) {
 }
 
 /**
- * Render the island's pre-loaded SSR module to HTML using its framework's
- * renderer. Wraps any framework-side throw in a CastroError so the build
- * surfaces a structured error instead of a raw stack.
+ * Render the island's pre-loaded SSR module to static HTML. Wraps any throw in
+ * a CastroError so the build surfaces a structured error instead of a raw stack.
  *
  * @param {LoadedIsland} island
  * @param {string} islandId
@@ -134,10 +130,8 @@ function lookupIsland(islandId) {
  * @returns {string}
  */
 function renderIslandSSR(island, islandId, cleanProps) {
-	const frameworkConfig = getFrameworkConfig(island.frameworkId);
-
 	try {
-		return frameworkConfig.renderSSR(island.ssrModule.default, cleanProps);
+		return renderIslandToString(island.ssrModule.default, cleanProps);
 	} catch (err) {
 		throw new CastroError("ISLAND_RENDER_FAILED", {
 			islandId,

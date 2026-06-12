@@ -139,7 +139,7 @@ await module.default(this, props);
 this.setAttribute("ready", "");
 ```
 
-→ [compiler.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/compiler.js) · [frameworks/preact.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/frameworks/preact.js)
+→ [compiler.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/compiler.js) · [preact.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/preact.js) · [preact.client.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/preact.client.js)
 
 
 ## SUMMARY

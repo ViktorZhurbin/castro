@@ -8,17 +8,14 @@
  */
 
 import { access } from "node:fs/promises";
-import { dirname, join, resolve } from "node:path/posix";
+import { dirname, join } from "node:path/posix";
 import {
 	COMPONENTS_DIR,
 	ISLANDS_OUTPUT_DIR,
 	OUTPUT_DIR,
 } from "../constants.js";
-import { bunLogToFrame } from "../utils/bunBuild.js";
 import { getModule } from "../utils/cache.js";
-import { CastroError } from "../utils/errors.js";
 import { compileIsland } from "./compiler.js";
-import { getLoadedFrameworkConfigs } from "./frameworkConfig.js";
 import { getIslandId } from "./utils.js";
 
 /**
@@ -68,14 +65,12 @@ class IslandsRegistry {
 
 		for await (const relativePath of islandGlob.scan(COMPONENTS_DIR)) {
 			const sourcePath = join(COMPONENTS_DIR, relativePath);
-			const frameworkId = await detectFramework(sourcePath);
 			const { outputDir, publicDir } = derivePaths(relativePath);
 
 			const component = await compileIsland({
 				sourcePath,
 				outputDir,
 				publicDir,
-				frameworkId,
 			});
 
 			const islandId = getIslandId(sourcePath);
@@ -114,59 +109,4 @@ function derivePaths(relativePath) {
 		outputDir: join(OUTPUT_DIR, ISLANDS_OUTPUT_DIR, relativeDir),
 		publicDir: join("/", ISLANDS_OUTPUT_DIR, relativeDir),
 	};
-}
-
-const transpiler = new Bun.Transpiler({ loader: "tsx" });
-
-/**
- * Detect the framework for an island.
- *
- * Scans the file's AST for imports, then matches against each loaded
- * framework's detectImports array. Falls back to Preact.
- *
- * @param {string} sourcePath - Absolute path to the island source file
- * @returns {Promise<string>} Framework id
- */
-async function detectFramework(sourcePath) {
-	const code = await Bun.file(sourcePath).text();
-
-	let scanned;
-	try {
-		scanned = transpiler.scan(code);
-	} catch (e) {
-		// transpiler.scan() throws its own error shape on syntax errors
-		let errorMessage;
-		let frames;
-
-		if (e instanceof AggregateError) {
-			errorMessage = e.errors.map((err) => err.message).join("\n");
-			frames = [{ file: resolve(sourcePath) }];
-		} else {
-			const err = /** @type {BuildMessage} */ (e);
-			errorMessage = err.message;
-			frames = [bunLogToFrame(err)];
-		}
-
-		throw new CastroError("BUNDLE_FAILED", { errorMessage }, frames);
-	}
-
-	const fwConfigs = getLoadedFrameworkConfigs();
-
-	// Match package-level import prefixes.
-	// E.g., "solid-js/web" matches the "solid-js" detector.
-	const importPaths = scanned.imports.map((i) => i.path);
-
-	for (const fwConfig of fwConfigs) {
-		const matched = fwConfig.detectImports.some((detector) =>
-			importPaths.some(
-				(importPath) =>
-					importPath === detector || importPath.startsWith(`${detector}/`),
-			),
-		);
-
-		if (matched) return fwConfig.id;
-	}
-
-	// Default to Preact
-	return "preact";
 }

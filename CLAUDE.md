@@ -2,7 +2,7 @@
 
 Castro is a static site generator built to be read. The machinery that makes a real framework — build plugins, per-page async state, a module cache, a structured error system, SSE-based live reload — is each small enough to hold in your head and documented as its own self-contained piece. Communist satire wraps the prose; the code itself stays serious.
 
-Preact for page rendering and islands, optional multiple frameworks (Solid, castro-jsx) for islands, Bun for everything else.
+Preact for page rendering and islands, Bun for everything else.
 
 Peer reference: Fresh, early Astro, Eleventy + is-land, Marko, Capri, Mastro, Iles, Enhance.
 
@@ -33,7 +33,7 @@ bun loc              # LOC count (core only, excludes messages/)
 Each subsystem is independently readable as a study in framework machinery — read module docblocks for file-level detail.
 
 - **Build pipeline** (`builder/`) — how a JSX tree, a layout tree, and island markers compose into a single `renderToString()` pass.
-- **Islands runtime** (`islands/`, `islands/frameworks/`) — how a build plugin swaps real components for HTML markers at compile time, the trick that makes islands work.
+- **Islands runtime** (`islands/`) — how a build plugin swaps real components for HTML markers at compile time, the trick that makes islands work. Preact-specific build values live in `islands/preact.js`.
 - **Module cache** (`utils/cache.js`) — write-string-to-disk-then-import: the pattern bundlers use to bust ESM caches.
 - **Structured errors** (`utils/errors.js`, `utils/renderError.js`, `dev/liveReload.js`, `messages/`) — typed error codes, code-frame extraction, terminal renderer, browser overlay, a single satirical voice.
 - **Dev server** (`dev/`) — `Bun.serve`, file watchers, debounced rebuilds, SSE live reload.
@@ -70,11 +70,11 @@ Cross-file invariants. For per-step build mechanics, read the relevant module do
 
 ### Island Tracking
 
-`marker.js` tracks which islands each page uses via AsyncLocalStorage — each page build runs inside `runWithPageState()`, which provides a fresh `{ usedIslands, usedFrameworks }` context scoped to that async call tree. This isolation is what makes parallel builds safe. Only CSS for islands actually rendered on a page gets injected; the `<castro-island>` runtime script is also gated on island usage.
+`marker.js` tracks which islands each page uses via AsyncLocalStorage — each page build runs inside `runWithPageState()`, which provides a fresh `{ usedIslands }` context scoped to that async call tree. This isolation is what makes parallel builds safe. Only CSS for islands actually rendered on a page gets injected; the `<castro-island>` runtime script and the vendored Preact bundle are also gated on island usage.
 
 ### Import Map & Dependency Vendoring
 
-Framework client dependencies are vendored to `/dist/vendor/` by the builder's `vendorClientDeps()` step ([builder/vendor.js](core/src/builder/vendor.js)), which runs once after all pages build and only bundles the deps of frameworks actually rendered. The matching import map (`getIslandImportMap()`) is emitted per island page; static pages get none. **Every client dependency is treated as external during island client compilation** — Bun won't bundle it; the browser resolves it through the import map at runtime.
+Preact's client dependencies (`PREACT_CLIENT_DEPS` in [islands/preact.js](core/src/islands/preact.js)) are vendored to `/dist/vendor/` by the builder's `vendorClientDeps()` step ([builder/vendor.js](core/src/builder/vendor.js)), which runs once after all pages build, only when some island was rendered. The matching import map (`getIslandImportMap()`) is emitted per island page; static pages get none. **Every client dependency is treated as external during island client compilation** — Bun won't bundle it; the browser resolves it through the import map at runtime.
 
 ### Extensibility
 
@@ -107,9 +107,8 @@ All user-facing strings live in `core/src/messages/`. The error table is decoupl
 
 ## Key Design Decisions
 
-- **Preact is permanently the rendering engine.** Pages, layouts, and islands all use Preact for SSR and VNode tree construction. Preact is a build-time dependency only — never shipped to the browser for static pages; island pages load it from `dist/vendor/` via the import map.
+- **Preact is the only framework — pages, layouts, and islands.** Preact handles SSR and VNode tree construction everywhere; it's a build-time dependency, never shipped to the browser for static pages. Islands are also Preact. The Preact-specific build values live in [islands/preact.js](core/src/islands/preact.js); there is no framework registry or detection.
 - **Layouts receive `children` (VNode)**, not a pre-rendered `content` HTML string. The entire tree renders in a single `renderToString()` pass.
-- **Framework detection via AST scanning.** The registry scans an island's imports against each framework config's `detectImports` and defaults to Preact. Only the built-in Preact config exists — the registry indirection is a remnant of the multi-framework phase (see [frameworkConfig.js](core/src/islands/frameworkConfig.js)).
 - **Island imports must use relative paths**, not tsconfig aliases. The `islandMarkerPlugin` intercepts imports at the AST level; tsconfig path aliases resolve after Bun's AST walk, so aliased imports don't trigger island detection.
 - **tsconfig.json path aliases** are supported natively in page imports. `getProjectDependencies()` externalizes all `package.json` dependencies, so Bun resolves local alias paths normally.
 - **Three hydration directives: `comrade:eager`, `comrade:patient`, `comrade:visible` (default).** `comrade:eager` hydrates immediately. `comrade:visible` hydrates on intersection. `comrade:patient` uses `requestIdleCallback` with load-event gating and Safari fallback.
@@ -119,7 +118,7 @@ All user-facing strings live in `core/src/messages/`. The error table is decoupl
 
 Optional `castro.config.{ts,js,mjs}` exports a `CastroConfig` — the loader tries `.ts`, `.js`, `.mjs` in order. `defineConfig` (re-exported from `@vktrz/castro`) is an identity function for type inference. All options are in [core/src/types.d.ts](core/src/types.d.ts).
 
-Non-obvious behavior: `srcDir` shifts where pages/layouts/components are read from but never affects output paths — `dist/` is always the root. Island pages get an auto-generated import map for the vendored framework deps; static pages get none.
+Non-obvious behavior: `srcDir` shifts where pages/layouts/components are read from but never affects output paths — `dist/` is always the root. Island pages get an auto-generated import map for the vendored Preact deps; static pages get none.
 
 
 ## Testing

@@ -8,7 +8,17 @@
  */
 
 /**
- * @import { FrameworkConfig } from "@vktrz/castro"
+ * The framework-config contract the removed plugin API consumed, inlined
+ * here since core no longer exports it.
+ *
+ * @typedef {{
+ *  id: string,
+ *  getBuildConfig: (target?: string) => object,
+ *  clientDependencies: string[],
+ *  detectImports: string[],
+ *  hydrateClientPath: string,
+ *  renderSSR: (Component: (props: object) => unknown, props: Record<string, unknown>) => string,
+ * }} FrameworkConfig
  */
 
 /**

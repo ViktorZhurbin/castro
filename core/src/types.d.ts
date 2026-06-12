@@ -61,70 +61,13 @@ export interface CastroErrorPayload extends ErrorContent {
 	frames?: CodeFrame[]; // 0..N source locations
 }
 
-// ─── Framework types ─────────────────────────────────────────────────── //
-
-/**
- * Defines how islands are compiled, rendered (SSR), and hydrated.
- * Every framework config file (preact.js) must export a default
- * object matching this shape.
- */
-export type FrameworkConfig = {
-	/** Framework identifier (e.g. "preact", "solid") */
-	id: string;
-
-	/** Bun.build configuration for compiling components */
-	getBuildConfig: (target?: "ssr") => Partial<Bun.BuildConfig>;
-
-	/**
-	 * Shared dependencies to be vendored and added to the browser import map.
-	 * E.g. ["preact", "preact/hooks"]
-	 */
-	clientDependencies: string[];
-
-	/**
-	 * Package names to scan imports for automatic framework detection.
-	 * E.g. ["solid-js"] means any island importing "solid-js" or "solid-js/web"
-	 * will use this framework.
-	 */
-	detectImports: string[];
-
-	/**
-	 * Assets injected into <head> for pages using this framework.
-	 * E.g. Solid's hydration coordination script.
-	 * Only included on pages that actually render islands from this framework.
-	 */
-	headAssets?: Asset[];
-
-	/**
-	 * Absolute path to the framework's browser-side hydration module.
-	 *
-	 * Read by compiler.js and inlined verbatim into the per-island bundle.
-	 * The file must export a named function with this exact signature:
-	 *
-	 *   export async function hydrate(container, props, Component) { ... }
-	 *
-	 * Constraints: no Node-only imports, no captured closure variables — the
-	 * source is copy-pasted into a Bun.build virtual entry and bundled for the
-	 * browser. Use `new URL("./my.client.js", import.meta.url).pathname` so the
-	 * path is correct regardless of working directory.
-	 */
-	hydrateClientPath: string;
-
-	/**
-	 * Server-side rendering function.
-	 * Called at build time by marker.js to generate static HTML for the island.
-	 */
-	// AnyFunction to keep it framework agnostic
-	renderSSR: (Component: AnyFunction, props: Record<string, unknown>) => string;
-};
-
 // ─── Core types ──────────────────────────────────────────────────────── //
 
 export type Directive = "comrade:eager" | "comrade:patient" | "comrade:visible";
 
 /**
  * A raw HTML string or a structured tag definition.
- * Raw strings are injected as-is (e.g. Solid's `generateHydrationScript()`).
+ * Raw strings are injected as-is.
  */
 export type Asset =
 	| string
@@ -149,8 +92,6 @@ export type IslandComponent = {
 	publicJsPath: string;
 	cssContent?: string;
 	ssrCode: string;
-	/** Which framework this island uses */
-	frameworkId: string;
 	ssrModule?: { default: AnyFunction };
 };
 

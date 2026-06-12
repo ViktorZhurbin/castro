@@ -1,21 +1,21 @@
 /**
  * Dependency Vendoring
  *
- * Bundles the framework client dependencies used across the build into
- * dist/vendor/ and produces the import map that points browsers at them.
+ * Bundles Preact's client dependencies into dist/vendor/ and produces the
+ * import map that points browsers at them.
  *
  * Two halves that must agree on filenames (getSafePkgName):
  * - vendorClientDeps() runs once after all pages build, writing the bundles.
  * - getIslandImportMap() runs per island page, emitting specifier → URL entries.
  *
- * A site that renders no islands ships neither — both are gated on usage by the
- * caller.
+ * Both are gated on island usage by the caller — a site that renders no islands
+ * ships neither.
  */
 
 import { mkdir } from "node:fs/promises";
 import { join, resolve } from "node:path/posix";
 import { OUTPUT_DIR } from "../constants.js";
-import { getFrameworkConfig } from "../islands/frameworkConfig.js";
+import { PREACT_CLIENT_DEPS } from "../islands/preact.js";
 import { safeBunBuild } from "../utils/bunBuild.js";
 import { resolveTempDir } from "../utils/cache.js";
 
@@ -24,16 +24,9 @@ import { resolveTempDir } from "../utils/cache.js";
 const VENDOR_OUTPUT_DIR = "vendor";
 
 /**
- * Bundle the client dependencies of every framework used on a built page into
- * dist/vendor/. A site using only Preact won't ship anything else.
- *
- * @param {Set<string>} usedFrameworks
+ * Bundle Preact's client dependencies into dist/vendor/.
  */
-export async function vendorClientDeps(usedFrameworks) {
-	const allClientDeps = collectClientDeps(usedFrameworks);
-
-	if (!allClientDeps.size) return;
-
+export async function vendorClientDeps() {
 	/** @type { string[] } */
 	const entrypoints = [];
 
@@ -46,7 +39,7 @@ export async function vendorClientDeps(usedFrameworks) {
 	// Each dependency gets a virtual entry module that re-exports everything
 	// from the real package. Bun.build resolves 'preact' from node_modules,
 	// bundles it, and writes it to dist/vendor/.
-	for (const pkg of allClientDeps) {
+	for (const pkg of PREACT_CLIENT_DEPS) {
 		const virtualPath = resolve(virtualRoot, `${getSafePkgName(pkg)}.js`);
 
 		entrypoints.push(virtualPath);
@@ -78,38 +71,21 @@ export async function vendorClientDeps(usedFrameworks) {
 }
 
 /**
- * Import map for an island page: specifier → vendored URL for each client
- * dependency of the frameworks the page used.
+ * Import map for an island page: specifier → vendored URL for each Preact
+ * client dependency.
  *
- * @param {Set<string>} usedFrameworks
  * @returns {ImportsMap}
  */
-export function getIslandImportMap(usedFrameworks) {
-	const allClientDeps = collectClientDeps(usedFrameworks);
+export function getIslandImportMap() {
 	/** @type {ImportsMap} */
 	const importMap = {};
 
-	for (const dep of allClientDeps) {
+	for (const dep of PREACT_CLIENT_DEPS) {
 		// No cache busting — see NON-GOALS.md.
 		importMap[dep] = `/${VENDOR_OUTPUT_DIR}/${getSafePkgName(dep)}.js`;
 	}
 
 	return importMap;
-}
-
-/**
- * The client deps of every framework actually rendered on a built page.
- * vendorClientDeps bundles these files; getIslandImportMap points at them.
- *
- * @param {Set<string>} usedFrameworks
- * @returns {Set<string>}
- */
-function collectClientDeps(usedFrameworks) {
-	return new Set(
-		[...usedFrameworks].flatMap(
-			(id) => getFrameworkConfig(id).clientDependencies || [],
-		),
-	);
 }
 
 /**

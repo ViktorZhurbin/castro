@@ -1,9 +1,9 @@
 ❌ Sabotage detected
    Error during JavaScript compilation:
 
-   Syntax Error
+   Bundle failed
 
-   input.tsx:2:15
+   <FIXTURE>/components/Counter.island.tsx:2:15
    > 2    return <div>Count
                       ^
 
