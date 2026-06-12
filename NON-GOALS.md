@@ -38,4 +38,4 @@ The plugin API, multi-framework islands, and the packages that implemented them 
 
 ## Backwards compatibility
 
-Pre-1.0. Breaking changes land freely. There is no migration tooling, no deprecation cycle, no compatibility shims.
+Package is not published. Breaking changes land freely. There is no migration tooling, no deprecation cycle, no compatibility shims.
