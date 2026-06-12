@@ -1,7 +1,7 @@
 /**
  * Configuration Loader
  *
- * Loads optional castro.config.(ts|js|mjs) from the project root.
+ * Loads optional castro.config.ts from the project root.
  * Missing file = all defaults. No validation — bad values fail loudly.
  */
 
@@ -19,18 +19,15 @@ const defaults = {
 /** @type {CastroConfig} */
 let userConfig = {};
 
-for (const ext of [".ts", ".js", ".mjs"]) {
-	const configPath = join(process.cwd(), `castro.config${ext}`);
+const CONFIG_FILE = "castro.config.ts";
+const configPath = join(process.cwd(), CONFIG_FILE);
 
-	if (!(await Bun.file(configPath).exists())) continue;
-
+if (await Bun.file(configPath).exists()) {
 	try {
 		userConfig = (await import(configPath)).default ?? {};
-
-		break;
 	} catch (err) {
 		throw new CastroError("CONFIG_LOAD_FAILED", {
-			path: `castro.config${ext}`,
+			path: CONFIG_FILE,
 			errorMessage: err instanceof Error ? err.message : String(err),
 		});
 	}

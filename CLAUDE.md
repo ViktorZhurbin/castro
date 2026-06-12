@@ -116,7 +116,7 @@ All user-facing strings live in `core/src/messages/`. The error table is decoupl
 
 ## Configuration
 
-Optional `castro.config.{ts,js,mjs}` exports a `CastroConfig` — the loader tries `.ts`, `.js`, `.mjs` in order. `defineConfig` (re-exported from `@vktrz/castro`) is an identity function for type inference. All options are in [core/src/types.d.ts](core/src/types.d.ts).
+Optional `castro.config.ts` exports a `CastroConfig` — that exact filename is the only one the loader checks. `defineConfig` (re-exported from `@vktrz/castro`) is an identity function for type inference. All options are in [core/src/types.d.ts](core/src/types.d.ts).
 
 Non-obvious behavior: `srcDir` shifts where pages/layouts/components are read from but never affects output paths — `dist/` is always the root. Island pages get an auto-generated import map for the vendored deps (Preact's plus `clientDependencies`); static pages get none.
 
