@@ -20,7 +20,7 @@
 		"test:errors": "bun test tests/errors",
 		"test:errors:up": "UPDATE_SNAPSHOTS=1 bun test:errors",
 		"loc": "bunx cloc core/src/ --exclude-dir=messages --not-match-f '.test'",
-		"loc:files": "bunx run loc --by-file"
+		"loc:files": "bun run loc --by-file"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.11",

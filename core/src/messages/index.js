@@ -118,13 +118,6 @@ export const messages = {
 			hint: "Create a .md or .jsx/.tsx file in pages/ to continue",
 		}),
 
-		CACHE_WRITE_FAILED: ({ path, errorMessage }) => ({
-			title: "Cache write failed",
-			message: `Compiled output at ${path} could not be requisitioned:`,
-			errorMessage,
-			hint: "Check disk space and write permissions",
-		}),
-
 		ISLAND_RENDER_FAILED: ({ islandId, errorMessage }) => ({
 			title: "Island SSR failed",
 			message: `Island ${islandId} failed to fulfill its server-side obligations:`,

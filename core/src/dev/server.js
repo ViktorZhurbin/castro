@@ -31,7 +31,6 @@ import { renderErrorToTerminal } from "../utils/renderError.js";
 
 /**
  * @import { FileChangeInfo } from "node:fs/promises";
- * @import { CastroErrorPayload } from "../types.d.ts";
  */
 
 /**
@@ -89,12 +88,22 @@ export async function startDevServer() {
 
 				if (url.pathname.endsWith("/")) {
 					// Trailing slash (e.g. /blog/) is an explicit directory request.
-					return new Response(Bun.file(join(basePath, "index.html")));
+					const dirIndexFile = Bun.file(join(basePath, "index.html"));
+
+					if (await dirIndexFile.exists()) {
+						return new Response(dirIndexFile);
+					}
 				}
 
 				// Assets (/style.css, /app.js) are served at their exact path.
+				// Missing ones fall through to the 404 handling below — browsers
+				// probe paths like /favicon.ico and /.well-known/… on every site.
 				if (extname(url.pathname)) {
-					return new Response(Bun.file(basePath));
+					const assetFile = Bun.file(basePath);
+
+					if (await assetFile.exists()) {
+						return new Response(assetFile);
+					}
 				}
 
 				// Clean URL: /about → about.html
@@ -154,12 +163,12 @@ export async function startDevServer() {
 	const rebuild = debounceRebuilds(async () => {
 		try {
 			await buildAll();
-			notifyReload();
+			broadcast("data: reload\n\n");
 		} catch (e) {
 			const payload = toPayload(e);
 
 			console.error(renderErrorToTerminal(payload));
-			notifyBuildError(payload);
+			broadcast(`event: build-error\ndata: ${JSON.stringify(payload)}\n\n`);
 		}
 	}, 80);
 
@@ -175,22 +184,12 @@ export async function startDevServer() {
 	/** @type {TextEncoder} */
 	const encoder = new TextEncoder();
 
-	function notifyReload() {
-		const data = encoder.encode("data: reload\n\n");
-		for (const controller of controllers) {
-			try {
-				controller.enqueue(data);
-			} catch {
-				controllers.delete(controller);
-			}
-		}
-	}
-
-	/** @param {CastroErrorPayload} payload */
-	function notifyBuildError(payload) {
-		const data = encoder.encode(
-			`event: build-error\ndata: ${JSON.stringify(payload)}\n\n`,
-		);
+	/**
+	 * Send an SSE message to every connected browser, evicting dead connections.
+	 * @param {string} message
+	 */
+	function broadcast(message) {
+		const data = encoder.encode(message);
 		for (const controller of controllers) {
 			try {
 				controller.enqueue(data);
@@ -214,10 +213,12 @@ export async function startDevServer() {
 	/**
 	 * Watch a directory and schedule a rebuild on changes.
 	 *
-	 * The mtime filter exists because cp() (and some editors/indexers) trigger
-	 * watcher events for atime/metadata reads that don't actually modify the
-	 * file. Without it, those no-op events feed back into the build output and
-	 * trip a rebuild loop.
+	 * The mtime filter breaks a self-inflicted feedback loop: every rebuild
+	 * reads the watched source trees (Bun.build on pages/layouts/components,
+	 * cp() on public/), and macOS FSEvents surfaces those reads as change
+	 * events — an unfiltered watcher rebuilds forever after any edit. Linux
+	 * inotify never reports them, so the loop is invisible there. Only events
+	 * whose mtime actually moved schedule a rebuild. See NON-GOALS.md.
 	 *
 	 * @param {string} dir
 	 */

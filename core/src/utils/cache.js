@@ -22,7 +22,6 @@
 import { rmSync } from "node:fs";
 import { join, parse, relative, resolve } from "node:path/posix";
 import { PROJECT_ROOT } from "../constants.js";
-import { CastroError } from "./errors.js";
 
 const CACHE_DIR = join(PROJECT_ROOT, "node_modules/.cache/castro");
 
@@ -78,13 +77,8 @@ function createTempPath(sourcePath, content, subpath = "") {
 export async function getModule(sourcePath, content, subpath) {
 	const path = createTempPath(sourcePath, content, subpath);
 
-	try {
-		await Bun.write(path, content);
-	} catch (err) {
-		const errorMessage = err instanceof Error ? err.message : String(err);
-
-		throw new CastroError("CACHE_WRITE_FAILED", { path, errorMessage });
-	}
+	// A failed write (disk full, bad permissions) throws raw — see NON-GOALS.md.
+	await Bun.write(path, content);
 
 	// file:// URL ensures Bun's module resolver can find bare imports
 	const fileUrl = Bun.pathToFileURL(path);

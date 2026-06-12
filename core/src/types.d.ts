@@ -26,7 +26,6 @@ export type ErrorTokens = {
 	NO_PAGES: { dir: string };
 	BUNDLE_FAILED: { errorMessage: string } | undefined;
 	YAML_PARSE_FAILED: { errorMessage: string; sourceFilePath: string };
-	CACHE_WRITE_FAILED: { path: string; errorMessage: string };
 	ISLAND_RENDER_FAILED: { islandId: string; errorMessage: string };
 	CONFIG_LOAD_FAILED: { path: string; errorMessage: string };
 	UNEXPECTED: undefined;
@@ -64,13 +63,6 @@ export interface CastroErrorPayload extends ErrorContent {
 // ─── Core types ──────────────────────────────────────────────────────── //
 
 export type Directive = "comrade:eager" | "comrade:patient" | "comrade:visible";
-
-/** A structured tag definition for an injected asset. */
-export type Asset = {
-	tag: string;
-	attrs?: Record<string, string | boolean>;
-	content?: string;
-};
 
 export type ImportsMap = Record<string, string>;
 
