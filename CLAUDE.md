@@ -74,7 +74,7 @@ Cross-file invariants. For per-step build mechanics, read the relevant module do
 
 ### Import Map & Dependency Vendoring
 
-Preact's client dependencies (`PREACT_CLIENT_DEPS` in [islands/preact.js](core/src/islands/preact.js)) are vendored to `/dist/vendor/` by the builder's `vendorClientDeps()` step ([builder/vendor.js](core/src/builder/vendor.js)), which runs once after all pages build, only when some island was rendered. The matching import map (`getIslandImportMap()`) is emitted per island page; static pages get none. **Every client dependency is treated as external during island client compilation** — Bun won't bundle it; the browser resolves it through the import map at runtime.
+The shared client dependencies — Preact's own (`PREACT_CLIENT_DEPS` in [islands/preact.js](core/src/islands/preact.js)) plus any `config.clientDependencies` — are vendored to `/dist/vendor/` by the builder's `vendorClientDeps()` step ([builder/vendor.js](core/src/builder/vendor.js)), which runs once after all pages build, only when some island was rendered. The matching import map (`getIslandImportMap()`) is emitted per island page; static pages get none. **Every shared client dependency is treated as external during island client compilation** — Bun won't bundle it; the browser resolves it through the import map at runtime. Anything not in that set gets bundled into each island bundle separately.
 
 ### Extensibility
 
@@ -118,7 +118,7 @@ All user-facing strings live in `core/src/messages/`. The error table is decoupl
 
 Optional `castro.config.{ts,js,mjs}` exports a `CastroConfig` — the loader tries `.ts`, `.js`, `.mjs` in order. `defineConfig` (re-exported from `@vktrz/castro`) is an identity function for type inference. All options are in [core/src/types.d.ts](core/src/types.d.ts).
 
-Non-obvious behavior: `srcDir` shifts where pages/layouts/components are read from but never affects output paths — `dist/` is always the root. Island pages get an auto-generated import map for the vendored Preact deps; static pages get none.
+Non-obvious behavior: `srcDir` shifts where pages/layouts/components are read from but never affects output paths — `dist/` is always the root. Island pages get an auto-generated import map for the vendored deps (Preact's plus `clientDependencies`); static pages get none.
 
 
 ## Testing

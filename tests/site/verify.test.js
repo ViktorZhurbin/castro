@@ -217,6 +217,30 @@ test("island pages map Preact to vendored URLs", async () => {
 	expect(html).toContain('"/vendor/');
 });
 
+// ------ User clientDependencies (@preact/signals via castro.config.ts) ------
+
+test("user clientDependencies appear in the import map", async () => {
+	const html = await readHtml("comrade-visible.html");
+	expect(html).toContain('"@preact/signals": "/vendor/_preact_signals.js"');
+});
+
+test("user clientDependencies are vendored to dist", async () => {
+	const file = Bun.file(join(distDir, "vendor", "_preact_signals.js"));
+	expect(await file.exists()).toBe(true);
+});
+
+test("island bundles import vendored deps instead of inlining them", async () => {
+	// Counter.island.tsx imports @preact/signals; the bundle must keep it as a
+	// bare specifier for the import map to resolve, not an inlined copy.
+	const glob = new Bun.Glob("islands/Counter.island-*.js");
+	const [bundlePath] = [...glob.scanSync(distDir)];
+	expect(bundlePath).toBeDefined();
+
+	const bundle = await Bun.file(join(distDir, bundlePath)).text();
+	expect(bundle).toContain('"@preact/signals"');
+	expect(bundle).not.toContain("signals-core");
+});
+
 // ------ Conditional island output ------
 
 test("vendored Preact runtime exists in dist", async () => {

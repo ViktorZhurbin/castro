@@ -17,14 +17,11 @@
  */
 
 import { basename, dirname, extname, resolve } from "node:path/posix";
+import { collectClientDeps } from "../builder/vendor.js";
 import { safeBunBuild } from "../utils/bunBuild.js";
 import { getProjectDependencies } from "../utils/dependencies.js";
 import { CastroError } from "../utils/errors.js";
-import {
-	PREACT_BUILD_CONFIG,
-	PREACT_CLIENT_DEPS,
-	PREACT_CLIENT_PATH,
-} from "./preact.js";
+import { PREACT_BUILD_CONFIG, PREACT_CLIENT_PATH } from "./preact.js";
 
 /**
  * @import { IslandComponent } from "../types.d.ts"
@@ -98,9 +95,9 @@ async function compileIslandClient({ sourcePath, outputDir }) {
 		export default (container, props = {}) => hydrate(container, props, Component);
 	`.trim();
 
-	// Preact's vendored deps are resolved via the page's import map, so they
-	// must stay external — Bun must not bundle them.
-	const external = PREACT_CLIENT_DEPS;
+	// The vendored deps are resolved via the page's import map, so they must
+	// stay external — Bun must not bundle them.
+	const external = [...collectClientDeps()];
 
 	// Path must be absolute and in the same directory as the island source,
 	// so the relative import ('./${basename}') resolves to the real file

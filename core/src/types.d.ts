@@ -78,6 +78,12 @@ export type CastroConfig = {
 	port?: number;
 	markdown?: { options?: Bun.markdown.Options };
 	srcDir?: string;
+	/**
+	 * Extra npm packages to vendor to /dist/vendor/ and share across islands
+	 * via the import map, e.g. ["@preact/signals"]. Anything not listed here
+	 * gets bundled into each island bundle separately.
+	 */
+	clientDependencies?: string[];
 };
 
 export type DefaultConfig = Required<Pick<CastroConfig, "port" | "srcDir">>;
