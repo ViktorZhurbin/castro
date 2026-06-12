@@ -1,4 +1,4 @@
-❌ Layouts directory missing
-   No layouts/ directory found
+❌ No default layout
+   layouts/default.{jsx,tsx} not found — every page renders through a layout
 
-   → Create the directory with at least default.jsx
+   → Create default.jsx or default.tsx in layouts/ to continue

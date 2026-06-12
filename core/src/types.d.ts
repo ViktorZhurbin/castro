@@ -17,9 +17,7 @@
 export type ErrorTokens = {
 	ROUTE_CONFLICT: { route1: string; route2: string; outputPath: string };
 	LAYOUT_NOT_FOUND: { layoutId: string; sourceFilePath: string };
-	LAYOUT_MISSING_DEFAULT: undefined;
-	NO_LAYOUTS_DIR: undefined;
-	NO_LAYOUT_FILES: { dir: string };
+	NO_DEFAULT_LAYOUT: { dir: string };
 	LAYOUT_NO_DEFAULT_EXPORT: { file: string };
 	PAGE_NO_DEFAULT_EXPORT: { file: string };
 	ISLAND_NOT_FOUND: { islandId: string };

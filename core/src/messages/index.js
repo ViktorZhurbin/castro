@@ -62,22 +62,10 @@ export const messages = {
 			hint: `Create the missing layout, or change layout for ${sourceFilePath}`,
 		}),
 
-		LAYOUT_MISSING_DEFAULT: () => ({
-			title: "Missing default layout",
-			message: "default.jsx not found in layouts/",
-			hint: "Create layouts/default.jsx to continue",
-		}),
-
-		NO_LAYOUTS_DIR: () => ({
-			title: "Layouts directory missing",
-			message: `No layouts/ directory found`,
-			hint: "Create the directory with at least default.jsx",
-		}),
-
-		NO_LAYOUT_FILES: ({ dir }) => ({
-			title: "Layouts directory is empty",
-			message: `No layout files found in ${dir}`,
-			hint: "Create at least default.jsx",
+		NO_DEFAULT_LAYOUT: ({ dir }) => ({
+			title: "No default layout",
+			message: `${dir}/default.{jsx,tsx} not found — every page renders through a layout`,
+			hint: `Create default.jsx or default.tsx in ${dir}/ to continue`,
 		}),
 
 		LAYOUT_NO_DEFAULT_EXPORT: ({ file }) => ({

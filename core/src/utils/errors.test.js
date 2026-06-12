@@ -76,7 +76,7 @@ test("CastroError preserves frames in payload", () => {
 });
 
 test("CastroError defaults to empty frames array", () => {
-	const err = new CastroError("NO_LAYOUTS_DIR");
+	const err = new CastroError("NO_DEFAULT_LAYOUT", { dir: "layouts" });
 
 	if (
 		!Array.isArray(err.castroPayload.frames) ||

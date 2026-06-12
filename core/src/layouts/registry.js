@@ -76,7 +76,7 @@ class LayoutsRegistry {
 			const err = /** @type {Bun.ErrorLike} */ (e);
 
 			if (err.code === "ENOENT") {
-				throw new CastroError("NO_LAYOUTS_DIR");
+				throw new CastroError("NO_DEFAULT_LAYOUT", { dir: LAYOUTS_DIR });
 			}
 
 			throw err;
@@ -107,12 +107,10 @@ class LayoutsRegistry {
 			}
 		}
 
-		if (this.#layouts.size === 0) {
-			throw new CastroError("NO_LAYOUT_FILES", { dir: LAYOUTS_DIR });
-		}
-
+		// Missing layouts/, empty layouts/, and layout files without a default.*
+		// among them all converge on the same fix, so they share one error.
 		if (!this.#layouts.has("default")) {
-			throw new CastroError("LAYOUT_MISSING_DEFAULT");
+			throw new CastroError("NO_DEFAULT_LAYOUT", { dir: LAYOUTS_DIR });
 		}
 	}
 }

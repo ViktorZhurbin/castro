@@ -1,4 +1,4 @@
-❌ Missing default layout
-   default.jsx not found in layouts/
+❌ No default layout
+   layouts/default.{jsx,tsx} not found — every page renders through a layout
 
-   → Create layouts/default.jsx to continue
+   → Create default.jsx or default.tsx in layouts/ to continue
