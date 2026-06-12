@@ -149,7 +149,7 @@ Demo site that consumes castro. Uses PicoCSS v2 (CDN) plus three co-located styl
 
 **Docs page `path` contract.** Pages under `src/pages/concept/` and `src/pages/how-it-works/` export a `meta` with `layout: "docs"` and `path: "<exact-url>"`. The `path` drives sidebar active state and header highlighting — **update it whenever the page's URL changes**, or the nav silently goes wrong.
 
-**Hidden page directories.** Directories prefixed with `_` are excluded from the build (same convention as `_components/`). Currently `_build/` and `_reference/` exist but are not built or linked from the nav.
+**Hidden page directories.** Directories prefixed with `_` are excluded from the build (e.g. `_components/`).
 
 **Site information architecture.** The public nav shows two sections: **Concept** (`/concept/island-architecture`) and **How It Works** (`/how-it-works`). The concept page is the primary entry point. The homepage CTA points there.
 
