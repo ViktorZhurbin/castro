@@ -88,12 +88,22 @@ export async function startDevServer() {
 
 				if (url.pathname.endsWith("/")) {
 					// Trailing slash (e.g. /blog/) is an explicit directory request.
-					return new Response(Bun.file(join(basePath, "index.html")));
+					const dirIndexFile = Bun.file(join(basePath, "index.html"));
+
+					if (await dirIndexFile.exists()) {
+						return new Response(dirIndexFile);
+					}
 				}
 
 				// Assets (/style.css, /app.js) are served at their exact path.
+				// Missing ones fall through to the 404 handling below — browsers
+				// probe paths like /favicon.ico and /.well-known/… on every site.
 				if (extname(url.pathname)) {
-					return new Response(Bun.file(basePath));
+					const assetFile = Bun.file(basePath);
+
+					if (await assetFile.exists()) {
+						return new Response(assetFile);
+					}
 				}
 
 				// Clean URL: /about → about.html
