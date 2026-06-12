@@ -24,6 +24,8 @@ Page builds run as `Promise.all`. We don't bound concurrency to manage memory pr
 
 No retry on transient I/O errors. No defense against feedback loops from filesystem metadata (atime, indexer-triggered events, etc.) beyond what the OS-level watcher provides. Network filesystems and unusual mounts are out of scope.
 
+One carve-out: the dev watcher's mtime filter (`dev/server.js`). Castro's own build reads every watched source tree, and macOS FSEvents reports those reads as change events — a guaranteed rebuild loop on a stock Mac. That loop is self-inflicted, not a hostile filesystem, so filtering it is in scope. (Linux inotify never surfaces these events; don't conclude the filter is dead code by testing there.)
+
 ## Runtime validation of typed configuration
 
 If TypeScript can catch a misconfiguration at compile time, we don't re-validate it at runtime. Plain JS users get whatever runtime errors fall out naturally.

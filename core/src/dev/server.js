@@ -203,10 +203,12 @@ export async function startDevServer() {
 	/**
 	 * Watch a directory and schedule a rebuild on changes.
 	 *
-	 * The mtime filter exists because cp() (and some editors/indexers) trigger
-	 * watcher events for atime/metadata reads that don't actually modify the
-	 * file. Without it, those no-op events feed back into the build output and
-	 * trip a rebuild loop.
+	 * The mtime filter breaks a self-inflicted feedback loop: every rebuild
+	 * reads the watched source trees (Bun.build on pages/layouts/components,
+	 * cp() on public/), and macOS FSEvents surfaces those reads as change
+	 * events — an unfiltered watcher rebuilds forever after any edit. Linux
+	 * inotify never reports them, so the loop is invisible there. Only events
+	 * whose mtime actually moved schedule a rebuild. See NON-GOALS.md.
 	 *
 	 * @param {string} dir
 	 */
