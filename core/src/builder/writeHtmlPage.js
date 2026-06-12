@@ -1,10 +1,9 @@
 /**
  * HTML Page Writer
  *
- * Final step in page building. Takes rendered HTML and:
- * 1. Gathers assets (page CSS, island CSS, live reload)
- * 2. Injects all assets into <head> (or <body> fallback)
- * 3. Writes the file to disk
+ * Final step in page building. Gathers the page's head tags — CSS links,
+ * island import map + runtime, inline island styles, live reload in dev —
+ * injects them into <head> (or <body> fallback), and writes the file to disk.
  */
 
 import { join } from "node:path/posix";
@@ -13,9 +12,7 @@ import { islands } from "../islands/registry.js";
 import { getIslandImportMap } from "./vendor.js";
 
 /**
- * @import { Asset, ImportsMap } from '../types.d.ts'
- *
- * @typedef {{ pageCssAssets?: Asset[]; usedIslands: Set<string>; }} Options
+ * @typedef {{ cssTags?: string[]; usedIslands: Set<string> }} Options
  */
 
 /**
@@ -24,95 +21,81 @@ import { getIslandImportMap } from "./vendor.js";
  * @param {Options} options
  */
 export async function writeHtmlPage(rawHtml, outputPath, options) {
-	const context = await resolvePageContext(options);
+	const tags = await collectHeadTags(options);
 
-	const finalHtml = injectAssets(rawHtml, {
-		importMap: context.importMap,
-		assets: context.assets,
-	});
-
-	await Bun.write(outputPath, finalHtml);
+	await Bun.write(outputPath, injectTags(rawHtml, tags));
 }
 
-// ============================================================================
-// Resolution — gather all assets needed for this page
-// ============================================================================
-
 /**
+ * Gather every tag this page needs, in injection order.
+ *
  * @param {Options} options
+ * @returns {Promise<string[]>}
  */
-async function resolvePageContext({ usedIslands, pageCssAssets = [] }) {
+async function collectHeadTags({ usedIslands, cssTags = [] }) {
 	const hasIslands = usedIslands.size > 0;
-	const assets = [...pageCssAssets];
+	const tags = [];
 
-	// Island pages load the hydration runtime and an import map pointing at the
-	// vendored Preact dependencies. Static pages get neither.
-	/** @type {ImportsMap} */
-	const importMap = hasIslands ? getIslandImportMap() : {};
+	// Island pages get an import map pointing at the vendored Preact
+	// dependencies, plus the hydration runtime. Static pages get neither.
+	if (hasIslands) {
+		const imports = JSON.stringify({ imports: getIslandImportMap() }, null, 2);
+
+		tags.push(`<script type="importmap">${imports}</script>`);
+	}
+
+	tags.push(...cssTags);
 
 	if (hasIslands) {
-		assets.push({
-			tag: "script",
-			attrs: { type: "module", src: `/${ISLAND_RUNTIME_FILE}` },
-		});
+		tags.push(`<script type="module" src="/${ISLAND_RUNTIME_FILE}"></script>`);
 	}
 
 	// Island CSS is inlined as <style> rather than written to disk because each
 	// page renders a different subset of islands — per-page permutations aren't
 	// worth caching as separate files. Only islands actually rendered get included.
 	const cssManifest = islands.getCssManifest();
-	if (usedIslands.size && cssManifest.size) {
-		for (const id of usedIslands) {
-			const css = cssManifest.get(id);
+	for (const id of usedIslands) {
+		const css = cssManifest.get(id);
 
-			if (css) {
-				assets.push({ tag: "style", content: css });
-			}
+		if (css) {
+			tags.push(`<style>${css}</style>`);
 		}
 	}
 
 	// Dev-only: live reload SSE client
 	if (process.env.NODE_ENV !== "production") {
-		assets.push(await getLiveReloadAsset());
+		tags.push(await getLiveReloadTag());
 	}
 
-	return { assets, importMap };
+	return tags;
 }
 
 /** @type {string | null} */
-let _liveReloadCache = null;
+let _liveReloadTagCache = null;
 
-async function getLiveReloadAsset() {
-	if (!_liveReloadCache) {
-		_liveReloadCache = await Bun.file(
+async function getLiveReloadTag() {
+	if (!_liveReloadTagCache) {
+		const source = await Bun.file(
 			join(import.meta.dir, "../dev/liveReload.js"),
 		).text();
+
+		_liveReloadTagCache = `<script type="module">${source}</script>`;
 	}
-	return {
-		tag: "script",
-		attrs: { type: "module" },
-		content: _liveReloadCache,
-	};
+
+	return _liveReloadTagCache;
 }
 
-// ============================================================================
-// Injection — insert assets into the HTML string
-// ============================================================================
-
 /**
+ * Inject tags before </head> so CSS is render-blocking (prevents flash of
+ * unstyled content). Falls back to </body> for layouts without a <head>.
+ *
  * @param {string} html
- * @param {{ assets: Asset[]; importMap: ImportsMap }} options
+ * @param {string[]} tags
+ * @returns {string}
  */
-function injectAssets(html, { assets, importMap }) {
-	const tags = [
-		generateImportMap(importMap),
-		...assets.map(generateAssetTag),
-	].filter(Boolean);
-
+function injectTags(html, tags) {
 	if (tags.length === 0) return ensureDoctype(html);
 
-	// Inject before </head> so CSS is render-blocking (prevents flash of
-	// unstyled content). Fall back to </body> for layouts without a <head>.
 	const injection = tags.join("\n");
 
 	const output = html.replace(
@@ -133,52 +116,4 @@ function ensureDoctype(html) {
 	return html.trimStart().toLowerCase().startsWith("<!doctype")
 		? html
 		: `<!DOCTYPE html>\n${html}`;
-}
-
-// ============================================================================
-// HTML tag generation helpers
-// ============================================================================
-
-/**
- * @param {ImportsMap} map
- * @returns {string}
- */
-function generateImportMap(map) {
-	if (!map || Object.keys(map).length === 0) return "";
-	return `<script type="importmap">${JSON.stringify({ imports: map }, null, 2)}</script>`;
-}
-
-/**
- * @param {Asset} asset
- * @returns {string}
- */
-function generateAssetTag(asset) {
-	switch (asset.tag) {
-		case "link": {
-			const attrs = attrsToString(asset.attrs);
-			return `<link ${attrs}>`;
-		}
-
-		case "style":
-			return `<style>${asset.content}</style>`;
-
-		case "script": {
-			const attrs = attrsToString(asset.attrs);
-			return `<script ${attrs}>${asset.content || ""}</script>`;
-		}
-
-		default:
-			return "";
-	}
-}
-
-/**
- * @param {Record<string, any>} attrs
- * @returns {string}
- */
-function attrsToString(attrs = {}) {
-	return Object.entries(attrs)
-		.filter(([_, v]) => v !== false && v !== null && v !== undefined)
-		.map(([k, v]) => (v === true ? k : `${k}="${v}"`))
-		.join(" ");
 }

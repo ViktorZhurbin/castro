@@ -41,9 +41,9 @@ async function buildJSXPage(sourceFilePath, outputFilePath) {
 		throw new CastroError("PAGE_NO_DEFAULT_EXPORT", { file: sourceFilePath });
 	}
 
-	// Write CSS files to output directory and collect assets
+	// Write CSS files to output directory and collect their <link> tags
 	const outputDir = dirname(outputFilePath);
-	const pageCssAssets = await writeCSSFiles(cssFiles, outputDir);
+	const pageCssTags = await writeCSSFiles(cssFiles, outputDir);
 
 	// Use shared rendering pipeline
 	// Pass the page component function to be called to get a VNode
@@ -52,7 +52,7 @@ async function buildJSXPage(sourceFilePath, outputFilePath) {
 		outputFilePath,
 		sourceFilePath,
 		pageMeta: pageModule.meta || {},
-		pageCssAssets,
+		pageCssTags,
 	});
 }
 

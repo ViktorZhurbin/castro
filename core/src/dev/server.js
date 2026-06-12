@@ -31,7 +31,6 @@ import { renderErrorToTerminal } from "../utils/renderError.js";
 
 /**
  * @import { FileChangeInfo } from "node:fs/promises";
- * @import { CastroErrorPayload } from "../types.d.ts";
  */
 
 /**
@@ -154,12 +153,12 @@ export async function startDevServer() {
 	const rebuild = debounceRebuilds(async () => {
 		try {
 			await buildAll();
-			notifyReload();
+			broadcast("data: reload\n\n");
 		} catch (e) {
 			const payload = toPayload(e);
 
 			console.error(renderErrorToTerminal(payload));
-			notifyBuildError(payload);
+			broadcast(`event: build-error\ndata: ${JSON.stringify(payload)}\n\n`);
 		}
 	}, 80);
 
@@ -175,22 +174,12 @@ export async function startDevServer() {
 	/** @type {TextEncoder} */
 	const encoder = new TextEncoder();
 
-	function notifyReload() {
-		const data = encoder.encode("data: reload\n\n");
-		for (const controller of controllers) {
-			try {
-				controller.enqueue(data);
-			} catch {
-				controllers.delete(controller);
-			}
-		}
-	}
-
-	/** @param {CastroErrorPayload} payload */
-	function notifyBuildError(payload) {
-		const data = encoder.encode(
-			`event: build-error\ndata: ${JSON.stringify(payload)}\n\n`,
-		);
+	/**
+	 * Send an SSE message to every connected browser, evicting dead connections.
+	 * @param {string} message
+	 */
+	function broadcast(message) {
+		const data = encoder.encode(message);
 		for (const controller of controllers) {
 			try {
 				controller.enqueue(data);

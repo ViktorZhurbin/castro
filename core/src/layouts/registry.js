@@ -16,7 +16,6 @@ import { CastroError } from "../utils/errors.js";
 
 /**
  * @import { VNode } from "preact";
- * @import { Asset } from '../types.d.ts'
  *
  * @typedef {(props: {
  * 		title: string;
@@ -38,10 +37,10 @@ class LayoutsRegistry {
 	#layouts = new Map();
 
 	/**
-	 * Map of layout IDs to layout CSS assets
-	 * @type {Map<LayoutId, Asset[]>}
+	 * Map of layout IDs to stylesheet <link> tags
+	 * @type {Map<LayoutId, string[]>}
 	 */
-	#cssAssets = new Map();
+	#cssTags = new Map();
 
 	/**
 	 * Resolve a page's `layout` meta field to a concrete layout component.
@@ -59,8 +58,8 @@ class LayoutsRegistry {
 	/**
 	 * @param {LayoutId} id
 	 */
-	getCssAssets(id) {
-		return this.#cssAssets.get(id);
+	getCssTags(id) {
+		return this.#cssTags.get(id);
 	}
 
 	/**
@@ -68,7 +67,7 @@ class LayoutsRegistry {
 	 */
 	async load() {
 		this.#layouts.clear();
-		this.#cssAssets.clear();
+		this.#cssTags.clear();
 
 		// Bun.file().exists() returns false for directories, so use fs.access here.
 		try {
@@ -101,10 +100,10 @@ class LayoutsRegistry {
 			this.#layouts.set(layoutId, layoutModule.default);
 
 			const layoutsDir = join(OUTPUT_DIR, LAYOUTS_DIR);
-			const layoutCssAssets = await writeCSSFiles(cssFiles, layoutsDir);
+			const layoutCssTags = await writeCSSFiles(cssFiles, layoutsDir);
 
-			if (layoutCssAssets.length > 0) {
-				this.#cssAssets.set(layoutId, layoutCssAssets);
+			if (layoutCssTags.length > 0) {
+				this.#cssTags.set(layoutId, layoutCssTags);
 			}
 		}
 

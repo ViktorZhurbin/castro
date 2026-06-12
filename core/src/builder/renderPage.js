@@ -17,7 +17,7 @@ import { CastroError } from "../utils/errors.js";
 import { writeHtmlPage } from "./writeHtmlPage.js";
 
 /**
- * @import { Asset, PageMeta } from "../types.d.ts"
+ * @import { PageMeta } from "../types.d.ts"
  * @import { VNode } from "preact"
  */
 
@@ -27,7 +27,7 @@ import { writeHtmlPage } from "./writeHtmlPage.js";
  *   outputFilePath: string,
  *   sourceFilePath: string,
  *   pageMeta: PageMeta,
- *   pageCssAssets?: Asset[],
+ *   pageCssTags?: string[],
  * }} params
  */
 export async function renderPage({
@@ -35,9 +35,9 @@ export async function renderPage({
 	outputFilePath,
 	sourceFilePath,
 	pageMeta,
-	pageCssAssets = [],
+	pageCssTags = [],
 }) {
-	const pageAndLayoutCssAssets = [...pageCssAssets];
+	const cssTags = [...pageCssTags];
 
 	const contentVNode = createContentVNode();
 
@@ -56,8 +56,7 @@ export async function renderPage({
 			});
 		}
 
-		const layoutCssAssets = layouts.getCssAssets(layout.id) ?? [];
-		pageAndLayoutCssAssets.push(...layoutCssAssets);
+		cssTags.push(...(layouts.getCssTags(layout.id) ?? []));
 
 		const title =
 			pageMeta.title || basename(sourceFilePath).replace(/\.(md|[jt]sx)$/, "");
@@ -74,6 +73,6 @@ export async function renderPage({
 	const state = getPageState();
 	await writeHtmlPage(finalHtml, outputFilePath, {
 		usedIslands: state.usedIslands,
-		pageCssAssets: pageAndLayoutCssAssets,
+		cssTags,
 	});
 }

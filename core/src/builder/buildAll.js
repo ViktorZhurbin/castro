@@ -52,29 +52,26 @@ export async function buildAll() {
 	await layouts.load();
 	const pagesMap = await scanPages();
 
-	const tasks = [...pagesMap.entries()].map(
-		([outputPath, sourcePath]) =>
-			async () => {
-				const { usedIslands } = await runWithPageState(() =>
-					buildPage(sourcePath),
-				);
-
-				// Log on completion so lines appear in the order pages actually finish
-				if (isProd) {
-					console.info(
-						messages.build.writingFile(
-							styleText("cyan", sourcePath),
-							styleText("gray", outputPath),
-						),
-					);
-				}
-
-				return { hasIslands: usedIslands.size > 0 };
-			},
-	);
-
 	// Real SSGs cap concurrency to bound Bun.build's memory pressure; see NON-GOALS.md
-	const results = await Promise.all(tasks.map((task) => task()));
+	const results = await Promise.all(
+		[...pagesMap.entries()].map(async ([outputPath, sourcePath]) => {
+			const { usedIslands } = await runWithPageState(() =>
+				buildPage(sourcePath),
+			);
+
+			// Log on completion so lines appear in the order pages actually finish
+			if (isProd) {
+				console.info(
+					messages.build.writingFile(
+						styleText("cyan", sourcePath),
+						styleText("gray", outputPath),
+					),
+				);
+			}
+
+			return { hasIslands: usedIslands.size > 0 };
+		}),
+	);
 
 	// Island output is conditional: a site that rendered no islands ships
 	// neither the hydration runtime nor any vendored Preact code.
