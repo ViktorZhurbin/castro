@@ -27,10 +27,6 @@ bun castro build  # → dist/
 
 **Or just read the source:** `core/src/` is about 1,400 lines. Start at [core/src/builder/buildAll.js](core/src/builder/buildAll.js) — it names every build step in order — and follow the module docblocks from there.
 
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md).
-
 ## License
 
 MIT — The people's license

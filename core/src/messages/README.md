@@ -86,7 +86,7 @@ errors: {
 ## Voice Philosophy
 
 Castro speaks in a communist satire voice:
-- Communist theme (educational framework context)
+- Communist theme
 - One joke maximum per error
 - Satire at edges, clarity in the middle
 - If a joke doesn't land, cut it

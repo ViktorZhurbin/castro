@@ -1,7 +1,7 @@
 {
 	"name": "@vktrz/castro",
 	"version": "0.1.0",
-	"description": "Educational SSG teaching island architecture through concise, well-commented code",
+	"description": "A static site generator built to be read.",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/ViktorZhurbin/castro.git"
@@ -38,13 +38,11 @@
 		"typescript": "^6.0.2"
 	},
 	"keywords": [
-		"educational",
 		"static-site-generator",
 		"ssg",
 		"islands",
 		"island-architecture",
 		"preact",
-		"web-components",
-		"learning"
+		"web-components"
 	]
 }
