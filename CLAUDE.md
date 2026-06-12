@@ -24,7 +24,7 @@ bun loc              # LOC count (core only, excludes messages/)
 ## Monorepo Layout
 
 - `core/` — core SSG engine (the npm package `@vktrz/castro`)
-- `packages/` — `create-castro`, the project scaffolder, and legacy plugins left for reference (may be removed in future)
+- `packages/` — `create-castro`, the project scaffolder
 - `website/` — demo playground that consumes castro
 - `tests/site/` — minimal test site exercising Preact islands, all hydration directives, CSS modules, and signals
 

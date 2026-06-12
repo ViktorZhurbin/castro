@@ -32,6 +32,8 @@ If TypeScript can catch a misconfiguration at compile time, we don't re-validate
 
 Castro is a small thing you read front-to-back, not a framework you extend. Although it's easy enough to implement (and both used to be implemented), there is no plugin API and no user-registered frameworks. The build pipeline talks to itself directly instead of through a hook system, because an extension API serves a user base the project isn't trying to have. Adding an abstraction "so users could plug in X" is the thing to cut, not add.
 
+The plugin API, multi-framework islands, and the packages that implemented them (`castro-jsx`, `castro-solid`, `tailwind`) last worked at commit `fdf04bd` — check that out if a piece is ever worth salvaging (`castro-jsx` in particular).
+
 ## Backwards compatibility
 
 Pre-1.0. Breaking changes land freely. There is no migration tooling, no deprecation cycle, no compatibility shims.
