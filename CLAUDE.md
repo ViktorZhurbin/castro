@@ -35,7 +35,7 @@ Each subsystem is independently readable as a study in framework machinery — r
 - **Build pipeline** (`builder/`) — how a JSX tree, a layout tree, and island markers compose into a single `renderToString()` pass.
 - **Islands runtime** (`islands/`, `islands/frameworks/`, `islands/plugins/`) — how a build plugin swaps real components for HTML markers at compile time, the trick that makes islands work.
 - **Module cache** (`utils/cache.js`) — write-string-to-disk-then-import: the pattern bundlers use to bust ESM caches.
-- **Structured errors** (`utils/errors.js`, `utils/renderError.js`, `dev/liveReload.js`, `messages/`) — typed error codes, code-frame extraction, terminal renderer, browser overlay, voice presets.
+- **Structured errors** (`utils/errors.js`, `utils/renderError.js`, `dev/liveReload.js`, `messages/`) — typed error codes, code-frame extraction, terminal renderer, browser overlay, a single satirical voice.
 - **Dev server** (`dev/`) — `Bun.serve`, file watchers, debounced rebuilds, SSE live reload.
 - **Per-page state** (`islands/marker.js`) — `AsyncLocalStorage` for isolating concurrent build state without globals.
 - `cli.js`, `config.js`, `constants.js` — entry point, config loader, shared path constants.
@@ -84,7 +84,7 @@ User plugins implement `CastroPlugin` (see [types.d.ts](core/src/types.d.ts) for
 
 File watchers on `pages/`, `layouts/`, `components/`, `public/`, and any plugin `watchDirs` rebuild on change. Editor temp files and OS metadata are filtered via a denylist glob; everything else triggers a rebuild. Rapid changes are debounced so builds never overlap. Cache busting relies on content-hashed filenames (`post.tsx.a1b2c3d4.js`) because Bun's module loader ignores query strings.
 
-**Build error handling:** Errors are structured as `CastroErrorPayload` (see [errors.d.ts](core/src/errors.d.ts)). Two independent renderers consume the payload: `renderErrorToTerminal()` colors the terminal output, and the browser overlay (`core/src/dev/liveReload.js`) renders a shadow DOM tree. On failure, the server logs to the terminal and sends the payload over SSE — no reload, keeping the last good page visible. On the next successful build, `reload` is sent. The payload shape decouples structure from voice — both `serious.js` and `satirical.js` return the same payload shape with different title/hint text. Test-errors sandbox at `tests/errors/` has 14 isolated error cases for manual verification.
+**Build error handling:** Errors are structured as `CastroErrorPayload` (see [errors.d.ts](core/src/errors.d.ts)). Two independent renderers consume the payload: `renderErrorToTerminal()` colors the terminal output, and the browser overlay (`core/src/dev/liveReload.js`) renders a shadow DOM tree. On failure, the server logs to the terminal and sends the payload over SSE — no reload, keeping the last good page visible. On the next successful build, `reload` is sent. The payload shape decouples structure from voice — the renderers consume a `CastroErrorPayload`, while the title/hint wording lives separately in `messages/`. Test-errors sandbox at `tests/errors/` has 14 isolated error cases for manual verification.
 
 
 ## Conventions
@@ -100,7 +100,7 @@ File watchers on `pages/`, `layouts/`, `components/`, `public/`, and any plugin 
 
 ## Messages
 
-All user-facing strings live in `core/src/messages/`. Voice is pluggable — `satirical.js` and `serious.js` are two implementations of the same `Messages` interface, demonstrating that error structure and error tone are fully decoupled. **Never use inline strings for user-facing output.** Use `styleText` from `node:util` for colored logs. Tone, satire, and emoji rules: see messages [README.md](core/src/messages/README.md).
+All user-facing strings live in `core/src/messages/`. The error table is decoupled from structure: factories keyed by `ErrorCode` (typed via `ErrorMessages`) return the same `CastroErrorPayload` the renderers consume, so tone and structure stay independent. **Never use inline strings for user-facing output.** Use `styleText` from `node:util` for colored logs. Tone, satire, and emoji rules: see messages [README.md](core/src/messages/README.md).
 
 **After changing any error message text**, regenerate the stderr goldens: `UPDATE_SNAPSHOTS=1 bun test:errors`. Inspect the diff before committing — each golden in `tests/errors/*/expected.stderr.txt` should show clean structured output.
 

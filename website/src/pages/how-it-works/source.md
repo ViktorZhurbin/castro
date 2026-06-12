@@ -61,7 +61,7 @@ These are worth reading but not the main thread.
 
 [config.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/config.js) — loads `castro.config.js`. Simple, but the comment on load order is worth knowing.
 
-[messages/](https://github.com/ViktorZhurbin/castro/tree/main/core/src/messages/) — all user-facing strings. Two presets, one interface. `README.md` in this folder explains the voice rules - read it before filing a complaint about the tone.
+[messages/](https://github.com/ViktorZhurbin/castro/tree/main/core/src/messages/) — all user-facing strings in one satirical voice. `README.md` in this folder explains the voice rules - read it before filing a complaint about the tone.
 
 ---
 

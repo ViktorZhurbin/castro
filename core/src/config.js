@@ -16,7 +16,6 @@ import { CastroError } from "./utils/errors.js";
 /** @type {DefaultConfig} */
 const defaults = {
 	port: 3000,
-	messages: "satirical",
 	srcDir: ".",
 };
 

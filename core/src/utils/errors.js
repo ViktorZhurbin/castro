@@ -1,7 +1,7 @@
 /**
  * Error building and normalization utilities. Transforms thrown values into
  * structured payloads consumed by terminal and browser renderers.
- * Decouples structure (data) from voice (messages/*.js).
+ * Decouples structure (data) from voice (messages/).
  */
 
 import { messages } from "../messages/index.js";
@@ -18,13 +18,7 @@ export class CastroError extends Error {
 	 * @param {CodeFrame[]} [frames]
 	 */
 	constructor(code, tokens, frames = []) {
-		const errorFn = messages.errors[code];
-
-		if (!errorFn) {
-			throw new Error(`Unknown error code: ${code}`);
-		}
-
-		const errorContent = errorFn(/** @type {never} */ (tokens));
+		const errorContent = messages.errors[code](/** @type {never} */ (tokens));
 
 		super(errorContent.title);
 

@@ -10,7 +10,7 @@
 /**
  * Error codes and payload shapes for Castro build-time fatal errors.
  * Decouples error structure from message voice — the payload holds data,
- * messages/*.js holds language. Two independent renderers consume this:
+ * messages/ holds language. Two independent renderers consume this:
  * terminal (styleText) and browser (shadow DOM).
  */
 
@@ -51,7 +51,12 @@ export type ErrorContent = {
 	errorMessage?: string; // error.message from a JavaScript exception
 };
 
-/** Structured error payload: data + code, voice in messages/*.js. */
+/** The error table: one renderer-ready payload factory per error code. */
+export type ErrorMessages = {
+	[K in ErrorCode]: (tokens: ErrorTokens[K]) => ErrorContent;
+};
+
+/** Structured error payload: data + code, voice in messages/. */
 export interface CastroErrorPayload extends ErrorContent {
 	code: ErrorCode;
 	frames?: CodeFrame[]; // 0..N source locations
@@ -134,7 +139,6 @@ export type ImportsMap = Record<string, string>;
 
 export type CastroConfig = {
 	port?: number;
-	messages?: "satirical" | "serious";
 	plugins?: CastroPlugin[];
 	importMap?: Record<string, string>;
 	clientDependencies?: string[];
@@ -142,9 +146,7 @@ export type CastroConfig = {
 	srcDir?: string;
 };
 
-export type DefaultConfig = Required<
-	Pick<CastroConfig, "port" | "messages" | "srcDir">
->;
+export type DefaultConfig = Required<Pick<CastroConfig, "port" | "srcDir">>;
 
 /** Passed to onAfterBuild — aggregated across all pages in the build. */
 export type BuildContext = {

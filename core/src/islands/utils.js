@@ -1,5 +1,5 @@
 import { relative } from "node:path/posix";
-import { PROJECT_ROOT } from "../constants";
+import { PROJECT_ROOT } from "../constants.js";
 
 /**
  * Generate a stable ID from a file path.

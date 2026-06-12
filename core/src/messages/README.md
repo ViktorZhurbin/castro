@@ -32,7 +32,7 @@ If you hesitate on any question, remove the satire.
 - Emoji prefixes on status messages
 - Any emoji that adds visual noise without information
 
-## Satirical Preset Guidelines
+## Satire Guidelines
 
 ### ✓ Good Satire
 - **Opening/closing messages**: "Realizing the Five-Year Plan", "Delivered to the people"
@@ -53,10 +53,7 @@ If you hesitate on any question, remove the satire.
 
 ## Error Payload Shape
 
-`messages.errors.*` keys feed into `CastroError()` in `utils/errors.js`. Each key is either:
-
-- A static object `{ title, hint? }` — when no call-site data is needed.
-- A function `(tokens) => { title, message?, hint?, notes? }` — when the message weaves in runtime values (file names, layout names, etc.).
+`messages.errors.*` keys feed into `CastroError()` in `utils/errors.js`. Each key is a function `(tokens) => { title, message?, hint?, notes? }` — even error codes with no tokens take a zero-arg function, so every entry has a consistent shape.
 
 `CastroError` merges the result with the call-site `tokens` and optional `CodeFrame[]` into a `CastroErrorPayload`. The payload is the single source of truth — two independent renderers consume it: `renderErrorToTerminal()` (terminal) and the shadow-DOM overlay in `dev/liveReload.js` (browser). Neither renderer parses strings; both read structured fields.
 
@@ -86,14 +83,9 @@ errors: {
 }
 ```
 
-## Preset Philosophy
+## Voice Philosophy
 
-**Serious Preset:**
-- Technical, professional tone
-- No jokes, no satire
-- Clear, actionable messages
-
-**Satirical Preset:**
+Castro speaks in a communist satire voice:
 - Communist theme (educational framework context)
 - One joke maximum per error
 - Satire at edges, clarity in the middle
@@ -130,19 +122,17 @@ pageBuildFailed: (file, err) =>
 
 ## Type Safety
 
-All messages must match `messages.d.ts`:
+The error table is typed by `ErrorMessages` in `types.d.ts`:
 ```typescript
-export interface Messages {
-  devServer: { /* ... */ };
-  build: { /* ... */ };
-  // etc.
-}
+export type ErrorMessages = {
+  [K in ErrorCode]: (tokens: ErrorTokens[K]) => ErrorContent;
+};
 ```
 
-Both presets must implement the same interface exactly.
+The `errors` object in `index.js` is annotated `@satisfies {ErrorMessages}`, so every `ErrorCode` must have a factory and each factory's tokens are checked against the throw site.
 
 ## When in Doubt
 
-Compare with the serious preset. If your satirical message is more than 20% longer or 2x harder to scan, simplify it.
+If a satirical message is more than 20% longer or 2x harder to scan than the plain technical phrasing, simplify it.
 
 **Remember:** Users don't read error messages for entertainment. They scan for information. Satire should be a bonus, not a barrier.

@@ -12,7 +12,6 @@ Castro works without any config file. When you need to customize behavior, creat
 ```typescript
 type CastroConfig = {
   port?: number;
-  messages?: "satirical" | "serious";
   srcDir?: string;
   plugins?: CastroPlugin[];
   importMap?: Record<string, string>;
@@ -27,7 +26,7 @@ type CastroConfig = {
 
 ## Example
 
-Tailwind plugin, port 4123, serious messages:
+Tailwind plugin on port 4123:
 
 ```typescript
 import { defineConfig } from "@vktrz/castro";
@@ -36,7 +35,6 @@ import { tailwind } from "@vktrz/castro-tailwind";
 export default defineConfig({
   plugins: [tailwind({ input: "styles/app.css" })],
   port: 4123,
-  messages: "serious",
 });
 ```
 
@@ -49,7 +47,6 @@ You can use a JSDoc type hint as well:
 /** @type {import("@vktrz/castro").CastroConfig} */
 export default {
   port: 4123,
-  messages: "serious",
 };
 ```
 
@@ -61,13 +58,6 @@ export default {
 `port?: number` - default: `3000`
 
 The port the dev server listens on. 3000 is the default. The Party has no strong feelings about this.
-
-
-### `messages`
-
-`messages?: "satirical" | "serious"` - default: `"satirical"`
-
-Controls CLI output tone. "satirical" wraps build output in communist bureaucracy humor. "serious" delivers the same information without the ideology. Both are equally correct. Only one is more fun.
 
 
 ### `srcDir`
