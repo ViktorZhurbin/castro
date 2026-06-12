@@ -73,7 +73,7 @@ These are worth reading but not the main thread.
 | How pages become HTML | [builder/renderPage.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/builder/renderPage.js) |
 | How deps get vendored | [builder/vendor.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/builder/vendor.js) |
 | What Preact contributes to the build | [islands/preact.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/preact.js) |
-| How errors are structured | [utils/errors.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/utils/errors.js) + [errors.d.ts](https://github.com/ViktorZhurbin/castro/blob/main/core/src/errors.d.ts) |
+| How errors are structured | [utils/errors.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/utils/errors.js) + [types.d.ts](https://github.com/ViktorZhurbin/castro/blob/main/core/src/types.d.ts) |
 
 <div class="btn-group">
   <a href="/how-it-works/hydration" class="btn btn-base">

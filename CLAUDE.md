@@ -40,7 +40,7 @@ Each subsystem is independently readable as a study in framework machinery — r
 - **Per-page state** (`islands/marker.js`) — `AsyncLocalStorage` for isolating concurrent build state without globals.
 - `cli.js`, `config.js`, `constants.js` — entry point, config loader, shared path constants.
 - `layouts/` — layout discovery and compilation.
-- `errors.d.ts`, `types.d.ts`, `jsx.d.ts` — structured error payload types, shared types, JSX namespace for custom directives.
+- `types.d.ts`, `jsx.d.ts` — structured error payload types, shared types, JSX namespace for custom directives.
 
 The reference implementations for hydration patterns are [core/src/islands/hydration.js](core/src/islands/hydration.js) and [core/src/islands/compiler.js](core/src/islands/compiler.js) — read them before changing how islands work.
 
@@ -84,7 +84,7 @@ Castro has no user plugin or extension API — it is a closed thing you read, no
 
 File watchers on `pages/`, `layouts/`, `components/`, and `public/` rebuild on change. Editor temp files and OS metadata are filtered via a denylist glob; everything else triggers a rebuild. Rapid changes are debounced so builds never overlap. Cache busting relies on content-hashed filenames (`post.tsx.a1b2c3d4.js`) because Bun's module loader ignores query strings.
 
-**Build error handling:** Errors are structured as `CastroErrorPayload` (see [errors.d.ts](core/src/errors.d.ts)). Two independent renderers consume the payload: `renderErrorToTerminal()` colors the terminal output, and the browser overlay (`core/src/dev/liveReload.js`) renders a shadow DOM tree. On failure, the server logs to the terminal and sends the payload over SSE — no reload, keeping the last good page visible. On the next successful build, `reload` is sent. The payload shape decouples structure from voice — the renderers consume a `CastroErrorPayload`, while the title/hint wording lives separately in `messages/`. Test-errors sandbox at `tests/errors/` has 14 isolated error cases for manual verification.
+**Build error handling:** Errors are structured as `CastroErrorPayload` (see [types.d.ts](core/src/types.d.ts)). Two independent renderers consume the payload: `renderErrorToTerminal()` colors the terminal output, and the browser overlay (`core/src/dev/liveReload.js`) renders a shadow DOM tree. On failure, the server logs to the terminal and sends the payload over SSE — no reload, keeping the last good page visible. On the next successful build, `reload` is sent. The payload shape decouples structure from voice — the renderers consume a `CastroErrorPayload`, while the title/hint wording lives separately in `messages/`. Test-errors sandbox at `tests/errors/` has 14 isolated error cases for manual verification.
 
 
 ## Conventions

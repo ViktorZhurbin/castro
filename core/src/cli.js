@@ -29,8 +29,8 @@ try {
 			const { buildAll } = await import("./builder/buildAll.js");
 			await buildAll();
 
-			// Explicit exit — plugins can keep file watchers alive
-			// which prevents natural process termination.
+			// Explicit exit — imported page modules or Bun internals can
+			// hold handles that prevent natural process termination.
 			process.exit(0);
 		}
 

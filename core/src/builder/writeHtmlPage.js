@@ -2,7 +2,7 @@
  * HTML Page Writer
  *
  * Final step in page building. Takes rendered HTML and:
- * 1. Gathers assets (page CSS, island CSS, plugin assets, live reload)
+ * 1. Gathers assets (page CSS, island CSS, live reload)
  * 2. Injects all assets into <head> (or <body> fallback)
  * 3. Writes the file to disk
  */
@@ -153,8 +153,6 @@ function generateImportMap(map) {
  * @returns {string}
  */
 function generateAssetTag(asset) {
-	if (typeof asset === "string") return asset;
-
 	switch (asset.tag) {
 		case "link": {
 			const attrs = attrsToString(asset.attrs);

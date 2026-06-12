@@ -182,74 +182,9 @@ export default function Page() {
 }`}</code>
 			</pre>
 
-			{/* ─── ALTERNATIVE FRAMEWORKS ──────────────────────────────── */}
-			<h2>ALTERNATIVE FRAMEWORKS</h2>
-			<p>
-				The plugin system lets you register other frameworks - Castro detects
-				which one to use per island by scanning imports and export signatures at
-				build time.
-			</p>
-
-			<p>
-				Register framework plugins in <code>castro.config.ts</code>:
-			</p>
-			<pre>
-				<code>{`// castro.config.ts
-import { defineConfig } from "@vktrz/castro";
-import { castroSolid } from "@vktrz/castro-solid";
-
-export default defineConfig({
-  plugins: [castroSolid()],
-});`}</code>
-			</pre>
-
-			<p>Then create islands using that framework:</p>
-
-			<pre>
-				<code>{`// Counter.island.tsx
-
-/** @jsxImportSource solid-js */
-import { createSignal } from "solid-js";
-
-export default function Counter() {
-  const [count, setCount] = createSignal(0);
-
-  return (
-		<button onClick={() => setCount(count() + 1)}>
-			Count: {count()}
-		</button>
-	)
-}`}</code>
-			</pre>
-
-			<aside class="alert">
-				TypeScript expects one JSX runtime per project. Non-Preact islands need
-				a <code>{`/** @jsxImportSource <framework> */`}</code> pragma comment at
-				the top of the file - that's how the type checker knows which JSX types
-				to apply.
-				<br />
-				<br />
-				Different frameworks can coexist on the same page - a Preact counter and
-				a Solid widget, side by side. They cannot nest or share state.
-				<br />
-				<br />
-				Each framework ships its runtime once per page, shared across all
-				islands that use it. Two Preact islands cost one Preact runtime. A
-				Preact island and a Solid island cost two runtimes. Mix frameworks
-				intentionally.
-			</aside>
-
-			<p>
-				For building your own framework plugin, see{" "}
-				<a href="/build/plugins">Plugins →</a>
-			</p>
-
 			<div class="btn-group">
 				<a href="/build/quick-start" class="btn btn-base">
 					← Quick Start
-				</a>
-				<a href="/build/plugins" class="btn btn-base">
-					Plugins →
 				</a>
 			</div>
 		</>

@@ -7,7 +7,7 @@
  * 3. Compile and load islands and layouts
  * 4. Scan pages, detect route conflicts, build each page
  * 5. If any page rendered an island: copy the hydration runtime and vendor
- *    the frameworks' client dependencies
+ *    Preact's client dependencies
  */
 
 import { cp, mkdir, rm } from "node:fs/promises";

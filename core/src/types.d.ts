@@ -65,17 +65,12 @@ export interface CastroErrorPayload extends ErrorContent {
 
 export type Directive = "comrade:eager" | "comrade:patient" | "comrade:visible";
 
-/**
- * A raw HTML string or a structured tag definition.
- * Raw strings are injected as-is.
- */
-export type Asset =
-	| string
-	| {
-			tag: string;
-			attrs?: Record<string, string | boolean>;
-			content?: string;
-	  };
+/** A structured tag definition for an injected asset. */
+export type Asset = {
+	tag: string;
+	attrs?: Record<string, string | boolean>;
+	content?: string;
+};
 
 export type ImportsMap = Record<string, string>;
 
