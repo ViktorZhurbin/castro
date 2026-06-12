@@ -1,4 +1,4 @@
-import type { CastroPlugin } from "@vktrz/castro";
+import type { FrameworkConfig } from "@vktrz/castro";
 
-// Plugin factory
-export function castroJsx(): CastroPlugin;
+// Legacy: returns the shape Castro's removed plugin API consumed.
+export function castroJsx(): { name: string; frameworkConfig: FrameworkConfig };

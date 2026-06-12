@@ -13,9 +13,6 @@ Castro works without any config file. When you need to customize behavior, creat
 type CastroConfig = {
   port?: number;
   srcDir?: string;
-  plugins?: CastroPlugin[];
-  importMap?: Record<string, string>;
-  clientDependencies?: string[];
   markdown?: { options?: Bun.markdown.Options };
 }
 ```
@@ -26,15 +23,14 @@ type CastroConfig = {
 
 ## Example
 
-Tailwind plugin on port 4123:
+Serve on port 4123 with GFM tables enabled:
 
 ```typescript
 import { defineConfig } from "@vktrz/castro";
-import { tailwind } from "@vktrz/castro-tailwind";
 
 export default defineConfig({
-  plugins: [tailwind({ input: "styles/app.css" })],
   port: 4123,
+  markdown: { options: { tables: true } },
 });
 ```
 
@@ -77,55 +73,6 @@ export default defineConfig({
 The output is identical either way — paths in `dist/` are always relative to the project root, not to `srcDir`. `public/` stays at the project root regardless.
 
 
-### `plugins`
-
-`plugins?: CastroPlugin[]` - default: `[]`
-
-Plugins hook into the build pipeline to inject assets, run processors, and register custom island frameworks. See [Plugin API →](/reference/plugin-api).
-
-
-### `clientDependencies`
-
-`clientDependencies?: string[]` - default: `[]`
-
-A list of NPM packages to be pre-bundled and shared across all islands.
-
-By default, each island bundles its own copy of every dependency it uses. If multiple islands use the same package, you get duplicate code. Adding a package to `clientDependencies` extracts it into a single, shared `/vendor/filename.js` file that all islands reference via the import map.
-
-Example: if five islands use `date-fns`, instead of bundling it five times:
-
-```typescript
-import { defineConfig } from "@vktrz/castro";
-
-export default defineConfig({
-  clientDependencies: ["date-fns"],
-});
-```
-
-Now `date-fns` is bundled once and shared. Works for exact package names only - if you need subpath routing (e.g., `@mui/material/Button`, `@mui/material/Popper`), use `importMap` instead.
-
-
-### `importMap`
-
-`importMap?: Record<string, string>` - default: `{}`
-
-A map of import specifiers to URLs. Use it to override plugin-generated import map entries - for example, swapping a vendored URL for a CDN, or providing custom versions of packages.
-
-When you need wildcard routing for subpaths like `@mui/material/Button`, `@mui/material/Popper`, etc., add them here:
-
-```typescript
-import { defineConfig } from "@vktrz/castro";
-
-export default defineConfig({
-  importMap: {
-    "@mui/material/": "https://esm.sh/@mui/material/",
-  },
-});
-```
-
-User-provided entries override plugin-generated entries on pages with islands. They have no effect on purely static pages.
-
-
 ### `markdown`
 
 `markdown?: { options?: Bun.markdown.Options }` - default: `{}`
@@ -143,11 +90,3 @@ export default defineConfig({
 ```
 
 See [Bun's Markdown documentation](https://bun.sh/docs/runtime/markdown) for the full list of options.
-
------
-
-<div class="btn-group">
-  <a href="/reference/plugin-api" class="btn btn-base">
-    Plugin API →
-  </a>
-</div>

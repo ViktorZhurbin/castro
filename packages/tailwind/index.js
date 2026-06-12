@@ -4,6 +4,9 @@
  * Integrates Tailwind CSS into Castro's build pipeline.
  * Processes CSS files through PostCSS with @tailwindcss/postcss,
  * writes compiled output to dist/, and auto-injects <link> tags.
+ *
+ * Legacy: this targets Castro's removed plugin API — core no longer loads
+ * plugins. Kept for reference only.
  */
 
 import { basename, dirname, join } from "node:path";
@@ -11,13 +14,7 @@ import tailwindcss from "@tailwindcss/postcss";
 import postcss from "postcss";
 
 /**
- * @import { CastroPlugin } from "@vktrz/castro";
- */
-
-/**
  * @param {{ input: string | string[] }} options
- *
- * @returns {CastroPlugin}
  */
 export function tailwind({ input }) {
 	const inputs = Array.isArray(input) ? input : [input];

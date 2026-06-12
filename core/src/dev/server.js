@@ -25,7 +25,6 @@ import {
 	PAGES_DIR,
 	PUBLIC_DIR,
 } from "../constants.js";
-import { allPlugins } from "../islands/plugins.js";
 import { messages } from "../messages/index.js";
 import { toPayload } from "../utils/errors.js";
 import { renderErrorToTerminal } from "../utils/renderError.js";
@@ -168,15 +167,6 @@ export async function startDevServer() {
 	watchDir(LAYOUTS_DIR);
 	watchDir(COMPONENTS_DIR);
 	watchDir(PUBLIC_DIR);
-
-	// Directories declared by user plugins.
-	// Changes trigger the plugin's onPageBuild() and a browser reload.
-	for (const plugin of allPlugins) {
-		if (!plugin.watchDirs?.length) continue;
-		for (const dir of plugin.watchDirs) {
-			watchDir(dir);
-		}
-	}
 
 	function logFileChanged(/** @type {string} */ filePath) {
 		console.info(styleText("gray", messages.files.changed(filePath)));

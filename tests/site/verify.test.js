@@ -3,7 +3,7 @@
  *
  * Builds the test site, then checks the HTML output using Bun's test runner.
  * Tests cover static pages, all three directives, component composition,
- * CSS modules, markdown, and multi-framework (Preact + Solid) islands.
+ * CSS modules, markdown, and the vendored Preact import map.
  *
  * Usage: bun test:site
  */
@@ -198,34 +198,6 @@ test("markdown page generates anchor tags in headings", async () => {
 	expect(html).toContain("<a href=");
 });
 
-// ------ Multi-framework (Preact + Solid on same page) ------
-
-test("mixed page has both Preact and Solid islands", async () => {
-	const html = await readHtml("mixed.html");
-	const count = (html.match(/<castro-island/g) || []).length;
-	expect(count).toBe(2);
-});
-
-test("mixed page has Preact import map entries", async () => {
-	const html = await readHtml("mixed.html");
-	expect(html).toContain('"preact"');
-});
-
-test("mixed page has Solid import map entries", async () => {
-	const html = await readHtml("mixed.html");
-	expect(html).toContain('"solid-js"');
-});
-
-test("mixed page has Preact SSR content", async () => {
-	const html = await readHtml("mixed.html");
-	expect(html).toContain("Count:");
-});
-
-test("mixed page has Solid SSR content", async () => {
-	const html = await readHtml("mixed.html");
-	expect(html).toContain("Solid:");
-});
-
 // ------ Import map generation ------
 
 test("static pages have no import map script tag", async () => {
@@ -234,105 +206,21 @@ test("static pages have no import map script tag", async () => {
 });
 
 test("pages with islands have import map script tag", async () => {
-	const html = await readHtml("mixed.html");
+	const html = await readHtml("comrade-visible.html");
 	expect(html).toContain('type="importmap"');
 });
 
-test("plugin getImportMap contributes vendor entries", async () => {
-	const html = await readHtml("mixed.html");
-	// vendorDependencies plugin should add Preact and Solid to import map
+test("island pages map Preact to vendored URLs", async () => {
+	const html = await readHtml("comrade-visible.html");
 	expect(html).toContain('"preact":');
-	expect(html).toContain('"solid-js":');
-	// Check they're vendored URLs (not CDN)
+	// Vendored locally (not a CDN URL)
 	expect(html).toContain('"/vendor/');
 });
 
-// ------ User import map ------
+// ------ Conditional island output ------
 
-test("user import map entries appear in pages with islands", async () => {
-	const html = await readHtml("mixed.html");
-	expect(html).toContain('"custom-lib": "https://esm.sh/custom-lib"');
-});
-
-test("user import map entries are absent from static pages", async () => {
-	const html = await readHtml("static.html");
-	expect(html).not.toContain("custom-lib");
-});
-
-// ------ User importMap → external (signals via config, not built-in) ------
-
-test("user importMap entries are treated as external in island bundles", async () => {
-	const html = await readHtml("comrade-visible.html");
-	// @preact/signals is in the import map (added via castro.config.ts, not built-in)
-	expect(html).toContain('"@preact/signals"');
-	expect(html).toContain("esm.sh/@preact/signals");
-});
-
-// ------ Solid-only page ------
-
-test("solid-only page renders SSR content", async () => {
-	const html = await readHtml("solid-only.html");
-	expect(html).toContain("Solid:");
-});
-
-test("solid-only page has island wrapper", async () => {
-	const html = await readHtml("solid-only.html");
-	expect(html).toContain("<castro-island");
-});
-
-// ------ castro-jsx framework (signals + direct DOM) ------
-
-test("castro-jsx island renders SSR content", async () => {
-	const html = await readHtml("castro-jsx.html");
-	expect(html).toContain("Castro: 5");
-});
-
-test("castro-jsx island has island wrapper", async () => {
-	const html = await readHtml("castro-jsx.html");
-	expect(html).toContain("<castro-island");
-	expect(html).toContain('directive="comrade:visible"');
-});
-
-test("castro-jsx island has island runtime", async () => {
-	const html = await readHtml("castro-jsx.html");
-	expect(html).toContain("castro-island.js");
-});
-
-test("castro-jsx island has JS bundle reference", async () => {
-	const html = await readHtml("castro-jsx.html");
-	expect(html).toContain('import="/islands/CastroCounter');
-});
-
-// ------ castro-jsx: Fragment in reactive conditional ------
-// Exercises the stable anchor pattern in bindReactiveChild. Before the fix,
-// returning a Fragment from a reactive conditional broke on the second render
-// because DocumentFragment dissolves on insert, leaving the anchor dangling.
-
-test("castro-jsx fragment island renders SSR fragment children", async () => {
-	const html = await readHtml("castro-jsx.html");
-	// show() starts true → Fragment branch → both spans should appear in SSR
-	expect(html).toContain("Fragment A");
-	expect(html).toContain("Fragment B");
-});
-
-test("castro-jsx fragment island has island wrapper", async () => {
-	const html = await readHtml("castro-jsx.html");
-	expect(html).toContain('import="/islands/CastroFragmentToggle');
-});
-
-test("castro-jsx island has local runtime in import map (no CDN)", async () => {
-	const html = await readHtml("castro-jsx.html");
-	expect(html).toContain('"@vktrz/castro-jsx/dom"');
-	expect(html).toContain('"@vktrz/castro-jsx/signals"');
-	expect(html).toContain('"/vendor/_vktrz_castro-jsx_dom.js');
-	expect(html).toContain('"/vendor/_vktrz_castro-jsx_signals.js');
-});
-
-// ------ onAfterBuild: conditional asset writing ------
-
-test("castro-jsx runtime exists in vendor dist", async () => {
-	const vendorDir = join(distDir, "vendor");
-	const file = Bun.file(join(vendorDir, "_vktrz_castro-jsx_dom.js"));
+test("vendored Preact runtime exists in dist", async () => {
+	const file = Bun.file(join(distDir, "vendor", "preact.js"));
 	expect(await file.exists()).toBe(true);
 });
 

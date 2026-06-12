@@ -118,12 +118,6 @@ export const messages = {
 			hint: "Create a .md or .jsx/.tsx file in pages/ to continue",
 		}),
 
-		FRAMEWORK_CONFIG_INVALID: ({ pluginName, missing }) => ({
-			title: "Invalid framework config",
-			message: `Plugin "${pluginName}" has incomplete papers — missing: ${missing}`,
-			hint: "Fill in the missing fields to pass inspection",
-		}),
-
 		CACHE_WRITE_FAILED: ({ path, errorMessage }) => ({
 			title: "Cache write failed",
 			message: `Compiled output at ${path} could not be requisitioned:`,

@@ -4,26 +4,28 @@
  * Coordinates the full site build:
  * 1. Wipe and recreate output dir
  * 2. Copy public dir to output dir
- * 3. Run plugin pre-build hooks (onPageBuild)
- * 4. Compile and load islands and layouts
- * 5. Scan pages, detect route conflicts, build each page
- * 6. Run plugin post-build hooks (onAfterBuild) with build context
+ * 3. Compile and load islands and layouts
+ * 4. Scan pages, detect route conflicts, build each page
+ * 5. If any page rendered an island: copy the hydration runtime and vendor
+ *    the frameworks' client dependencies
  */
 
 import { cp, mkdir, rm } from "node:fs/promises";
+import { join } from "node:path/posix";
 import { styleText } from "node:util";
-import { OUTPUT_DIR, PAGES_DIR, PUBLIC_DIR } from "../constants.js";
+import {
+	ISLAND_RUNTIME_FILE,
+	OUTPUT_DIR,
+	PAGES_DIR,
+	PUBLIC_DIR,
+} from "../constants.js";
 import { runWithPageState } from "../islands/marker.js";
-import { allPlugins } from "../islands/plugins.js";
 import { islands } from "../islands/registry.js";
 import { layouts } from "../layouts/registry.js";
 import { messages } from "../messages/index.js";
 import { CastroError } from "../utils/errors.js";
 import { buildPage } from "./buildPage.js";
-
-/**
- * @import { BuildContext } from "../types.d.ts"
- */
+import { vendorClientDeps } from "./vendor.js";
 
 export async function buildAll() {
 	const isProd = process.env.NODE_ENV === "production";
@@ -46,19 +48,13 @@ export async function buildAll() {
 		}
 	}
 
-	for (const plugin of allPlugins) {
-		if (plugin.onPageBuild) {
-			await plugin.onPageBuild();
-		}
-	}
-
 	await islands.load();
 	await layouts.load();
 	const pagesMap = await scanPages();
 
-	// Accumulate build context across pages for onAfterBuild hooks
-	/** @type {BuildContext} */
-	const buildContext = { usedFrameworks: new Set() };
+	// Frameworks rendered on at least one page, accumulated across all pages.
+	/** @type {Set<string>} */
+	const usedFrameworks = new Set();
 
 	const tasks = [...pagesMap.entries()].map(
 		([outputPath, sourcePath]) =>
@@ -84,21 +80,31 @@ export async function buildAll() {
 	// Real SSGs cap concurrency to bound Bun.build's memory pressure; see NON-GOALS.md
 	const results = await Promise.all(tasks.map((task) => task()));
 
-	for (const { usedFrameworks } of results) {
-		// Merge per-page state into cross-page build context; union order doesn't matter
-		buildContext.usedFrameworks =
-			buildContext.usedFrameworks.union(usedFrameworks);
+	for (const { usedFrameworks: frameworkIds } of results) {
+		// Union order doesn't matter — we only need the set of frameworks seen.
+		for (const id of frameworkIds) usedFrameworks.add(id);
 	}
 
-	// Post-build hooks: plugins can conditionally write assets based
-	// on which frameworks were actually used across all pages
-	for (const plugin of allPlugins) {
-		if (plugin.onAfterBuild) {
-			await plugin.onAfterBuild(buildContext);
-		}
+	// Island output is conditional: a site that rendered no islands ships
+	// neither the hydration runtime nor any vendored framework code.
+	if (usedFrameworks.size) {
+		await copyIslandRuntime();
+		await vendorClientDeps(usedFrameworks);
 	}
 
 	console.info(messages.build.success(`${pagesMap.size}`));
+}
+
+/**
+ * Copy the <castro-island> custom-element runtime to dist/. The same source
+ * (islands/hydration.js) is inlined per-island for the components; this is the
+ * one shared script tag the page loads to upgrade the markers.
+ */
+async function copyIslandRuntime() {
+	await Bun.write(
+		join(OUTPUT_DIR, ISLAND_RUNTIME_FILE),
+		Bun.file(join(import.meta.dir, "../islands/hydration.js")),
+	);
 }
 
 /**

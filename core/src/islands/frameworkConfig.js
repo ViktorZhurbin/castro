@@ -1,15 +1,12 @@
 /**
  * Framework Config Registry
  *
- * The built-in preact framework is registered at module load.
- * User plugins provide additional framework configs via registerFramework(),
- * called from plugins.js before any builds run.
- *
- * All frameworks must declare `detectImports` because framework discovery
- * is purely AST-based — no directory convention.
+ * The built-in preact framework is registered at module load. The registry
+ * indirection is a remnant of the multi-framework phase — every island is now
+ * Preact (see registry.js). All frameworks must declare `detectImports`
+ * because framework discovery is purely AST-based — no directory convention.
  */
 
-import { CastroError } from "../utils/errors.js";
 import preactConfig from "./frameworks/preact.js";
 
 /**
@@ -21,43 +18,6 @@ import preactConfig from "./frameworks/preact.js";
  * @type {Map<string, FrameworkConfig>}
  */
 const loadedConfigs = new Map();
-
-/** @type {(keyof FrameworkConfig)[]} */
-const REQUIRED_FIELDS = [
-	"id",
-	"detectImports",
-	"getBuildConfig",
-	"clientDependencies",
-	"hydrateClientPath",
-	"renderSSR",
-];
-
-/**
- * Register a framework config.
- * Validates required fields and detection arrays so broken configs fail early.
- *
- * @param {FrameworkConfig} frameworkConfig
- * @param {string} pluginName - Name of the plugin providing this config
- */
-export async function registerFramework(frameworkConfig, pluginName) {
-	const missing = REQUIRED_FIELDS.filter((f) => !frameworkConfig[f]);
-
-	if (missing.length > 0) {
-		throw new CastroError("FRAMEWORK_CONFIG_INVALID", {
-			pluginName,
-			missing: missing.join(", "),
-		});
-	}
-
-	if (!(await Bun.file(frameworkConfig.hydrateClientPath).exists())) {
-		throw new CastroError("FRAMEWORK_CONFIG_INVALID", {
-			pluginName,
-			missing: `hydrateClientPath points to non-existent file: ${frameworkConfig.hydrateClientPath}`,
-		});
-	}
-
-	loadedConfigs.set(frameworkConfig.id, frameworkConfig);
-}
 
 /**
  * Get a framework config synchronously.
@@ -90,5 +50,7 @@ export function getLoadedFrameworkConfigs() {
 	return Array.from(loadedConfigs.values());
 }
 
-// Register built-in frameworks at module load
-await registerFramework(preactConfig, "castro-preact");
+// Register the built-in framework at module load. No shape validation —
+// the config ships with Castro, so a broken one is a Castro bug any build
+// catches immediately (the plugin-era validation died with the plugin system).
+loadedConfigs.set(preactConfig.id, preactConfig);

@@ -3,12 +3,12 @@
  *
  * A minimal JSX + signals framework shipped as a standalone plugin.
  *
- * This demonstrates how the Castro plugin architecture enables third-party
- * frameworks to integrate seamlessly with the core SSG.
+ * Legacy: this targets Castro's removed plugin API — core no longer loads
+ * plugins or registers extra frameworks. Kept for reference only.
  */
 
 /**
- * @import { CastroPlugin, FrameworkConfig } from "@vktrz/castro"
+ * @import { FrameworkConfig } from "@vktrz/castro"
  */
 
 /**
@@ -89,7 +89,7 @@ const frameworkConfig = {
 /**
  * Register the castro-jsx framework.
  *
- * @returns {CastroPlugin}
+ * @returns {{ name: string, frameworkConfig: FrameworkConfig }}
  */
 export function castroJsx() {
 	return {

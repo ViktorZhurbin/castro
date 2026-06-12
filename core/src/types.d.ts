@@ -24,7 +24,6 @@ export type ErrorTokens = {
 	PAGE_NO_DEFAULT_EXPORT: { file: string };
 	ISLAND_NOT_FOUND: { islandId: string };
 	NO_PAGES: { dir: string };
-	FRAMEWORK_CONFIG_INVALID: { pluginName: string; missing: string };
 	BUNDLE_FAILED: { errorMessage: string } | undefined;
 	YAML_PARSE_FAILED: { errorMessage: string; sourceFilePath: string };
 	CACHE_WRITE_FAILED: { path: string; errorMessage: string };
@@ -66,8 +65,8 @@ export interface CastroErrorPayload extends ErrorContent {
 
 /**
  * Defines how islands are compiled, rendered (SSR), and hydrated.
- * Every framework config file (preact.js, solid.js, etc.) must
- * export a default object matching this shape.
+ * Every framework config file (preact.js) must export a default
+ * object matching this shape.
  */
 export type FrameworkConfig = {
 	/** Framework identifier (e.g. "preact", "solid") */
@@ -139,41 +138,11 @@ export type ImportsMap = Record<string, string>;
 
 export type CastroConfig = {
 	port?: number;
-	plugins?: CastroPlugin[];
-	importMap?: Record<string, string>;
-	clientDependencies?: string[];
 	markdown?: { options?: Bun.markdown.Options };
 	srcDir?: string;
 };
 
 export type DefaultConfig = Required<Pick<CastroConfig, "port" | "srcDir">>;
-
-/** Passed to onAfterBuild — aggregated across all pages in the build. */
-export type BuildContext = {
-	/** Framework IDs that had at least one island rendered (e.g. "castro-jsx", "preact", "solid") */
-	usedFrameworks: Set<string>;
-};
-
-export type CastroPlugin = {
-	name: string;
-	/** Adds HTML assets to the page. Called per-page for all pages. */
-	getPageAssets?: (params?: { hasIslands?: boolean }) => Asset[];
-	/** Adds entries to the page's import map. Called per-page for all pages. */
-	getImportMap?: (context: {
-		usedFrameworks: Set<string>;
-	}) => Promise<ImportsMap> | ImportsMap;
-	/** Runs before pages are built. Use for pre-build work (e.g. CSS compilation). */
-	onPageBuild?: () => Promise<void> | void;
-	/** Runs after all pages are built. Receives build context for conditional work. */
-	onAfterBuild?: (context: BuildContext) => Promise<void> | void;
-	/** Directories to watch in dev mode. Changes trigger onPageBuild() + browser reload. */
-	watchDirs?: string[];
-	/**
-	 * Register a custom framework for island rendering.
-	 * Plugins providing this bypass the built-in frameworks/ directory entirely.
-	 */
-	frameworkConfig?: FrameworkConfig;
-};
 
 export type IslandComponent = {
 	sourcePath: string;

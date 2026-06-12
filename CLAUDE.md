@@ -24,16 +24,16 @@ bun loc              # LOC count (core only, excludes messages/)
 ## Monorepo Layout
 
 - `core/` — core SSG engine (the npm package `@vktrz/castro`)
-- `packages/` — packages and plugins (e.g., `@vktrz/castro-jsx`, `@vktrz/castro-solid`, `@vktrz/castro-tailwind`)
+- `packages/` — `create-castro`, the project scaffolder, and legacy plugins left for reference (may be removed in future)
 - `website/` — demo playground that consumes castro
-- `tests/site/` — minimal test site exercising castro-jsx, Solid (via plugin), Preact, and signal libraries
+- `tests/site/` — minimal test site exercising Preact islands, all hydration directives, CSS modules, and signals
 
 ### Core Module Structure (`core/src/`)
 
 Each subsystem is independently readable as a study in framework machinery — read module docblocks for file-level detail.
 
 - **Build pipeline** (`builder/`) — how a JSX tree, a layout tree, and island markers compose into a single `renderToString()` pass.
-- **Islands runtime** (`islands/`, `islands/frameworks/`, `islands/plugins/`) — how a build plugin swaps real components for HTML markers at compile time, the trick that makes islands work.
+- **Islands runtime** (`islands/`, `islands/frameworks/`) — how a build plugin swaps real components for HTML markers at compile time, the trick that makes islands work.
 - **Module cache** (`utils/cache.js`) — write-string-to-disk-then-import: the pattern bundlers use to bust ESM caches.
 - **Structured errors** (`utils/errors.js`, `utils/renderError.js`, `dev/liveReload.js`, `messages/`) — typed error codes, code-frame extraction, terminal renderer, browser overlay, a single satirical voice.
 - **Dev server** (`dev/`) — `Bun.serve`, file watchers, debounced rebuilds, SSE live reload.
@@ -74,15 +74,15 @@ Cross-file invariants. For per-step build mechanics, read the relevant module do
 
 ### Import Map & Dependency Vendoring
 
-Framework dependencies are vendored to `/dist/vendor/` by the internal `vendorDependencies` plugin. Each framework declares `clientDependencies`; users can add more via `castro.config.ts`. Plugins contribute import-map entries through `getImportMap`, which runs only on pages with islands (static pages have no import map). User `importMap` entries override plugin-generated ones. **Any import map key is automatically treated as external during island client compilation** — Bun won't bundle it.
+Framework client dependencies are vendored to `/dist/vendor/` by the builder's `vendorClientDeps()` step ([builder/vendor.js](core/src/builder/vendor.js)), which runs once after all pages build and only bundles the deps of frameworks actually rendered. The matching import map (`getIslandImportMap()`) is emitted per island page; static pages get none. **Every client dependency is treated as external during island client compilation** — Bun won't bundle it; the browser resolves it through the import map at runtime.
 
-### User Plugins
+### Extensibility
 
-User plugins implement `CastroPlugin` (see [types.d.ts](core/src/types.d.ts) for the full hook contract). Hooks: `getPageAssets`, `getImportMap`, `onPageBuild`, `onAfterBuild`, plus optional `frameworkConfig` and `watchDirs`. They run alongside internal plugins in the same lifecycle. In dev mode, `onPageBuild()` re-runs on every save for user plugins.
+Castro has no user plugin or extension API — it is a closed thing you read, not a framework you extend (see [NON-GOALS.md](NON-GOALS.md)).
 
 ### Dev Server
 
-File watchers on `pages/`, `layouts/`, `components/`, `public/`, and any plugin `watchDirs` rebuild on change. Editor temp files and OS metadata are filtered via a denylist glob; everything else triggers a rebuild. Rapid changes are debounced so builds never overlap. Cache busting relies on content-hashed filenames (`post.tsx.a1b2c3d4.js`) because Bun's module loader ignores query strings.
+File watchers on `pages/`, `layouts/`, `components/`, and `public/` rebuild on change. Editor temp files and OS metadata are filtered via a denylist glob; everything else triggers a rebuild. Rapid changes are debounced so builds never overlap. Cache busting relies on content-hashed filenames (`post.tsx.a1b2c3d4.js`) because Bun's module loader ignores query strings.
 
 **Build error handling:** Errors are structured as `CastroErrorPayload` (see [errors.d.ts](core/src/errors.d.ts)). Two independent renderers consume the payload: `renderErrorToTerminal()` colors the terminal output, and the browser overlay (`core/src/dev/liveReload.js`) renders a shadow DOM tree. On failure, the server logs to the terminal and sends the payload over SSE — no reload, keeping the last good page visible. On the next successful build, `reload` is sent. The payload shape decouples structure from voice — the renderers consume a `CastroErrorPayload`, while the title/hint wording lives separately in `messages/`. Test-errors sandbox at `tests/errors/` has 14 isolated error cases for manual verification.
 
@@ -107,13 +107,11 @@ All user-facing strings live in `core/src/messages/`. The error table is decoupl
 
 ## Key Design Decisions
 
-- **Preact is permanently the page/layout rendering engine.** Pages and layouts always use Preact for SSR and VNode tree construction. Preact is a build-time dependency only — never shipped to the browser for static pages. Other frameworks (castro-jsx, Solid) are limited to islands.
-- **Multi-framework is a plugin-level capability, not a headline feature.** Islands can use different frameworks, but they can't nest, share state across frameworks, or avoid TypeScript pragmas.
+- **Preact is permanently the rendering engine.** Pages, layouts, and islands all use Preact for SSR and VNode tree construction. Preact is a build-time dependency only — never shipped to the browser for static pages; island pages load it from `dist/vendor/` via the import map.
 - **Layouts receive `children` (VNode)**, not a pre-rendered `content` HTML string. The entire tree renders in a single `renderToString()` pass.
-- **Framework detection via AST scanning.** Each framework declares `detectImports` (e.g. `["solid-js"]`); the registry scans an island's imports and picks the first match, defaulting to Preact. Plugins register additional frameworks via `CastroPlugin.frameworkConfig`.
+- **Framework detection via AST scanning.** The registry scans an island's imports against each framework config's `detectImports` and defaults to Preact. Only the built-in Preact config exists — the registry indirection is a remnant of the multi-framework phase (see [frameworkConfig.js](core/src/islands/frameworkConfig.js)).
 - **Island imports must use relative paths**, not tsconfig aliases. The `islandMarkerPlugin` intercepts imports at the AST level; tsconfig path aliases resolve after Bun's AST walk, so aliased imports don't trigger island detection.
 - **tsconfig.json path aliases** are supported natively in page imports. `getProjectDependencies()` externalizes all `package.json` dependencies, so Bun resolves local alias paths normally.
-- **Multi-framework type checking** requires per-file `/** @jsxImportSource */` pragmas for non-default frameworks (e.g. `/** @jsxImportSource solid-js */` for Solid). The pragma is the only mechanism `tsc` honors per-file — TypeScript uses the root tsconfig's JSX settings for all transitively imported files regardless of any nested tsconfig.
 - **Three hydration directives: `comrade:eager`, `comrade:patient`, `comrade:visible` (default).** `comrade:eager` hydrates immediately. `comrade:visible` hydrates on intersection. `comrade:patient` uses `requestIdleCallback` with load-event gating and Safari fallback.
 
 
@@ -121,12 +119,12 @@ All user-facing strings live in `core/src/messages/`. The error table is decoupl
 
 Optional `castro.config.{ts,js,mjs}` exports a `CastroConfig` — the loader tries `.ts`, `.js`, `.mjs` in order. `defineConfig` (re-exported from `@vktrz/castro`) is an identity function for type inference. All options are in [core/src/types.d.ts](core/src/types.d.ts).
 
-Two non-obvious behaviors: `srcDir` shifts where pages/layouts/components are read from but never affects output paths — `dist/` is always the root. `importMap` entries override plugin-generated entries on island pages; static pages get no import map.
+Non-obvious behavior: `srcDir` shifts where pages/layouts/components are read from but never affects output paths — `dist/` is always the root. Island pages get an auto-generated import map for the vendored framework deps; static pages get none.
 
 
 ## Testing
 
-`bun test:site` builds and verifies `tests/site/`, which exercises the full pipeline across castro-jsx, Preact, and Solid (all directives, multi-framework pages, CSS modules, component composition). The site mirrors a real project's structure — **use it as the reference for expected patterns** when you're unsure how something should be wired up.
+`bun test:site` builds and verifies `tests/site/`, which exercises the full pipeline with Preact islands (all directives, multiple islands per page, CSS modules, component composition, signals). The site mirrors a real project's structure — **use it as the reference for expected patterns** when you're unsure how something should be wired up.
 
 
 ## Non-Goals

@@ -3,9 +3,6 @@
  *
  * Loads optional castro.config.(ts|js|mjs) from the project root.
  * Missing file = all defaults. No validation — bad values fail loudly.
- *
- * User plugins (CastroPlugin[]) are extracted separately
- * so they can be wired into the build pipeline without polluting config.
  */
 
 /** @import { CastroConfig, DefaultConfig } from './types' */
@@ -39,9 +36,5 @@ for (const ext of [".ts", ".js", ".mjs"]) {
 	}
 }
 
-const { plugins: userPlugins = [], ...userRest } = userConfig;
-
 /** @type {CastroConfig & DefaultConfig} */
-export const config = { ...defaults, ...userRest };
-
-export { userPlugins };
+export const config = { ...defaults, ...userConfig };

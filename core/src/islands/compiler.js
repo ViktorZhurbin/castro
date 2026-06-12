@@ -17,14 +17,13 @@
  */
 
 import { basename, dirname, extname, resolve } from "node:path/posix";
-import { config as castroConfig } from "../config.js";
 import { safeBunBuild } from "../utils/bunBuild.js";
 import { getProjectDependencies } from "../utils/dependencies.js";
 import { CastroError } from "../utils/errors.js";
 import { getFrameworkConfig } from "./frameworkConfig.js";
 
 /**
- * @import { IslandComponent, FrameworkConfig } from "../types.d.ts"
+ * @import { IslandComponent } from "../types.d.ts"
  */
 
 /**
@@ -107,7 +106,15 @@ async function compileIslandClient({ sourcePath, outputDir, frameworkId }) {
 	`.trim();
 
 	const buildConfig = frameworkConfig.getBuildConfig();
-	const external = getClientExternals(frameworkConfig, buildConfig);
+
+	// The framework's client deps are vendored and resolved via the page's
+	// import map, so they must stay external — Bun must not bundle them.
+	const external = [
+		...new Set([
+			...(buildConfig.external ?? []),
+			...(frameworkConfig.clientDependencies ?? []),
+		]),
+	];
 
 	// Path must be absolute and in the same directory as the island source,
 	// so the relative import ('./${basename}') resolves to the real file
@@ -199,31 +206,4 @@ async function compileIslandSSR({ sourcePath, frameworkId }) {
 	const output = result.outputs[0];
 
 	return output ? await output.text() : "";
-}
-
-/**
- * Build the deduplicated `external` list for the client compile step.
- *
- * Anything in the import map ships as a browser import the user resolves
- * themselves, so it must not be bundled. Trailing slashes (used by the import
- * map for path-prefix entries like `"preact/"`) are stripped so Bun matches
- * them as bare specifiers.
- *
- * @param {FrameworkConfig} frameworkConfig
- * @param {Partial<Bun.BuildConfig>} buildConfig
- * @returns {string[]}
- */
-function getClientExternals(frameworkConfig, buildConfig) {
-	const userImportMapKeys = Object.keys(castroConfig.importMap ?? {}).map(
-		(key) => key.replace(/\/$/, ""),
-	);
-
-	return [
-		...new Set([
-			...(buildConfig.external ?? []),
-			...(frameworkConfig.clientDependencies ?? []),
-			...(castroConfig.clientDependencies ?? []),
-			...userImportMapKeys,
-		]),
-	];
 }

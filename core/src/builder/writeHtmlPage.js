@@ -8,10 +8,10 @@
  */
 
 import { join } from "node:path/posix";
-import { config as castroConfig } from "../config.js";
+import { ISLAND_RUNTIME_FILE } from "../constants.js";
 import { getFrameworkConfig } from "../islands/frameworkConfig.js";
-import { allPlugins } from "../islands/plugins.js";
 import { islands } from "../islands/registry.js";
+import { getIslandImportMap } from "./vendor.js";
 
 /**
  * @import { Asset, ImportsMap } from '../types.d.ts'
@@ -58,27 +58,16 @@ async function resolvePageContext({
 		}
 	}
 
+	// Island pages load the hydration runtime and an import map pointing at the
+	// vendored framework dependencies. Static pages get neither.
 	/** @type {ImportsMap} */
-	const importMap = {};
-
-	for (const plugin of allPlugins) {
-		// Plugin assets: island runtime script, CSS links, etc.
-		if (plugin.getPageAssets) {
-			assets.push(...plugin.getPageAssets({ hasIslands }));
-		}
-
-		// Import maps are only needed on pages with islands — no point building them
-		// for static pages. Plugins add entries based on usedFrameworks.
-		if (hasIslands && plugin.getImportMap) {
-			const pluginImportMap = await plugin.getImportMap({ usedFrameworks });
-
-			Object.assign(importMap, pluginImportMap);
-		}
-	}
+	const importMap = hasIslands ? getIslandImportMap(usedFrameworks) : {};
 
 	if (hasIslands) {
-		// User importMap entries override plugin-generated ones.
-		Object.assign(importMap, castroConfig.importMap);
+		assets.push({
+			tag: "script",
+			attrs: { type: "module", src: `/${ISLAND_RUNTIME_FILE}` },
+		});
 	}
 
 	// Island CSS is inlined as <style> rather than written to disk because each
