@@ -226,23 +226,10 @@ export async function startDevServer() {
 			return;
 		}
 
-		const modTimes = new Map();
-
 		for await (const event of watcher) {
 			if (!event.filename || isIgnored(event.filename)) continue;
 
 			const filePath = join(dir, event.filename);
-
-			try {
-				const stats = await stat(filePath);
-				if (stats.isDirectory() || modTimes.get(filePath) === stats.mtimeMs) {
-					continue;
-				}
-				modTimes.set(filePath, stats.mtimeMs);
-			} catch {
-				// File was deleted, proceed to rebuild
-				modTimes.delete(filePath);
-			}
 
 			logFileChanged(filePath);
 			rebuild.schedule();
