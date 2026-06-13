@@ -20,7 +20,7 @@ import { CastroError } from "../utils/errors.js";
  */
 export function parseFrontmatter(fileContent, sourceFilePath) {
 	/**
-	 * Regex based on "vfile-matter": https://github.com/vfile/vfile-matter/blob/main/lib/index.js#L37
+	 * Grammar ported from vfile-matter (github.com/vfile/vfile-matter).
 	 * ^---               - Start of file + opening delimiter.
 	 * (?:\r?\n|\r)       - Line break (LF, CRLF, or CR).
 	 * (?<yaml>[\s\S]*?)  - Named group "yaml": non-greedy match of content.
@@ -38,11 +38,10 @@ export function parseFrontmatter(fileContent, sourceFilePath) {
 	}
 
 	try {
-		// match[0] is the whole block (---yaml---)
 		const yamlBlock = match.groups.yaml.trim();
+		// match[0] spans both fences, so the body is everything after it.
 		const markdown = fileContent.slice(match[0].length);
 
-		// Using Bun's native high-performance YAML parser
 		const parsed = yamlBlock ? Bun.YAML.parse(yamlBlock) : {};
 
 		const meta = /** @type {Record<string, unknown>} */ (
