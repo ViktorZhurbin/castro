@@ -72,8 +72,9 @@ export async function renderPage({
 	const finalHtml = renderToString(vnodeToRender);
 
 	const state = getPageState();
+
 	await writeHtmlPage(finalHtml, outputFilePath, {
-		usedIslands: state.usedIslands,
 		cssTags,
+		usedIslands: state.usedIslands,
 	});
 }
