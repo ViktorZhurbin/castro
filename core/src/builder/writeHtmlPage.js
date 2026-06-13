@@ -33,20 +33,14 @@ export async function writeHtmlPage(rawHtml, outputPath, options) {
  * @returns {Promise<string[]>}
  */
 async function collectHeadTags({ usedIslands, cssTags = [] }) {
-	const hasIslands = usedIslands.size > 0;
-	const tags = [];
+	const tags = [...cssTags];
 
 	// Island pages get an import map pointing at the vendored Preact
 	// dependencies, plus the hydration runtime. Static pages get neither.
-	if (hasIslands) {
+	if (usedIslands.size > 0) {
 		const imports = JSON.stringify({ imports: getIslandImportMap() }, null, 2);
 
 		tags.push(`<script type="importmap">${imports}</script>`);
-	}
-
-	tags.push(...cssTags);
-
-	if (hasIslands) {
 		tags.push(`<script type="module" src="/${ISLAND_RUNTIME_FILE}"></script>`);
 	}
 
