@@ -16,7 +16,7 @@ import {
 } from "../constants.js";
 import { getModule } from "../utils/cache.js";
 import { compileIsland } from "./compiler.js";
-import { getIslandId } from "./utils.js";
+import { getIslandId } from "./islandId.js";
 
 /**
  * @import { IslandComponent } from '../types.d.ts'

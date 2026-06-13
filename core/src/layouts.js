@@ -9,10 +9,10 @@
 
 import { access } from "node:fs/promises";
 import { basename, extname, join } from "node:path/posix";
-import { compileJSX } from "../builder/compileJsx.js";
-import { writeCSSFiles } from "../builder/writeCss.js";
-import { LAYOUTS_DIR, OUTPUT_DIR } from "../constants.js";
-import { CastroError } from "../utils/errors.js";
+import { compileJSX } from "./builder/compileJsx.js";
+import { writeCSSFiles } from "./builder/writeCss.js";
+import { LAYOUTS_DIR, OUTPUT_DIR } from "./constants.js";
+import { CastroError } from "./utils/errors.js";
 
 /**
  * @import { VNode } from "preact";

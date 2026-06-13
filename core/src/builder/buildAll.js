@@ -16,12 +16,13 @@ import { styleText } from "node:util";
 import {
 	ISLAND_RUNTIME_FILE,
 	OUTPUT_DIR,
+	PAGE_EXT_PATTERN,
 	PAGES_DIR,
 	PUBLIC_DIR,
 } from "../constants.js";
-import { runWithPageState } from "../islands/marker.js";
+import { runWithPageState } from "../islands/pageState.js";
 import { islands } from "../islands/registry.js";
-import { layouts } from "../layouts/registry.js";
+import { layouts } from "../layouts.js";
 import { messages } from "../messages/index.js";
 import { CastroError } from "../utils/errors.js";
 import { buildPage } from "./buildPage.js";
@@ -84,14 +85,15 @@ export async function buildAll() {
 }
 
 /**
- * Copy the <castro-island> custom-element runtime to dist/. The same source
- * (islands/hydration.js) is inlined per-island for the components; this is the
- * one shared script tag the page loads to upgrade the markers.
+ * Copy the <castro-island> custom-element runtime to dist/. This is the one
+ * shared script tag every island page loads; it upgrades the SSR markers by
+ * importing each island's per-page bundle and mounting it. (The per-island
+ * mount function comes from islands/preact.client.js, inlined at compile time.)
  */
 async function copyIslandRuntime() {
 	await Bun.write(
 		join(OUTPUT_DIR, ISLAND_RUNTIME_FILE),
-		Bun.file(join(import.meta.dir, "../islands/hydration.js")),
+		Bun.file(join(import.meta.dir, "../islands/castroIsland.js")),
 	);
 }
 
@@ -112,7 +114,7 @@ async function scanPages() {
 			continue;
 		}
 
-		const outputPath = sourcePath.replace(/\.(md|[jt]sx)$/, ".html");
+		const outputPath = sourcePath.replace(PAGE_EXT_PATTERN, ".html");
 
 		// Example: both foo.md and foo.jsx try to be foo.html
 		if (pagesMap.has(outputPath)) {

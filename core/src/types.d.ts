@@ -94,5 +94,9 @@ export type PageMeta = {
 
 export type AnyFunction = (...args: never) => unknown;
 
-/** Identity function that provides type inference for castro config file */
+/**
+ * Identity function that provides type inference for castro config file.
+ * Runtime implementation lives in index.js (the package entry); this is the
+ * type the package exports under the same name.
+ */
 export function defineConfig(config: CastroConfig): CastroConfig;

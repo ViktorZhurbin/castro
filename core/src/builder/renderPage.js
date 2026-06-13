@@ -11,8 +11,9 @@
 
 import { basename } from "node:path/posix";
 import { renderToString } from "preact-render-to-string";
-import { getPageState } from "../islands/marker.js";
-import { layouts } from "../layouts/registry.js";
+import { PAGE_EXT_PATTERN } from "../constants.js";
+import { getPageState } from "../islands/pageState.js";
+import { layouts } from "../layouts.js";
 import { CastroError } from "../utils/errors.js";
 import { writeHtmlPage } from "./writeHtmlPage.js";
 
@@ -59,7 +60,7 @@ export async function renderPage({
 		cssTags.push(...(layouts.getCssTags(layout.id) ?? []));
 
 		const title =
-			pageMeta.title || basename(sourceFilePath).replace(/\.(md|[jt]sx)$/, "");
+			pageMeta.title || basename(sourceFilePath).replace(PAGE_EXT_PATTERN, "");
 
 		vnodeToRender = layout.component({
 			...pageMeta,

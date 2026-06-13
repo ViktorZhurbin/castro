@@ -37,12 +37,12 @@ Each subsystem is independently readable as a study in framework machinery — r
 - **Module cache** (`utils/cache.js`) — write-string-to-disk-then-import: the pattern bundlers use to bust ESM caches.
 - **Structured errors** (`utils/errors.js`, `utils/renderError.js`, `dev/liveReload.js`, `messages/`) — typed error codes, code-frame extraction, terminal renderer, browser overlay, a single satirical voice.
 - **Dev server** (`dev/`) — `Bun.serve`, file watchers, debounced rebuilds, SSE live reload.
-- **Per-page state** (`islands/marker.js`) — `AsyncLocalStorage` for isolating concurrent build state without globals.
+- **Per-page state** (`islands/pageState.js`) — `AsyncLocalStorage` for isolating concurrent build state without globals.
 - `cli.js`, `config.js`, `constants.js` — entry point, config loader, shared path constants.
-- `layouts/` — layout discovery and compilation.
+- `layouts.js` — layout discovery and compilation.
 - `types.d.ts`, `jsx.d.ts` — structured error payload types, shared types, JSX namespace for custom directives.
 
-The reference implementations for hydration patterns are [core/src/islands/hydration.js](core/src/islands/hydration.js) and [core/src/islands/compiler.js](core/src/islands/compiler.js) — read them before changing how islands work.
+The reference implementations for hydration patterns are [core/src/islands/castroIsland.js](core/src/islands/castroIsland.js) and [core/src/islands/compiler.js](core/src/islands/compiler.js) — read them before changing how islands work.
 
 
 ## Reference Documentation
@@ -57,7 +57,7 @@ The reference implementations for hydration patterns are [core/src/islands/hydra
 | Bun.serve, Bun.file, Glob, import.meta | `bun-apis.md`                                              |
 | Dev server (SSE, file watching)        | `core/src/dev/server.js` (read the source)                          |
 | Markdown processing                    | `bun-markdown.md`                                          |
-| Island hydration, custom elements      | `core/src/islands/hydration.js` (read the source)                   |
+| Island hydration, custom elements      | `core/src/islands/castroIsland.js` (read the source)                |
 
 
 ## Architecture
@@ -70,7 +70,7 @@ Cross-file invariants. For per-step build mechanics, read the relevant module do
 
 ### Island Tracking
 
-`marker.js` tracks which islands each page uses via AsyncLocalStorage — each page build runs inside `runWithPageState()`, which provides a fresh `{ usedIslands }` context scoped to that async call tree. This isolation is what makes parallel builds safe. Only CSS for islands actually rendered on a page gets injected; the `<castro-island>` runtime script and the vendored Preact bundle are also gated on island usage.
+`pageState.js` provides the AsyncLocalStorage context: each page build runs inside `runWithPageState()`, which gives it a fresh `{ usedIslands }` set scoped to that async call tree. `marker.js` records islands into that set as it renders them. This isolation is what makes parallel builds safe. Only CSS for islands actually rendered on a page gets injected; the `<castro-island>` runtime script and the vendored Preact bundle are also gated on island usage.
 
 ### Import Map & Dependency Vendoring
 
@@ -95,7 +95,7 @@ File watchers on `pages/`, `layouts/`, `components/`, and `public/` rebuild on c
 - **No `createElement`** — use JSX or `h()` from preact. **No non-null assertions** (`foo!.bar`).
 - **Module docblocks**: 3-8 lines on the file's architectural role. **Inline comments**: answer "why?" or "why not the obvious way?" — delete anything that restates what the code says. **JSDoc prose**: only when name + types aren't enough.
 - Never condescend. No "Educational note:" or "Simply put:" prefixes.
-- Benchmark: [compiler.js](core/src/islands/compiler.js) and [hydration.js](core/src/islands/hydration.js).
+- Benchmark: [compiler.js](core/src/islands/compiler.js) and [castroIsland.js](core/src/islands/castroIsland.js).
 
 
 ## Messages

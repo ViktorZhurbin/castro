@@ -9,16 +9,13 @@
  * 2. Renders it to HTML (server-side)
  * 3. Wraps it in a <castro-island> custom element for client hydration
  *
- * Also tracks which islands each page uses, so only their CSS gets injected.
- *
- * Island tracking is scoped per-page using AsyncLocalStorage. Each page build
- * runs inside runWithPageState(), which provides a fresh context. This isolates
- * pageState.usedIslands across concurrent page builds.
+ * Also records which islands the page uses (into the per-page state from
+ * pageState.js), so only their CSS gets injected.
  */
 
-import { AsyncLocalStorage } from "node:async_hooks";
 import { h } from "preact";
 import { CastroError } from "../utils/errors.js";
+import { getPageState } from "./pageState.js";
 import { renderIslandToString } from "./preact.js";
 import { islands } from "./registry.js";
 
@@ -28,49 +25,6 @@ import { islands } from "./registry.js";
  *
  * @typedef {IslandComponent & { ssrModule: NonNullable<IslandComponent["ssrModule"]> }} LoadedIsland
  */
-
-/**
- * AsyncLocalStorage for per-page island tracking.
- * @type {AsyncLocalStorage<{ usedIslands: Set<string> }>}
- */
-const pageStateStore = new AsyncLocalStorage();
-
-/**
- * Run a function with a fresh per-page tracking context.
- * Returns the populated state so callers can aggregate across pages.
- *
- * @param {() => Promise<void>} fn
- * @returns {Promise<{ usedIslands: Set<string> }>}
- */
-export async function runWithPageState(fn) {
-	const state = {
-		/** @type {Set<string>} */
-		usedIslands: new Set(),
-	};
-	await pageStateStore.run(state, fn);
-	return state;
-}
-
-/**
- * Get the current page's tracking state.
- * Must only be called inside runWithPageState().
- *
- * Throws a plain Error (not CastroError): this only fires if the build
- * pipeline forgot to wrap a render in runWithPageState() — a Castro-internal
- * bug that should surface as a stack trace, not a user-facing error card.
- *
- * @returns {{ usedIslands: Set<string> }}
- */
-export function getPageState() {
-	const state = pageStateStore.getStore();
-	if (!state) {
-		throw new Error(
-			"getPageState() called outside runWithPageState(). " +
-				"Every page render must be wrapped — see buildAll.js.",
-		);
-	}
-	return state;
-}
 
 /**
  * Render an island marker component.
