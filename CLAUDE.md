@@ -126,11 +126,15 @@ Non-obvious behavior: `srcDir` shifts where pages/layouts/components are read fr
 `bun test:site` builds and verifies `tests/site/`, which exercises the full pipeline with Preact islands (all directives, multiple islands per page, CSS modules, component composition, signals). The site mirrors a real project's structure — **use it as the reference for expected patterns** when you're unsure how something should be wired up.
 
 
-## Non-Goals
+## Two Forces
 
-See ./NON-GOALS.md
+Castro is pulled by two opposing pressures. Both are deliberate; when they conflict, name which one you're serving and why.
 
-When evaluating any defensive code path, ask whether it teaches framework machinery or whether it survives one of the cases listed. If the latter, it's a candidate for deletion with a comment pointing here.
+**Brevity** cuts defensive code, edge cases, plugins, and extensibility until they're genuinely needed. See [NON-GOALS.md](./NON-GOALS.md) for what this means in practice and the deletion rule. When evaluating any defensive code path, ask whether it teaches framework machinery or whether it merely survives one of the cases listed there. If the latter, it's a candidate for deletion with a comment pointing to NON-GOALS.
+
+**Day-to-day DX** keeps a few subsystems that cost lines on purpose — structured errors, the satirical voice, the live-reload dev server. See [NON-NEGOTIABLES.md](./NON-NEGOTIABLES.md) for the list and why each survives a brevity pass.
+
+The two forces are not symmetric: brevity is the default, and the non-negotiables are the named exceptions. Anything outside that list earns its lines by teaching framework machinery.
 
 
 ## What NOT to Change
