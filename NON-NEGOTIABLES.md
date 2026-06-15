@@ -10,16 +10,16 @@ Brevity is the default; these are the named exceptions. Anything outside this li
 
 `utils/errors.js`, `utils/renderError.js`, `dev/liveReload.js`, `messages/`.
 
-Typed error codes, code-frame extraction, a terminal renderer, and a browser overlay — all consuming one `CastroErrorPayload`. The indirection (structure decoupled from voice, two renderers) reads like over-engineering against a pure-brevity lens, but it's what turns a raw stack trace into a scannable, actionable error surface. The lines buy debugging, not decoration.
+One `CastroErrorPayload`, two renderers (terminal + browser overlay), structure decoupled from voice. The indirection is the part a trimmer will misread as over-engineering; it's what turns a raw stack trace into a scannable, actionable error surface.
 
 ## The satirical voice
 
 `messages/` (rules in [core/src/messages/README.md](core/src/messages/README.md)).
 
-The communist-satire layer is the project's identity, not flavor text. Every user-facing string routes through `messages/` so the voice stays consistent and the jokes stay at the edges (openings, closings, error punchlines). A brevity pass might see inline strings as shorter; they aren't worth the loss of voice and consistency.
+Every user-facing string routes through `messages/` so the communist-satire voice stays consistent and the jokes stay at the edges (openings, closings, error punchlines). Inline strings look shorter; that's the misread — the voice is the project's identity, not flavor text.
 
 ## The live-reload dev server
 
 `dev/`.
 
-`Bun.serve` with SSE live reload, debounced rebuilds that never overlap, and the FSEvents mtime filter that breaks the macOS self-rebuild loop. None of this is required to *produce* a build, but all of it is required for the local iteration loop to feel good. Smooth dev is the daily payoff that justifies the code.
+`Bun.serve` with SSE live reload, debounced rebuilds that never overlap, and the FSEvents mtime filter that breaks the macOS self-rebuild loop. None of it is required to *produce* a build, which is what makes it look cuttable; all of it is required for the local iteration loop to feel good.
