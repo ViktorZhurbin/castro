@@ -3,8 +3,8 @@
 
    Bundle failed
 
-   <FIXTURE>/layouts/default.jsx:2:25
+   <FIXTURE>/layouts/default.jsx:2:26
    > 2    return <div>{children}
-                                ^
+                                 ^
 
    → Check the code frame and error location above

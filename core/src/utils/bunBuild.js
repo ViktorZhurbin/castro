@@ -41,10 +41,15 @@ export async function safeBunBuild(config) {
  * @returns {CodeFrame}
  */
 function bunLogToFrame(log) {
+	const position = log.position;
+
 	return {
-		file: log.position?.file,
-		line: log.position?.line,
-		column: log.position?.column,
-		lineText: log.position?.lineText,
+		file: position?.file,
+		line: position?.line,
+		// Bun/esbuild columns are 0-based; normalize to 1-based here so the
+		// displayed location, the vscode:// link, and both caret renderers all
+		// share the editor convention. Renderers subtract 1 for the 0-based offset.
+		column: position ? position.column + 1 : undefined,
+		lineText: position?.lineText,
 	};
 }

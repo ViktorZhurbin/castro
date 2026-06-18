@@ -132,7 +132,7 @@ class CastroErrorOverlay extends HTMLElement {
 							? `
           <div class="line">
             <div class="line-num"></div>
-            <div class="caret">${" ".repeat(frame.column)}^</div>
+            <div class="caret">${" ".repeat(frame.column - 1)}^</div>
           </div>`
 							: ""
 					}

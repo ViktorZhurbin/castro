@@ -13,7 +13,7 @@ const COLORS = /** @type {const} */ ({
 	rawError: "redBright",
 	note: "gray",
 	location: "gray",
-	lineNumber: "red",
+	lineNumber: "gray",
 	caret: "red",
 	hint: "yellow",
 });
@@ -87,8 +87,8 @@ function renderFrame(frame) {
 		);
 		lines.push(`${errLinePrefix}${LINE_SEPARATOR}${frame.lineText}`);
 
-		// Bun's position.column is 1-based; subtract 1 so column 1 lands
-		// directly under the first character of lineText.
+		// column is 1-based (normalized in bunBuild.js); subtract 1 so
+		// column 1 lands directly under the first character of lineText.
 		if (frame.column !== undefined) {
 			const prefixWidth =
 				LINE_MARKER.length + String(lineNum).length + LINE_SEPARATOR.length;
