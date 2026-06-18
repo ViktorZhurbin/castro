@@ -136,6 +136,8 @@ Castro is pulled by two opposing pressures. Both are deliberate; when they confl
 
 The two forces are not symmetric: brevity is the default, and the non-negotiables are the named exceptions. Anything outside that list earns its lines by teaching framework machinery.
 
+The non-negotiables list reflects current decisions, not permanent ones — it's direction for agents, not a constraint on the maintainer, who revises it freely. Each entry is justified by a design that holds *today*; if an entry is removed, the architecture it protected gets simplified to match (e.g. drop the browser overlay and the two-renderer payload split collapses with it). An agent proposes such changes rather than making them unprompted. See [NON-NEGOTIABLES.md](./NON-NEGOTIABLES.md).
+
 
 ## What NOT to Change
 
