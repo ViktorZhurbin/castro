@@ -45,32 +45,21 @@ const overlaySheet = new CSSStyleSheet();
 overlaySheet.replaceSync(`
   :host {
     position: fixed; inset: 0; z-index: 99999;
+    padding: 2rem; overflow-y: auto;
     background: rgba(10, 10, 10, 0.95); color: #ccc;
-    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-    font-size: 0.875rem; line-height: 1.5;
-    padding: 2rem; box-sizing: border-box; overflow-y: auto;
+    font: 0.875rem/1.6 ui-monospace, SFMono-Regular, Consolas, monospace;
   }
-  a { color: #64b5f6; text-decoration: none; }
-  a:hover { text-decoration: underline; }
-
-  .title { color: #ff5f57; font-size: 1.2rem; font-weight: bold; margin-bottom: 0.5rem; }
-  .message { color: #fff; margin-bottom: 1rem; }
-  .raw-error { color: #ff8a80; background: rgba(255, 95, 87, 0.1); padding: 0.75rem; margin-bottom: 1rem; border-radius: 4px; border-left: 3px solid #ff5f57; }
-
-  .notes { list-style: "· "; padding-left: 1.5rem; color: #bbb; margin-bottom: 1rem; }
-
-  .frame { margin: 1rem 0; padding: 1rem; background: #222; border: 1px solid #444; border-radius: 4px; }
-  .frame-code { overflow-x: auto; margin-top: 0.75rem; background: #111; padding: 0.5rem; border-radius: 3px; }
-
-  .line { display: flex; }
-  .line-num { width: 3rem; text-align: right; padding-right: 1rem; color: #666; flex-shrink: 0; }
-  .line-text { white-space: pre; color: #e8e8e8; }
-
-  .error-row .line-num { color: #ff5f57; background: rgba(255, 95, 87, 0.1); }
-  .error-row .line-text { color: #fff; background: rgba(255, 95, 87, 0.1); flex: 1; }
-  .caret { color: #ff5f57; white-space: pre; }
-
-  .hint { color: #ffd54f; margin-top: 1.5rem; border-top: 1px solid #444; padding-top: 1rem; }
+  a { color: #64b5f6; }
+  .container { display: flex; flex-direction: column; gap: 1rem; }
+  .title { color: #ff5f57; font-size: 1.2rem; font-weight: bold; }
+  .message, .line-text { color: #fff; }
+  .raw-error { color: #ff8a80; }
+  .notes { list-style: "· "; padding-left: 1.5rem; color: #bbb; }
+  .frame-code { margin-top: 0.5rem; overflow-x: auto; background: #111; padding: 0.5rem 0; border: 1px solid #444; }
+  .line { display: flex; white-space: pre; }
+  .line-num { width: 2rem; padding-right: 1rem; text-align: right; color: rgba(255, 255, 255, 0.4); flex-shrink: 0; }
+  .caret { color: #ff5f57; }
+  .hint { color: #ffd54f; }
 `);
 
 class CastroErrorOverlay extends HTMLElement {
@@ -86,14 +75,16 @@ class CastroErrorOverlay extends HTMLElement {
 		if (!this.shadowRoot || !this.payload) return;
 
 		this.shadowRoot.innerHTML = `
-      <div class="title">❌ ${escapeHtml(this.payload.title)}</div>
-      ${this.payload.message ? `<div class="message">${escapeHtml(this.payload.message)}</div>` : ""}
-      ${this.payload.errorMessage ? `<div class="raw-error">${escapeHtml(this.payload.errorMessage)}</div>` : ""}
+			<div class="container">
+				<div class="title">❌ ${escapeHtml(this.payload.title)}</div>
+				${this.payload.message ? `<div class="message">${escapeHtml(this.payload.message)}</div>` : ""}
+				${this.payload.errorMessage ? `<div class="raw-error">${escapeHtml(this.payload.errorMessage)}</div>` : ""}
 
-      ${this.renderNotes(this.payload.notes)}
-      ${this.payload.frames?.map((f) => this.renderFrame(f)).join("") || ""}
+				${this.renderNotes(this.payload.notes)}
+				${this.payload.frames?.map((f) => this.renderFrame(f)).join("") || ""}
 
-      ${this.payload.hint ? `<div class="hint">→ ${escapeHtml(this.payload.hint)}</div>` : ""}
+				${this.payload.hint ? `<div class="hint">→ ${escapeHtml(this.payload.hint)}</div>` : ""}
+			</div>
     `;
 	}
 
@@ -150,7 +141,7 @@ class CastroErrorOverlay extends HTMLElement {
 		}
 
 		return `
-      <div class="frame">
+      <div>
         ${header ? `<div>${header}</div>` : ""}
         ${codeSnippet}
       </div>
