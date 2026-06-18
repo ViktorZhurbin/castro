@@ -27,6 +27,7 @@ bun loc              # LOC count (core only, excludes messages/)
 - `packages/` — `create-castro`, the project scaffolder
 - `website/` — demo playground that consumes castro
 - `tests/site/` — minimal test site exercising Preact islands, all hydration directives, CSS modules, and signals
+- `tests/errors/` — isolated error cases for manual DX verification of the error overlay and terminal renderer
 
 ### Core Module Structure (`core/src/`)
 
@@ -102,8 +103,6 @@ File watchers on `pages/`, `layouts/`, `components/`, and `public/` rebuild on c
 
 All user-facing strings live in `core/src/messages/`. The error table is decoupled from structure: factories keyed by `ErrorCode` (typed via `ErrorMessages`) return the same `CastroErrorPayload` the renderers consume, so tone and structure stay independent. **Never use inline strings for user-facing output.** Use `styleText` from `node:util` for colored logs. Tone, satire, and emoji rules: see messages [README.md](core/src/messages/README.md).
 
-**After changing any error message text**, regenerate the stderr goldens: `UPDATE_SNAPSHOTS=1 bun test:errors`. Inspect the diff before committing — each golden in `tests/errors/*/expected.stderr.txt` should show clean structured output.
-
 
 ## Key Design Decisions
 
@@ -125,25 +124,19 @@ Non-obvious behavior: `srcDir` shifts where pages/layouts/components are read fr
 
 `bun test:site` builds and verifies `tests/site/`, which exercises the full pipeline with Preact islands (all directives, multiple islands per page, CSS modules, component composition, signals). The site mirrors a real project's structure — **use it as the reference for expected patterns** when you're unsure how something should be wired up.
 
+`bun test:errors` runs the error DX golden suite in `tests/errors/` — 13 isolated cases covering the terminal renderer and browser overlay. After changing any error message text or code affecting error rendering, regenerate goldens with `bun test:errors:up` and inspect the diff before committing.
+
 
 ## Two Forces
 
-Castro is pulled by two opposing pressures. Both are deliberate; when they conflict, name which one you're serving and why.
+**Brevity** is the default: cut defensive code, edge cases, plugins, and extensibility until genuinely needed. See [NON-GOALS.md](./NON-GOALS.md) for what this means in practice. For any defensive code path: if it merely survives an edge case rather than teaching framework machinery, delete it and leave a comment pointing to NON-GOALS instead.
 
-**Brevity** cuts defensive code, edge cases, plugins, and extensibility until they're genuinely needed. See [NON-GOALS.md](./NON-GOALS.md) for what this means in practice and the deletion rule. When evaluating any defensive code path, ask whether it teaches framework machinery or whether it merely survives one of the cases listed there. If the latter, it's a candidate for deletion with a comment pointing to NON-GOALS.
-
-**Day-to-day DX** keeps a few subsystems that cost lines on purpose — structured errors, the satirical voice, the live-reload dev server. See [NON-NEGOTIABLES.md](./NON-NEGOTIABLES.md) for the list and why each survives a brevity pass.
-
-The two forces are not symmetric: brevity is the default, and the non-negotiables are the named exceptions. Anything outside that list earns its lines by teaching framework machinery.
-
-The non-negotiables list reflects current decisions, not permanent ones — it's direction for agents, not a constraint on the maintainer, who revises it freely. Each entry is justified by a design that holds *today*; if an entry is removed, the architecture it protected gets simplified to match (e.g. drop the browser overlay and the two-renderer payload split collapses with it). An agent proposes such changes rather than making them unprompted. See [NON-NEGOTIABLES.md](./NON-NEGOTIABLES.md).
+**Day-to-day DX** is the named exception. A few subsystems cost lines on purpose; [NON-NEGOTIABLES.md](./NON-NEGOTIABLES.md) lists them and why. Anything outside that list earns its lines by teaching machinery. Propose changes to that list rather than acting on them unprompted.
 
 
 ## What NOT to Change
 
-- Every file should explain "why" — the subsystem framing and module docblocks are load-bearing documentation.
-- Comments may declare what Castro deliberately doesn't handle (see ./NON-GOALS.md). Such comments are preferred over defensive code paths.
-- Satire belongs in messages/docs/CLI output only, never in the code logic itself.
+- Module docblocks and subsystem framing are load-bearing — don't remove or hollow them out.
 - `website/dist/` and `tests/site/dist/` are ephemeral, cleaned on every build.
 
 
