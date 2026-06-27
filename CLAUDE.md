@@ -1,13 +1,12 @@
 # Castro
 
-Castro is a static site generator built to be read. The machinery that makes a real framework — build plugins, per-page async state, a module cache, a structured error system, SSE-based live reload — is each small enough to hold in your head and documented as its own self-contained piece. Communist satire wraps the prose; the code itself stays serious.
+Castro is a static site generator built to be read. Each module is small enough to hold in your head. Communist satire wraps the prose; the code itself stays serious.
 
 Preact for page rendering and islands, Bun for everything else.
 
 Peer reference: Fresh, early Astro, Eleventy + is-land, Marko, Capri, Mastro, Iles, Enhance.
 
-> Update this file when your changes affect what's documented here. Don't restate what lives in module docblocks or type definitions — link instead.
-
+> Update this file when your changes affect what's documented here. Don't restate what lives in module docblocks or type definitions — reference the file instead.
 
 ## Commands
 
@@ -25,49 +24,33 @@ bun loc              # LOC count (core only, excludes messages/)
 
 - `core/` — core SSG engine (the npm package `@vktrz/castro`)
 - `packages/` — `create-castro`, the project scaffolder
-- `website/` — demo playground that consumes castro
+- `website/` — demo playground that consumes castro. `website/tsconfig.json` is the canonical tsconfig; `packages/create-castro/template/tsconfig.json` shares the same `compilerOptions` but uses root-level `pages/`/`layouts/` instead of `src/`.
 - `tests/site/` — minimal test site exercising Preact islands, all hydration directives, CSS modules, and signals
 - `tests/errors/` — isolated error cases for manual DX verification of the error overlay and terminal renderer
 
 ### Core Module Structure (`core/src/`)
 
-Each subsystem is independently readable as a study in framework machinery — read module docblocks for file-level detail.
+Read module docblocks for file-level detail.
 
 - **Build pipeline** (`builder/`) — how a JSX tree, a layout tree, and island markers compose into a single `renderToString()` pass.
-- **Islands runtime** (`islands/`) — how a build plugin swaps real components for HTML markers at compile time, the trick that makes islands work. Preact-specific build values live in `islands/preact.js`.
+- **Islands runtime** (`islands/`) — how a build plugin swaps real components for HTML markers at compile time, the trick that makes islands work. Island imports must use relative paths, not tsconfig aliases — `islandMarkerPlugin` intercepts at the AST level, before aliases resolve.
 - **Module cache** (`utils/cache.js`) — write-string-to-disk-then-import: the pattern bundlers use to bust ESM caches.
-- **Structured errors** (`utils/errors.js`, `utils/renderError.js`, `dev/liveReload.js`, `messages/`) — typed error codes, code-frame extraction, terminal renderer, browser overlay, a single satirical voice.
+- **Structured errors** (`utils/errors.js`, `utils/renderError.js`, `dev/liveReload.js`, `messages/`) — typed error codes, code-frame extraction, terminal renderer, browser overlay, a single satirical voice. If the browser overlay is ever removed, collapse the payload/renderer split — a single-consumer abstraction isn't worth keeping.
 - **Dev server** (`dev/`) — `Bun.serve`, file watchers, debounced rebuilds, SSE live reload.
 - **Per-page state** (`islands/pageState.js`) — `AsyncLocalStorage` for isolating concurrent build state without globals.
 - `cli.js`, `config.js`, `constants.js` — entry point, config loader, shared path constants.
 - `layouts.js` — layout discovery and compilation.
 - `types.d.ts`, `jsx.d.ts` — structured error payload types, shared types, JSX namespace for custom directives.
 
-The reference implementations for hydration patterns are [core/src/islands/castroIsland.js](core/src/islands/castroIsland.js) and [core/src/islands/compiler.js](core/src/islands/compiler.js) — read them before changing how islands work.
-
-
-## Reference Documentation
-
-`.claude/docs/` has focused references for Bun APIs that differ from Node. Read the relevant file before working in an area.
-
-| Working on...                          | Read / look at                                              |
-|----------------------------------------|-------------------------------------------------------------|
-| Bun.build, bundler, compilation        | `bun-bundler.md` + `core/src/builder/compileJsx.js` (real usage)    |
-| Bun.build plugins, onLoad/onResolve    | `bun-plugins.md` + `core/src/islands/buildPlugins.js` (real usage)  |
-| Bun.Transpiler, AST import scanning    | `bun-transpiler.md` + `core/src/islands/buildPlugins.js`            |
-| Bun.serve, Bun.file, Glob, import.meta | `bun-apis.md`                                              |
-| Dev server (SSE, file watching)        | `core/src/dev/server.js` (read the source)                          |
-| Markdown processing                    | `bun-markdown.md`                                          |
-| Island hydration, custom elements      | `core/src/islands/castroIsland.js` (read the source)                |
-
+The reference implementations for hydration patterns are `core/src/islands/castroIsland.js` and `core/src/islands/compiler.js` — read them before changing how islands work.
 
 ## Architecture
 
-Cross-file invariants. For per-step build mechanics, read the relevant module docblock.
+How the subsystems connect across files. For mechanics inside a single step, read its module docblock.
 
 ### Build Pipeline
 
-`cli.js` → `buildAll()` orchestrates the build (see [buildAll.js](core/src/builder/buildAll.js) docblock for the step list). Two `Bun.build` plugins are always active: `castroExternalsPlugin` (keeps Castro internals external for singleton sharing) and `islandMarkerPlugin` (replaces `.island.tsx` imports with marker stubs). Compiled page modules are loaded via `getModule()` with content-hashed file paths to bust Bun's import cache (Bun caches by path, not query string). The full VNode tree — page + layout + islands — renders in a single synchronous `renderToString()` pass; SSR modules must be pre-loaded.
+`cli.js` → `buildAll()` orchestrates the build (see `core/src/builder/buildAll.js` docblock for the step list). Two `Bun.build` plugins are always active: `castroExternalsPlugin` (keeps Castro internals external for singleton sharing) and `islandMarkerPlugin` (replaces `.island.tsx` imports with marker stubs). Compiled page modules are loaded via `getModule()` with content-hashed file paths to bust Bun's import cache (Bun caches by path, not query string). The full VNode tree — page + layout + islands — renders in a single synchronous `renderToString()` pass; SSR modules must be pre-loaded.
 
 ### Island Tracking
 
@@ -75,81 +58,62 @@ Cross-file invariants. For per-step build mechanics, read the relevant module do
 
 ### Import Map & Dependency Vendoring
 
-The shared client dependencies — Preact's own (`PREACT_CLIENT_DEPS` in [islands/preact.js](core/src/islands/preact.js)) plus any `config.clientDependencies` — are vendored to `/dist/vendor/` by the builder's `vendorClientDeps()` step ([builder/vendor.js](core/src/builder/vendor.js)), which runs once after all pages build, only when some island was rendered. The matching import map (`getIslandImportMap()`) is emitted per island page; static pages get none. **Every shared client dependency is treated as external during island client compilation** — Bun won't bundle it; the browser resolves it through the import map at runtime. Anything not in that set gets bundled into each island bundle separately.
-
-### Extensibility
-
-Castro has no user plugin or extension API — it is a closed thing you read, not a framework you extend (see [NON-GOALS.md](NON-GOALS.md)).
+`PREACT_CLIENT_DEPS` plus any `config.clientDependencies` are vendored to `/dist/vendor/` by `vendorClientDeps()` (`core/src/builder/vendor.js`) — once, after all pages build, only when some island was rendered. Each island page gets a matching import map (`getIslandImportMap()`); static pages get none. Every dep in this set is treated as external during island compilation — the browser resolves it via the import map; everything else gets bundled per island.
 
 ### Dev Server
 
-File watchers on `pages/`, `layouts/`, `components/`, and `public/` rebuild on change. Editor temp files and OS metadata are filtered via a denylist glob; everything else triggers a rebuild. Rapid changes are debounced so builds never overlap. Cache busting relies on content-hashed filenames (`post.tsx.a1b2c3d4.js`) because Bun's module loader ignores query strings.
+File watchers on `pages/`, `layouts/`, `components/`, and `public/` rebuild on change. Editor temp files and OS metadata are filtered via a denylist glob; everything else triggers a rebuild. Rapid changes are debounced so builds never overlap. Cache busting relies on content-hashed filenames (`post.tsx.a1b2c3d4.js`) because Bun's module loader ignores query strings. The mtime filter in `dev/server.js` guards against a macOS-specific self-rebuild loop: FSEvents surfaces the build's own file reads as change events; Linux inotify doesn't — don't treat the filter as dead code when testing there.
 
-**Build error handling:** Errors are structured as `CastroErrorPayload` (see [types.d.ts](core/src/types.d.ts)). Two independent renderers consume the payload: `renderErrorToTerminal()` colors the terminal output, and the browser overlay (`core/src/dev/liveReload.js`) renders a shadow DOM tree. On failure, the server logs to the terminal and sends the payload over SSE — no reload, keeping the last good page visible. On the next successful build, `reload` is sent. The payload shape decouples structure from voice — the renderers consume a `CastroErrorPayload`, while the title/hint wording lives separately in `messages/`. Test-errors sandbox at `tests/errors/` has 13 isolated error cases for manual verification.
-
+**Build error handling:** Errors are structured as `CastroErrorPayload` (see `core/src/types.d.ts`). Two independent renderers consume the payload: `renderErrorToTerminal()` colors the terminal output, and the browser overlay (`core/src/dev/liveReload.js`) renders a shadow DOM tree. On failure, the server logs to the terminal and sends the payload over SSE — no reload, keeping the last good page visible. On the next successful build, `reload` is sent.
 
 ## Conventions
 
-- **ES Modules**, Bun 1.3.8+. **Biome** formatting: tabs, double quotes (`bun format`).
+- **ES Modules**, Bun 1.3.8+. **Biome** for linting/formatting.
 - **JSDoc** for all types and function intent. `.d.ts` files only for shared/reusable types.
 - **Bun-native APIs** over Node equivalents — `Bun.file().exists()`, `Bun.file().json()`, etc. If going async requires changing a caller, do it explicitly rather than falling back to Node.
-- **No `createElement`** — use JSX or `h()` from preact. **No non-null assertions** (`foo!.bar`).
+- **No `createElement`** — use JSX or `h()` from preact.
+- **No non-null assertions** (`foo!.bar`).
 - **Module docblocks**: 3-8 lines on the file's architectural role. **Inline comments**: answer "why?" or "why not the obvious way?" — delete anything that restates what the code says. **JSDoc prose**: only when name + types aren't enough.
 - Never condescend. No "Educational note:" or "Simply put:" prefixes.
-- Benchmark: [compiler.js](core/src/islands/compiler.js) and [castroIsland.js](core/src/islands/castroIsland.js).
-
 
 ## Messages
 
-All user-facing strings live in `core/src/messages/`. The error table is decoupled from structure: factories keyed by `ErrorCode` (typed via `ErrorMessages`) return the same `CastroErrorPayload` the renderers consume, so tone and structure stay independent. **Never use inline strings for user-facing output.** Use `styleText` from `node:util` for colored logs. Tone, satire, and emoji rules: see messages [README.md](core/src/messages/README.md).
-
+All user-facing strings live in `core/src/messages/`. Message factories keyed by `ErrorCode` (typed via `ErrorMessages`) return a `CastroErrorPayload`; wording lives here, structure lives in the payload. **Never use inline strings for user-facing output.** Use `styleText` from `node:util` for colored logs. Tone, satire, and emoji rules: see `core/src/messages/README.md`.
 
 ## Key Design Decisions
 
-- **Preact is the only framework — pages, layouts, and islands.** Preact handles SSR and VNode tree construction everywhere; it's a build-time dependency, never shipped to the browser for static pages. Islands are also Preact. The Preact-specific build values live in [islands/preact.js](core/src/islands/preact.js); there is no framework registry or detection.
-- **Layouts receive `children` (VNode)**, not a pre-rendered `content` HTML string. The entire tree renders in a single `renderToString()` pass.
-- **Island imports must use relative paths**, not tsconfig aliases. The `islandMarkerPlugin` intercepts imports at the AST level; tsconfig path aliases resolve after Bun's AST walk, so aliased imports don't trigger island detection.
-- **tsconfig.json path aliases** are supported natively in page imports. `getProjectDependencies()` externalizes all `package.json` dependencies, so Bun resolves local alias paths normally.
-- **Three hydration directives: `comrade:eager`, `comrade:patient`, `comrade:visible` (default).** `comrade:eager` hydrates immediately. `comrade:visible` hydrates on intersection. `comrade:patient` uses `requestIdleCallback` with load-event gating and Safari fallback.
-
+- Preact handles SSR and VNode tree construction everywhere, including islands; it's a build-time dependency, never shipped to the browser for static pages. Preact-specific build values live in `core/src/islands/preact.js`.
+- **Layouts receive `children` (VNode)**, not a pre-rendered `content` HTML string.
 
 ## Configuration
 
-Optional `castro.config.ts` exports a `CastroConfig` — that exact filename is the only one the loader checks. `defineConfig` (re-exported from `@vktrz/castro`) is an identity function for type inference. All options are in [core/src/types.d.ts](core/src/types.d.ts).
+The config file is optional; if present, it must be named exactly `castro.config.ts`. All options are in `core/src/types.d.ts`.
 
-Non-obvious behavior: `srcDir` shifts where pages/layouts/components are read from but never affects output paths — `dist/` is always the root. Island pages get an auto-generated import map for the vendored deps (Preact's plus `clientDependencies`); static pages get none.
-
+`srcDir` shifts the source root for pages/layouts/components; output is always `dist/` regardless.
 
 ## Testing
 
 `bun test:site` builds and verifies `tests/site/`, which exercises the full pipeline with Preact islands (all directives, multiple islands per page, CSS modules, component composition, signals). The site mirrors a real project's structure — **use it as the reference for expected patterns** when you're unsure how something should be wired up.
 
-`bun test:errors` runs the error DX golden suite in `tests/errors/` — 13 isolated cases covering the terminal renderer and browser overlay. After changing any error message text or code affecting error rendering, regenerate goldens with `bun test:errors:up` and inspect the diff before committing.
-
+`bun test:errors` runs the golden suite in `tests/errors/`, which covers the terminal renderer only. After changing `messages/` or `renderError.js`, regenerate goldens with `bun test:errors:up` and inspect the diff before committing. The browser overlay isn't golden-tested — verify it by hand: load an error case in the dev server and eyeball the overlay.
 
 ## Two Forces
 
-**Brevity** is the default: cut defensive code, edge cases, plugins, and extensibility until genuinely needed. See [NON-GOALS.md](./NON-GOALS.md) for what this means in practice. For any defensive code path: if it merely survives an edge case rather than teaching framework machinery, delete it and leave a comment pointing to NON-GOALS instead.
+**Brevity** is the default. For any defensive code path: if it merely survives an edge case rather than teaching framework machinery, delete it. The cases we deliberately don't handle:
 
-**Day-to-day DX** is the named exception. A few subsystems cost lines on purpose; [NON-NEGOTIABLES.md](./NON-NEGOTIABLES.md) lists them and why. Anything outside that list earns its lines by teaching machinery. Propose changes to that list rather than acting on them unprompted.
+- **Cross-platform**: posix filesystem only (Linux, macOS, WSL). No Windows path normalization.
+- **Graceful recovery**: `pages/` throws naturally when missing; `public/` is silently skipped.
+- **Cache invalidation**: no CDN fingerprinting, no cross-run state. Content-hashed filenames cover in-session module cache busting only.
+- **Production concurrency**: `Promise.all` only — no queue, no retry, no memory bounding.
+- **Hostile filesystems**: no I/O retry, no defense against unusual mounts. (The mtime filter in `dev/server.js` is a deliberate carve-out — see Dev Server.)
+- **Runtime config validation**: TypeScript catches misconfigs; no runtime re-validation.
+- **User extensibility**: no plugin API, no hook system. Last worked at commit `fdf04bd`.
+- **Backwards compatibility**: package is unpublished; breaking changes land freely.
 
+**Day-to-day DX** is the named exception. These subsystems cost lines on purpose and survive brevity passes intact:
 
-## What NOT to Change
+- structured errors;
+- the satirical voice (`messages/`);
+- live-reload dev server (`dev/`);
 
-- Module docblocks and subsystem framing are load-bearing — don't remove or hollow them out.
-- `website/dist/` and `tests/site/dist/` are ephemeral, cleaned on every build.
-
-
-## Website Playground (`website/`)
-
-Demo site that consumes castro. Uses PicoCSS v2 (CDN) plus three co-located stylesheets in `public/styles/` — no preprocessor, no build step for CSS. Each component/page has its own co-located CSS file.
-
-**Read [website/DESIGN.md](website/DESIGN.md) before any UI change** — it documents the color system, typography, layout conventions, and the structure of the three style files. Customization & CSS variable references: [.claude/docs/pico.md](.claude/docs/pico.md), [.claude/docs/pico-variables-css.md](.claude/docs/pico-variables-css.md).
-
-**Docs page `path` contract.** Pages under `src/pages/concept/` and `src/pages/how-it-works/` export a `meta` with `layout: "docs"` and `path: "<exact-url>"`. The `path` drives sidebar active state and header highlighting — **update it whenever the page's URL changes**, or the nav silently goes wrong.
-
-**Hidden page directories.** Directories prefixed with `_` are excluded from the build (e.g. `_components/`).
-
-**Site information architecture.** The public nav shows two sections: **Concept** (`/concept/island-architecture`) and **How It Works** (`/how-it-works`). The concept page is the primary entry point. The homepage CTA points there.
-
-**Canonical tsconfig.** [website/tsconfig.json](website/tsconfig.json) is the source of truth; [packages/create-castro/template/tsconfig.json](packages/create-castro/template/tsconfig.json) shares the same `compilerOptions` but uses root-level `pages/`/`layouts/` (no `srcDir`) instead of the website's `src/` layout.
+Anything outside these earns its lines by teaching machinery; propose removing one rather than acting unprompted.

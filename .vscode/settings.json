@@ -8,5 +8,9 @@
 		"source.fixAll.biome": "explicit"
 	},
 	"js/ts.tsdk.path": "node_modules/typescript/lib",
-	"cSpell.ignoreWords": ["lintignore"]
+	"cSpell.ignoreWords": ["lintignore"],
+	"[markdown]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"cSpell.words": ["goldens"]
 }
