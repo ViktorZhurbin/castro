@@ -82,7 +82,7 @@ export async function startDevServer() {
 				}
 
 				// Static file serving with clean URLs
-				// Real SSGs handle more variations; see NON-GOALS.md.
+				// Real SSGs handle more variations
 
 				const basePath = join(OUTPUT_DIR, url.pathname);
 
@@ -218,7 +218,7 @@ export async function startDevServer() {
 	 * cp() on public/), and macOS FSEvents surfaces those reads as change
 	 * events — an unfiltered watcher rebuilds forever after any edit. Linux
 	 * inotify never reports them, so the loop is invisible there. Only events
-	 * whose mtime actually moved schedule a rebuild. See NON-GOALS.md.
+	 * whose mtime actually moved schedule a rebuild.
 	 *
 	 * @param {string} dir
 	 */

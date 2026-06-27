@@ -77,7 +77,7 @@ function createTempPath(sourcePath, content, subpath = "") {
 export async function getModule(sourcePath, content, subpath) {
 	const path = createTempPath(sourcePath, content, subpath);
 
-	// A failed write (disk full, bad permissions) throws raw — see NON-GOALS.md.
+	// A failed write (disk full, bad permissions) throws raw
 	await Bun.write(path, content);
 
 	// file:// URL ensures Bun's module resolver can find bare imports

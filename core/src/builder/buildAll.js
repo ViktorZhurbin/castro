@@ -53,7 +53,7 @@ export async function buildAll() {
 	await layouts.load();
 	const pagesMap = await scanPages();
 
-	// Real SSGs cap concurrency to bound Bun.build's memory pressure; see NON-GOALS.md
+	// Real SSGs cap concurrency to bound Bun.build's memory pressure
 	const results = await Promise.all(
 		[...pagesMap.entries()].map(async ([outputPath, sourcePath]) => {
 			const { usedIslands } = await runWithPageState(() =>
@@ -106,7 +106,7 @@ async function scanPages() {
 	const pagesMap = new Map();
 	const pageGlob = new Bun.Glob("**/*.{md,jsx,tsx}");
 
-	// Missing pages/ throws here naturally — see NON-GOALS.md.
+	// Missing pages/ throws here naturally
 	// Empty pages/ falls through to NO_PAGES below.
 	for await (const sourcePath of pageGlob.scan(PAGES_DIR)) {
 		// Skip files/folders prefixed with `_` (private convention, e.g. _drafts/, _partial.tsx)
