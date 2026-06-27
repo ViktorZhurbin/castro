@@ -8,19 +8,7 @@
 	}
 }
 
-.footer-grid {
-	display: grid;
-	grid-template-columns: 1fr;
-	gap: var(--spacing-2xl);
-
-	@media (min-width: 768px) {
-		grid-template-columns: 1.5fr repeat(2, max-content);
-		column-gap: var(--spacing-4xl);
-		row-gap: var(--spacing-2xl);
-	}
-}
-
-/* ─── Brand column ─── */
+/* ─── Brand ─── */
 
 .footer-brand {
 	display: flex;
@@ -43,51 +31,6 @@
 	max-width: 32ch;
 	line-height: 1.5;
 	margin: 0;
-}
-
-/* ─── Nav columns ─── */
-
-.footer-col {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	justify-content: flex-start;
-}
-
-.footer-col h4 {
-	font-family: var(--font-display);
-	letter-spacing: 0.1em;
-	padding-bottom: var(--spacing-2xs);
-	border-bottom: var(--border-2);
-	margin-bottom: var(--spacing);
-	text-transform: uppercase;
-	width: 100%;
-}
-
-.footer-col ul {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: var(--spacing-sm);
-
-	li {
-		padding-block: 0;
-	}
-}
-
-.footer-col a {
-	color: var(--pico-contrast);
-	text-decoration: none;
-
-	&:hover {
-		text-decoration: underline;
-		text-decoration-thickness: 3px;
-		text-underline-offset: 3px;
-		text-decoration-color: var(--pico-primary);
-	}
 }
 
 /* ─── Baseline ─── */

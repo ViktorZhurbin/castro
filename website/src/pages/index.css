@@ -1,9 +1,0 @@
-.how-it-works-section {
-	padding: var(--spacing-6xl) var(--spacing-xl);
-}
-
-.how-it-works-section {
-	display: flex;
-	flex-direction: column;
-	gap: var(--spacing-4xl);
-}

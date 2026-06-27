@@ -13,12 +13,12 @@ export function Hero() {
 
 				<hr class="hero-hr" />
 
-				<h2>Your Five-Year Plan to Learn Island Architecture</h2>
+				<h2>A Static Site Generator Built to Be Read</h2>
 				<p class="hero-subtitle">
-					A working static site generator small enough to read in an afternoon.
-					Learn island architecture by reading the source.
+					Preact islands, JSX, and Bun. Small enough to read in an afternoon,
+					serious enough to build this website.
 				</p>
-				<p class="hero-quote">The satire is optional. The knowledge is real.</p>
+				<p class="hero-quote">The satire is optional. The code is serious.</p>
 				<CTAButtons />
 			</div>
 		</div>

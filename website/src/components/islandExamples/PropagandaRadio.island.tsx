@@ -24,7 +24,7 @@ export default function PropagandaRadio() {
 	useEffect(() => {
 		const id = setInterval(() => {
 			next();
-		}, 3000);
+		}, 5_000);
 		return () => clearInterval(id);
 	}, []);
 

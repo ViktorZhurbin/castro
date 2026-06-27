@@ -19,7 +19,7 @@ Three static files in `public/styles/` define the visual system, applied in this
 - `--border-*` border variants
 - Heading typography overrides and the breakpoint reference comment
 
-**`components.css`** — Shared classes: `.btn` variants, `.badge`, `.alert`, `.diagram-*`.
+**`components.css`** — Shared classes: `.btn` variants, `.btn-square` variants, `.divider`.
 
 Each component and page has its own co-located CSS file. No preprocessor — files are merged into a single CSS file per page and served directly.
 
@@ -68,7 +68,7 @@ Pigments:
 
 ## Typography
 
-**Display** (`var(--font-display)`, Bebas Neue): headings, nav items, step numbers, uppercase labels. Global `letter-spacing: 0.05em` is applied in `base.css` to all heading elements. Don't remove it.
+**Display** (`var(--font-display)`, Bebas Neue): headings, uppercase labels, the brand mark. Global `letter-spacing: 0.05em` is applied in `base.css` to all heading elements. Don't remove it.
 
 **Body** (Barlow, `font-weight: 500`): set via `--pico-font-family` and `--pico-font-weight`. Default for all other text.
 
@@ -83,9 +83,9 @@ The constructivist visual weight comes from border geometry, not shadows. Four w
 | Variable            | Value                        | Typical use                                  |
 | ------------------- | ---------------------------- | -------------------------------------------- |
 | `--border-2`        | 2px solid muted border color | Cards, dividers, form elements               |
-| `--border-4`        | 4px solid muted border color | Structural separators (sidebar)              |
+| `--border-4`        | 4px solid muted border color | Structural separators                        |
 | `--border-accent-4` | 4px solid primary            | Section dividers (footer top, page dividers) |
-| `--border-accent-8` | 8px solid primary            | Major emphasis (hero hr, alert left border)  |
+| `--border-accent-8` | 8px solid primary            | Major emphasis (hero hr)                     |
 
 These apply to any border side: `border: var(--border-2)`, `border-top: var(--border-accent-4)`, `border-left: var(--border-accent-8)`.
 
@@ -101,7 +101,7 @@ Cards typically combine `border: var(--border-2)` with a heavier directional bor
 
 **Breakpoints** (Pico's standard scale, documented in `base.css`):
 `sm` 576px / `md` 768px / `lg` 1024px / `xl` 1280px / `xxl` 1536px.
-The site uses `576px` for mobile nav collapse, `768px` for layout switches, `1024px` for sidebar behavior.
+The site uses `768px` for the main layout switches (hero, foundation grid).
 
 **Spacing**: Use `var(--spacing-*)` throughout. The scale runs from `--spacing-4xs` (0.1× Pico unit) to `--spacing-6xl` (6× Pico unit).
 

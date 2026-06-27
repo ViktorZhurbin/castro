@@ -33,7 +33,7 @@ bun loc              # LOC count (core only, excludes messages/)
 Read module docblocks for file-level detail.
 
 - **Build pipeline** (`builder/`) — how a JSX tree, a layout tree, and island markers compose into a single `renderToString()` pass.
-- **Islands runtime** (`islands/`) — how a build plugin swaps real components for HTML markers at compile time, the trick that makes islands work. Island imports must use relative paths, not tsconfig aliases — `islandMarkerPlugin` intercepts at the AST level, before aliases resolve.
+- **Islands runtime** (`islands/`) — how a build plugin swaps real components for HTML markers at compile time, the trick that makes islands work. `islandMarkerPlugin` matches the resolved `.island.[jt]sx` path in an `onLoad` hook, so any import form Bun resolves works — relative, extensionless, or tsconfig alias (Bun resolves `paths` natively; see `compiler.js`).
 - **Module cache** (`utils/cache.js`) — write-string-to-disk-then-import: the pattern bundlers use to bust ESM caches.
 - **Structured errors** (`utils/errors.js`, `utils/renderError.js`, `dev/liveReload.js`, `messages/`) — typed error codes, code-frame extraction, terminal renderer, browser overlay, a single satirical voice. If the browser overlay is ever removed, collapse the payload/renderer split — a single-consumer abstraction isn't worth keeping.
 - **Dev server** (`dev/`) — `Bun.serve`, file watchers, debounced rebuilds, SSE live reload.

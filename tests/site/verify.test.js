@@ -148,6 +148,29 @@ test("island in layout renders with wrapper", async () => {
 	expect(html).toContain("<h1>Layout Island Test</h1>");
 });
 
+// ------ Island import resolution (extensionless + tsconfig alias) ------
+// islandMarkerPlugin matches the resolved `.island.[jt]sx` path in an onLoad
+// hook, so the import specifier's form shouldn't matter. If resolution missed
+// the marker, the real component would bundle inline: "Count:" would still
+// render but the <castro-island> wrapper would be absent — so asserting the
+// wrapper is what distinguishes a real island from a silent inline fallback.
+
+test("extensionless island import still produces an island", async () => {
+	const html = await readHtml("island-no-ext.html");
+	expect(html).toContain("<castro-island");
+	expect(html).toContain('directive="comrade:visible"');
+	expect(html).toContain('import="/');
+	expect(html).toContain("Count:");
+});
+
+test("tsconfig alias island import still produces an island", async () => {
+	const html = await readHtml("island-alias.html");
+	expect(html).toContain("<castro-island");
+	expect(html).toContain('directive="comrade:visible"');
+	expect(html).toContain('import="/');
+	expect(html).toContain("Count:");
+});
+
 // ------ CSS modules ------
 
 test("CSS modules in static components get scoped class names", async () => {

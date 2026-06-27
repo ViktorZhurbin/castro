@@ -1,0 +1,21 @@
+.island-showcase {
+	padding: var(--spacing-6xl) var(--spacing-xl);
+	border-top: var(--border-2);
+}
+
+.island-showcase-label {
+	font-family: var(--font-display);
+	letter-spacing: 0.05rem;
+	font-size: var(--text-xl);
+	color: var(--pico-primary);
+	margin-bottom: var(--spacing-sm);
+}
+
+.island-showcase-intro {
+	max-width: 60ch;
+	margin-bottom: var(--spacing-xl);
+}
+
+.island-showcase .five-year-plan {
+	max-width: 28rem;
+}
