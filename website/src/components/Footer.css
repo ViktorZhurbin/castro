@@ -1,36 +1,7 @@
 .footer {
-	background-color: var(--pico-code-background-color);
+	background-color: var(--pico-background-color);
 	padding-block: var(--spacing-3xl);
 	border-top: var(--border-primary-4);
-
-	.divider {
-		margin-block: var(--spacing-2xl);
-	}
-}
-
-/* ─── Brand ─── */
-
-.footer-brand {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: var(--spacing-sm);
-}
-
-.footer-mark {
-	font-family: var(--font-display);
-	letter-spacing: 0.05em;
-	font-size: var(--text-2xl);
-	color: var(--pico-primary);
-	line-height: 1;
-	margin: 0;
-}
-
-.footer-desc {
-	color: var(--pico-muted-color);
-	max-width: 32ch;
-	line-height: 1.5;
-	margin: 0;
 }
 
 /* ─── Baseline ─── */
@@ -48,7 +19,7 @@
 }
 
 .footer-slogan-small {
-	font-size: var(--text-lg);
+	font-size: var(--text-xl);
 	font-family: var(--font-display);
 	letter-spacing: 0.05em;
 	color: var(--pico-primary);
@@ -58,4 +29,9 @@
 .footer-meta {
 	font-family: var(--pico-font-family-monospace);
 	font-size: var(--text-sm);
+
+	a {
+		color: inherit;
+		text-decoration: underline;
+	}
 }

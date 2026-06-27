@@ -2,6 +2,7 @@
 
 .propaganda-radio {
 	border: var(--border-2);
+	background-color: var(--pico-background-color);
 }
 
 .propaganda-radio-header {

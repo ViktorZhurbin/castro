@@ -1,21 +1,27 @@
 .island-showcase {
 	padding: var(--spacing-6xl) var(--spacing-xl);
-	border-top: var(--border-2);
+	background-color: var(--pico-code-background-color);
+}
+
+.island-showcase-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--spacing-2xl);
 }
 
 .island-showcase-label {
 	font-family: var(--font-display);
 	letter-spacing: 0.05rem;
-	font-size: var(--text-xl);
+	font-size: var(--text-3xl);
 	color: var(--pico-primary);
-	margin-bottom: var(--spacing-sm);
+	margin: 0;
 }
 
-.island-showcase-intro {
-	max-width: 60ch;
-	margin-bottom: var(--spacing-xl);
+.island-showcase-island {
+	max-width: 768px;
 }
 
-.island-showcase .five-year-plan {
-	max-width: 28rem;
+.island-showcase-cta {
+	margin-top: var(--spacing-3xl);
 }

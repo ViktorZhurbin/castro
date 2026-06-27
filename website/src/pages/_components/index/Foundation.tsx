@@ -2,19 +2,19 @@ import "./Foundation.css";
 
 const items = [
 	{
-		title: "READABLE BY DESIGN",
+		title: "JSX → STATIC HTML",
 		description:
-			"Every file explains why. Read the source, understand the system.",
+			"Pages are Preact components. Bun builds them. No JavaScript shipped to the browser by default.",
 	},
 	{
-		title: "SMALL ON PURPOSE",
+		title: "ISLANDS HYDRATE ON DEMAND",
 		description:
-			"~1,600 lines of executable code. Small enough to read in an afternoon",
+			"Name a file .island.tsx. Castro marks it at build time; the browser hydrates it when it scrolls into view.",
 	},
 	{
-		title: "A REAL WORKING SSG",
+		title: "THE SOURCE IS THE DOCUMENTATION",
 		description:
-			"Not a stub for a tutorial. Build something with it if you want.",
+			"~1,300 lines. Module docblocks explain the architecture. No separate docs site.",
 	},
 ];
 
@@ -23,11 +23,14 @@ export function Foundation() {
 		<section class="foundation-section">
 			<div class="container">
 				<p class="foundation-label">THE FOUNDATION</p>
-				<div class="foundation-grid">
-					{items.map((item) => (
+				<div class="foundation-list">
+					{items.map((item, i) => (
 						<div class="foundation-item">
-							<p>{item.title}</p>
-							<p>{item.description}</p>
+							<p class="foundation-num">{String(i + 1).padStart(2, "0")}</p>
+							<div class="foundation-body">
+								<p class="foundation-item-title">{item.title}</p>
+								<p class="foundation-item-desc">{item.description}</p>
+							</div>
 						</div>
 					))}
 				</div>

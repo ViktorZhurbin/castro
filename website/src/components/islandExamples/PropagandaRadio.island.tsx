@@ -10,7 +10,7 @@ const HEADLINES = [
 	"Optimal line count achieved. Further additions prohibited.",
 ];
 
-export default function PropagandaRadio() {
+export default function PropagandaRadio(props: { className?: string }) {
 	const [index, setIndex] = useState(0);
 
 	function prev() {
@@ -29,7 +29,7 @@ export default function PropagandaRadio() {
 	}, []);
 
 	return (
-		<div class="propaganda-radio">
+		<div class={`propaganda-radio ${props.className}`}>
 			{/* Header */}
 			<div class="propaganda-radio-header">
 				<h4>STATE RADIO</h4>

@@ -1,8 +1,8 @@
 import "./CTAButtons.css";
 
-export function CTAButtons() {
+export function CTAButtons(props: { className?: string }) {
 	return (
-		<div class="cta-buttons-container">
+		<div class={`cta-buttons-container ${props.className}`}>
 			<a
 				href="https://github.com/ViktorZhurbin/castro"
 				target="_blank"
