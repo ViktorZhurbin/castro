@@ -11,9 +11,9 @@
 	"scripts": {
 		"dev": "bun --filter website dev",
 		"build": "bun --filter website build",
-		"format": "biome format --write",
+		"format": "biome format --write && bun format:md",
+		"format:md": "prettier --write '**/*.md'",
 		"check": "bun format && bun check:analyze && bun test && bun check:build",
-		"check:format": "bun format",
 		"check:analyze": "bun run --parallel --filter '*' --if-present type-check knip",
 		"check:build": "bun run --parallel --filter '!@test-errors/*' --if-present build",
 		"test:site": "bun test tests/site",
@@ -24,6 +24,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.11",
+		"prettier": "^3.9.0",
 		"typescript": "^6.0.2"
 	}
 }

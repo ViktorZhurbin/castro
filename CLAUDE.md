@@ -13,7 +13,7 @@ Peer reference: Fresh, early Astro, Eleventy + is-land, Marko, Capri, Mastro, Il
 ```
 bun run dev          # dev server with live reload (website playground)
 bun run build        # production build (website playground)
-bun format           # Biome formatter (tabs, double quotes)
+bun format           # Biome (tabs, double quotes) + Prettier for Markdown
 bun check            # format + core checks + site tests (run before committing)
 bun test:site        # build and verify test sites only
 bun test:errors      # run error DX golden suite (tests/errors/)

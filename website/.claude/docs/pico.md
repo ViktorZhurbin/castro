@@ -69,9 +69,9 @@ Detailed example to override the primary color:
 ```css
 /* Orange color for light color scheme (Default) */
 /* Can be forced with data-theme="light" */
-[data-theme=light],
-:root:not([data-theme=dark]),
-:host:not([data-theme=dark]) {
+[data-theme="light"],
+:root:not([data-theme="dark"]),
+:host:not([data-theme="dark"]) {
   --pico-text-selection-color: rgba(244, 93, 44, 0.25);
   --pico-primary: #bd3c13;
   --pico-primary-background: #d24317;
@@ -99,7 +99,7 @@ Detailed example to override the primary color:
 }
 /* Orange color for dark color scheme (Forced) */
 /* Enabled if forced with data-theme="dark" */
-[data-theme=dark] {
+[data-theme="dark"] {
   --pico-text-selection-color: rgba(245, 107, 61, 0.1875);
   --pico-primary: #f56b3d;
   --pico-primary-background: #d24317;
@@ -168,7 +168,7 @@ This version reduces the weight of Pico by ~50%.
     "components/progress": false,
     "components/tooltip": false,
     "utilities/accessibility": false,
-    "utilities/reduce-motion": false
+    "utilities/reduce-motion": false,
   )
 );
 ```
@@ -200,7 +200,7 @@ To create a custom version of Pico with a fully custom theme that reflects your 
 // Pico without default theme
 @use "pico" with (
   $modules: (
-    "themes/default": false
+    "themes/default": false,
   )
 );
 

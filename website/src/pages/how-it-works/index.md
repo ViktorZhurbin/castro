@@ -9,7 +9,6 @@ section: how-it-works
 
 Castro's build pipeline has three moving parts. Understanding all three is understanding island architecture - not just how Castro works, but why it works the way it does.
 
-
 ## THE DUAL COMPILATION
 
 Islands compile before any pages are processed. Each `.island.tsx` file goes through `Bun.build` twice - once for the server (producing an SSR module that's pre-loaded into a registry) and once for the browser (producing a hashed JS bundle written to `dist/islands/`). The server needs a Bun module; the browser needs an ES module. Same source, two targets.
@@ -61,7 +60,6 @@ Islands compile before any pages are processed. Each `.island.tsx` file goes thr
   Islands can import CSS too. The build extracts each island's styles and injects them per-page - only CSS for islands actually rendered on a given page gets included.
 </aside>
 
-
 ## THE INTERCEPTION
 
 When `Bun.build` compiles your page, the `islandMarkerPlugin` intercepts every `.island.tsx` import. Instead of bundling the real component, it swaps in a lightweight stub that calls `renderMarker()`. Your page never ships the interactive component code. The Party has already arranged for it to be delivered separately, on demand.
@@ -69,27 +67,19 @@ When `Bun.build` compiles your page, the `islandMarkerPlugin` intercepts every `
 ### WHAT YOU WRITE
 
 ```jsx
-import Counter from
-  "./Counter.island.tsx";
+import Counter from "./Counter.island.tsx";
 
 export default function Page() {
-  return (
-    <Counter initialCount={5} />
-  );
+  return <Counter initialCount={5} />;
 }
 ```
 
 ### WHAT IT COMPILES TO
 
 ```javascript
-import { renderMarker } from
-  "castro/islands/marker.js";
+import { renderMarker } from "castro/islands/marker.js";
 
-const Counter = (props) =>
-  renderMarker(
-    "components/Counter.island.tsx",
-    props
-  );
+const Counter = (props) => renderMarker("components/Counter.island.tsx", props);
 
 export default function Page() {
   return Counter({ initialCount: 5 });
@@ -98,11 +88,9 @@ export default function Page() {
 
 → [buildPlugins.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/buildPlugins.js)
 
-
 ## THE ASSEMBLY
 
 `renderToString()` traverses the entire component tree in one synchronous pass - page, layout, and all. When it hits a marker stub, `renderMarker()` looks up the pre-loaded SSR module, renders the island to HTML, and wraps it in a `<castro-island>` element. HTML ships instantly. JavaScript loads on demand.
-
 
 ```html
 <!DOCTYPE html>
@@ -121,10 +109,10 @@ export default function Page() {
     <castro-island
       directive="comrade:visible"
       import="/islands/Counter-a1b2.js"
-      data-props='{"initialCount":5}'>
-        <button>Count: 5</button>
+      data-props='{"initialCount":5}'
+    >
+      <button>Count: 5</button>
     </castro-island>
-
   </body>
 </html>
 ```
@@ -135,7 +123,7 @@ export default function Page() {
 
 → [marker.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/marker.js) · [renderPage.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/builder/renderPage.js)
 
------
+---
 
 <div class="btn-group">
   <a href="/how-it-works/hydration" class="btn btn-base">

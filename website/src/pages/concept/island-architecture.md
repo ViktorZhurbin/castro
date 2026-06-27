@@ -26,18 +26,18 @@ The opposite of "everything is JavaScript" is "nothing is JavaScript." Plain HTM
 
 The trouble is that genuinely interactive components do exist. A search box with autocomplete. A form with live validation. A chart that responds to your cursor. These aren't things you can build with HTML and a `<form>` tag alone. You need JavaScript.
 
-So the question becomes: how do you write *mostly* HTML and *some* JavaScript, without the JavaScript dragging the rest of the page into its world?
+So the question becomes: how do you write _mostly_ HTML and _some_ JavaScript, without the JavaScript dragging the rest of the page into its world?
 
 ## Islands
 
-The answer the pattern proposes is structural. You write the page as static HTML. Anywhere you need interactivity, you mark a region as an *island* — a self-contained interactive component, isolated from everything around it.
+The answer the pattern proposes is structural. You write the page as static HTML. Anywhere you need interactivity, you mark a region as an _island_ — a self-contained interactive component, isolated from everything around it.
 
 At build time, the island gets two outputs:
 
 1. The HTML it would render if it were static. This goes into the page like any other content.
 2. The JavaScript needed to make it interactive. This sits as a separate bundle, ready to load.
 
-When the browser receives the page, the static HTML is already there. The page is visible. The user can read, scroll, click links. Then, independently, each island loads its JavaScript and *hydrates* — attaches behaviour to the HTML that already exists. The island becomes interactive in place, without re-rendering the page around it.
+When the browser receives the page, the static HTML is already there. The page is visible. The user can read, scroll, click links. Then, independently, each island loads its JavaScript and _hydrates_ — attaches behaviour to the HTML that already exists. The island becomes interactive in place, without re-rendering the page around it.
 
 The rest of the page never had JavaScript and never will. It's an island only on the part that needs to be one.
 
@@ -45,7 +45,7 @@ The rest of the page never had JavaScript and never will. It's an island only on
 
 The metaphor is geographic. The page is an ocean of static HTML. Each interactive component is an island rising out of it — bounded, self-contained, with its own ecosystem. Islands don't share JavaScript runtime, don't communicate by default, don't depend on each other. Crucially, you can have many islands on a page, or none, and the page works the same way either way.
 
-The metaphor is doing two jobs at once. First, it captures the spatial isolation: each interactive region is a discrete unit, not part of a connected app graph. Second, it captures the *exception* nature of interactivity: in a typical page, static content is the rule, islands are the exception. Most of the surface is water.
+The metaphor is doing two jobs at once. First, it captures the spatial isolation: each interactive region is a discrete unit, not part of a connected app graph. Second, it captures the _exception_ nature of interactivity: in a typical page, static content is the rule, islands are the exception. Most of the surface is water.
 
 This is the inverse of single-page architecture, where the whole page is one giant island and the ocean has been drained.
 

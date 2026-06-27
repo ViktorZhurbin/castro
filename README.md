@@ -1,6 +1,6 @@
 # Castro
 
-*A static site generator built to be read.*
+_A static site generator built to be read._
 
 Communist satire wraps serious, well-commented code. Preact for pages and islands, Bun for everything else.
 

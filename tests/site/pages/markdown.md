@@ -14,6 +14,6 @@ Paragraph content here.
 ## Table
 
 | Column A | Column B |
-|----------|----------|
+| -------- | -------- |
 | Cell 1   | Cell 2   |
 | Cell 3   | Cell 4   |

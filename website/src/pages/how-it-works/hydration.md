@@ -9,7 +9,6 @@ section: how-it-works
 
 The build pipeline produces static HTML with `<castro-island>` wrappers. Now the browser takes over - a custom element decides when and how to make each island interactive.
 
-
 ## THE CUSTOM ELEMENT
 
 The browser loads `castro-island.js` and registers a `<castro-island>` custom element. When one connects to the DOM, `connectedCallback()` reads the `directive` attribute and decides what happens next.
@@ -70,7 +69,6 @@ The browser loads `castro-island.js` and registers a `<castro-island>` custom el
 
 → [hydration.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/hydration.js)
 
-
 ## THE IMPORT
 
 When it's time to hydrate, the element does `await import(this.getAttribute("import"))` to load its client bundle. The bundle contains a bare `import("preact")` - no URL. The import map, injected into the page's `<head>` by the build pipeline, is what tells the browser where to fetch it. The framework files are bundled in `/dist/vendor/` and re-used across all islands.
@@ -83,7 +81,7 @@ Castro generates a virtual entry per island at compile time. The format depends 
 
 ```javascript
 // virtual entry for Counter.island.tsx
-import Component from './Counter.island.tsx';
+import Component from "./Counter.island.tsx";
 
 export default async (container, props = {}) => {
   const { h, hydrate } = await import("preact");
@@ -101,19 +99,18 @@ Keys like `"preact"` and `"date-fns"` are bundled into `/dist/vendor/` at build 
 
 ```html
 <script type="importmap">
-{
-  "imports": {
-    "preact": "/vendor/preact.js?v=10.28.3",
-    "preact/hooks": "/vendor/preact_hooks.js?v=10.28.3",
-    "date-fns": "/vendor/date-fns.js?v=2.30.0",
-    "@mui/material/": "https://esm.sh/@mui/material/"
+  {
+    "imports": {
+      "preact": "/vendor/preact.js?v=10.28.3",
+      "preact/hooks": "/vendor/preact_hooks.js?v=10.28.3",
+      "date-fns": "/vendor/date-fns.js?v=2.30.0",
+      "@mui/material/": "https://esm.sh/@mui/material/"
+    }
   }
-}
 </script>
 ```
 
 → [compiler.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/compiler.js) · [writeHtmlPage.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/builder/writeHtmlPage.js)
-
 
 ## THE MOUNT
 
@@ -140,7 +137,6 @@ this.setAttribute("ready", "");
 ```
 
 → [compiler.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/compiler.js) · [preact.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/preact.js) · [preact.client.js](https://github.com/ViktorZhurbin/castro/blob/main/core/src/islands/preact.client.js)
-
 
 ## SUMMARY
 

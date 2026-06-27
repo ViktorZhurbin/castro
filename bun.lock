@@ -6,6 +6,7 @@
       "name": "castro-monorepo",
       "devDependencies": {
         "@biomejs/biome": "2.3.11",
+        "prettier": "^3.9.0",
         "typescript": "^6.0.2",
       },
     },
@@ -315,6 +316,8 @@
     "preact": ["preact@10.28.3", "", {}, "sha512-tCmoRkPQLpBeWzpmbhryairGnhW9tKV6c6gr/w+RhoRoKEJwsjzipwp//1oCpGPOchvSLaAPlpcJi9MwMmoPyA=="],
 
     "preact-render-to-string": ["preact-render-to-string@6.6.5", "", { "peerDependencies": { "preact": ">=10 || >= 11.0.0-0" } }, "sha512-O6MHzYNIKYaiSX3bOw0gGZfEbOmlIDtDfWwN1JJdc/T3ihzRT6tGGSEWE088dWrEDGa1u7101q+6fzQnO9XCPA=="],
+
+    "prettier": ["prettier@3.9.0", "", { "bin": { "prettier": "bin/prettier.cjs" } }, "sha512-LjIqSIC5VYLzs9WedVmJ2ljNAGnU+DteIClbahu4L/DBeWjZ6iT/k1lAYyu9JUh+1xINxWadaPw/Pl63y/agAw=="],
 
     "queue-microtask": ["queue-microtask@1.2.3", "", {}, "sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A=="],
 

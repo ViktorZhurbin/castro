@@ -11,9 +11,14 @@ Default styles CSS variables:
 ```css
 :root,
 :host {
-  --pico-font-family-emoji: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --pico-font-family-sans-serif: system-ui, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, Helvetica, Arial, "Helvetica Neue", sans-serif, var(--pico-font-family-emoji);
-  --pico-font-family-monospace: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace, var(--pico-font-family-emoji);
+  --pico-font-family-emoji:
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --pico-font-family-sans-serif:
+    system-ui, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, Helvetica, Arial,
+    "Helvetica Neue", sans-serif, var(--pico-font-family-emoji);
+  --pico-font-family-monospace:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace, var(--pico-font-family-emoji);
   --pico-font-family: var(--pico-font-family-sans-serif);
   --pico-line-height: 1.5;
   --pico-font-weight: 400;
@@ -32,8 +37,10 @@ Default styles CSS variables:
   --pico-form-element-spacing-vertical: 0.75rem;
   --pico-form-element-spacing-horizontal: 1rem;
   --pico-group-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-  --pico-group-box-shadow-focus-with-button: 0 0 0 var(--pico-outline-width) var(--pico-primary-focus);
-  --pico-group-box-shadow-focus-with-input: 0 0 0 0.0625rem var(--pico-form-element-border-color);
+  --pico-group-box-shadow-focus-with-button: 0 0 0 var(--pico-outline-width)
+    var(--pico-primary-focus);
+  --pico-group-box-shadow-focus-with-input: 0 0 0 0.0625rem
+    var(--pico-form-element-border-color);
   --pico-modal-overlay-backdrop-filter: blur(0.375rem);
   --pico-nav-element-spacing-vertical: 1rem;
   --pico-nav-element-spacing-horizontal: 0.5rem;
@@ -83,7 +90,8 @@ Default styles CSS variables:
 a {
   --pico-text-decoration: underline;
 }
-a.secondary, a.contrast {
+a.secondary,
+a.contrast {
   --pico-text-decoration: underline;
 }
 
@@ -155,30 +163,32 @@ kbd {
   --pico-font-weight: bolder;
 }
 
-input:not([type=submit],
-[type=button],
-[type=reset],
-[type=checkbox],
-[type=radio],
-[type=file]),
+input:not(
+  [type="submit"],
+  [type="button"],
+  [type="reset"],
+  [type="checkbox"],
+  [type="radio"],
+  [type="file"]
+),
 :where(select, textarea) {
   --pico-outline-width: 0.0625rem;
 }
 
-[type=search] {
+[type="search"] {
   --pico-border-radius: 5rem;
 }
 
-[type=checkbox],
-[type=radio] {
+[type="checkbox"],
+[type="radio"] {
   --pico-border-width: 0.125rem;
 }
 
-[type=checkbox][role=switch] {
+[type="checkbox"][role="switch"] {
   --pico-border-width: 0.1875rem;
 }
 
-details.dropdown summary:not([role=button]) {
+details.dropdown summary:not([role="button"]) {
   --pico-outline-width: 0.0625rem;
 }
 
@@ -186,46 +196,62 @@ nav details.dropdown summary:focus-visible {
   --pico-outline-width: 0.125rem;
 }
 
-[role=search] {
+[role="search"] {
   --pico-border-radius: 5rem;
 }
 
-[role=search]:has(button.secondary:focus,
-[type=submit].secondary:focus,
-[type=button].secondary:focus,
-[role=button].secondary:focus),
-[role=group]:has(button.secondary:focus,
-[type=submit].secondary:focus,
-[type=button].secondary:focus,
-[role=button].secondary:focus) {
-  --pico-group-box-shadow-focus-with-button: 0 0 0 var(--pico-outline-width) var(--pico-secondary-focus);
+[role="search"]:has(
+  button.secondary:focus,
+  [type="submit"].secondary:focus,
+  [type="button"].secondary:focus,
+  [role="button"].secondary:focus
+),
+[role="group"]:has(
+  button.secondary:focus,
+  [type="submit"].secondary:focus,
+  [type="button"].secondary:focus,
+  [role="button"].secondary:focus
+) {
+  --pico-group-box-shadow-focus-with-button: 0 0 0 var(--pico-outline-width)
+    var(--pico-secondary-focus);
 }
-[role=search]:has(button.contrast:focus,
-[type=submit].contrast:focus,
-[type=button].contrast:focus,
-[role=button].contrast:focus),
-[role=group]:has(button.contrast:focus,
-[type=submit].contrast:focus,
-[type=button].contrast:focus,
-[role=button].contrast:focus) {
-  --pico-group-box-shadow-focus-with-button: 0 0 0 var(--pico-outline-width) var(--pico-contrast-focus);
+[role="search"]:has(
+  button.contrast:focus,
+  [type="submit"].contrast:focus,
+  [type="button"].contrast:focus,
+  [role="button"].contrast:focus
+),
+[role="group"]:has(
+  button.contrast:focus,
+  [type="submit"].contrast:focus,
+  [type="button"].contrast:focus,
+  [role="button"].contrast:focus
+) {
+  --pico-group-box-shadow-focus-with-button: 0 0 0 var(--pico-outline-width)
+    var(--pico-contrast-focus);
 }
-[role=search] button,
-[role=search] [type=submit],
-[role=search] [type=button],
-[role=search] [role=button],
-[role=group] button,
-[role=group] [type=submit],
-[role=group] [type=button],
-[role=group] [role=button] {
+[role="search"] button,
+[role="search"] [type="submit"],
+[role="search"] [type="button"],
+[role="search"] [role="button"],
+[role="group"] button,
+[role="group"] [type="submit"],
+[role="group"] [type="button"],
+[role="group"] [role="button"] {
   --pico-form-element-spacing-horizontal: 2rem;
 }
 
-details summary[role=button]:not(.outline)::after {
+details summary[role="button"]:not(.outline)::after {
   filter: brightness(0) invert(1);
 }
 
-[aria-busy=true]:not(input, select, textarea):is(button, [type=submit], [type=button], [type=reset], [role=button]):not(.outline)::before {
+[aria-busy="true"]:not(input, select, textarea):is(
+    button,
+    [type="submit"],
+    [type="button"],
+    [type="reset"],
+    [role="button"]
+  ):not(.outline)::before {
   filter: brightness(0) invert(1);
 }
 ```
@@ -233,9 +259,9 @@ details summary[role=button]:not(.outline)::after {
 Default colors CSS variables:
 
 ```css
-[data-theme=light],
-:root:not([data-theme=dark]),
-:host(:not([data-theme=dark])) {
+[data-theme="light"],
+:root:not([data-theme="dark"]),
+:host(:not([data-theme="dark"])) {
   color-scheme: light;
   --pico-background-color: #fff;
   --pico-color: #373c44;
@@ -272,7 +298,14 @@ Default colors CSS variables:
   --pico-contrast-hover-underline: var(--pico-secondary-hover);
   --pico-contrast-focus: rgba(93, 107, 137, 0.25);
   --pico-contrast-inverse: #fff;
-  --pico-box-shadow: 0.0145rem 0.029rem 0.174rem rgba(129, 145, 181, 0.01698), 0.0335rem 0.067rem 0.402rem rgba(129, 145, 181, 0.024), 0.0625rem 0.125rem 0.75rem rgba(129, 145, 181, 0.03), 0.1125rem 0.225rem 1.35rem rgba(129, 145, 181, 0.036), 0.2085rem 0.417rem 2.502rem rgba(129, 145, 181, 0.04302), 0.5rem 1rem 6rem rgba(129, 145, 181, 0.06), 0 0 0 0.0625rem rgba(129, 145, 181, 0.015);
+  --pico-box-shadow:
+    0.0145rem 0.029rem 0.174rem rgba(129, 145, 181, 0.01698),
+    0.0335rem 0.067rem 0.402rem rgba(129, 145, 181, 0.024),
+    0.0625rem 0.125rem 0.75rem rgba(129, 145, 181, 0.03),
+    0.1125rem 0.225rem 1.35rem rgba(129, 145, 181, 0.036),
+    0.2085rem 0.417rem 2.502rem rgba(129, 145, 181, 0.04302),
+    0.5rem 1rem 6rem rgba(129, 145, 181, 0.06),
+    0 0 0 0.0625rem rgba(129, 145, 181, 0.015);
   --pico-h1-color: #2d3138;
   --pico-h2-color: #373c44;
   --pico-h3-color: #424751;
@@ -304,10 +337,14 @@ Default colors CSS variables:
   --pico-form-element-disabled-opacity: 0.5;
   --pico-form-element-invalid-border-color: rgb(183.5, 105.5, 106.5);
   --pico-form-element-invalid-active-border-color: rgb(200.25, 79.25, 72.25);
-  --pico-form-element-invalid-focus-color: var(--pico-form-element-invalid-active-border-color);
+  --pico-form-element-invalid-focus-color: var(
+    --pico-form-element-invalid-active-border-color
+  );
   --pico-form-element-valid-border-color: rgb(76, 154.5, 137.5);
   --pico-form-element-valid-active-border-color: rgb(39, 152.75, 118.75);
-  --pico-form-element-valid-focus-color: var(--pico-form-element-valid-active-border-color);
+  --pico-form-element-valid-focus-color: var(
+    --pico-form-element-valid-active-border-color
+  );
   --pico-switch-background-color: #bfc7d9;
   --pico-switch-checked-background-color: var(--pico-primary-background);
   --pico-switch-color: #fff;
@@ -339,24 +376,33 @@ Default colors CSS variables:
   --pico-icon-valid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(76, 154.5, 137.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
   --pico-icon-invalid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(200.25, 79.25, 72.25)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cline x1='12' y1='8' x2='12' y2='12'%3E%3C/line%3E%3Cline x1='12' y1='16' x2='12.01' y2='16'%3E%3C/line%3E%3C/svg%3E");
 }
-[data-theme=light] input:is([type=submit],
-[type=button],
-[type=reset],
-[type=checkbox],
-[type=radio],
-[type=file]),
-:root:not([data-theme=dark]) input:is([type=submit],
-[type=button],
-[type=reset],
-[type=checkbox],
-[type=radio],
-[type=file]),
-:host(:not([data-theme=dark])) input:is([type=submit],
-[type=button],
-[type=reset],
-[type=checkbox],
-[type=radio],
-[type=file]) {
+[data-theme="light"]
+  input:is(
+    [type="submit"],
+    [type="button"],
+    [type="reset"],
+    [type="checkbox"],
+    [type="radio"],
+    [type="file"]
+  ),
+:root:not([data-theme="dark"])
+  input:is(
+    [type="submit"],
+    [type="button"],
+    [type="reset"],
+    [type="checkbox"],
+    [type="radio"],
+    [type="file"]
+  ),
+:host(:not([data-theme="dark"]))
+  input:is(
+    [type="submit"],
+    [type="button"],
+    [type="reset"],
+    [type="checkbox"],
+    [type="radio"],
+    [type="file"]
+  ) {
   --pico-form-element-focus-color: var(--pico-primary-focus);
 }
 
@@ -399,7 +445,14 @@ Default colors CSS variables:
     --pico-contrast-hover-underline: var(--pico-contrast-hover);
     --pico-contrast-focus: rgba(207, 213, 226, 0.25);
     --pico-contrast-inverse: #000;
-    --pico-box-shadow: 0.0145rem 0.029rem 0.174rem rgba(7, 8.5, 12, 0.01698), 0.0335rem 0.067rem 0.402rem rgba(7, 8.5, 12, 0.024), 0.0625rem 0.125rem 0.75rem rgba(7, 8.5, 12, 0.03), 0.1125rem 0.225rem 1.35rem rgba(7, 8.5, 12, 0.036), 0.2085rem 0.417rem 2.502rem rgba(7, 8.5, 12, 0.04302), 0.5rem 1rem 6rem rgba(7, 8.5, 12, 0.06), 0 0 0 0.0625rem rgba(7, 8.5, 12, 0.015);
+    --pico-box-shadow:
+      0.0145rem 0.029rem 0.174rem rgba(7, 8.5, 12, 0.01698),
+      0.0335rem 0.067rem 0.402rem rgba(7, 8.5, 12, 0.024),
+      0.0625rem 0.125rem 0.75rem rgba(7, 8.5, 12, 0.03),
+      0.1125rem 0.225rem 1.35rem rgba(7, 8.5, 12, 0.036),
+      0.2085rem 0.417rem 2.502rem rgba(7, 8.5, 12, 0.04302),
+      0.5rem 1rem 6rem rgba(7, 8.5, 12, 0.06),
+      0 0 0 0.0625rem rgba(7, 8.5, 12, 0.015);
     --pico-h1-color: #f0f1f3;
     --pico-h2-color: #e0e3e7;
     --pico-h3-color: #c2c7d0;
@@ -431,10 +484,14 @@ Default colors CSS variables:
     --pico-form-element-disabled-opacity: 0.5;
     --pico-form-element-invalid-border-color: rgb(149.5, 74, 80);
     --pico-form-element-invalid-active-border-color: rgb(183.25, 63.5, 59);
-    --pico-form-element-invalid-focus-color: var(--pico-form-element-invalid-active-border-color);
+    --pico-form-element-invalid-focus-color: var(
+      --pico-form-element-invalid-active-border-color
+    );
     --pico-form-element-valid-border-color: #2a7b6f;
     --pico-form-element-valid-active-border-color: rgb(22, 137, 105.5);
-    --pico-form-element-valid-focus-color: var(--pico-form-element-valid-active-border-color);
+    --pico-form-element-valid-focus-color: var(
+      --pico-form-element-valid-active-border-color
+    );
     --pico-switch-background-color: #333c4e;
     --pico-switch-checked-background-color: var(--pico-primary-background);
     --pico-switch-color: #fff;
@@ -466,38 +523,54 @@ Default colors CSS variables:
     --pico-icon-valid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(42, 123, 111)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
     --pico-icon-invalid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(149.5, 74, 80)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cline x1='12' y1='8' x2='12' y2='12'%3E%3C/line%3E%3Cline x1='12' y1='16' x2='12.01' y2='16'%3E%3C/line%3E%3C/svg%3E");
   }
-  :root:not([data-theme]) input:is([type=submit],
-  [type=button],
-  [type=reset],
-  [type=checkbox],
-  [type=radio],
-  [type=file]),
-  :host(:not([data-theme])) input:is([type=submit],
-  [type=button],
-  [type=reset],
-  [type=checkbox],
-  [type=radio],
-  [type=file]) {
+  :root:not([data-theme])
+    input:is(
+      [type="submit"],
+      [type="button"],
+      [type="reset"],
+      [type="checkbox"],
+      [type="radio"],
+      [type="file"]
+    ),
+  :host(:not([data-theme]))
+    input:is(
+      [type="submit"],
+      [type="button"],
+      [type="reset"],
+      [type="checkbox"],
+      [type="radio"],
+      [type="file"]
+    ) {
     --pico-form-element-focus-color: var(--pico-primary-focus);
   }
-  :root:not([data-theme]) details summary[role=button].contrast:not(.outline)::after,
-  :host(:not([data-theme])) details summary[role=button].contrast:not(.outline)::after {
+  :root:not([data-theme])
+    details
+    summary[role="button"].contrast:not(.outline)::after,
+  :host(:not([data-theme]))
+    details
+    summary[role="button"].contrast:not(.outline)::after {
     filter: brightness(0);
   }
-  :root:not([data-theme]) [aria-busy=true]:not(input, select, textarea).contrast:is(button,
-  [type=submit],
-  [type=button],
-  [type=reset],
-  [role=button]):not(.outline)::before,
-  :host(:not([data-theme])) [aria-busy=true]:not(input, select, textarea).contrast:is(button,
-  [type=submit],
-  [type=button],
-  [type=reset],
-  [role=button]):not(.outline)::before {
+  :root:not([data-theme])
+    [aria-busy="true"]:not(input, select, textarea).contrast:is(
+      button,
+      [type="submit"],
+      [type="button"],
+      [type="reset"],
+      [role="button"]
+    ):not(.outline)::before,
+  :host(:not([data-theme]))
+    [aria-busy="true"]:not(input, select, textarea).contrast:is(
+      button,
+      [type="submit"],
+      [type="button"],
+      [type="reset"],
+      [role="button"]
+    ):not(.outline)::before {
     filter: brightness(0);
   }
 }
-[data-theme=dark] {
+[data-theme="dark"] {
   color-scheme: dark;
   --pico-background-color: rgb(19, 22.5, 30.5);
   --pico-color: #c2c7d0;
@@ -534,7 +607,14 @@ Default colors CSS variables:
   --pico-contrast-hover-underline: var(--pico-contrast-hover);
   --pico-contrast-focus: rgba(207, 213, 226, 0.25);
   --pico-contrast-inverse: #000;
-  --pico-box-shadow: 0.0145rem 0.029rem 0.174rem rgba(7, 8.5, 12, 0.01698), 0.0335rem 0.067rem 0.402rem rgba(7, 8.5, 12, 0.024), 0.0625rem 0.125rem 0.75rem rgba(7, 8.5, 12, 0.03), 0.1125rem 0.225rem 1.35rem rgba(7, 8.5, 12, 0.036), 0.2085rem 0.417rem 2.502rem rgba(7, 8.5, 12, 0.04302), 0.5rem 1rem 6rem rgba(7, 8.5, 12, 0.06), 0 0 0 0.0625rem rgba(7, 8.5, 12, 0.015);
+  --pico-box-shadow:
+    0.0145rem 0.029rem 0.174rem rgba(7, 8.5, 12, 0.01698),
+    0.0335rem 0.067rem 0.402rem rgba(7, 8.5, 12, 0.024),
+    0.0625rem 0.125rem 0.75rem rgba(7, 8.5, 12, 0.03),
+    0.1125rem 0.225rem 1.35rem rgba(7, 8.5, 12, 0.036),
+    0.2085rem 0.417rem 2.502rem rgba(7, 8.5, 12, 0.04302),
+    0.5rem 1rem 6rem rgba(7, 8.5, 12, 0.06),
+    0 0 0 0.0625rem rgba(7, 8.5, 12, 0.015);
   --pico-h1-color: #f0f1f3;
   --pico-h2-color: #e0e3e7;
   --pico-h3-color: #c2c7d0;
@@ -566,10 +646,14 @@ Default colors CSS variables:
   --pico-form-element-disabled-opacity: 0.5;
   --pico-form-element-invalid-border-color: rgb(149.5, 74, 80);
   --pico-form-element-invalid-active-border-color: rgb(183.25, 63.5, 59);
-  --pico-form-element-invalid-focus-color: var(--pico-form-element-invalid-active-border-color);
+  --pico-form-element-invalid-focus-color: var(
+    --pico-form-element-invalid-active-border-color
+  );
   --pico-form-element-valid-border-color: #2a7b6f;
   --pico-form-element-valid-active-border-color: rgb(22, 137, 105.5);
-  --pico-form-element-valid-focus-color: var(--pico-form-element-valid-active-border-color);
+  --pico-form-element-valid-focus-color: var(
+    --pico-form-element-valid-active-border-color
+  );
   --pico-switch-background-color: #333c4e;
   --pico-switch-checked-background-color: var(--pico-primary-background);
   --pico-switch-color: #fff;
@@ -601,29 +685,37 @@ Default colors CSS variables:
   --pico-icon-valid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(42, 123, 111)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
   --pico-icon-invalid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(149.5, 74, 80)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cline x1='12' y1='8' x2='12' y2='12'%3E%3C/line%3E%3Cline x1='12' y1='16' x2='12.01' y2='16'%3E%3C/line%3E%3C/svg%3E");
 }
-[data-theme=dark] input:is([type=submit],
-[type=button],
-[type=reset],
-[type=checkbox],
-[type=radio],
-[type=file]) {
+[data-theme="dark"]
+  input:is(
+    [type="submit"],
+    [type="button"],
+    [type="reset"],
+    [type="checkbox"],
+    [type="radio"],
+    [type="file"]
+  ) {
   --pico-form-element-focus-color: var(--pico-primary-focus);
 }
-[data-theme=dark] details summary[role=button].contrast:not(.outline)::after {
+[data-theme="dark"]
+  details
+  summary[role="button"].contrast:not(.outline)::after {
   filter: brightness(0);
 }
-[data-theme=dark] [aria-busy=true]:not(input, select, textarea).contrast:is(button,
-[type=submit],
-[type=button],
-[type=reset],
-[role=button]):not(.outline)::before {
+[data-theme="dark"]
+  [aria-busy="true"]:not(input, select, textarea).contrast:is(
+    button,
+    [type="submit"],
+    [type="button"],
+    [type="reset"],
+    [role="button"]
+  ):not(.outline)::before {
   filter: brightness(0);
 }
 
 progress,
-[type=checkbox],
-[type=radio],
-[type=range] {
+[type="checkbox"],
+[type="radio"],
+[type="range"] {
   accent-color: var(--pico-primary);
 }
 ```

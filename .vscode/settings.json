@@ -1,16 +1,13 @@
 {
+	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "biomejs.biome",
-	"[javascript]": {
-		"editor.defaultFormatter": "biomejs.biome"
+	"[markdown]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"editor.codeActionsOnSave": {
 		"source.organizeImports.biome": "explicit",
 		"source.fixAll.biome": "explicit"
 	},
 	"js/ts.tsdk.path": "node_modules/typescript/lib",
-	"cSpell.ignoreWords": ["lintignore"],
-	"[markdown]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
-	},
-	"cSpell.words": ["goldens"]
+	"cSpell.words": ["goldens", "lintignore"]
 }

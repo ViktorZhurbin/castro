@@ -13,6 +13,7 @@ When both the frame and the event are grand, it's noise. When neither is, it's n
 ## Testing it
 
 Ask yourself:
+
 1. **Can I scan it?** Find the error in < 2 seconds?
 2. **Does it smile?** Is the joke actually funny?
 3. **Does it illuminate?** Does the satirical frame make the technical event more visible?
@@ -23,11 +24,13 @@ If you hesitate on any question, remove the satire.
 ## Emoji Policy
 
 **Allowed:**
+
 - `✓` - Success/completion
 - `❌` - Errors/failures
 - `⚠️` - Warnings (sparingly)
 
 **Banned:**
+
 - Decorative emojis (🚨, 📝, ✅, 💥, 🏝️, ⏭️, 🧹, etc.)
 - Emoji prefixes on status messages
 - Any emoji that adds visual noise without information
@@ -35,12 +38,14 @@ If you hesitate on any question, remove the satire.
 ## Satire Guidelines
 
 ### ✓ Good Satire
+
 - **Opening/closing messages**: "Realizing the Five-Year Plan", "Delivered to the people"
 - **One punchline per error**: "The revolution cannot serve two masters" (route conflict)
 - **Subtle wordplay**: "Revised" instead of "Changed"
 - **Actually funny**: Makes you smile without hunting for the error
 
 ### ✗ Bad Satire
+
 - **Status message clutter**: "📝 Distributing..." instead of "Writing..."
 - **Just different wording**: "Island construction failed" (not funny, just verbose)
 - **Trying too hard**: "The people rejected island"
@@ -48,6 +53,7 @@ If you hesitate on any question, remove the satire.
 - **Obscures meaning**: If you need to re-read to find the actual error
 
 ### Satire Placement
+
 - ✓ **Edges**: Opening, closing, error punchlines
 - ✗ **Middle**: Status updates, file operations, logs
 
@@ -86,6 +92,7 @@ errors: {
 ## Voice Philosophy
 
 Castro speaks in a communist satire voice:
+
 - Communist theme
 - One joke maximum per error
 - Satire at edges, clarity in the middle
@@ -94,6 +101,7 @@ Castro speaks in a communist satire voice:
 ## Examples
 
 ### Status Messages
+
 ```javascript
 // Good
 writingFile: (source, dest) => `Writing ${source} → ${dest}`,
@@ -105,6 +113,7 @@ fileSuccess: (file, time) => `✅ ${file} (${time})`,
 ```
 
 ### Error Messages
+
 ```javascript
 // Good - Punchline at end
 pageBuildFailed: (file, err) =>
@@ -123,6 +132,7 @@ pageBuildFailed: (file, err) =>
 ## Type Safety
 
 The error table is typed by `ErrorMessages` in `types.d.ts`:
+
 ```typescript
 export type ErrorMessages = {
   [K in ErrorCode]: (tokens: ErrorTokens[K]) => ErrorContent;

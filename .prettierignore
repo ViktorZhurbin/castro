@@ -1,0 +1,4 @@
+# dist/ and node_modules/ come from .gitignore (Prettier reads it by default).
+# tests/errors/ is committed but holds curated broken fixtures — keep Prettier out,
+# matching Biome's force-exclude.
+tests/errors/
