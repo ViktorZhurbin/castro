@@ -92,7 +92,7 @@ class CastroErrorOverlay extends HTMLElement {
 	 * @param {string[] | undefined} notes
 	 */
 	renderNotes(notes) {
-		if (!notes || !notes.length) return "";
+		if (!notes?.length) return "";
 		return `<ul class="notes">${notes.map((n) => `<li>${escapeHtml(n)}</li>`).join("")}</ul>`;
 	}
 
