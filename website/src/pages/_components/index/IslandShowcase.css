@@ -18,6 +18,12 @@
 	margin: 0;
 }
 
+.island-showcase-desc {
+	margin: 0;
+	color: var(--pico-muted-color);
+	font-size: var(--text-sm);
+}
+
 .island-showcase-island {
 	max-width: 768px;
 }

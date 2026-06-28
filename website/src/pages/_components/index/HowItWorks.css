@@ -1,11 +1,11 @@
-.foundation-section {
+.how-it-works-section {
 	.container {
 		padding: var(--spacing-4xl) var(--spacing-xl);
 		max-width: 768px;
 	}
 }
 
-.foundation-label {
+.how-it-works-label {
 	font-family: var(--font-display);
 	letter-spacing: 0.15em;
 	text-transform: uppercase;
@@ -13,7 +13,7 @@
 	margin-bottom: var(--spacing-2xl);
 }
 
-.foundation-item {
+.how-it-works-item {
 	display: flex;
 	align-items: center;
 	gap: var(--spacing-lg);
@@ -22,11 +22,11 @@
 }
 
 /* close the list with a rule under the final row */
-.foundation-list > .foundation-item:last-child {
+.how-it-works-list > .how-it-works-item:last-child {
 	border-bottom: var(--border-2);
 }
 
-.foundation-num {
+.how-it-works-num {
 	flex: 0 0 4rem;
 	margin: 0;
 	font-family: var(--font-display);
@@ -35,14 +35,14 @@
 	color: var(--pico-muted-color);
 }
 
-.foundation-item-title {
+.how-it-works-item-title {
 	font-family: var(--font-display);
 	letter-spacing: 0.05em;
 	font-size: var(--text-2xl);
 	margin: 0 0 var(--spacing-2xs);
 }
 
-.foundation-item-desc {
+.how-it-works-item-desc {
 	margin: 0;
 	color: var(--pico-muted-color);
 	line-height: 1.5;
