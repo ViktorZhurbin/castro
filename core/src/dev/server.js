@@ -82,7 +82,7 @@ export async function startDevServer() {
 				}
 
 				// Static file serving with clean URLs
-				// Real SSGs handle more variations
+				// Real SSGs would handle more variations
 
 				const basePath = join(OUTPUT_DIR, url.pathname);
 

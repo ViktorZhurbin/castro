@@ -98,7 +98,7 @@ export function getIslandImportMap() {
 	const importMap = {};
 
 	for (const dep of collectClientDeps()) {
-		// No cache busting
+		// Real framework would probably have cache busting - we don't.
 		importMap[dep] = `/${VENDOR_OUTPUT_DIR}/${getSafePkgName(dep)}.js`;
 	}
 
