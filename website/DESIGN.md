@@ -101,7 +101,7 @@ Cards typically combine `border: var(--border-2)` with a heavier directional bor
 
 **Breakpoints** (Pico's standard scale, documented in `base.css`):
 `sm` 576px / `md` 768px / `lg` 1024px / `xl` 1280px / `xxl` 1536px.
-The site uses `768px` for the main layout switches (hero, foundation grid).
+The site uses `768px` for the main layout switches (hero, how-it-works list).
 
 **Spacing**: Use `var(--spacing-*)` throughout. The scale runs from `--spacing-4xs` (0.1× Pico unit) to `--spacing-6xl` (6× Pico unit).
 

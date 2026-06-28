@@ -6,4 +6,4 @@ This is a demo site that consumes Castro. Uses PicoCSS v2 (CDN) plus three co-lo
 
 **Hidden page directories.** Directories prefixed with `_` are excluded from the build (e.g. `_components/`).
 
-**Site information architecture.** A single landing page (`src/pages/index.tsx`: Hero + Foundation + IslandShowcase) plus a `404`. No docs section, no public nav — the header is just Home, GitHub, and the theme toggle. The landing explains what Castro is, demonstrates one live island (`FiveYearPlan`, the site's only `<castro-island>`), and points at the source; it deliberately doesn't try to teach island architecture. Keep it that way.
+**Site information architecture.** A single landing page (`src/pages/index.tsx`: Hero + HowItWorks + IslandShowcase) plus a `404`. No docs section, no public nav — the header is just Home, GitHub, and the theme toggle. The landing explains what Castro is, demonstrates one live island (`PropagandaRadio`, the site's only `<castro-island>`), and points at the source; it deliberately doesn't try to teach island architecture. Keep it that way.
