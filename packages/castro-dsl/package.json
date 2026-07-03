@@ -22,9 +22,7 @@
 	},
 	"devDependencies": {
 		"@happy-dom/global-registrator": "^20.10.6",
-		"@types/bun": "^1.3.12",
 		"@vktrz/castro-jsx": "workspace:*",
-		"@vktrz/signals": "workspace:*",
-		"typescript": "^6.0.2"
+		"@vktrz/signals": "workspace:*"
 	}
 }

@@ -11,8 +11,5 @@
 	"dependencies": {
 		"@vktrz/castro": "workspace:*",
 		"preact": "^10.28.2"
-	},
-	"devDependencies": {
-		"typescript": "^6.0.2"
 	}
 }

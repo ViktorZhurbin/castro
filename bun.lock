@@ -6,6 +6,7 @@
       "name": "castro-monorepo",
       "devDependencies": {
         "@biomejs/biome": "2.5.1",
+        "@types/bun": "^1.3.12",
         "prettier": "3.9.0",
         "typescript": "^6.0.2",
       },
@@ -21,9 +22,7 @@
         "preact-render-to-string": "^6.5.12",
       },
       "devDependencies": {
-        "@types/bun": "^1.3.12",
         "knip": "^5.83.0",
-        "typescript": "^6.0.2",
       },
     },
     "packages/castro-dsl": {
@@ -34,10 +33,8 @@
       },
       "devDependencies": {
         "@happy-dom/global-registrator": "^20.10.6",
-        "@types/bun": "^1.3.12",
         "@vktrz/castro-jsx": "workspace:*",
         "@vktrz/signals": "workspace:*",
-        "typescript": "^6.0.2",
       },
     },
     "packages/castro-jsx": {
@@ -45,10 +42,6 @@
       "version": "0.1.0",
       "dependencies": {
         "@vktrz/signals": "workspace:*",
-      },
-      "devDependencies": {
-        "@types/bun": "^1.3.12",
-        "typescript": "^6.0.2",
       },
     },
     "packages/create-castro": {
@@ -61,10 +54,6 @@
     "packages/signals": {
       "name": "@vktrz/signals",
       "version": "0.1.0",
-      "devDependencies": {
-        "@types/bun": "^1.3.12",
-        "typescript": "^6.0.2",
-      },
     },
     "tests/errors/empty-layouts-dir": {
       "name": "@test-errors/empty-layouts-dir",
@@ -185,9 +174,6 @@
       "dependencies": {
         "@vktrz/castro": "workspace:*",
         "preact": "^10.28.2",
-      },
-      "devDependencies": {
-        "typescript": "^6.0.2",
       },
     },
   },
