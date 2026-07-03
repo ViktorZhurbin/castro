@@ -6,6 +6,7 @@
       "name": "castro-monorepo",
       "devDependencies": {
         "@biomejs/biome": "2.5.1",
+        "@types/bun": "^1.3.12",
         "prettier": "3.9.0",
         "typescript": "^6.0.2",
       },
@@ -21,7 +22,6 @@
         "preact-render-to-string": "^6.5.12",
       },
       "devDependencies": {
-        "@types/bun": "^1.3.12",
         "knip": "^5.83.0",
         "typescript": "^6.0.2",
       },
@@ -152,9 +152,6 @@
       "dependencies": {
         "@vktrz/castro": "workspace:*",
         "preact": "^10.28.2",
-      },
-      "devDependencies": {
-        "typescript": "^6.0.2",
       },
     },
   },
