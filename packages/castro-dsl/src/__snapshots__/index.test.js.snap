@@ -1,0 +1,13 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`full emitted module 1`] = `
+"import { createElement, Fragment } from "@vktrz/castro-jsx";
+import { createSignal } from "@vktrz/signals";
+
+export default function Component() {
+	const [count, setCount] = createSignal(0);
+	const inc = () => setCount((c) => c + 1);
+	return createElement(Fragment, null, createElement("button", { "onClick": inc }, "Clicked ", () => (count()), " times"), () => (count() > 5) ? createElement("p", null, "The proletariat tires of clicking.") : null);
+}
+"
+`;
