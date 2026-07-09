@@ -49,6 +49,10 @@
         "create-castro": "./index.js",
       },
     },
+    "packages/css": {
+      "name": "@vktrz/css",
+      "version": "0.1.0",
+    },
     "packages/signals": {
       "name": "@vktrz/signals",
       "version": "0.1.0",
@@ -171,6 +175,7 @@
       "version": "1.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
+        "@vktrz/css": "workspace:*",
         "preact": "^10.28.2",
       },
     },
@@ -329,6 +334,8 @@
     "@vktrz/castro-dsl": ["@vktrz/castro-dsl@workspace:packages/castro-dsl"],
 
     "@vktrz/castro-jsx": ["@vktrz/castro-jsx@workspace:packages/castro-jsx"],
+
+    "@vktrz/css": ["@vktrz/css@workspace:packages/css"],
 
     "@vktrz/signals": ["@vktrz/signals@workspace:packages/signals"],
 

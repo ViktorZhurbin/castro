@@ -50,7 +50,7 @@ How the subsystems connect across files. For mechanics inside a single step, rea
 
 ### Build Pipeline
 
-`cli.js` → `buildAll()` orchestrates the build (see `core/src/builder/buildAll.js` docblock for the step list). Two `Bun.build` plugins are always active: `castroExternalsPlugin` (keeps Castro internals external for singleton sharing) and `islandMarkerPlugin` (replaces `.island.tsx` imports with marker stubs). Compiled page modules are loaded via `getModule()` with content-hashed file paths to bust Bun's import cache (Bun caches by path, not query string). The full VNode tree — page + layout + islands — renders in a single synchronous `renderToString()` pass; SSR modules must be pre-loaded.
+`cli.js` → `buildAll()` orchestrates the build (see `core/src/builder/buildAll.js` docblock for the step list). Three `Bun.build` plugins are always active: `castroExternalsPlugin` (keeps Castro internals external for singleton sharing), `cssPackagePlugin` (resolves bare `.css` imports to absolute paths so a stylesheet from an npm package — e.g. `@vktrz/css` — bundles like local CSS instead of being externalized as a JS dep), and `islandMarkerPlugin` (replaces `.island.tsx` imports with marker stubs). Compiled page modules are loaded via `getModule()` with content-hashed file paths to bust Bun's import cache (Bun caches by path, not query string). The full VNode tree — page + layout + islands — renders in a single synchronous `renderToString()` pass; SSR modules must be pre-loaded.
 
 ### Island Tracking
 
@@ -120,4 +120,4 @@ Anything outside these earns its lines by teaching machinery; propose removing o
 
 ## Explorations
 
-Castro core is finished. New work happens in sibling packages under `packages/` (a reactive `signals` lib, the `castro-jsx` DOM runtime, and the `castro-dsl` `.castro` compiler). The lineup, the unifying "an accessor is a nullary function" spine, and deferred ideas (hand-written HTML parser, `comrade:for`, SSR, a reactive DB store) live in EXPLORATIONS.md. Read it before extending the suite.
+Castro core is finished. `packages/` is where experiments live — things worth building to understand, that don't warrant their own repo. Some form a related runtime suite (a reactive `signals` lib, the `castro-jsx` DOM runtime, the `castro-dsl` `.castro` compiler); that suite's shared spine and deferred ideas (hand-written HTML parser, `comrade:for`, SSR, a reactive DB store) live in EXPLORATIONS.md — read it before extending it. Others are standalone, like `@vktrz/css`: a small classless-first CSS system extracted from the website's design system (bare tags styled, classes only for intent).

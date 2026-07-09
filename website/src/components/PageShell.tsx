@@ -1,3 +1,4 @@
+import "@vktrz/css/style.css";
 import type { ComponentChildren } from "preact";
 import { Header } from "./Header";
 import { ThemeScript } from "./theme/ThemeScript";
@@ -16,13 +17,6 @@ export function PageShell({ title, children }: PageShellProps) {
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 				<title>{title}</title>
 				<ThemeScript />
-				<link
-					rel="stylesheet"
-					href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
-				/>
-				<link rel="stylesheet" href="/styles/pico-theme.css" />
-				<link rel="stylesheet" href="/styles/base.css" />
-				<link rel="stylesheet" href="/styles/components.css" />
 				<link rel="preconnect" href="https://fonts.googleapis.com" />
 				<link
 					rel="preconnect"

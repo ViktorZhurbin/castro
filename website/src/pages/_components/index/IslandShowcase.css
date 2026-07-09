@@ -1,6 +1,6 @@
 .island-showcase {
 	padding: var(--spacing-6xl) var(--spacing-xl);
-	background-color: var(--pico-code-background-color);
+	background-color: var(--code-background-color);
 }
 
 .island-showcase-container {
@@ -14,13 +14,13 @@
 	font-family: var(--font-display);
 	letter-spacing: 0.05rem;
 	font-size: var(--text-3xl);
-	color: var(--pico-primary);
+	color: var(--primary);
 	margin: 0;
 }
 
 .island-showcase-desc {
 	margin: 0;
-	color: var(--pico-muted-color);
+	color: var(--muted-color);
 	font-size: var(--text-sm);
 }
 

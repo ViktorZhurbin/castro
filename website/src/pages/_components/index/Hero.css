@@ -2,7 +2,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background-color: var(--pico-code-background-color);
+	background-color: var(--code-background-color);
 
 	@media (min-width: 576px) {
 		min-height: calc(100vh - var(--header-height));
@@ -20,7 +20,7 @@
 		width: 6rem;
 		height: 6rem;
 		margin-bottom: var(--spacing-2xl);
-		color: var(--pico-primary);
+		color: var(--primary);
 
 		@media (min-width: 768px) {
 			width: 8rem;
@@ -41,7 +41,7 @@
 }
 
 .hero-subtitle {
-	color: var(--pico-muted-color);
+	color: var(--muted-color);
 	font-size: var(--text-lg);
 	max-width: 36rem;
 	margin-bottom: var(--spacing-xl);
@@ -58,7 +58,7 @@
 		display: block;
 		width: 2rem;
 		height: 2px;
-		background: var(--pico-primary);
+		background: var(--primary);
 		margin: 0 auto var(--spacing);
 	}
 }

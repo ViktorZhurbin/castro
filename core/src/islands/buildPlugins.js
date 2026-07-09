@@ -76,3 +76,31 @@ export const castroExternalsPlugin = {
 		});
 	},
 };
+
+/**
+ * Lets pages import CSS straight from an npm package, e.g.
+ * `import "@vktrz/css/style.css"`.
+ *
+ * compileJSX marks every package.json dependency external (see
+ * getProjectDependencies) so JS deps resolve to their installed singletons and
+ * tsconfig `paths` aliases pass through. That's right for JS but wrong for CSS:
+ * a stylesheet has no runtime singleton — it must be bundled to be extracted
+ * into the page's <link>. Resolving a bare `.css` specifier to its absolute
+ * path (honouring the package's `exports`) sidesteps the external match, so Bun
+ * bundles it exactly like a local co-located stylesheet.
+ *
+ * @type {Bun.BunPlugin}
+ */
+export const cssPackagePlugin = {
+	name: "css-package",
+
+	setup(build) {
+		build.onResolve({ filter: /\.css$/ }, async (args) => {
+			// Relative/absolute imports already resolve normally; only bare
+			// package specifiers get caught by the external list.
+			if (args.path.startsWith(".") || args.path.startsWith("/")) return;
+
+			return { path: await Bun.resolve(args.path, dirname(args.importer)) };
+		});
+	},
+};

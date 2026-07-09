@@ -44,10 +44,10 @@ export default function PropagandaRadio(props: { className?: string }) {
 			{/* Controls */}
 			<div class="propaganda-radio-controls">
 				<div class="propaganda-radio-buttons">
-					<button class="btn btn-primary btn-full" onClick={prev}>
+					<button class="primary full" onClick={prev}>
 						◀ PREV
 					</button>
-					<button class="btn btn-primary btn-full" onClick={next}>
+					<button class="primary full" onClick={next}>
 						NEXT ▶
 					</button>
 				</div>

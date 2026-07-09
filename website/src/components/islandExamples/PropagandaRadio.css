@@ -2,7 +2,7 @@
 
 .propaganda-radio {
 	border: var(--border-2);
-	background-color: var(--pico-background-color);
+	background-color: var(--background-color);
 }
 
 .propaganda-radio-header {
@@ -53,7 +53,7 @@
 
 .propaganda-radio-counter {
 	text-align: center;
-	font-family: var(--pico-font-family-monospace);
+	font-family: var(--font-family-monospace);
 }
 
 /* Primitives consumed only by this island (the global sheet stays lean). */
@@ -62,13 +62,13 @@
 }
 
 .badge {
-	font-family: var(--pico-font-family-monospace);
+	font-family: var(--font-family-monospace);
 	font-weight: 700;
 	padding: var(--spacing-2xs) var(--spacing-xs);
 }
 
 .badge-primary {
-	background-color: var(--pico-primary);
-	color: var(--pico-primary-inverse);
-	border-color: var(--pico-primary);
+	background-color: var(--primary);
+	color: var(--primary-inverse);
+	border-color: var(--primary);
 }

@@ -1,5 +1,5 @@
 .footer {
-	background-color: var(--pico-background-color);
+	background-color: var(--background-color);
 	padding-block: var(--spacing-3xl);
 	border-top: var(--border-primary-4);
 }
@@ -22,12 +22,12 @@
 	font-size: var(--text-xl);
 	font-family: var(--font-display);
 	letter-spacing: 0.05em;
-	color: var(--pico-primary);
+	color: var(--primary);
 	text-transform: uppercase;
 }
 
 .footer-meta {
-	font-family: var(--pico-font-family-monospace);
+	font-family: var(--font-family-monospace);
 	font-size: var(--text-sm);
 
 	a {
