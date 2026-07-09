@@ -26,6 +26,10 @@
 				"typescript": "^6.0.2"
 			}
 		},
+		"packages/bare-css": {
+			"name": "@vktrz/bare-css",
+			"version": "0.1.0"
+		},
 		"packages/create-castro": {
 			"name": "create-castro",
 			"version": "0.2.0",
@@ -150,6 +154,7 @@
 			"name": "website",
 			"version": "1.0.0",
 			"dependencies": {
+				"@vktrz/bare-css": "workspace:*",
 				"@vktrz/castro": "workspace:*",
 				"preact": "^10.28.2"
 			}
@@ -522,6 +527,8 @@
 			{ "dependencies": { "undici-types": "~8.3.0" } },
 			"sha512-nxAkRSVkN1Y0JC1W8ky/fTfkGsMmcrRsbx+3XoZE+rMOX71kLYTV7fLXpqud1GpbpP5TuffXFqfX7fH2GgZREw=="
 		],
+
+		"@vktrz/bare-css": ["@vktrz/bare-css@workspace:packages/bare-css"],
 
 		"@vktrz/castro": ["@vktrz/castro@workspace:core"],
 

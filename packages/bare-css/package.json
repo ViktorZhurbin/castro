@@ -1,0 +1,15 @@
+{
+	"name": "@vktrz/bare-css",
+	"version": "0.1.0",
+	"description": "A small classless-first CSS system — bare tags styled, classes only for intent. Extracted from the Castro website's design system. (Name TBD.)",
+	"type": "module",
+	"exports": {
+		"./index.css": "./src/index.css"
+	},
+	"scripts": {
+		"build": "bun build ./src/index.css --outfile ./dist/index.css --minify"
+	},
+	"files": [
+		"src/"
+	]
+}

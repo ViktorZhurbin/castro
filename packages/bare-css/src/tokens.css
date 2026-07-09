@@ -1,0 +1,179 @@
+/**
+ * Design tokens — the single source of truth for the whole system.
+ *
+ * Three layers, in reading order:
+ *   1. Global settings + structural defaults (geometry, spacing, type scale).
+ *   2. "Literal" materials (--ink-*, --canvas-*, --color-*) — what colors *are*,
+ *      authored in OKLCH so ramps stay perceptually even.
+ *   3. Semantic roles (--primary, --background-color, --contrast, …) mapped per
+ *      theme in the light/dark blocks below.
+ *
+ * Tokens are unprefixed: material and scale names carry their group (--color-*,
+ * --spacing-*, --text-*); role tokens are bare (--primary, --color, --muted-color).
+ */
+
+:root {
+	/* ─── GLOBAL SYSTEM SETTINGS ─── */
+	--font-family: "Barlow", -apple-system, sans-serif;
+	--font-display: "Bebas Neue", sans-serif;
+
+	--border-radius: 0rem;
+	--border-width: 2px;
+
+	--font-weight: 500;
+	--transition: 0s;
+
+	/* Fixed root font size — no responsive type scaling. */
+	--font-size: 100%;
+
+	/* Depth comes from border weight, never shadow. */
+	--box-shadow: none;
+
+	--outline-width: 3px;
+
+	/* ─── STRUCTURAL DEFAULTS ─── */
+	/* Numeric values the reset/typography read. Previously inherited from the
+	   upstream framework; owned explicitly now that it's gone. */
+	--spacing: 1rem;
+	--line-height: 1.5;
+	--typography-spacing-vertical: 1rem;
+	--typography-spacing-top: 1.5rem;
+	--text-underline-offset: 0.1rem;
+	--font-family-monospace:
+		ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+		monospace;
+
+	/* Spacing scale — multiples of the base spacing unit. */
+	--spacing-4xs: calc(var(--spacing) * 0.1);
+	--spacing-3xs: calc(var(--spacing) * 0.125);
+	--spacing-2xs: calc(var(--spacing) * 0.25);
+	--spacing-xs: calc(var(--spacing) * 0.5);
+	--spacing-sm: calc(var(--spacing) * 0.75);
+	--spacing-lg: calc(var(--spacing) * 1.25);
+	--spacing-xl: calc(var(--spacing) * 1.5);
+	--spacing-2xl: calc(var(--spacing) * 2);
+	--spacing-2-5xl: calc(var(--spacing) * 2.5);
+	--spacing-3xl: calc(var(--spacing) * 3);
+	--spacing-4xl: calc(var(--spacing) * 4);
+	--spacing-5xl: calc(var(--spacing) * 5);
+	--spacing-6xl: calc(var(--spacing) * 6);
+
+	/* Type scale. */
+	--text-xs: 0.75rem;
+	--text-sm: 0.875rem;
+	--text-base: 1rem;
+	--text-lg: 1.125rem;
+	--text-xl: 1.25rem;
+	--text-2xl: 1.5rem;
+	--text-3xl: 2.25rem;
+	--text-4xl: 3.5rem;
+
+	/* Border system — visual weight is carried by geometry. */
+	--border-2: var(--border-width) solid var(--muted-border-color);
+	--border-4: 4px solid var(--muted-border-color);
+	--border-primary-4: 4px solid var(--primary);
+	--border-primary-8: 8px solid var(--primary);
+
+	/* Per-heading color roles (resolved values are theme-dependent). */
+	--h1-color: var(--primary);
+	--h2-color: var(--color);
+	--h3-color: var(--color);
+	--h4-color: var(--color);
+	--h5-color: var(--color);
+	--h6-color: var(--muted-color);
+
+	/* ─── LAYER 1: "LITERAL" MATERIALS ─── */
+
+	/* Inks (text & structural lines) */
+	--ink-black-raw: 15% 0 0;
+	--ink-black: oklch(var(--ink-black-raw));
+	--ink-white: oklch(98% 0 0);
+	--ink-chalk: oklch(91% 0.016 74); /* Off-white for dark mode text */
+	--ink-graphite: oklch(35% 0 0); /* Heavy grey for light mode muted text */
+	--ink-ash: oklch(70% 0.01 74); /* Pale grey for dark mode muted text */
+
+	/* Light canvas (backgrounds) */
+	--canvas-cream: oklch(93% 0.012 80);
+	--canvas-newsprint: oklch(89% 0.015 77);
+	--canvas-cardboard: oklch(86% 0.017 79);
+
+	/* Dark canvas (backgrounds) */
+	--canvas-charcoal: oklch(22% 0.006 56);
+	--canvas-slate: oklch(26% 0.006 56);
+
+	/* Pigments (reds & golds) */
+	--color-crimson-raw: 53% 0.2 20;
+	--color-crimson: oklch(var(--color-crimson-raw));
+	--color-blood: oklch(55% 0.22 25); /* Deep dark-mode secondary red */
+	--color-brick: oklch(65% 0.2 28); /* Dark-mode error/deleted */
+
+	--color-gold-raw: 80% 0.17 80;
+	--color-gold: oklch(var(--color-gold-raw));
+	--color-mustard: oklch(75% 0.18 80); /* Dirtier gold for light-mode accents */
+
+	/* Metals & minerals (greys & greens) */
+	--color-iron: oklch(25% 0.02 250);
+	--color-concrete: oklch(45% 0.01 250);
+	--color-pine: oklch(48% 0.12 150); /* Deep green for light-mode success */
+	--color-sage: oklch(70% 0.15 150); /* Pale green for dark-mode success */
+
+	/* Text selection derives from the primary pigment. */
+	--text-selection-color: oklch(var(--color-crimson-raw) / 25%);
+}
+
+/* ─── LAYER 2: LIGHT THEME ─── */
+[data-theme="light"],
+:root:not([data-theme="dark"]) {
+	--background-color: var(--canvas-cream);
+	--color: var(--ink-black);
+	--muted-color: var(--ink-graphite);
+	--muted-border-color: var(--ink-black);
+
+	--primary: var(--color-crimson);
+	--primary-inverse: var(--ink-white);
+
+	--secondary: var(--color-iron);
+	--secondary-inverse: var(--ink-white);
+
+	--contrast: var(--ink-black);
+	--contrast-background: var(--ink-black);
+	--contrast-inverse: var(--ink-white);
+
+	--color-accent: var(--color-mustard);
+	--color-success: var(--color-pine);
+	--color-error: var(--color-crimson);
+
+	--ins-color: var(--color-success);
+	--del-color: var(--color-error);
+
+	--code-color: var(--ink-black);
+	--code-background-color: var(--canvas-cardboard);
+}
+
+/* ─── LAYER 3: DARK THEME ─── */
+[data-theme="dark"] {
+	--background-color: var(--canvas-charcoal);
+	--color: var(--ink-chalk);
+	--muted-color: var(--ink-ash);
+	--muted-border-color: var(--color-concrete);
+
+	--primary: var(--color-gold);
+	--primary-inverse: var(--ink-black);
+
+	--secondary: var(--color-blood);
+	--secondary-inverse: var(--ink-white);
+
+	--contrast: var(--ink-white);
+	--contrast-background: var(--ink-white);
+	--contrast-inverse: var(--ink-black);
+
+	--color-accent: var(--color-concrete);
+	--color-success: var(--color-sage);
+	--color-error: var(--color-brick);
+
+	--ins-color: var(--color-success);
+	--del-color: var(--color-error);
+
+	--code-color: var(--ink-chalk);
+	--code-background-color: var(--canvas-slate);
+}

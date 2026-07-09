@@ -9,7 +9,7 @@
 	font-family: var(--font-display);
 	letter-spacing: 0.15em;
 	text-transform: uppercase;
-	color: var(--pico-muted-color);
+	color: var(--muted-color);
 	margin-bottom: var(--spacing-2xl);
 }
 
@@ -32,7 +32,7 @@
 	font-family: var(--font-display);
 	font-size: var(--text-4xl);
 	line-height: 0.8;
-	color: var(--pico-muted-color);
+	color: var(--muted-color);
 }
 
 .how-it-works-item-title {
@@ -44,7 +44,7 @@
 
 .how-it-works-item-desc {
 	margin: 0;
-	color: var(--pico-muted-color);
+	color: var(--muted-color);
 	line-height: 1.5;
 	max-width: 46ch;
 }

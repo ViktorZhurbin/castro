@@ -1,6 +1,7 @@
 import { resolve } from "node:path/posix";
 import {
 	castroExternalsPlugin,
+	cssPackagePlugin,
 	islandMarkerPlugin,
 } from "../islands/buildPlugins.js";
 import { safeBunBuild } from "../utils/bunBuild.js";
@@ -39,7 +40,7 @@ export async function compileJSX(sourcePath) {
 			// makes sure we use production mode for SSG
 			"process.env.NODE_ENV": JSON.stringify("production"),
 		},
-		plugins: [castroExternalsPlugin, islandMarkerPlugin],
+		plugins: [castroExternalsPlugin, cssPackagePlugin, islandMarkerPlugin],
 	});
 
 	const jsFile = result.outputs.find((f) => f.path.endsWith(".js"));

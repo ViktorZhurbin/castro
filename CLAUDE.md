@@ -50,7 +50,7 @@ How the subsystems connect across files. For mechanics inside a single step, rea
 
 ### Build Pipeline
 
-`cli.js` → `buildAll()` orchestrates the build (see `core/src/builder/buildAll.js` docblock for the step list). Two `Bun.build` plugins are always active: `castroExternalsPlugin` (keeps Castro internals external for singleton sharing) and `islandMarkerPlugin` (replaces `.island.tsx` imports with marker stubs). Compiled page modules are loaded via `getModule()` with content-hashed file paths to bust Bun's import cache (Bun caches by path, not query string). The full VNode tree — page + layout + islands — renders in a single synchronous `renderToString()` pass; SSR modules must be pre-loaded.
+`cli.js` → `buildAll()` orchestrates the build (see `core/src/builder/buildAll.js` docblock for the step list). Three `Bun.build` plugins are always active: `castroExternalsPlugin` (keeps Castro internals external for singleton sharing), `cssPackagePlugin` (resolves bare `.css` imports to absolute paths so a stylesheet from an npm package — e.g. `@vktrz/bare-css` — bundles like local CSS instead of being externalized as a JS dep), and `islandMarkerPlugin` (replaces `.island.tsx` imports with marker stubs). Compiled page modules are loaded via `getModule()` with content-hashed file paths to bust Bun's import cache (Bun caches by path, not query string). The full VNode tree — page + layout + islands — renders in a single synchronous `renderToString()` pass; SSR modules must be pre-loaded.
 
 ### Island Tracking
 

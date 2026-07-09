@@ -7,7 +7,8 @@ export function CTAButtons(props: { className?: string }) {
 				href="https://github.com/ViktorZhurbin/castro"
 				target="_blank"
 				rel="noopener"
-				class="btn btn-primary"
+				role="button"
+				class="primary"
 			>
 				READ THE SOURCE
 			</a>

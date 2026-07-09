@@ -1,0 +1,38 @@
+/**
+ * Layout helpers. Just the centered container for now — a fluid gutter that
+ * snaps to a fixed max-width per breakpoint, dropping side padding once the
+ * viewport is wide enough to seat it.
+ */
+
+.container {
+	width: 100%;
+	margin-inline: auto;
+	padding-inline: var(--spacing);
+}
+
+@media (min-width: 576px) {
+	.container {
+		max-width: 510px;
+		padding-inline: 0;
+	}
+}
+@media (min-width: 768px) {
+	.container {
+		max-width: 700px;
+	}
+}
+@media (min-width: 1024px) {
+	.container {
+		max-width: 950px;
+	}
+}
+@media (min-width: 1280px) {
+	.container {
+		max-width: 1200px;
+	}
+}
+@media (min-width: 1536px) {
+	.container {
+		max-width: 1450px;
+	}
+}

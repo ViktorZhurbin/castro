@@ -1,0 +1,161 @@
+/**
+ * Bare typographic elements: prose flow, headings, lists, links, code.
+ *
+ * Headings wear the display face + tracking and bump one step at the md
+ * breakpoint; h1 additionally recolors to primary via --h1-color.
+ * Everything here is class-free — the point of the system is that raw markup
+ * already reads as designed.
+ */
+
+b,
+strong {
+	font-weight: bolder;
+}
+
+address,
+blockquote,
+dl,
+ol,
+p,
+pre,
+table,
+ul {
+	margin-top: 0;
+	margin-bottom: var(--typography-spacing-vertical);
+	color: var(--color);
+	font-style: normal;
+	font-weight: var(--font-weight);
+}
+
+:where(ol, ul) li {
+	margin-bottom: calc(var(--typography-spacing-vertical) * 0.25);
+}
+
+/* Nested lists lose the outer margin, gain a tighter top gap. */
+:where(dl, ol, ul) :where(dl, ol, ul) {
+	margin: 0;
+	margin-top: calc(var(--typography-spacing-vertical) * 0.25);
+}
+
+ul li {
+	list-style: square;
+}
+
+/* Extra breathing room when a heading follows a block. */
+:where(article, address, blockquote, dl, figure, form, ol, p, pre, table, ul)
+	~ :is(h1, h2, h3, h4, h5, h6) {
+	margin-top: var(--typography-spacing-top);
+}
+
+/* Base link — kept ahead of the heading rules so specificity ascends: heading
+   links (higher specificity) still override this to inherit their color. */
+a {
+	--text-decoration: none;
+	color: var(--primary);
+	text-decoration: var(--text-decoration);
+	text-decoration-thickness: 3px;
+	text-underline-offset: 3px;
+
+	&:hover {
+		--text-decoration: underline;
+	}
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin-top: 0;
+	margin-bottom: var(--typography-spacing-vertical);
+	color: var(--color);
+	font-weight: var(--font-weight);
+	font-size: var(--font-size);
+	line-height: var(--line-height);
+	font-family: var(--font-display);
+	letter-spacing: 0.05em;
+
+	& a,
+	& a > code {
+		color: inherit;
+		text-decoration: none;
+		text-decoration-thickness: 4px;
+		text-underline-offset: 4px;
+		text-decoration-color: var(--primary);
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+}
+
+h1 {
+	--color: var(--h1-color);
+	--font-size: 3rem;
+
+	a {
+		text-underline-offset: 6px;
+	}
+}
+h2 {
+	--color: var(--h2-color);
+	--font-size: 1.875rem;
+}
+h3 {
+	--color: var(--h3-color);
+}
+h4 {
+	--color: var(--h4-color);
+}
+h5 {
+	--color: var(--h5-color);
+}
+h6 {
+	--color: var(--h6-color);
+}
+
+@media (min-width: 768px) {
+	h1 {
+		--font-size: 4.25rem;
+	}
+	h2 {
+		--font-size: 3rem;
+	}
+	h3 {
+		--font-size: 2.25rem;
+	}
+}
+
+ins {
+	color: var(--ins-color);
+	text-decoration: none;
+}
+del {
+	color: var(--del-color);
+}
+
+::selection {
+	background-color: var(--text-selection-color);
+}
+
+/* Inline code (not inside a link or a <pre>). */
+:not(pre):not(a) > code {
+	padding: var(--spacing-4xs) var(--spacing-2xs);
+	border: 1px solid var(--muted-border-color);
+	background-color: var(--code-background-color);
+	color: var(--code-color);
+	font-family: var(--font-family-monospace);
+}
+
+pre {
+	border: var(--border-2);
+	background-color: var(--code-background-color);
+
+	> code {
+		display: block;
+		padding: var(--spacing) var(--spacing-xl);
+		overflow: auto;
+		font-family: var(--font-family-monospace);
+	}
+}

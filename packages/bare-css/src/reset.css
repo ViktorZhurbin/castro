@@ -1,0 +1,73 @@
+/**
+ * Document reset — box model, root text defaults, focus, rules.
+ *
+ * A trimmed reboot (normalize/sanitize lineage). Cross-browser IE shims and
+ * form-control normalization are intentionally dropped: posix-evergreen only,
+ * no forms in this system's current surface.
+ */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	background-repeat: no-repeat;
+}
+
+::before,
+::after {
+	text-decoration: inherit;
+	vertical-align: inherit;
+}
+
+:where(:root) {
+	-webkit-tap-highlight-color: transparent;
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+	background-color: var(--background-color);
+	color: var(--color);
+	font-family: var(--font-family);
+	font-size: var(--font-size);
+	font-weight: var(--font-weight);
+	line-height: var(--line-height);
+	text-underline-offset: var(--text-underline-offset);
+	text-rendering: optimizeLegibility;
+	overflow-wrap: break-word;
+	tab-size: 4;
+}
+
+* {
+	scrollbar-width: thin;
+}
+
+/* Dashed primary outline, no shadow — matches the flat, hard-edged aesthetic. */
+*:focus-visible {
+	outline: var(--outline-width) dashed var(--primary);
+	outline-offset: 3px;
+}
+
+[hidden] {
+	display: none;
+}
+
+/* Unstyled inline SVGs default to currentColor so they inherit text/icon color. */
+:where(svg:not([fill])) {
+	fill: currentColor;
+}
+
+/* Replaced elements don't blow out their container and drop the baseline gap. */
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+:where(audio, canvas, iframe, img, svg, video) {
+	vertical-align: middle;
+}
+
+hr {
+	height: 0;
+	margin: var(--typography-spacing-vertical) 0;
+	border: 0;
+	border-top: var(--border-2);
+	color: inherit;
+}

@@ -1,8 +1,8 @@
 # Castro website
 
-This is a demo site that consumes Castro. Uses PicoCSS v2 (CDN) plus three co-located stylesheets in `public/styles/`. Each component/page has its own co-located CSS file.
+This is a demo site that consumes Castro. Global styling comes from `@vktrz/bare-css` (a sibling package), pulled in via `import "@vktrz/bare-css/style.css"` in `PageShell` — castro bundles it into the page CSS. Each component/page also has its own co-located CSS file that consumes the package's tokens (`--primary`, `--spacing-*`, `--text-*`, `--border-*`).
 
-**Read `DESIGN.md` before any UI change** — it documents the color system, typography, layout conventions, and the structure of the three style files. Customization & CSS variable references: `./.claude/docs/pico.md`, `./.claude/docs/pico-variables-css.md`.
+**Read `DESIGN.md` before any UI change** — it documents the color system, typography, and layout conventions. The tokens and pre-styled bare elements now live in `@vktrz/bare-css` (`packages/bare-css/src/`); the site defines only component-specific CSS on top.
 
 **Hidden page directories.** Directories prefixed with `_` are excluded from the build (e.g. `_components/`).
 

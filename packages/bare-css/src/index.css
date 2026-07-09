@@ -1,0 +1,11 @@
+/**
+ * Entry point. Imported once (globally) by the consuming site; Bun's CSS
+ * bundler merges these @imports at build time into one file.
+ * Order is load-bearing: tokens define the custom properties everything
+ * else reads, reset establishes the box model, then elements are styled.
+ */
+@import "./tokens.css";
+@import "./reset.css";
+@import "./typography.css";
+@import "./elements.css";
+@import "./layout.css";
