@@ -27,22 +27,12 @@ speak that same shape. A store query that returns an `Accessor` drops into a DSL
   `comrade:*` directives. Compiles to `createElement` calls targeting `castro-jsx`.
   The compiler's one piece of judgment: **wrap dynamic holes in thunks** (`() => expr`)
   so the runtime makes them reactive. That's the whole spine — it's the compiler
-  the JSX runtime's docblock says it's missing.
+  the JSX runtime's docblock says it's missing. The parser (`parse.js`) is
+  hand-written — no borrowed HTML parser — specifically so `={expr}` holes can be
+  unquoted (`comrade:if={count() > 5}`); it reads a brace-depth-balanced span
+  instead of following HTML's quoted-attribute grammar.
 
 ## Further explorations (don't lose these)
-
-### Swap the borrowed HTML parser for a hand-written one
-
-v0 borrows a small HTML parser behind a seam: the parser's **only** contract is
-`source → our Node[]`, isolated in one file (`parse.js`). Swapping in a hand-written
-minimal parser changes nothing downstream — that's the design constraint to preserve.
-
-- **Why bother later:** the parsing is the most pedagogically juicy part, and owning
-  it is the satisfying-spine payoff.
-- **Concrete reward:** a stock HTML parser forces **quoted** expression attributes
-  (`comrade:if="{count() > 5}"`) because unquoted `{...}` with spaces/`>` ends the tag
-  early. A hand-written parser unlocks unquoted `={expr}`. Text holes (`{count()}`)
-  are already fine either way.
 
 ### `comrade:for` / `comrade:show` directives
 

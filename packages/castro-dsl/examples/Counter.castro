@@ -5,5 +5,5 @@ const [count, setCount] = createSignal(0);
 const inc = () => setCount((c) => c + 1);
 ---
 
-<button onClick="{inc}">Clicked {count()} times</button>
-<p comrade:if="{count() > 5}">The proletariat tires of clicking.</p>
+<button onClick={inc}>Clicked {count()} times</button>
+<p comrade:if={count() > 5}>The proletariat tires of clicking.</p>

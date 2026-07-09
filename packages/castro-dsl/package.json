@@ -17,9 +17,6 @@
 		"dev": "bun examples/serve.js",
 		"type-check": "tsc"
 	},
-	"dependencies": {
-		"node-html-parser": "^8.0.4"
-	},
 	"devDependencies": {
 		"@happy-dom/global-registrator": "^20.10.6",
 		"@vktrz/castro-jsx": "workspace:*",
