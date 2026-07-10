@@ -24,6 +24,7 @@ bun loc              # LOC count (core only, excludes messages/)
 
 - `core/` — core SSG engine (the npm package `@vktrz/castro`)
 - `packages/` — `create-castro`, the project scaffolder
+- `EXPLORATIONS.md` — the scope/complexity filter for building anything new here; read it before starting a package
 - `website/` — demo playground that consumes castro. `website/tsconfig.json` is the canonical tsconfig; `packages/create-castro/template/tsconfig.json` shares the same `compilerOptions` but uses root-level `pages/`/`layouts/` instead of `src/`.
 - `tests/site/` — minimal test site exercising Preact islands, all hydration directives, CSS modules, and signals
 - `tests/errors/` — isolated error cases for manual DX verification of the error overlay and terminal renderer
