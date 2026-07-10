@@ -19,6 +19,18 @@
 			"a11y": "off"
 		}
 	},
+	"overrides": [
+		{
+			"includes": ["**/*.castro"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noUnusedVariables": "off"
+					}
+				}
+			}
+		}
+	],
 	"javascript": {
 		"formatter": {
 			"quoteStyle": "double"

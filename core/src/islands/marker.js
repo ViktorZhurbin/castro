@@ -6,17 +6,17 @@
  * with a stub that calls renderMarker(), which:
  *
  * 1. Looks up the island's pre-loaded SSR module in the registry
- * 2. Renders it to HTML (server-side)
+ * 2. Renders it to HTML via its framework's renderSSR (server-side)
  * 3. Wraps it in a <castro-island> custom element for client hydration
  *
- * Also records which islands the page uses (into the per-page state from
- * pageState.js), so only their CSS gets injected.
+ * Also records which islands and frameworks the page uses (into the per-page
+ * state from pageState.js), so only their CSS/import-map entries get injected.
  */
 
 import { h } from "preact";
 import { CastroError } from "../utils/errors.js";
+import { getFrameworkConfig } from "./frameworkConfig.js";
 import { getPageState } from "./pageState.js";
-import { renderIslandToString } from "./preact.js";
 import { islands } from "./registry.js";
 
 /**
@@ -42,6 +42,7 @@ export function renderMarker(islandId, props = {}) {
 
 	const state = getPageState();
 	state.usedIslands.add(islandId);
+	state.usedFrameworks.add(island.frameworkId);
 
 	const ssrHtml = renderIslandSSR(island, islandId, cleanProps);
 
@@ -75,8 +76,9 @@ function lookupIsland(islandId) {
 }
 
 /**
- * Render the island's pre-loaded SSR module to static HTML. Wraps any throw in
- * a CastroError so the build surfaces a structured error instead of a raw stack.
+ * Render the island's pre-loaded SSR module to HTML using its framework's
+ * renderer. Wraps any framework-side throw in a CastroError so the build
+ * surfaces a structured error instead of a raw stack.
  *
  * @param {LoadedIsland} island
  * @param {string} islandId
@@ -84,8 +86,10 @@ function lookupIsland(islandId) {
  * @returns {string}
  */
 function renderIslandSSR(island, islandId, cleanProps) {
+	const frameworkConfig = getFrameworkConfig(island.frameworkId);
+
 	try {
-		return renderIslandToString(island.ssrModule.default, cleanProps);
+		return frameworkConfig.renderSSR(island.ssrModule.default, cleanProps);
 	} catch (err) {
 		throw new CastroError("ISLAND_RENDER_FAILED", {
 			islandId,

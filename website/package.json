@@ -10,6 +10,8 @@
 	},
 	"dependencies": {
 		"@vktrz/castro": "workspace:*",
+		"@vktrz/castro-jsx": "workspace:*",
+		"@vktrz/signals": "workspace:*",
 		"preact": "^10.28.2"
 	}
 }

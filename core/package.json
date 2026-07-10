@@ -29,6 +29,7 @@
 		"type-check": "tsc"
 	},
 	"dependencies": {
+		"@vktrz/castro-jsx": "workspace:*",
 		"preact": "^10",
 		"preact-render-to-string": "^6.5.12"
 	},

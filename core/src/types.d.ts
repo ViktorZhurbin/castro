@@ -58,6 +58,55 @@ export interface CastroErrorPayload extends ErrorContent {
 	frames?: CodeFrame[]; // 0..N source locations
 }
 
+// ─── Framework types ─────────────────────────────────────────────────── //
+
+/**
+ * Defines how islands of one framework are compiled, rendered (SSR), and
+ * hydrated. Two built-in configs (preact.js, castroJsx.js), registered
+ * statically in frameworkConfig.js — no user-provided frameworks.
+ */
+export type FrameworkConfig = {
+	/** Framework identifier (e.g. "preact", "castro-jsx") */
+	id: string;
+
+	/** Bun.build configuration for compiling components */
+	getBuildConfig: (target?: "ssr") => Partial<Bun.BuildConfig>;
+
+	/**
+	 * Shared dependencies to be vendored and added to the browser import map.
+	 * E.g. ["preact", "preact/hooks"]
+	 */
+	clientDependencies: string[];
+
+	/**
+	 * Package names to scan imports for automatic framework detection.
+	 * E.g. ["@vktrz/castro-jsx"] means any island importing that package
+	 * (or a subpath of it) uses this framework.
+	 */
+	detectImports: string[];
+
+	/**
+	 * Absolute path to the framework's browser-side hydration module.
+	 *
+	 * Read by compiler.js and inlined verbatim into the per-island bundle.
+	 * The file must export a named function with this exact signature:
+	 *
+	 *   export async function hydrate(container, props, Component) { ... }
+	 *
+	 * Constraints: no Node-only imports, no captured closure variables — the
+	 * source is copy-pasted into a Bun.build virtual entry and bundled for the
+	 * browser.
+	 */
+	hydrateClientPath: string;
+
+	/**
+	 * Server-side rendering function.
+	 * Called at build time by marker.js to generate static HTML for the island.
+	 */
+	// AnyFunction to keep it framework agnostic
+	renderSSR: (Component: AnyFunction, props: Record<string, unknown>) => string;
+};
+
 // ─── Core types ──────────────────────────────────────────────────────── //
 
 export type Directive = "comrade:eager" | "comrade:patient" | "comrade:visible";
@@ -83,6 +132,8 @@ export type IslandComponent = {
 	publicJsPath: string;
 	cssContent?: string;
 	ssrCode: string;
+	/** Which framework this island uses — see FrameworkConfig. */
+	frameworkId: string;
 	ssrModule?: { default: AnyFunction };
 };
 

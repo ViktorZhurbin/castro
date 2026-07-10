@@ -2,19 +2,21 @@
  * Per-Page Build State
  *
  * Each page build runs inside runWithPageState(), which provides a fresh
- * { usedIslands } context via AsyncLocalStorage. Because the context is scoped
- * to the async call tree, concurrent page builds never see each other's state —
- * this is what makes the parallel Promise.all in buildAll.js safe without globals.
+ * { usedIslands, usedFrameworks } context via AsyncLocalStorage. Because the
+ * context is scoped to the async call tree, concurrent page builds never see
+ * each other's state — this is what makes the parallel Promise.all in
+ * buildAll.js safe without globals.
  *
- * renderMarker() (marker.js) records islands into this context during the
- * synchronous renderToString() pass; the builder reads it back afterward to
- * gate per-page CSS and the island runtime.
+ * renderMarker() (marker.js) records islands and their framework into this
+ * context during the synchronous renderToString() pass; the builder reads it
+ * back afterward to gate per-page CSS, the per-page import map, and the
+ * island runtime.
  */
 
 import { AsyncLocalStorage } from "node:async_hooks";
 
 /**
- * @typedef {{ usedIslands: Set<string> }} PageState
+ * @typedef {{ usedIslands: Set<string>, usedFrameworks: Set<string> }} PageState
  */
 
 /** @type {AsyncLocalStorage<PageState>} */
@@ -29,7 +31,7 @@ const pageStateStore = new AsyncLocalStorage();
  */
 export async function runWithPageState(fn) {
 	/** @type {PageState} */
-	const state = { usedIslands: new Set() };
+	const state = { usedIslands: new Set(), usedFrameworks: new Set() };
 	await pageStateStore.run(state, fn);
 	return state;
 }

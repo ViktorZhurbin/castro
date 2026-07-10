@@ -1,0 +1,40 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Castro",
+	"scopeName": "source.castro",
+	"patterns": [{ "include": "#frontmatter" }, { "include": "#template" }],
+	"repository": {
+		"frontmatter": {
+			"begin": "\\A---\\s*$",
+			"end": "^---\\s*$",
+			"beginCaptures": {
+				"0": { "name": "punctuation.definition.frontmatter.castro" }
+			},
+			"endCaptures": {
+				"0": { "name": "punctuation.definition.frontmatter.castro" }
+			},
+			"contentName": "meta.embedded.block.frontmatter.castro",
+			"patterns": [{ "include": "source.js" }]
+		},
+		"template": {
+			"patterns": [{ "include": "text.html.basic" }]
+		},
+		"hole": {
+			"name": "meta.embedded.expression.castro",
+			"begin": "\\{",
+			"beginCaptures": {
+				"0": { "name": "punctuation.section.embedded.begin.castro" }
+			},
+			"end": "\\}",
+			"endCaptures": {
+				"0": { "name": "punctuation.section.embedded.end.castro" }
+			},
+			"patterns": [{ "include": "#hole" }, { "include": "source.js" }]
+		}
+	},
+	"injections": {
+		"source.castro - meta.embedded.block.frontmatter.castro": {
+			"patterns": [{ "include": "#hole" }]
+		}
+	}
+}
