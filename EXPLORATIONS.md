@@ -47,3 +47,17 @@ A new exploration has to pass all four:
   working `.castro` DSL compiler (frontmatter + template + `{}` holes →
   `createElement` calls). Reverted: the runtime and compiler passed
   the filter, the file format failed rule 2.
+
+## Candidates to experiment with
+
+1. DOM morphing for live reload — my top pick. Right now a rebuild sends reload over SSE and the browser does a full page reload: scroll position lost, form state lost, island state lost. The upgrade: fetch the new HTML, diff it against the live DOM, and patch in place (what idiomorph/morphdom do — ~300 lines for a respectable version). It passes every rule: bounded algorithm you can hold in one head; zero ecosystem tail; the consumer is your own dev loop, every single day; and the learning is real — tree-walking, node identity, attribute reconciliation. And there's a poetic angle: this repo's whole thesis is "no virtual DOM, no diffing" — and here's the one place where diffing is genuinely earned, in the dev server where it makes every rebuild feel instant. The thing you refused at runtime, welcomed where it belongs.
+
+2. View-transition navigation ("turbo-mini"). ~100–150 lines of client script: intercept same-origin link clicks, fetch the next page, swap it in through document.startViewTransition(). Teaches a modern platform API most people haven't touched, and makes a static site feel app-like for near-zero cost. One honest warning: head-merging and script re-execution are exactly where Turbo/htmx ballooned — you'd need to fence it hard ("naive head swap, islands re-hydrate, that's it"). Also note it composes with #1: same swap mechanics, two consumers.
+
+3. Island inspector overlay. A dev-only panel (you already have the shadow-DOM error overlay as a pattern) listing each <castro-island> on the page: its directive, hydration state, props, when it fired. Smallest of the three, teaches instrumentation, and gives the islands runtime the observability it currently lacks. A good "one evening" build if #1 feels too big to start.
+
+And two that your filter correctly rejects, which is worth seeing because it proves the doc works:
+
+- Static full-text search (pagefind-mini — inverted index at build time, tiny client) — genuinely great learning, right size, but fails rule 4 today: the site is one landing page and a 404. Nothing to search. Shelve it; it becomes viable the day the site grows content.
+
+- Hand-rolled string SSR to replace preact-render-to-string — tempting because the branch proved it's only ~140 lines. But it reopens the refined core for zero user-visible gain, and the learning already happened on the branch. Rules 3 and the scale reference both say no.
