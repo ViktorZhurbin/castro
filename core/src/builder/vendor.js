@@ -1,17 +1,14 @@
 /**
  * Dependency Vendoring
  *
- * Bundles the shared client dependencies — each used framework's own plus any
+ * Bundles the shared client dependencies — Preact's own plus any
  * `config.clientDependencies` — into dist/vendor/ and produces the import map
  * that points browsers at them.
  *
  * Three places that must agree on the dependency set (collectClientDeps):
- * - vendorClientDeps() runs once after all pages build, writing the bundles
- *   for every framework used anywhere on the site.
- * - getIslandImportMap() runs per island page, emitting specifier → URL
- *   entries for just that page's own usedFrameworks.
- * - The island client compile marks the same set external (compiler.js),
- *   scoped to that one island's framework.
+ * - vendorClientDeps() runs once after all pages build, writing the bundles.
+ * - getIslandImportMap() runs per island page, emitting specifier → URL entries.
+ * - The island client compile marks the same set external (compiler.js).
  *
  * Both output halves are gated on island usage by the caller — a site that
  * renders no islands ships neither.
@@ -21,7 +18,7 @@ import { mkdir } from "node:fs/promises";
 import { join, resolve } from "node:path/posix";
 import { config } from "../config.js";
 import { OUTPUT_DIR } from "../constants.js";
-import { getFrameworkConfig } from "../islands/frameworkConfig.js";
+import { PREACT_CLIENT_DEPS } from "../islands/preact.js";
 import { safeBunBuild } from "../utils/bunBuild.js";
 import { resolveTempDir } from "../utils/cache.js";
 
@@ -30,26 +27,20 @@ import { resolveTempDir } from "../utils/cache.js";
 const VENDOR_OUTPUT_DIR = "vendor";
 
 /**
- * Every dependency shared across the given frameworks' islands via the
- * import map, plus user-configured extras. Anything not in this set gets
- * bundled into each island bundle separately.
+ * Every dependency shared across islands via the import map: Preact's own
+ * plus user-configured extras. Anything not in this set gets bundled into
+ * each island bundle separately.
  *
- * @param {Iterable<string>} frameworkIds
  * @returns {Set<string>}
  */
-export function collectClientDeps(frameworkIds) {
-	const frameworkDeps = [...frameworkIds].flatMap(
-		(id) => getFrameworkConfig(id).clientDependencies,
-	);
-	return new Set([...frameworkDeps, ...(config.clientDependencies ?? [])]);
+export function collectClientDeps() {
+	return new Set([...PREACT_CLIENT_DEPS, ...(config.clientDependencies ?? [])]);
 }
 
 /**
  * Bundle the shared client dependencies into dist/vendor/.
- *
- * @param {Iterable<string>} frameworkIds - every framework used anywhere on the site
  */
-export async function vendorClientDeps(frameworkIds) {
+export async function vendorClientDeps() {
 	/** @type { string[] } */
 	const entrypoints = [];
 
@@ -62,7 +53,7 @@ export async function vendorClientDeps(frameworkIds) {
 	// Each dependency gets a virtual entry module that re-exports everything
 	// from the real package. Bun.build resolves 'preact' from node_modules,
 	// bundles it, and writes it to dist/vendor/.
-	for (const pkg of collectClientDeps(frameworkIds)) {
+	for (const pkg of collectClientDeps()) {
 		const virtualPath = resolve(virtualRoot, `${getSafePkgName(pkg)}.js`);
 
 		entrypoints.push(virtualPath);
@@ -98,16 +89,15 @@ export async function vendorClientDeps(frameworkIds) {
 
 /**
  * Import map for an island page: specifier → vendored URL for each shared
- * client dependency, scoped to the frameworks that page's islands actually use.
+ * client dependency.
  *
- * @param {Iterable<string>} frameworkIds - this page's usedFrameworks
  * @returns {ImportsMap}
  */
-export function getIslandImportMap(frameworkIds) {
+export function getIslandImportMap() {
 	/** @type {ImportsMap} */
 	const importMap = {};
 
-	for (const dep of collectClientDeps(frameworkIds)) {
+	for (const dep of collectClientDeps()) {
 		// Real framework would probably have cache busting - we don't.
 		importMap[dep] = `/${VENDOR_OUTPUT_DIR}/${getSafePkgName(dep)}.js`;
 	}

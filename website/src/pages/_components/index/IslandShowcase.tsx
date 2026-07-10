@@ -8,10 +8,7 @@ export function IslandShowcase() {
 			<div class="container">
 				<div class="island-showcase-container">
 					<p class="island-showcase-label">A LIVE ISLAND</p>
-					<p class="island-showcase-desc">
-						This radio is the only interactive island on the page. Everything
-						else is static HTML.
-					</p>
+					<p class="island-showcase-desc">This radio is the only interactive island on the page. Everything else is static HTML.</p>
 					<PropagandaRadio comrade:visible className="island-showcase-island" />
 				</div>
 				<CTAButtons className="island-showcase-cta" />

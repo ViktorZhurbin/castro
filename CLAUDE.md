@@ -117,7 +117,3 @@ The config file is optional; if present, it must be named exactly `castro.config
 - live-reload dev server (`dev/`);
 
 Anything outside these earns its lines by teaching machinery; propose removing one rather than acting unprompted.
-
-## Explorations
-
-Castro core is finished. New work happens in sibling packages under `packages/` (a reactive `signals` lib, the `castro-jsx` DOM runtime, and the `castro-dsl` `.castro` compiler). The lineup, the unifying "an accessor is a nullary function" spine, and deferred ideas (hand-written HTML parser, `comrade:for`, SSR, a reactive DB store) live in EXPLORATIONS.md. Read it before extending the suite.

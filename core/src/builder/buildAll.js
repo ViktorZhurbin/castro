@@ -7,7 +7,7 @@
  * 3. Compile and load islands and layouts
  * 4. Scan pages, detect route conflicts, build each page
  * 5. If any page rendered an island: copy the hydration runtime and vendor
- *    every used framework's client dependencies
+ *    Preact's client dependencies
  */
 
 import { cp, mkdir, rm } from "node:fs/promises";
@@ -56,7 +56,7 @@ export async function buildAll() {
 	// Real SSGs would cap concurrency to bound Bun.build's memory pressure
 	const results = await Promise.all(
 		[...pagesMap.entries()].map(async ([outputPath, sourcePath]) => {
-			const { usedIslands, usedFrameworks } = await runWithPageState(() =>
+			const { usedIslands } = await runWithPageState(() =>
 				buildPage(sourcePath),
 			);
 
@@ -70,20 +70,15 @@ export async function buildAll() {
 				);
 			}
 
-			return { hasIslands: usedIslands.size > 0, usedFrameworks };
+			return { hasIslands: usedIslands.size > 0 };
 		}),
 	);
 
 	// Island output is conditional: a site that rendered no islands ships
-	// neither the hydration runtime nor any vendored framework code. Vendors
-	// the union of frameworks used across the whole site, since any page's
-	// import map may reference any of them.
+	// neither the hydration runtime nor any vendored Preact code.
 	if (results.some((result) => result.hasIslands)) {
-		const siteFrameworks = new Set(
-			results.flatMap((result) => [...result.usedFrameworks]),
-		);
 		await copyIslandRuntime();
-		await vendorClientDeps(siteFrameworks);
+		await vendorClientDeps();
 	}
 
 	console.info(messages.build.success(`${pagesMap.size}`));

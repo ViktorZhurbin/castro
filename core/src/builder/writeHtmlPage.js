@@ -12,7 +12,7 @@ import { islands } from "../islands/registry.js";
 import { getIslandImportMap } from "./vendor.js";
 
 /**
- * @typedef {{ cssTags?: string[]; usedIslands: Set<string>; usedFrameworks: Set<string> }} Options
+ * @typedef {{ cssTags?: string[]; usedIslands: Set<string> }} Options
  */
 
 /**
@@ -32,18 +32,13 @@ export async function writeHtmlPage(rawHtml, outputPath, options) {
  * @param {Options} options
  * @returns {Promise<string[]>}
  */
-async function collectHeadTags({ usedIslands, usedFrameworks, cssTags = [] }) {
+async function collectHeadTags({ usedIslands, cssTags = [] }) {
 	const tags = [...cssTags];
 
-	// Island pages get an import map pointing at the vendored dependencies of
-	// whichever frameworks this page's islands use, plus the hydration
-	// runtime. Static pages get neither.
+	// Island pages get an import map pointing at the vendored Preact
+	// dependencies, plus the hydration runtime. Static pages get neither.
 	if (usedIslands.size > 0) {
-		const imports = JSON.stringify(
-			{ imports: getIslandImportMap(usedFrameworks) },
-			null,
-			2,
-		);
+		const imports = JSON.stringify({ imports: getIslandImportMap() }, null, 2);
 
 		tags.push(`<script type="importmap">${imports}</script>`);
 		tags.push(`<script type="module" src="/${ISLAND_RUNTIME_FILE}"></script>`);

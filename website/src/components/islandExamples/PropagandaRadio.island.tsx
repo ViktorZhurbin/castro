@@ -1,7 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx createElement */
-import { createElement } from "@vktrz/castro-jsx";
-import { createSignal, onMount } from "@vktrz/signals";
+import { useEffect, useState } from "preact/hooks";
 import "./PropagandaRadio.css";
 
 const HEADLINES = [
@@ -14,7 +11,7 @@ const HEADLINES = [
 ];
 
 export default function PropagandaRadio(props: { className?: string }) {
-	const [index, setIndex] = createSignal(0);
+	const [index, setIndex] = useState(0);
 
 	function prev() {
 		setIndex((i) => (i - 1 + HEADLINES.length) % HEADLINES.length);
@@ -24,9 +21,12 @@ export default function PropagandaRadio(props: { className?: string }) {
 		setIndex((i) => (i + 1) % HEADLINES.length);
 	}
 
-	onMount(() => {
-		setInterval(next, 5_000);
-	});
+	useEffect(() => {
+		const id = setInterval(() => {
+			next();
+		}, 5_000);
+		return () => clearInterval(id);
+	}, []);
 
 	return (
 		<div class={`propaganda-radio ${props.className}`}>
@@ -38,7 +38,7 @@ export default function PropagandaRadio(props: { className?: string }) {
 
 			{/* Headline */}
 			<div class="propaganda-radio-headline">
-				<h3>{() => `"${HEADLINES[index()]}"`}</h3>
+				<h3>{`"${HEADLINES[index]}"`}</h3>
 			</div>
 
 			{/* Controls */}
@@ -52,9 +52,7 @@ export default function PropagandaRadio(props: { className?: string }) {
 					</button>
 				</div>
 				<div class="propaganda-radio-counter">
-					{() =>
-						`${String(index() + 1).padStart(2, "0")} / ${String(HEADLINES.length).padStart(2, "0")}`
-					}
+					{`${String(index + 1).padStart(2, "0")} / ${String(HEADLINES.length).padStart(2, "0")}`}
 				</div>
 			</div>
 		</div>
