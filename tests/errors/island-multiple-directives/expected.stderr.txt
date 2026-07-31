@@ -1,0 +1,7 @@
+❌ Island has competing directives
+   pages/index.tsx gives island components/Counter.island.tsx more than one hydration directive
+
+   · comrade:eager
+   · comrade:visible
+
+   → An island hydrates one way — keep the directive you meant

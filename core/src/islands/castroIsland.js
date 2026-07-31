@@ -13,6 +13,11 @@
  *
  * The key: JavaScript is loaded on-demand, not upfront. Pages start
  * as pure HTML and progressively enhance when conditions are met.
+ *
+ * The console strings below are inline rather than in messages/ on purpose:
+ * this file is copied verbatim into dist/ and runs in the browser, where
+ * nothing Castro imports exists. They are also all internal-invariant messages
+ * — a user cannot reach them by writing an island wrong.
  */
 
 const ELEMENT_TAG = "castro-island";

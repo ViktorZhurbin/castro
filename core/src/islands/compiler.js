@@ -19,6 +19,7 @@
 import { basename, dirname, extname, resolve } from "node:path/posix";
 import { collectClientDeps } from "../builder/vendor.js";
 import { safeBunBuild } from "../utils/bunBuild.js";
+import { getModule } from "../utils/cache.js";
 import { getProjectDependencies } from "../utils/dependencies.js";
 import { CastroError } from "../utils/errors.js";
 import { PREACT_BUILD_CONFIG, PREACT_CLIENT_PATH } from "./preact.js";
@@ -59,11 +60,16 @@ export async function compileIsland({ sourceFilePath, outputDir, publicDir }) {
 	// in writeHtmlPage.js, since each page uses a different island subset.
 	const cssContent = cssFile ? await cssFile.text() : "";
 
+	// Loaded here rather than handed back as a string: renderMarker() needs the
+	// module synchronously during renderToString(), and this is the last await
+	// on the island's path, so there is no reason for a caller to hold the code.
+	const ssrModule = await getModule(sourceFilePath, ssrCode, "ssr");
+
 	return {
-		ssrCode,
 		sourceFilePath,
 		publicJsPath,
 		cssContent,
+		ssrModule,
 	};
 }
 

@@ -142,6 +142,7 @@ class CastroErrorOverlay extends HTMLElement {
 
 		return `
       <div>
+        ${frame.message ? `<div class="raw-error">${escapeHtml(frame.message)}</div>` : ""}
         ${header ? `<div>${header}</div>` : ""}
         ${codeSnippet}
       </div>

@@ -69,6 +69,14 @@
         "preact": "^10",
       },
     },
+    "tests/errors/island-multiple-directives": {
+      "name": "@test-errors/island-multiple-directives",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
     "tests/errors/island-props-not-serializable": {
       "name": "@test-errors/island-props-not-serializable",
       "version": "0.0.0",
@@ -282,6 +290,8 @@
     "@test-errors/island-children": ["@test-errors/island-children@workspace:tests/errors/island-children"],
 
     "@test-errors/island-import-missing": ["@test-errors/island-import-missing@workspace:tests/errors/island-import-missing"],
+
+    "@test-errors/island-multiple-directives": ["@test-errors/island-multiple-directives@workspace:tests/errors/island-multiple-directives"],
 
     "@test-errors/island-props-not-serializable": ["@test-errors/island-props-not-serializable@workspace:tests/errors/island-props-not-serializable"],
 

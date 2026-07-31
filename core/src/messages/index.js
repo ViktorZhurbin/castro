@@ -23,6 +23,8 @@ export const messages = {
 			`The State apparatus has encountered difficulties: ${msg}`,
 		/** @param {string} dir @param {string} msg */
 		watchError: (dir, msg) => `Could not watch ${dir}: ${msg}`,
+		configChanged:
+			"Config revised — the Plan is fixed until the server restarts.",
 	},
 
 	build: {
@@ -50,10 +52,10 @@ export const messages = {
 
 	// The Ministry of Errors (Exceptions)
 	errors: /** @satisfies {ErrorMessages} */ ({
-		ROUTE_CONFLICT: ({ route1, route2, relativeOutputPath }) => ({
+		ROUTE_CONFLICT: ({ route, file1, file2 }) => ({
 			title: "Route conflict",
-			message: `Two pages claim the same route - ${relativeOutputPath}`,
-			notes: [route1, route2],
+			message: `Two pages claim the same route - ${route}`,
+			notes: [file1, file2],
 			hint: "The revolution cannot serve two masters — remove the impostor",
 		}),
 
@@ -95,6 +97,12 @@ export const messages = {
 			hint: "Check the code frame and error location above",
 		}),
 
+		BUNDLE_NO_OUTPUT: ({ sourceFilePath }) => ({
+			title: "Production quota unmet",
+			message: `${sourceFilePath} compiled without producing any JavaScript`,
+			hint: "This is a Castro internal error — please report it",
+		}),
+
 		ISLAND_NOT_FOUND: ({ islandId, sourceFilePath }) => ({
 			title: "Island defected",
 			message: `${sourceFilePath} renders island ${islandId}, which failed to load`,
@@ -118,6 +126,13 @@ export const messages = {
 			title: "Island received children",
 			message: `${sourceFilePath} nests children inside island ${islandId}, but only props cross the border into the browser`,
 			hint: "Pass the content as a prop, or keep the wrapper outside the island",
+		}),
+
+		ISLAND_MULTIPLE_DIRECTIVES: ({ islandId, sourceFilePath, directives }) => ({
+			title: "Island has competing directives",
+			message: `${sourceFilePath} gives island ${islandId} more than one hydration directive`,
+			notes: directives,
+			hint: "An island hydrates one way — keep the directive you meant",
 		}),
 
 		ISLAND_PROPS_NOT_SERIALIZABLE: ({

@@ -3,6 +3,10 @@
  *
  * Loads optional castro.config.ts from the project root.
  * Missing file = all defaults. No validation — bad values fail loudly.
+ *
+ * Read once, at import: constants.js derives the *_DIR constants from `srcDir`
+ * at that moment and the dev server has already bound `port`, so a running
+ * process cannot pick up an edit — only a restart can.
  */
 
 /** @import { CastroConfig, DefaultConfig } from './types' */
@@ -19,12 +23,14 @@ const defaults = {
 /** @type {CastroConfig} */
 let userConfig = {};
 
-const CONFIG_FILE = "castro.config.ts";
-const configPath = join(process.cwd(), CONFIG_FILE);
+export const CONFIG_FILE = "castro.config.ts";
 
-if (await Bun.file(configPath).exists()) {
+/** Absolute path to the config file, watched by the dev server. */
+export const configFilePath = join(process.cwd(), CONFIG_FILE);
+
+if (await Bun.file(configFilePath).exists()) {
 	try {
-		userConfig = (await import(configPath)).default ?? {};
+		userConfig = (await import(configFilePath)).default ?? {};
 	} catch (err) {
 		throw new CastroError("CONFIG_LOAD_FAILED", {
 			path: CONFIG_FILE,

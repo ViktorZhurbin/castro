@@ -1,8 +1,7 @@
 ❌ Sabotage detected
    Error during JavaScript compilation:
 
-   Bundle failed
-
+   Could not resolve: "./components/Ghost.island.tsx"
    <FIXTURE>/pages/index.tsx:1:20
    > 1  import Ghost from "./components/Ghost.island.tsx";
                            ^

@@ -2,9 +2,9 @@
  * Islands Registry
  *
  * Singleton store for all compiled island components.
- * At build time, discovers .island.{jsx,tsx} files, compiles each for
- * both client (browser bundle) and server (SSR), and pre-loads SSR modules
- * into memory so renderMarker() can access them synchronously.
+ * At build time, discovers .island.{jsx,tsx} files and hands each to
+ * compileIsland(), which returns it fully loaded — SSR module included, so
+ * renderMarker() can reach it synchronously during renderToString().
  */
 
 import { access } from "node:fs/promises";
@@ -14,7 +14,6 @@ import {
 	ISLANDS_OUTPUT_DIR,
 	OUTPUT_DIR,
 } from "../constants.js";
-import { getModule } from "../utils/cache.js";
 import { compileIsland } from "./compiler.js";
 import { getIslandId } from "./islandId.js";
 
@@ -74,14 +73,6 @@ class IslandsRegistry {
 			});
 
 			const islandId = getIslandId(sourceFilePath);
-
-			// Pre-load SSR module so renderMarker() can access it synchronously
-			// during renderToString() traversal
-			component.ssrModule = await getModule(
-				sourceFilePath,
-				component.ssrCode,
-				"ssr",
-			);
 
 			this.#islands.set(islandId, component);
 

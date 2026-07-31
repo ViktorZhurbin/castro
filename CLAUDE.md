@@ -14,7 +14,8 @@ Peer reference: Fresh, early Astro, Eleventy + is-land, Marko, Capri, Mastro, Il
 bun run dev          # dev server with live reload (website playground)
 bun run build        # production build (website playground)
 bun format           # Biome (tabs, double quotes) + Prettier for Markdown
-bun check            # format + core checks + site tests (run before committing)
+bun check            # format + lint + type-check/knip + all tests + every build (run before committing)
+bun lint             # Biome lint with --write
 bun test:site        # build and verify test sites only
 bun test:errors      # run error DX golden suite (tests/errors/)
 bun loc              # LOC count (core only, excludes messages/)
@@ -95,6 +96,8 @@ All user-facing strings live in `core/src/messages/`. Message factories keyed by
 
 `srcDir` shifts the source root for pages/layouts/components; output is always `dist/` regardless. All options are in `core/src/types.d.ts`.
 
+`castro.config.ts` is read once, at import (why, in the `core/src/config.js` docblock), so no config edit can reach a running process. The dev server watches the file only to tell the user to restart (`watchConfig` in `dev/server.js`).
+
 ## Testing
 
 See `tests/CLAUDE.md` for what each test suite covers and how to regenerate goldens.
@@ -108,6 +111,7 @@ See `tests/CLAUDE.md` for what each test suite covers and how to regenerate gold
 - **Cache invalidation**: no CDN fingerprinting, no cross-run state. Content-hashed filenames cover in-session module cache busting only.
 - **Production concurrency**: `Promise.all` only — no queue, no retry, no memory bounding.
 - **Hostile filesystems**: no I/O retry, no defense against unusual mounts. (The mtime filter in `dev/server.js` is a deliberate carve-out — see Dev Server.)
+- **Hostile input**: the dev server binds localhost and serves a request path by decoding and resolving it — no traversal audit, no malformed-escape handling (`/%ZZ` throws into a 500). The one containment check in `resolveStaticFile()` is there because clean-URL candidates are built by string concatenation, not as a security boundary. Nothing here is a production server.
 - **Runtime config validation**: TypeScript catches misconfigs; no runtime re-validation.
 - **User extensibility**: no plugin API, no hook system. Last worked at commit `fdf04bd`.
 - **Backwards compatibility**: package is unpublished; breaking changes land freely.

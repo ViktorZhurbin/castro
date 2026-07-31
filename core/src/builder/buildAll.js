@@ -109,6 +109,9 @@ async function copyIslandRuntime() {
 async function scanPages() {
 	/** @type {Map<string, string>} */
 	const pagesMap = new Map();
+
+	/** @type {Map<string, string>} route → relativeSourcePath */
+	const routes = new Map();
 	const pageGlob = new Bun.Glob("**/*.{md,jsx,tsx}");
 
 	// Missing pages/ throws here naturally
@@ -125,20 +128,22 @@ async function scanPages() {
 			PAGE_EXT_PATTERN,
 			".html",
 		);
+		const route = toRoute(relativeOutputPath);
 
-		// Example: both foo.md and foo.jsx try to be foo.html
-		if (pagesMap.has(relativeOutputPath)) {
-			const existingFile = pagesMap.get(relativeOutputPath);
-			const route1 = `${PAGES_DIR}/${existingFile}`;
-			const route2 = `${PAGES_DIR}/${relativeSourcePath}`;
-
+		// Keyed on the route, not the output file: two pages can write different
+		// files and still answer one URL, and which one a visitor gets is then up
+		// to the host. Building both and letting the deploy target pick is worse
+		// than refusing to build.
+		const claimedBy = routes.get(route);
+		if (claimedBy) {
 			throw new CastroError("ROUTE_CONFLICT", {
-				route1,
-				route2,
-				relativeOutputPath,
+				route,
+				file1: join(PAGES_DIR, claimedBy),
+				file2: join(PAGES_DIR, relativeSourcePath),
 			});
 		}
 
+		routes.set(route, relativeSourcePath);
 		pagesMap.set(relativeOutputPath, relativeSourcePath);
 	}
 
@@ -148,4 +153,17 @@ async function scanPages() {
 	}
 
 	return pagesMap;
+}
+
+/**
+ * The URL an output file answers, collapsing the two spellings of a directory
+ * index: `index.html` → `/`, `blog/index.html` and `blog.html` → `/blog`.
+ *
+ * @param {string} relativeOutputPath
+ * @returns {string}
+ */
+function toRoute(relativeOutputPath) {
+	const withoutExt = relativeOutputPath.slice(0, -".html".length);
+
+	return `/${withoutExt.replace(/(^|\/)index$/, "")}`;
 }

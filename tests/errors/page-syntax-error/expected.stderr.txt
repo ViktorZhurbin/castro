@@ -1,8 +1,7 @@
 ❌ Sabotage detected
    Error during JavaScript compilation:
 
-   Bundle failed
-
+   Syntax Error
    <FIXTURE>/pages/broken.tsx:2:16
    > 2    return <div>Broken
                        ^

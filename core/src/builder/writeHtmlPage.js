@@ -87,31 +87,40 @@ async function getLiveReloadTag() {
  * @param {string[]} tags
  * @returns {string}
  */
-function injectTags(html, tags) {
-	if (tags.length === 0) return ensureDoctype(html);
+export function injectTags(html, tags) {
+	const withDoctype = ensureDoctype(html);
+
+	if (tags.length === 0) return withDoctype;
 
 	const injection = tags.join("\n");
 
 	// Matches </head> OR </body> (case-insensitive).
 	const anchor = /<\/head>|<\/body>/i;
 
+	if (anchor.test(withDoctype)) {
+		return withDoctype.replace(anchor, (match) => `${injection}\n${match}`);
+	}
+
 	// Nothing requires a layout to render a <head> or a <body> — one that
 	// returns a bare fragment leaves no anchor. String.replace with no match
 	// is a silent no-op, so without this branch the tags (CSS, import map,
 	// island runtime, hydration styles) would just vanish.
-	const output = anchor.test(html)
-		? html.replace(anchor, (match) => `${injection}\n${match}`)
-		: `${injection}\n${html}`;
-
-	return ensureDoctype(output);
+	//
+	// They go after the doctype, never before: anything preceding it costs the
+	// page standards mode. ensureDoctype above guarantees the match.
+	return withDoctype.replace(
+		DOCTYPE_PATTERN,
+		(match) => `${match}\n${injection}`,
+	);
 }
+
+/** Leading doctype declaration, allowing the whitespace a layout may emit. */
+const DOCTYPE_PATTERN = /^\s*<!doctype[^>]*>/i;
 
 /**
  * @param {string} html
  * @returns {string}
  */
 function ensureDoctype(html) {
-	return html.trimStart().toLowerCase().startsWith("<!doctype")
-		? html
-		: `<!DOCTYPE html>\n${html}`;
+	return DOCTYPE_PATTERN.test(html) ? html : `<!DOCTYPE html>\n${html}`;
 }

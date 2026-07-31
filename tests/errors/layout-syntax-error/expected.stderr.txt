@@ -1,8 +1,7 @@
 ❌ Sabotage detected
    Error during JavaScript compilation:
 
-   Bundle failed
-
+   Syntax Error
    <FIXTURE>/layouts/default.jsx:2:26
    > 2    return <div>{children}
                                  ^

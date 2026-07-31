@@ -14,10 +14,10 @@
  */
 
 import { stat, watch } from "node:fs/promises";
-import { extname, join } from "node:path/posix";
+import { extname, join, resolve } from "node:path/posix";
 import { styleText } from "node:util";
 import { buildAll } from "../builder/buildAll.js";
-import { config } from "../config.js";
+import { CONFIG_FILE, config, configFilePath } from "../config.js";
 import {
 	COMPONENTS_DIR,
 	LAYOUTS_DIR,
@@ -32,6 +32,61 @@ import { renderErrorToTerminal } from "../utils/renderError.js";
 /**
  * @import { FileChangeInfo } from "node:fs/promises";
  */
+
+const OUTPUT_ROOT = resolve(OUTPUT_DIR);
+
+/**
+ * Resolve a request path to a file in the output dir, trying the spellings a
+ * static host would. Returns null when nothing matches, leaving 404 handling
+ * to the caller.
+ *
+ * Decoding is what makes `/my%20page` and `/%C3%BCber` reach the files a real
+ * host would serve. It is not a security boundary — see "Hostile input" in
+ * CLAUDE.md.
+ *
+ * @param {string} pathname - raw, still-encoded `url.pathname`
+ * @returns {Promise<Bun.BunFile | null>}
+ */
+export async function resolveStaticFile(pathname) {
+	// Leading "." keeps an absolute-looking pathname relative to the root.
+	const basePath = resolve(OUTPUT_ROOT, `.${decodeURIComponent(pathname)}`);
+
+	/** @type {string[]} */
+	const candidates = [];
+
+	if (pathname.endsWith("/")) {
+		// Trailing slash (e.g. /blog/) is an explicit directory request.
+		candidates.push(join(basePath, "index.html"));
+	}
+
+	// Assets (/style.css, /app.js) are served at their exact path.
+	// Missing ones fall through to the caller's 404 handling — browsers
+	// probe paths like /favicon.ico and /.well-known/… on every site.
+	if (extname(pathname)) {
+		candidates.push(basePath);
+	}
+
+	candidates.push(
+		// Clean URL: /about → about.html
+		`${basePath}.html`,
+		// Clean URL: /blog → blog/index.html
+		join(basePath, "index.html"),
+	);
+
+	// A trailing-slash request names the same index.html twice; the Set spares it
+	// the duplicate stat.
+	for (const candidate of new Set(candidates)) {
+		// `${basePath}.html` is `dist.html` when the base is the output dir
+		// itself — a sibling of it, not a file in it. A plain `/` reaches that.
+		if (!candidate.startsWith(`${OUTPUT_ROOT}/`)) continue;
+
+		const file = Bun.file(candidate);
+
+		if (await file.exists()) return file;
+	}
+
+	return null;
+}
 
 /**
  * Start the development server
@@ -81,41 +136,10 @@ export async function startDevServer() {
 					});
 				}
 
-				// Static file serving with clean URLs
-				// Real SSGs would handle more variations
+				const file = await resolveStaticFile(url.pathname);
 
-				const basePath = join(OUTPUT_DIR, url.pathname);
-
-				if (url.pathname.endsWith("/")) {
-					// Trailing slash (e.g. /blog/) is an explicit directory request.
-					const dirIndexFile = Bun.file(join(basePath, "index.html"));
-
-					if (await dirIndexFile.exists()) {
-						return new Response(dirIndexFile);
-					}
-				}
-
-				// Assets (/style.css, /app.js) are served at their exact path.
-				// Missing ones fall through to the 404 handling below — browsers
-				// probe paths like /favicon.ico and /.well-known/… on every site.
-				if (extname(url.pathname)) {
-					const assetFile = Bun.file(basePath);
-
-					if (await assetFile.exists()) {
-						return new Response(assetFile);
-					}
-				}
-
-				// Clean URL: /about → about.html
-				const htmlFile = Bun.file(`${basePath}.html`);
-				if (await htmlFile.exists()) {
-					return new Response(htmlFile);
-				}
-
-				// Clean URL: /blog → blog/index.html
-				const indexFile = Bun.file(join(basePath, "index.html"));
-				if (await indexFile.exists()) {
-					return new Response(indexFile);
+				if (file) {
+					return new Response(file);
 				}
 
 				// 404 fallback - serve 404.html for HTML requests (navigation, not assets)
@@ -176,6 +200,7 @@ export async function startDevServer() {
 	watchDir(LAYOUTS_DIR);
 	watchDir(COMPONENTS_DIR);
 	watchDir(PUBLIC_DIR);
+	watchConfig();
 
 	/**
 	 * @param {string} watchedFilePath
@@ -211,6 +236,36 @@ export async function startDevServer() {
 	 */
 	function isIgnored(filename) {
 		return !filename || IGNORE.match(filename.split("/").pop() ?? "");
+	}
+
+	/**
+	 * Watch castro.config.ts and tell the user a restart is needed.
+	 *
+	 * The config is read once at import, so there is nothing a rebuild could pick
+	 * up (see the module docblock in `config.js`). This watcher exists purely so
+	 * an edit says "restart" instead of looking like it took effect — best-effort
+	 * by design: an editor that saves by atomic rename swaps out the watched
+	 * inode and no further events arrive.
+	 */
+	async function watchConfig() {
+		/** @type {AsyncIterable<FileChangeInfo<string>>} */
+		let watcher;
+
+		try {
+			watcher = watch(configFilePath);
+		} catch (e) {
+			const err = /** @type {Bun.ErrorLike} */ (e);
+
+			// ENOENT = no config file, which is the common case.
+			if (err.code !== "ENOENT") {
+				console.warn(messages.devServer.watchError(CONFIG_FILE, err.message));
+			}
+			return;
+		}
+
+		for await (const _event of watcher) {
+			console.info(styleText("yellow", messages.devServer.configChanged));
+		}
 	}
 
 	/**
@@ -278,7 +333,7 @@ export async function startDevServer() {
  * @param {() => Promise<void>} fn - Async work to run
  * @param {number} ms - Debounce delay in milliseconds
  */
-function debounceRebuilds(fn, ms) {
+export function debounceRebuilds(fn, ms) {
 	/** @type {NodeJS.Timeout | null} */
 	let timer = null;
 

@@ -72,6 +72,12 @@ export function renderErrorToTerminal(payload) {
 function renderFrame(frame) {
 	const lines = [];
 
+	// Why this location failed, above the location itself — it is the first
+	// thing worth reading, and the snippet below only shows where.
+	if (frame.message) {
+		lines.push(styleText(COLORS.rawError, `   ${frame.message}`));
+	}
+
 	const location = formatLocation(frame);
 	if (location) {
 		lines.push(styleText(COLORS.location, `   ${location}`));

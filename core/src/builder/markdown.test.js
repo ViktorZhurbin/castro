@@ -64,8 +64,10 @@ test("invalid YAML throws YAML_PARSE_FAILED naming the source file", () => {
 	try {
 		parseFrontmatter("---\ntitle: : :\n---\nbody", SRC);
 	} catch (e) {
-		payload = /** @type {import("../utils/errors.js").CastroError} */ (e)
-			.castroPayload;
+		payload =
+			/** @type {import("../utils/errors.js").CastroError<"YAML_PARSE_FAILED">} */ (
+				e
+			).castroPayload;
 	}
 
 	expect(payload).toBeDefined();

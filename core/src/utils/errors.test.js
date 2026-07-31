@@ -8,9 +8,9 @@ import { CastroError, toPayload } from "./errors.js";
 
 test("CastroError creates structured payload with tokens", () => {
 	const err = new CastroError("ROUTE_CONFLICT", {
-		route1: "pages/about.md",
-		route2: "pages/about.tsx",
-		relativeOutputPath: "about.html",
+		route: "/about",
+		file1: "pages/about.md",
+		file2: "pages/about.tsx",
 	});
 
 	expect(err.castroPayload).toBeDefined();
@@ -66,6 +66,7 @@ test("CastroError defaults to empty frames array", () => {
 test("CastroError surfaces errorMessage token in payload", () => {
 	const err = new CastroError("ISLAND_RENDER_FAILED", {
 		islandId: "Counter",
+		sourceFilePath: "pages/index.tsx",
 		errorMessage: "window is not defined",
 	});
 
@@ -87,12 +88,16 @@ test("toPayload normalizes plain Error to UNEXPECTED", () => {
 	const payload = toPayload(plainErr);
 
 	expect(payload.code).toBe("UNEXPECTED");
-	expect(payload.message).toBe("boom");
+	// Raw text is errorMessage; message/hint come from the UNEXPECTED factory,
+	// so the fallback renders like every other error instead of a bare string.
+	expect(payload.errorMessage).toBe("boom");
+	expect(payload.message).toBe("The revolution has encountered an anomaly");
+	expect(payload.hint).toBeString();
 });
 
 test("toPayload normalizes non-Error thrown values", () => {
 	const payload = toPayload("something went wrong");
 
 	expect(payload.code).toBe("UNEXPECTED");
-	expect(payload.message).toBe("something went wrong");
+	expect(payload.errorMessage).toBe("something went wrong");
 });

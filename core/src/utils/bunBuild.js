@@ -11,6 +11,10 @@ import { CastroError } from "./errors.js";
  *  - Soft failure: returns `{ success: false, logs: [...] }`
  *  - Hard failure: throws AggregateError with `errors` array
  *
+ * Neither shape carries the reason at the top level — it is per-log, so a frame
+ * is the only place it can travel. Anything Bun throws that is neither shape
+ * (a plugin's own throw, for one) passes through to `toPayload`'s UNEXPECTED.
+ *
  * @param {Bun.BuildConfig} config
  */
 export async function safeBunBuild(config) {
@@ -18,21 +22,32 @@ export async function safeBunBuild(config) {
 		const result = await Bun.build(config);
 
 		if (!result.success) {
-			const frames = result.logs.map(bunLogToFrame);
-			throw new CastroError("BUNDLE_FAILED", undefined, frames);
+			throw new CastroError("BUNDLE_FAILED", undefined, toFrames(result.logs));
 		}
 
 		return result;
 	} catch (error) {
 		if (error instanceof AggregateError) {
-			const errorMessage = error.message;
-			const frames = error.errors.map(bunLogToFrame);
-
-			throw new CastroError("BUNDLE_FAILED", { errorMessage }, frames);
+			// AggregateError.message is Bun's constant summary ("Bundle failed"),
+			// which the BUNDLE_FAILED title already says. The reason a user needs
+			// lives on each entry and rides along on its frame.
+			throw new CastroError("BUNDLE_FAILED", undefined, toFrames(error.errors));
 		}
 
 		throw error;
 	}
+}
+
+/**
+ * Warnings share the log array with errors on a failed build; they describe
+ * something the build survived, so rendering them as failure locations points
+ * at the wrong line.
+ *
+ * @param {(BuildMessage | ResolveMessage)[]} logs
+ * @returns {CodeFrame[]}
+ */
+function toFrames(logs) {
+	return logs.filter((log) => log.level === "error").map(bunLogToFrame);
 }
 
 /**
@@ -50,6 +65,9 @@ function bunLogToFrame(log) {
 	const hasPosition = !!position && position.line > 0;
 
 	return {
+		// The one string that says why the build failed — "Could not resolve:
+		// …", "Syntax Error". Bun keeps it here, never on the AggregateError.
+		message: log.message,
 		file: position?.file,
 		line: hasPosition ? position.line : undefined,
 		// Bun/esbuild columns are 0-based; normalize to 1-based here so the

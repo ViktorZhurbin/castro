@@ -21,7 +21,7 @@ bun run build  # → dist/
 
 ## Documentation
 
-The source is the documentation. `core/src/` is about 1,300 lines. Start at [core/src/builder/buildAll.js](core/src/builder/buildAll.js) — it names every build step in order — and follow the module docblocks from there. Architecture across files lives in [CLAUDE.md](CLAUDE.md).
+The source is the documentation. `core/src/` is about 1,400 lines. Start at [core/src/builder/buildAll.js](core/src/builder/buildAll.js) — it names every build step in order — and follow the module docblocks from there. Architecture across files lives in [CLAUDE.md](CLAUDE.md).
 
 A one-page introduction lives at [castro.vktrz.workers.dev](https://castro.vktrz.workers.dev).
 

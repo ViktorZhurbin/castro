@@ -23,8 +23,6 @@ import { islands } from "./registry.js";
  * @import { VNode } from "preact"
  * @import { Directive, IslandComponent } from "../types.d.ts"
  *
- * @typedef {IslandComponent & { ssrModule: NonNullable<IslandComponent["ssrModule"]> }} LoadedIsland
- *
  * @typedef {{ islandId: string, sourceFilePath: string }} IslandErrorTokens
  * The pair every island error carries: which island, and the page rendering it.
  */
@@ -46,7 +44,7 @@ export function renderMarker(islandId, props = {}) {
 	const errorTokens = { islandId, sourceFilePath: state.sourceFilePath };
 
 	const island = lookupIsland(errorTokens);
-	const { directive, cleanProps } = processProps(props);
+	const { directive, cleanProps } = processProps(props, errorTokens);
 
 	state.usedIslands.add(islandId);
 
@@ -83,26 +81,26 @@ export function renderMarker(islandId, props = {}) {
 }
 
 /**
- * Look up a compiled island and assert its SSR module is loaded.
+ * Look up a compiled island.
  *
  * @param {IslandErrorTokens} errorTokens
- * @returns {LoadedIsland}
+ * @returns {IslandComponent}
  */
 function lookupIsland(errorTokens) {
 	const island = islands.getIsland(errorTokens.islandId);
 
-	if (!island?.ssrModule) {
+	if (!island) {
 		throw new CastroError("ISLAND_NOT_FOUND", errorTokens);
 	}
 
-	return /** @type {LoadedIsland} */ (island);
+	return island;
 }
 
 /**
  * Render the island's pre-loaded SSR module to static HTML. Wraps any throw in
  * a CastroError so the build surfaces a structured error instead of a raw stack.
  *
- * @param {LoadedIsland} island
+ * @param {IslandComponent} island
  * @param {Record<string, any>} cleanProps
  * @param {IslandErrorTokens} errorTokens
  * @returns {string}
@@ -146,16 +144,27 @@ const DEFAULT_DIRECTIVE = "comrade:visible";
 /**
  * Separate directive from props
  *
- * @param {Record<string, any> | undefined} props
+ * @param {Record<string, any>} props
+ * @param {IslandErrorTokens} errorTokens
  * @returns {{ directive: Directive, cleanProps: Record<string, any> }}
  */
-function processProps(props = {}) {
-	const specifiedDirective = DIRECTIVES.find((d) => d in props);
+function processProps(props, errorTokens) {
+	const specified = DIRECTIVES.filter((d) => d in props);
+
+	// Each directive is independently optional in the JSX types, so nothing stops
+	// an island carrying two. Picking one by array order would silently demote a
+	// directive the author wrote on purpose.
+	if (specified.length > 1) {
+		throw new CastroError("ISLAND_MULTIPLE_DIRECTIVES", {
+			...errorTokens,
+			directives: specified,
+		});
+	}
 
 	const cleanProps = { ...props };
 	for (const directive of DIRECTIVES) {
 		delete cleanProps[directive];
 	}
 
-	return { cleanProps, directive: specifiedDirective ?? DEFAULT_DIRECTIVE };
+	return { cleanProps, directive: specified[0] ?? DEFAULT_DIRECTIVE };
 }

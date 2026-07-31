@@ -49,6 +49,7 @@ To verify fixes work, edit the broken file in place — the dev server will rebu
 | `island-import-missing` | Page imports non-existent island | `BUNDLE_FAILED` | imports `./components/Ghost.island.tsx` which doesn't exist |
 | `island-render-failed` | Island render fails at build time | `ISLAND_RENDER_FAILED` | hydrate export throws error |
 | `island-children` | Island is passed children | `ISLAND_HAS_CHILDREN` | `<Counter>` wraps `<strong>hi</strong>`; islands take props only |
+| `island-multiple-directives` | Island carries two hydration directives | `ISLAND_MULTIPLE_DIRECTIVES` | `<Counter comrade:eager comrade:visible />` |
 | `island-props-not-serializable` | Island prop can't become JSON | `ISLAND_PROPS_NOT_SERIALIZABLE` | `<Counter data={...}>` where `data` holds a reference to itself |
 
 Two codes have no fixture on purpose: `ISLAND_NOT_FOUND` is an internal invariant — its own hint says "please report it" — and `UNEXPECTED` is the `toPayload()` fallback for any non-`CastroError` throw, so no single scenario pins it.

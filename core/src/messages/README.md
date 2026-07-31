@@ -122,7 +122,9 @@ export type ErrorMessages = {
 };
 ```
 
-The `errors` object in `index.js` is annotated `@satisfies {ErrorMessages}`, so every `ErrorCode` must have a factory and each factory's tokens are checked against the throw site.
+The `errors` object in `index.js` is annotated `@satisfies {ErrorMessages}`, so every `ErrorCode` must have a factory and each factory reads only tokens its code declares.
+
+The throw site is checked by `CastroError`'s own type parameter, which infers the code from the first argument and pins `tokens` to that code's shape — passing another code's tokens, or omitting them, fails `tsc`.
 
 ## When in Doubt
 

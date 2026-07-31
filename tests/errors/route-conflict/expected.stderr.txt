@@ -1,5 +1,5 @@
 ❌ Route conflict
-   Two pages claim the same route - about.html
+   Two pages claim the same route - /about
 
    · pages/about.md
    · pages/about.tsx
