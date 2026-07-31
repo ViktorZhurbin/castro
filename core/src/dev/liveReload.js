@@ -21,7 +21,7 @@
 
 const events = new EventSource("/events");
 
-/** @type EventSource["onmessage"] */
+/** @type {EventSource["onmessage"]} */
 events.onmessage = (event) => {
 	if (event.data === "reload") {
 		removeOverlay();
@@ -30,7 +30,7 @@ events.onmessage = (event) => {
 };
 
 events.addEventListener("build-error", (event) => {
-	const payload = /** @type {CastroErrorPayload} */ JSON.parse(event.data);
+	const payload = /** @type {CastroErrorPayload} */ (JSON.parse(event.data));
 
 	showOverlay(payload);
 });

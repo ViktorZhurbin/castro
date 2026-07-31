@@ -84,9 +84,31 @@ export async function startDevServer() {
 				// Static file serving with clean URLs
 				// Real SSGs would handle more variations
 
-				const basePath = join(OUTPUT_DIR, url.pathname);
+				// url.pathname keeps percent-encoding (e.g. "my%20file.txt"), which
+				// doesn't match the literal filename on disk. Real static hosts
+				// decode before lookup. A stray "%" (invalid escape) throws —
+				// fall back to the raw pathname rather than 500ing the dev server.
+				let pathname;
+				try {
+					pathname = decodeURIComponent(url.pathname);
+				} catch {
+					pathname = url.pathname;
+				}
 
-				if (url.pathname.endsWith("/")) {
+				const basePath = join(OUTPUT_DIR, pathname);
+
+				// Two paths only decoding can produce, both fatal downstream:
+				// "%2e%2e%2f" survives new URL()'s "../" normalization and escapes
+				// OUTPUT_DIR, and "%00" becomes a NUL that makes Bun.file() throw.
+				// join() normalizes, so anything still inside starts with "dist/".
+				if (
+					pathname.includes("\0") ||
+					(basePath !== OUTPUT_DIR && !basePath.startsWith(`${OUTPUT_DIR}/`))
+				) {
+					return new Response("Not Found", { status: 404 });
+				}
+
+				if (pathname.endsWith("/")) {
 					// Trailing slash (e.g. /blog/) is an explicit directory request.
 					const dirIndexFile = Bun.file(join(basePath, "index.html"));
 
@@ -98,7 +120,7 @@ export async function startDevServer() {
 				// Assets (/style.css, /app.js) are served at their exact path.
 				// Missing ones fall through to the 404 handling below — browsers
 				// probe paths like /favicon.ico and /.well-known/… on every site.
-				if (extname(url.pathname)) {
+				if (extname(pathname)) {
 					const assetFile = Bun.file(basePath);
 
 					if (await assetFile.exists()) {

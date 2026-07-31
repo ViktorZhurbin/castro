@@ -24,6 +24,7 @@ import { runWithPageState } from "../islands/pageState.js";
 import { islands } from "../islands/registry.js";
 import { layouts } from "../layouts.js";
 import { messages } from "../messages/index.js";
+import { resetDependenciesCache } from "../utils/dependencies.js";
 import { CastroError } from "../utils/errors.js";
 import { buildPage } from "./buildPage.js";
 import { vendorClientDeps } from "./vendor.js";
@@ -32,6 +33,10 @@ export async function buildAll() {
 	const isProd = process.env.NODE_ENV === "production";
 
 	console.info(messages.build.starting);
+
+	// The dev server rebuilds in-process across the whole session; reset here
+	// so a package.json edit mid-session is picked up on the next build.
+	resetDependenciesCache();
 
 	// Fresh build: wipe and recreate output dir.
 	await rm(OUTPUT_DIR, { recursive: true, force: true });

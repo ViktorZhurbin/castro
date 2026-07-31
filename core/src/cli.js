@@ -7,15 +7,19 @@
  */
 
 import { messages } from "./messages/index.js";
-import { cleanupCacheDir } from "./utils/cache.js";
 import { toPayload } from "./utils/errors.js";
 import { renderErrorToTerminal } from "./utils/renderError.js";
-
-cleanupCacheDir();
 
 const command = process.argv[2] || "dev";
 
 try {
+	// Imported lazily because cache.js pulls in constants.js → config.js, which
+	// loads castro.config.ts at module scope. A static import would evaluate —
+	// and throw — before this catch exists, escaping as a raw Bun stack trace.
+	// Everything statically imported above is config-free.
+	const { cleanupCacheDir } = await import("./utils/cache.js");
+	cleanupCacheDir();
+
 	switch (command) {
 		case "dev": {
 			const { startDevServer } = await import("./dev/server.js");

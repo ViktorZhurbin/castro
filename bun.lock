@@ -37,6 +37,14 @@
         "create-castro": "./index.js",
       },
     },
+    "tests/errors/config-load-failed": {
+      "name": "@test-errors/config-load-failed",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
     "tests/errors/empty-layouts-dir": {
       "name": "@test-errors/empty-layouts-dir",
       "version": "0.0.0",
@@ -119,6 +127,14 @@
     },
     "tests/errors/no-layouts-dir": {
       "name": "@test-errors/no-layouts-dir",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
+    "tests/errors/no-pages": {
+      "name": "@test-errors/no-pages",
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
@@ -259,6 +275,8 @@
 
     "@preact/signals-core": ["@preact/signals-core@1.14.4", "", {}, "sha512-HNB6HYeYKhQbJ1aKl+YRjrS4+QWHLKX6qKoUsfS/m0vqzsVaEBiZiaKbG/e+NKk2ch5ALQr/ihWaMHxiCuuWHA=="],
 
+    "@test-errors/config-load-failed": ["@test-errors/config-load-failed@workspace:tests/errors/config-load-failed"],
+
     "@test-errors/empty-layouts-dir": ["@test-errors/empty-layouts-dir@workspace:tests/errors/empty-layouts-dir"],
 
     "@test-errors/island-children": ["@test-errors/island-children@workspace:tests/errors/island-children"],
@@ -280,6 +298,8 @@
     "@test-errors/missing-default-layout": ["@test-errors/missing-default-layout@workspace:tests/errors/missing-default-layout"],
 
     "@test-errors/no-layouts-dir": ["@test-errors/no-layouts-dir@workspace:tests/errors/no-layouts-dir"],
+
+    "@test-errors/no-pages": ["@test-errors/no-pages@workspace:tests/errors/no-pages"],
 
     "@test-errors/page-no-default-export": ["@test-errors/page-no-default-export@workspace:tests/errors/page-no-default-export"],
 

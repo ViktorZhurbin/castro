@@ -42,14 +42,20 @@ export async function safeBunBuild(config) {
  */
 function bunLogToFrame(log) {
 	const position = log.position;
+	// Some Bun resolve failures (e.g. the synthetic virtual entry fed to the
+	// bundler by compileIslandClient) report line/column as -1 instead of
+	// omitting position entirely. Treat a non-positive line as "no real
+	// position" so renderError.js's "no line to anchor to" guard drops the
+	// snippet instead of printing "file:-1:0".
+	const hasLine = !!position && position.line > 0;
 
 	return {
 		file: position?.file,
-		line: position?.line,
+		line: hasLine ? position.line : undefined,
 		// Bun/esbuild columns are 0-based; normalize to 1-based here so the
 		// displayed location, the vscode:// link, and both caret renderers all
 		// share the editor convention. Renderers subtract 1 for the 0-based offset.
-		column: position ? position.column + 1 : undefined,
-		lineText: position?.lineText,
+		column: hasLine && position.column >= 0 ? position.column + 1 : undefined,
+		lineText: hasLine ? position.lineText : undefined,
 	};
 }

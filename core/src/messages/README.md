@@ -65,29 +65,7 @@ If you hesitate on any question, remove the satire.
 
 Voice (title/hint text) lives here. Data (file paths, token values, frame positions) lives at the throw site.
 
-## Error Message Structure
-
-```javascript
-// Good - Clear structure with optional punchline at end
-errors: {
-  routeConflict: (file1, file2) =>
-    `❌ Route conflict: Two pages claim the same route\n\n` +
-    `   · ${file1}\n` +
-    `   · ${file2}\n\n` +
-    `   The revolution cannot serve two masters.`,  // ← Punchline at end
-}
-
-// Bad - Satire obscures the problem
-errors: {
-  routeConflict: (file1, file2) =>
-    `❌ Ideological inconsistency detected.\n\n` +  // ← Too verbose
-    `   The Central Committee has identified...\n` +  // ← Obscures info
-    `   · ${file1}\n` +
-    `   · ${file2}\n\n` +
-    `   The revolution cannot serve...\n` +          // ← Joke stretched
-    `   Eliminate one to restore order.`,            // ← Too much
-}
-```
+Return the object — never a preformatted string. Both renderers add the `❌`, the indentation, and the layout; a factory that pre-builds any of that fights them.
 
 ## Voice Philosophy
 
@@ -102,31 +80,34 @@ Castro speaks in a communist satire voice:
 
 ### Status Messages
 
+Plain strings, not `ErrorContent` — these aren't part of the error payload, just logged directly.
+
 ```javascript
 // Good
 writingFile: (source, dest) => `Writing ${source} → ${dest}`,
-fileSuccess: (file, time) => `✓ ${file} (${time})`,
+success: (count) => `✓ Delivered ${count} pages to the people.`,
 
 // Bad - Emoji clutter
 writingFile: (source, dest) => `📝 Distributing ${source} → ${dest}`,
-fileSuccess: (file, time) => `✅ ${file} (${time})`,
+success: (count) => `✅ Delivered ${count} pages to the people.`,
 ```
 
 ### Error Messages
 
 ```javascript
-// Good - Punchline at end
-pageBuildFailed: (file, err) =>
-  `❌ Build failed (sabotage detected)\n\n` +
-  `   Page: ${file}\n` +
-  `   Error: ${err}`,
+// Good - punchline in the hint, satire stays out of the way
+LAYOUT_NOT_FOUND: ({ layoutId, sourceFilePath }) => ({
+  title: "Layout not found",
+  message: `Layout '${layoutId}' cannot be located — possible defection`,
+  hint: `Create the missing layout, or change layout for ${sourceFilePath}`,
+}),
 
-// Bad - Joke stretched thin
-pageBuildFailed: (file, err) =>
-  `❌ The Ministry of Construction reports failure\n\n` +
-  `   Comrade: ${file}\n` +
-  `   Counterrevolutionary activity: ${err}\n` +
-  `   The Party demands immediate correction.`,
+// Bad - joke stretched thin, buries the token values in prose
+LAYOUT_NOT_FOUND: ({ layoutId, sourceFilePath }) => ({
+  title: "The Ministry of Layouts reports a defection",
+  message: `Comrade layout '${layoutId}' has fled the collective, last seen ` +
+    `near ${sourceFilePath}. The Party demands immediate correction.`,
+}),
 ```
 
 ## Type Safety

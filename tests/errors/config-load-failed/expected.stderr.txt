@@ -1,0 +1,6 @@
+❌ Config file failed to load
+   castro.config.ts threw an error during evaluation:
+
+   CASTRO_PORT must be a number
+
+   → Fix the syntax or runtime error in your config file — the Plan cannot proceed otherwise
