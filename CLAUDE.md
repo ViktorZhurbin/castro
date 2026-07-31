@@ -87,6 +87,7 @@ All user-facing strings live in `core/src/messages/`. Message factories keyed by
 - Preact handles SSR and VNode tree construction everywhere, including islands; it's a build-time dependency, never shipped to the browser for static pages. Preact-specific build values live in `core/src/islands/preact.js`.
 - **Layouts receive `children` (VNode)**, not a pre-rendered `content` HTML string.
 - **Islands take props, never children** — including string children, which would survive the `data-props` JSON trip. `renderMarker` throws `ISLAND_HAS_CHILDREN`; the reasoning for the flat rule is at that throw site.
+- **Island props are JSON, and nothing checks that they are.** The build→runtime seam is `JSON.stringify` in `marker.js` and `JSON.parse` in `castroIsland.js`, unvalidated at both ends — the only guard is the `ISLAND_PROPS_NOT_SERIALIZABLE` throw for values `JSON.stringify` outright rejects. Everything merely _lossy_ passes silently: a `Date` arrives as a string, a function or `undefined` doesn't arrive at all. SSR renders with the real value while the client hydrates with the coerced one, and Preact patches over the mismatch without a word. Pass island props as JSON primitives, or reconstruct richer values inside the island.
 
 ## Configuration
 
@@ -112,6 +113,7 @@ The config file is optional; if present, it must be named exactly `castro.config
 - **Runtime config validation**: TypeScript catches misconfigs; no runtime re-validation.
 - **User extensibility**: no plugin API, no hook system. Last worked at commit `fdf04bd`.
 - **Backwards compatibility**: package is unpublished; breaking changes land freely.
+- **Dead island elimination**: every `*.island.{jsx,tsx}` under `components/` compiles and writes a client bundle to `dist/islands/`, whether or not a page imports it. Per-page `usedIslands` gating decides what the HTML _references_, not what ships. Pruning would mean deferring compilation until after pages render, but SSR modules have to be loaded before that — not worth the inversion.
 
 **Day-to-day DX** is the named exception. These subsystems cost lines on purpose and survive brevity passes intact:
 
