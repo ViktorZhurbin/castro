@@ -70,7 +70,7 @@ File watchers on `pages/`, `layouts/`, `components/`, and `public/` rebuild on c
 
 ## Conventions
 
-- **ES Modules**, Bun 1.3.8+. **Biome** for linting/formatting.
+- **Biome** for linting/formatting.
 - **JSDoc** for all types and function intent. `.d.ts` files only for shared/reusable types.
 - **Bun-native APIs** over Node equivalents — `Bun.file().exists()`, `Bun.file().json()`, etc. If going async requires changing a caller, do it explicitly rather than falling back to Node.
 - **No `createElement`** — use JSX or `h()` from preact.
@@ -93,17 +93,11 @@ All user-facing strings live in `core/src/messages/`. Message factories keyed by
 
 ## Configuration
 
-The config file is optional; if present, it must be named exactly `castro.config.ts`. All options are in `core/src/types.d.ts`.
-
-`srcDir` shifts the source root for pages/layouts/components; output is always `dist/` regardless.
+`srcDir` shifts the source root for pages/layouts/components; output is always `dist/` regardless. All options are in `core/src/types.d.ts`.
 
 ## Testing
 
-`bun test:site` builds and verifies `tests/site/`, which exercises the full pipeline with Preact islands (all directives, multiple islands per page, CSS modules, component composition, signals). The site mirrors a real project's structure — **use it as the reference for expected patterns** when you're unsure how something should be wired up. It also builds and verifies `tests/site-srcdir/`, a minimal fixture pinning the `srcDir` output contract (see Configuration) — the only place in `tests/` that sets `srcDir`.
-
-Both sites are type-checked by `bun check:analyze`, which is load-bearing rather than incidental: hydration directives are typed `true` (not `boolean`), so `comrade:eager={false}` is rejected at compile time instead of being reinterpreted at runtime. `tests/site/types/islandContracts.tsx` holds `@ts-expect-error` pins for that rule and for islands-reject-children; it is never built, and a loosened rule surfaces as an unused-directive error.
-
-`bun test:errors` runs the golden suite in `tests/errors/`, which covers the terminal renderer only. After changing `messages/` or `renderError.js`, regenerate goldens with `bun test:errors:up` and inspect the diff before committing. The browser overlay isn't golden-tested — verify it by hand: load an error case in the dev server and eyeball the overlay.
+See `tests/CLAUDE.md` for what each test suite covers and how to regenerate goldens.
 
 ## Two Forces
 
