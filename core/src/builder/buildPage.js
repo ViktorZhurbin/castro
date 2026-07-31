@@ -39,7 +39,7 @@ async function buildJSXPage(sourceFilePath, outputFilePath) {
 	// Compile and import the JSX page (also extracts CSS)
 	const { module: pageModule, cssFiles } = await compileJSX(sourceFilePath);
 
-	if (!pageModule.default || typeof pageModule.default !== "function") {
+	if (typeof pageModule.default !== "function") {
 		throw new CastroError("PAGE_NO_DEFAULT_EXPORT", { file: sourceFilePath });
 	}
 

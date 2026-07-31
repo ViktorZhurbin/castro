@@ -112,6 +112,16 @@ test("comrade:eager has island runtime", async () => {
 	expect(html).toContain("castro-island.js");
 });
 
+// ------ Directive matched by value, not key presence ------
+// `comrade:eager={false}` is valid TS and must fall back to the default
+// directive; matching on `d in props` turned it on instead — see AUDIT.md #8.
+
+test("comrade:eager={false} falls back to the default directive", async () => {
+	const html = await readHtml("eager-false.html");
+	expect(html).toContain('directive="comrade:visible"');
+	expect(html).not.toContain('directive="comrade:eager"');
+});
+
 // ------ layout: false (no <head>/<body> shell) ------
 // injectTags() anchors injection to </head> or </body>; a layout:false page
 // has neither. Guards against the fix regressing to a silent no-op that

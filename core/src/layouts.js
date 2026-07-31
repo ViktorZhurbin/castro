@@ -95,7 +95,7 @@ class LayoutsRegistry {
 			const { module: layoutModule, cssFiles } =
 				await compileJSX(sourceFilePath);
 
-			if (!layoutModule.default) {
+			if (typeof layoutModule.default !== "function") {
 				throw new CastroError("LAYOUT_NO_DEFAULT_EXPORT", {
 					file: relativePath,
 				});

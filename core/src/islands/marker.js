@@ -157,7 +157,9 @@ const DEFAULT_DIRECTIVE = "comrade:visible";
  * @returns {{ directive: Directive, cleanProps: Record<string, any> }}
  */
 function processProps(props = {}) {
-	const specifiedDirective = DIRECTIVES.find((d) => d in props);
+	// Matched by value, not key presence: the directives are typed `boolean`, so
+	// `comrade:eager={false}` is valid TS that has to read as off, not as on.
+	const specifiedDirective = DIRECTIVES.find((d) => props[d]);
 
 	const cleanProps = { ...props };
 	for (const directive of DIRECTIVES) {
