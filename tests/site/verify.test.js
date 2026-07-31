@@ -112,6 +112,34 @@ test("comrade:eager has island runtime", async () => {
 	expect(html).toContain("castro-island.js");
 });
 
+// ------ layout: false (no <head>/<body> shell) ------
+// injectTags() anchors injection to </head> or </body>; a layout:false page
+// has neither. Guards against the fix regressing to a silent no-op that
+// drops the import map, runtime script, and CSS (writeHtmlPage.js).
+
+test("layout:false page still has DOCTYPE and content", async () => {
+	const html = await readHtml("layout-false.html");
+	expect(html).toContain("<!DOCTYPE html>");
+	expect(html).toContain("<h1>No Layout Test</h1>");
+});
+
+test("layout:false page still gets the island runtime and import map", async () => {
+	const html = await readHtml("layout-false.html");
+	expect(html).toContain("castro-island.js");
+	expect(html).toContain('type="importmap"');
+});
+
+test("layout:false page still gets inline island CSS", async () => {
+	const html = await readHtml("layout-false.html");
+	expect(html).toContain("<style>");
+	expect(html).toContain("color: red");
+});
+
+test("layout:false page still gets its page CSS link", async () => {
+	const html = await readHtml("layout-false.html");
+	expect(html).toContain('href="/layout-false.css"');
+});
+
 // ------ Multiple islands ------
 
 test("multi page has both islands", async () => {

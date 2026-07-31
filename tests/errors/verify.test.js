@@ -54,8 +54,10 @@ async function readOrUpdateGolden(goldenPath, actual) {
 	return (await f.text()).trimEnd();
 }
 
+// Every directory here is a fixture — except dotfile dirs, which tooling
+// drops in and which have no castro binary to spawn.
 const caseDirs = readdirSync(testErrorsDir, { withFileTypes: true })
-	.filter((entry) => entry.isDirectory())
+	.filter((entry) => entry.isDirectory() && !entry.name.startsWith("."))
 	.map((entry) => join(testErrorsDir, entry.name))
 	.sort();
 

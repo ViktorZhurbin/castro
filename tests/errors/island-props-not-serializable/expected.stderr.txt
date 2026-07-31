@@ -1,0 +1,6 @@
+❌ Island props rejected
+   pages/index.tsx passes props to island components/Counter.island.tsx that could not be serialized for the browser:
+
+   JSON.stringify cannot serialize cyclic structures.
+
+   → Props travel to the browser as JSON — no functions, class instances, or elements

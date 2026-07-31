@@ -56,8 +56,9 @@ export async function buildAll() {
 	// Real SSGs would cap concurrency to bound Bun.build's memory pressure
 	const results = await Promise.all(
 		[...pagesMap.entries()].map(async ([outputPath, sourcePath]) => {
-			const { usedIslands } = await runWithPageState(() =>
-				buildPage(sourcePath),
+			const { usedIslands } = await runWithPageState(
+				join(PAGES_DIR, sourcePath),
+				() => buildPage(sourcePath),
 			);
 
 			// Log on completion so lines appear in the order pages actually finish

@@ -1,0 +1,4 @@
+❌ Island received children
+   pages/index.tsx nests children inside island components/Counter.island.tsx, but only props cross the border into the browser
+
+   → Pass the content as a prop, or keep the wrapper outside the island

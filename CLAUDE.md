@@ -85,6 +85,7 @@ All user-facing strings live in `core/src/messages/`. Message factories keyed by
 
 - Preact handles SSR and VNode tree construction everywhere, including islands; it's a build-time dependency, never shipped to the browser for static pages. Preact-specific build values live in `core/src/islands/preact.js`.
 - **Layouts receive `children` (VNode)**, not a pre-rendered `content` HTML string.
+- **Islands take props, never children** — including string children, which would survive the `data-props` JSON trip. `renderMarker` throws `ISLAND_HAS_CHILDREN`; the reasoning for the flat rule is at that throw site.
 
 ## Configuration
 

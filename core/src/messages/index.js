@@ -94,9 +94,9 @@ export const messages = {
 			hint: "Check the code frame and error location above",
 		}),
 
-		ISLAND_NOT_FOUND: ({ islandId }) => ({
+		ISLAND_NOT_FOUND: ({ islandId, sourceFilePath }) => ({
 			title: "Island defected",
-			message: `Island '${islandId}' failed to load`,
+			message: `${sourceFilePath} renders island ${islandId}, which failed to load`,
 			hint: "This is a Castro internal error — please report it",
 		}),
 
@@ -106,11 +106,28 @@ export const messages = {
 			hint: "Create a .md or .jsx/.tsx file in pages/ to continue",
 		}),
 
-		ISLAND_RENDER_FAILED: ({ islandId, errorMessage }) => ({
+		ISLAND_RENDER_FAILED: ({ islandId, sourceFilePath, errorMessage }) => ({
 			title: "Island SSR failed",
-			message: `Island ${islandId} failed to fulfill its server-side obligations:`,
+			message: `${sourceFilePath} renders island ${islandId}, which failed to fulfill its server-side obligations:`,
 			errorMessage,
 			hint: "Check for browser-only APIs like 'window' or 'document'. Move them inside useEffect or a lifecycle hook.",
+		}),
+
+		ISLAND_HAS_CHILDREN: ({ islandId, sourceFilePath }) => ({
+			title: "Island received children",
+			message: `${sourceFilePath} nests children inside island ${islandId}, but only props cross the border into the browser`,
+			hint: "Pass the content as a prop, or keep the wrapper outside the island",
+		}),
+
+		ISLAND_PROPS_NOT_SERIALIZABLE: ({
+			islandId,
+			sourceFilePath,
+			errorMessage,
+		}) => ({
+			title: "Island props rejected",
+			message: `${sourceFilePath} passes props to island ${islandId} that could not be serialized for the browser:`,
+			errorMessage,
+			hint: "Props travel to the browser as JSON — no functions, class instances, or elements",
 		}),
 
 		CONFIG_LOAD_FAILED: ({ path, errorMessage }) => ({

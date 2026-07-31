@@ -1,5 +1,5 @@
 ❌ Island SSR failed
-   Island components/Broken.island.tsx failed to fulfill its server-side obligations:
+   pages/index.tsx renders island components/Broken.island.tsx, which failed to fulfill its server-side obligations:
 
    Island failed to render
 

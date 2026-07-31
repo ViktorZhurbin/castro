@@ -47,6 +47,8 @@ To verify fixes work, edit the broken file in place — the dev server will rebu
 | `island-import-missing` | Page imports non-existent island | `BUNDLE_FAILED` | imports `./components/Ghost.island.tsx` which doesn't exist |
 | `framework-config-invalid` | Framework config has invalid structure | `BUNDLE_FAILED` | malformed config object |
 | `island-render-failed` | Island render fails at build time | `BUNDLE_FAILED` | hydrate export throws error |
+| `island-children` | Island is passed children | `ISLAND_HAS_CHILDREN` | `<Counter>` wraps `<strong>hi</strong>`; islands take props only |
+| `island-props-not-serializable` | Island prop can't become JSON | `ISLAND_PROPS_NOT_SERIALIZABLE` | `<Counter data={...}>` where `data` holds a reference to itself |
 
 
 ## Verification Checklist

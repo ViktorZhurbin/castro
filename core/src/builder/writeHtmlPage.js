@@ -92,12 +92,16 @@ function injectTags(html, tags) {
 
 	const injection = tags.join("\n");
 
-	const output = html.replace(
-		// Matches </head> OR </body> (case-insensitive).
-		/<\/head>|<\/body>/i,
-		// Inserts injection before the matched tag.
-		(match) => `${injection}\n${match}`,
-	);
+	// Matches </head> OR </body> (case-insensitive).
+	const anchor = /<\/head>|<\/body>/i;
+
+	// `layout: false` pages render only their content VNode — no <head> or
+	// <body> shell to anchor to. String.replace with no match is a silent
+	// no-op, so without this branch the tags (CSS, import map, island
+	// runtime, hydration styles) would just vanish. Prepend instead.
+	const output = anchor.test(html)
+		? html.replace(anchor, (match) => `${injection}\n${match}`)
+		: `${injection}\n${html}`;
 
 	return ensureDoctype(output);
 }

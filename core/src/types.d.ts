@@ -20,11 +20,21 @@ export type ErrorTokens = {
 	NO_DEFAULT_LAYOUT: { dir: string };
 	LAYOUT_NO_DEFAULT_EXPORT: { file: string };
 	PAGE_NO_DEFAULT_EXPORT: { file: string };
-	ISLAND_NOT_FOUND: { islandId: string };
+	ISLAND_NOT_FOUND: { islandId: string; sourceFilePath: string };
 	NO_PAGES: { dir: string };
 	BUNDLE_FAILED: { errorMessage: string } | undefined;
 	YAML_PARSE_FAILED: { errorMessage: string; sourceFilePath: string };
-	ISLAND_RENDER_FAILED: { islandId: string; errorMessage: string };
+	ISLAND_RENDER_FAILED: {
+		islandId: string;
+		sourceFilePath: string;
+		errorMessage: string;
+	};
+	ISLAND_HAS_CHILDREN: { islandId: string; sourceFilePath: string };
+	ISLAND_PROPS_NOT_SERIALIZABLE: {
+		islandId: string;
+		sourceFilePath: string;
+		errorMessage: string;
+	};
 	CONFIG_LOAD_FAILED: { path: string; errorMessage: string };
 	UNEXPECTED: undefined;
 };
