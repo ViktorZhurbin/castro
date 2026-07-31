@@ -166,6 +166,14 @@
         "preact": "^10",
       },
     },
+    "tests/site-srcdir": {
+      "name": "test-site-srcdir",
+      "version": "1.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10",
+      },
+    },
     "website": {
       "name": "website",
       "version": "1.0.0",
@@ -348,6 +356,8 @@
     "strip-json-comments": ["strip-json-comments@5.0.3", "", {}, "sha512-1tB5mhVo7U+ETBKNf92xT4hrQa3pm0MZ0PQvuDnWgAAGHDsfp4lPSpiS6psrSiet87wyGPh9ft6wmhOMQ0hDiw=="],
 
     "test-site": ["test-site@workspace:tests/site"],
+
+    "test-site-srcdir": ["test-site-srcdir@workspace:tests/site-srcdir"],
 
     "to-regex-range": ["to-regex-range@5.0.1", "", { "dependencies": { "is-number": "^7.0.0" } }, "sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ=="],
 

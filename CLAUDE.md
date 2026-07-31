@@ -26,7 +26,8 @@ bun loc              # LOC count (core only, excludes messages/)
 - `packages/` — `create-castro`, the project scaffolder
 - `EXPLORATIONS.md` — the scope/complexity filter for building anything new here; read it before starting a package
 - `website/` — demo playground that consumes castro. `website/tsconfig.json` is the canonical tsconfig; `packages/create-castro/template/tsconfig.json` shares the same `compilerOptions` but uses root-level `pages/`/`layouts/` instead of `src/`.
-- `tests/site/` — minimal test site exercising Preact islands, all hydration directives, CSS modules, and signals
+- `tests/site/` — minimal test site exercising Preact islands, all hydration directives, CSS modules, signals, layout CSS extraction, `layout: false`, and nested layouts sharing a basename with the root one
+- `tests/site-srcdir/` — pins the `srcDir` output contract: a `srcDir: "src"` site with a layout that imports CSS, asserting the emitted URL never leaks the `src` segment
 - `tests/errors/` — isolated error cases for manual DX verification of the error overlay and terminal renderer
 
 ### Core Module Structure (`core/src/`)
@@ -95,7 +96,7 @@ The config file is optional; if present, it must be named exactly `castro.config
 
 ## Testing
 
-`bun test:site` builds and verifies `tests/site/`, which exercises the full pipeline with Preact islands (all directives, multiple islands per page, CSS modules, component composition, signals). The site mirrors a real project's structure — **use it as the reference for expected patterns** when you're unsure how something should be wired up.
+`bun test:site` builds and verifies `tests/site/`, which exercises the full pipeline with Preact islands (all directives, multiple islands per page, CSS modules, component composition, signals). The site mirrors a real project's structure — **use it as the reference for expected patterns** when you're unsure how something should be wired up. It also builds and verifies `tests/site-srcdir/`, a minimal fixture pinning the `srcDir` output contract (see Configuration) — the only place in `tests/` that sets `srcDir`.
 
 `bun test:errors` runs the golden suite in `tests/errors/`, which covers the terminal renderer only. After changing `messages/` or `renderError.js`, regenerate goldens with `bun test:errors:up` and inspect the diff before committing. The browser overlay isn't golden-tested — verify it by hand: load an error case in the dev server and eyeball the overlay.
 

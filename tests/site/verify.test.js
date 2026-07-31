@@ -140,6 +140,29 @@ test("layout:false page still gets its page CSS link", async () => {
 	expect(html).toContain('href="/layout-false.css"');
 });
 
+// ------ Nested layouts (layout id includes the directory) ------
+// layouts/nested/default.tsx deliberately shares a basename with
+// layouts/default.tsx. Before layout ids included the directory, whichever
+// one the glob visited last silently won for id "default" — see AUDIT.md #3.
+
+test("page selecting a nested layout by its directory-qualified id renders that layout", async () => {
+	const html = await readHtml("nested-layout.html");
+	expect(html).toContain('id="nested-layout-marker"');
+	expect(html).toContain("<h1>Nested Layout Page</h1>");
+});
+
+test("pages using the plain default layout are not overridden by the nested one", async () => {
+	const html = await readHtml("static.html");
+	expect(html).not.toContain('id="nested-layout-marker"');
+});
+
+test("nested and root layouts extract CSS to distinct files", async () => {
+	const rootHtml = await readHtml("static.html");
+	const nestedHtml = await readHtml("nested-layout.html");
+	expect(rootHtml).toContain('href="/layouts/default.css"');
+	expect(nestedHtml).toContain('href="/layouts/nested/default.css"');
+});
+
 // ------ Multiple islands ------
 
 test("multi page has both islands", async () => {

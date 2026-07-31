@@ -19,6 +19,7 @@ export const PAGE_EXT_PATTERN = /\.(md|[jt]sx)$/;
 export const OUTPUT_DIR = "dist";
 export const PUBLIC_DIR = "public";
 export const ISLANDS_OUTPUT_DIR = "islands";
+export const LAYOUTS_OUTPUT_DIR = "layouts";
 export const LAYOUTS_DIR = join(config.srcDir, "layouts");
 export const PAGES_DIR = join(config.srcDir, "pages");
 export const COMPONENTS_DIR = join(config.srcDir, "components");

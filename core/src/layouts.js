@@ -8,10 +8,10 @@
  */
 
 import { access } from "node:fs/promises";
-import { basename, extname, join } from "node:path/posix";
+import { dirname, extname, join } from "node:path/posix";
 import { compileJSX } from "./builder/compileJsx.js";
 import { writeCSSFiles } from "./builder/writeCss.js";
-import { LAYOUTS_DIR, OUTPUT_DIR } from "./constants.js";
+import { LAYOUTS_DIR, LAYOUTS_OUTPUT_DIR, OUTPUT_DIR } from "./constants.js";
 import { CastroError } from "./utils/errors.js";
 
 /**
@@ -23,7 +23,10 @@ import { CastroError } from "./utils/errors.js";
  * 		[key: string]: unknown;
  *	}) => VNode} LayoutComponent
  *
- * @typedef {string} LayoutId - Layout filename without extension
+ * @typedef {string} LayoutId - Layout's path relative to LAYOUTS_DIR, extension
+ * stripped, posix-style (e.g. `layouts/nested/default.tsx` -> "nested/default").
+ * Includes the directory so same-basename layouts in different folders don't
+ * collide.
  */
 
 /**
@@ -86,7 +89,8 @@ class LayoutsRegistry {
 
 		for await (const relativePath of layoutGlob.scan(LAYOUTS_DIR)) {
 			const sourceFilePath = join(LAYOUTS_DIR, relativePath);
-			const layoutId = basename(relativePath, extname(relativePath));
+			const ext = extname(relativePath);
+			const layoutId = relativePath.slice(0, -ext.length);
 
 			const { module: layoutModule, cssFiles } =
 				await compileJSX(sourceFilePath);
@@ -99,8 +103,16 @@ class LayoutsRegistry {
 
 			this.#layouts.set(layoutId, layoutModule.default);
 
-			const layoutsDir = join(OUTPUT_DIR, LAYOUTS_DIR);
-			const layoutCssTags = await writeCSSFiles(cssFiles, layoutsDir);
+			// Output dir mirrors the layout's nesting under LAYOUTS_OUTPUT_DIR (not
+			// LAYOUTS_DIR, which is srcDir-prefixed) so two layouts with the same
+			// basename get distinct CSS files, and the public URL never leaks
+			// srcDir (see ISLANDS_OUTPUT_DIR for the same split applied to islands).
+			const layoutOutputDir = join(
+				OUTPUT_DIR,
+				LAYOUTS_OUTPUT_DIR,
+				dirname(relativePath),
+			);
+			const layoutCssTags = await writeCSSFiles(cssFiles, layoutOutputDir);
 
 			if (layoutCssTags.length > 0) {
 				this.#cssTags.set(layoutId, layoutCssTags);
