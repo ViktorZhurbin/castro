@@ -4,5 +4,5 @@ import { defineConfig } from "@vktrz/castro";
 // of where sources live. Layout CSS was the one place srcDir leaked
 // into an emitted URL (dist/src/layouts/... instead of dist/layouts/...).
 export default defineConfig({
-	srcDir: "src",
+  srcDir: "src",
 });

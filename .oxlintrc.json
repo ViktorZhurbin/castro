@@ -1,20 +1,20 @@
 {
-	"$schema": "./node_modules/oxlint/configuration_schema.json",
-	"plugins": ["eslint", "typescript", "unicorn", "oxc", "import", "node"],
-	"categories": {
-		"correctness": "error"
-	},
-	"rules": {
-		"typescript/no-explicit-any": "error",
-		"import/no-cycle": ["error", { "maxDepth": 3 }]
-	},
-	"ignorePatterns": ["**/tests/errors"],
-	"overrides": [
-		{
-			"files": ["**/tests/**"],
-			"rules": {
-				"typescript/no-explicit-any": "off"
-			}
-		}
-	]
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["eslint", "typescript", "unicorn", "oxc", "import", "node"],
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "typescript/no-explicit-any": "error",
+    "import/no-cycle": ["error", { "maxDepth": 3 }]
+  },
+  "ignorePatterns": ["**/tests/errors"],
+  "overrides": [
+    {
+      "files": ["**/tests/**"],
+      "rules": {
+        "typescript/no-explicit-any": "off"
+      }
+    }
+  ]
 }

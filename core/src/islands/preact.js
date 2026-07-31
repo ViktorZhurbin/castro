@@ -21,19 +21,14 @@ import { render } from "preact-render-to-string";
  * `import { h }`. Shared by the client and SSR compiles.
  */
 export const PREACT_BUILD_CONFIG = {
-	jsx: { runtime: /** @type {const} */ ("automatic"), importSource: "preact" },
+  jsx: { runtime: /** @type {const} */ ("automatic"), importSource: "preact" },
 };
 
 /** Shared deps vendored to /dist/vendor/ and resolved via the island import map. */
-export const PREACT_CLIENT_DEPS = [
-	"preact",
-	"preact/hooks",
-	"preact/jsx-runtime",
-];
+export const PREACT_CLIENT_DEPS = ["preact", "preact/hooks", "preact/jsx-runtime"];
 
 /** Browser hydration module, inlined verbatim into each island bundle. */
-export const PREACT_CLIENT_PATH = new URL("./preact.client.js", import.meta.url)
-	.pathname;
+export const PREACT_CLIENT_PATH = new URL("./preact.client.js", import.meta.url).pathname;
 
 /**
  * Render an island to static HTML at build time.
@@ -46,5 +41,5 @@ export const PREACT_CLIENT_PATH = new URL("./preact.client.js", import.meta.url)
  * @returns {string}
  */
 export function renderIslandToString(Component, props) {
-	return render(h(/** @type {ComponentType<any>} */ (Component), props));
+  return render(h(/** @type {ComponentType<any>} */ (Component), props));
 }

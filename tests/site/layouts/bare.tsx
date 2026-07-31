@@ -6,5 +6,5 @@ type Props = { children: ComponentChildren };
 // returning a bare fragment, and injectTags() has no anchor to inject
 // before when one does — see writeHtmlPage.js.
 export default function BareLayout({ children }: Props) {
-	return <div>{children}</div>;
+  return <div>{children}</div>;
 }

@@ -1,19 +1,19 @@
 {
-	"compilerOptions": {
-		"lib": ["ESNext"],
-		"moduleDetection": "force",
-		"jsx": "react-jsx",
-		"jsxImportSource": "preact",
-		"types": ["bun"],
-		"noEmit": true,
-		"skipLibCheck": true,
-		"allowJs": true,
-		"checkJs": true,
-		"resolveJsonModule": true,
-		"declaration": false,
-		"declarationMap": false,
-		"sourceMap": false
-	},
-	"include": ["src/**/*"],
-	"exclude": ["node_modules"]
+  "compilerOptions": {
+    "lib": ["ESNext"],
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "types": ["bun"],
+    "noEmit": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "checkJs": true,
+    "resolveJsonModule": true,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }

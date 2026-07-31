@@ -10,35 +10,33 @@ import { messages } from "../messages/index.js";
 
 /** @template {ErrorCode} C */
 export class CastroError extends Error {
-	/** @type {CastroErrorPayload} */
-	castroPayload;
+  /** @type {CastroErrorPayload} */
+  castroPayload;
 
-	/**
-	 * `C` is inferred from `code`, pinning `tokens` to that one code's shape —
-	 * without it, another code's tokens type-check here and fail at runtime.
-	 *
-	 * @param {C} code
-	 * @param {ErrorTokens[C]} tokens
-	 * @param {CodeFrame[]} [frames]
-	 */
-	constructor(code, tokens, frames = []) {
-		// TypeScript can't correlate the indexed factory with the indexed token
-		// type through a type parameter, so it widens this call to an intersection
-		// of every code's tokens. The cast restores the pairing the signature
-		// already checked at the throw site.
-		const factory = /** @type {(tokens: ErrorTokens[C]) => ErrorContent} */ (
-			messages.errors[code]
-		);
-		const errorContent = factory(tokens);
+  /**
+   * `C` is inferred from `code`, pinning `tokens` to that one code's shape —
+   * without it, another code's tokens type-check here and fail at runtime.
+   *
+   * @param {C} code
+   * @param {ErrorTokens[C]} tokens
+   * @param {CodeFrame[]} [frames]
+   */
+  constructor(code, tokens, frames = []) {
+    // TypeScript can't correlate the indexed factory with the indexed token
+    // type through a type parameter, so it widens this call to an intersection
+    // of every code's tokens. The cast restores the pairing the signature
+    // already checked at the throw site.
+    const factory = /** @type {(tokens: ErrorTokens[C]) => ErrorContent} */ (messages.errors[code]);
+    const errorContent = factory(tokens);
 
-		super(errorContent.title);
+    super(errorContent.title);
 
-		this.name = "CastroError";
-		this.castroPayload = { ...errorContent, code, frames };
+    this.name = "CastroError";
+    this.castroPayload = { ...errorContent, code, frames };
 
-		// Makes stack traces point to the throw site, not this constructor.
-		Error.captureStackTrace(this, CastroError);
-	}
+    // Makes stack traces point to the throw site, not this constructor.
+    Error.captureStackTrace(this, CastroError);
+  }
 }
 
 /**
@@ -52,14 +50,14 @@ export class CastroError extends Error {
  * @returns {CastroErrorPayload}
  */
 export function toPayload(err) {
-	if (err instanceof CastroError) {
-		return err.castroPayload;
-	}
+  if (err instanceof CastroError) {
+    return err.castroPayload;
+  }
 
-	return {
-		...messages.errors.UNEXPECTED(),
-		code: "UNEXPECTED",
-		frames: [],
-		errorMessage: err instanceof Error ? err.message : String(err),
-	};
+  return {
+    ...messages.errors.UNEXPECTED(),
+    code: "UNEXPECTED",
+    frames: [],
+    errorMessage: err instanceof Error ? err.message : String(err),
+  };
 }

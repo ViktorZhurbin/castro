@@ -15,6 +15,7 @@
  */
 
 import { dirname, resolve } from "node:path/posix";
+
 import { getIslandId } from "./islandId.js";
 
 const CASTRO_SRC = resolve(dirname(import.meta.path), "..");
@@ -28,7 +29,7 @@ const MARKER_PATH = resolve(CASTRO_SRC, "islands/marker.js");
  * @returns {string} JavaScript source code
  */
 function generateMarkerCode(islandId) {
-	return `
+  return `
     import { renderMarker } from "${MARKER_PATH}";
     export default (props) => renderMarker(${JSON.stringify(islandId)}, props);
   `.trim();
@@ -44,15 +45,15 @@ function generateMarkerCode(islandId) {
  * @type {Bun.BunPlugin}
  */
 export const islandMarkerPlugin = {
-	name: "island-marker",
-	setup(build) {
-		build.onLoad({ filter: /\.island\.[jt]sx$/ }, (args) => {
-			const islandId = getIslandId(args.path);
-			const code = generateMarkerCode(islandId);
+  name: "island-marker",
+  setup(build) {
+    build.onLoad({ filter: /\.island\.[jt]sx$/ }, (args) => {
+      const islandId = getIslandId(args.path);
+      const code = generateMarkerCode(islandId);
 
-			return { contents: code, loader: "js" };
-		});
-	},
+      return { contents: code, loader: "js" };
+    });
+  },
 };
 
 /**
@@ -66,15 +67,15 @@ export const islandMarkerPlugin = {
  * @type {Bun.BunPlugin}
  */
 export const castroExternalsPlugin = {
-	name: "castro-externals",
+  name: "castro-externals",
 
-	setup(build) {
-		build.onResolve({ filter: /.*/ }, (args) => {
-			if (args.path.startsWith(CASTRO_SRC)) {
-				return { path: args.path, external: true };
-			}
-		});
-	},
+  setup(build) {
+    build.onResolve({ filter: /.*/ }, (args) => {
+      if (args.path.startsWith(CASTRO_SRC)) {
+        return { path: args.path, external: true };
+      }
+    });
+  },
 };
 
 /**
@@ -92,15 +93,15 @@ export const castroExternalsPlugin = {
  * @type {Bun.BunPlugin}
  */
 export const cssPackagePlugin = {
-	name: "css-package",
+  name: "css-package",
 
-	setup(build) {
-		build.onResolve({ filter: /\.css$/ }, async (args) => {
-			// Relative/absolute imports already resolve normally; only bare
-			// package specifiers get caught by the external list.
-			if (args.path.startsWith(".") || args.path.startsWith("/")) return;
+  setup(build) {
+    build.onResolve({ filter: /\.css$/ }, async (args) => {
+      // Relative/absolute imports already resolve normally; only bare
+      // package specifiers get caught by the external list.
+      if (args.path.startsWith(".") || args.path.startsWith("/")) return;
 
-			return { path: await Bun.resolve(args.path, dirname(args.importer)) };
-		});
-	},
+      return { path: await Bun.resolve(args.path, dirname(args.importer)) };
+    });
+  },
 };

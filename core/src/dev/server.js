@@ -16,15 +16,10 @@
 import { stat, watch } from "node:fs/promises";
 import { extname, join, resolve } from "node:path/posix";
 import { styleText } from "node:util";
+
 import { buildAll } from "../builder/buildAll.js";
 import { CONFIG_FILE, config, configFilePath } from "../config.js";
-import {
-	COMPONENTS_DIR,
-	LAYOUTS_DIR,
-	OUTPUT_DIR,
-	PAGES_DIR,
-	PUBLIC_DIR,
-} from "../constants.js";
+import { COMPONENTS_DIR, LAYOUTS_DIR, OUTPUT_DIR, PAGES_DIR, PUBLIC_DIR } from "../constants.js";
 import { messages } from "../messages/index.js";
 import { toPayload } from "../utils/errors.js";
 import { renderErrorToTerminal } from "../utils/renderError.js";
@@ -48,279 +43,276 @@ const OUTPUT_ROOT = resolve(OUTPUT_DIR);
  * @returns {Promise<Bun.BunFile | null>}
  */
 export async function resolveStaticFile(pathname) {
-	// Leading "." keeps an absolute-looking pathname relative to the root.
-	const basePath = resolve(OUTPUT_ROOT, `.${decodeURIComponent(pathname)}`);
+  // Leading "." keeps an absolute-looking pathname relative to the root.
+  const basePath = resolve(OUTPUT_ROOT, `.${decodeURIComponent(pathname)}`);
 
-	/** @type {string[]} */
-	const candidates = [];
+  /** @type {string[]} */
+  const candidates = [];
 
-	if (pathname.endsWith("/")) {
-		// Trailing slash (e.g. /blog/) is an explicit directory request.
-		candidates.push(join(basePath, "index.html"));
-	}
+  if (pathname.endsWith("/")) {
+    // Trailing slash (e.g. /blog/) is an explicit directory request.
+    candidates.push(join(basePath, "index.html"));
+  }
 
-	// Assets (/style.css, /app.js) are served at their exact path.
-	// Missing ones fall through to the caller's 404 handling — browsers
-	// probe paths like /favicon.ico and /.well-known/… on every site.
-	if (extname(pathname)) {
-		candidates.push(basePath);
-	}
+  // Assets (/style.css, /app.js) are served at their exact path.
+  // Missing ones fall through to the caller's 404 handling — browsers
+  // probe paths like /favicon.ico and /.well-known/… on every site.
+  if (extname(pathname)) {
+    candidates.push(basePath);
+  }
 
-	candidates.push(
-		// Clean URL: /about → about.html
-		`${basePath}.html`,
-		// Clean URL: /blog → blog/index.html
-		join(basePath, "index.html"),
-	);
+  candidates.push(
+    // Clean URL: /about → about.html
+    `${basePath}.html`,
+    // Clean URL: /blog → blog/index.html
+    join(basePath, "index.html"),
+  );
 
-	// A trailing-slash request names the same index.html twice; the Set spares it
-	// the duplicate stat.
-	for (const candidate of new Set(candidates)) {
-		// `${basePath}.html` is `dist.html` when the base is the output dir
-		// itself — a sibling of it, not a file in it. A plain `/` reaches that.
-		if (!candidate.startsWith(`${OUTPUT_ROOT}/`)) continue;
+  // A trailing-slash request names the same index.html twice; the Set spares it
+  // the duplicate stat.
+  for (const candidate of new Set(candidates)) {
+    // `${basePath}.html` is `dist.html` when the base is the output dir
+    // itself — a sibling of it, not a file in it. A plain `/` reaches that.
+    if (!candidate.startsWith(`${OUTPUT_ROOT}/`)) continue;
 
-		const file = Bun.file(candidate);
+    const file = Bun.file(candidate);
 
-		if (await file.exists()) return file;
-	}
+    if (await file.exists()) return file;
+  }
 
-	return null;
+  return null;
 }
 
 /**
  * Start the development server
  */
 export async function startDevServer() {
-	// Initial build
-	await buildAll();
+  // Initial build
+  await buildAll();
 
-	// Track SSE controllers for live reload
-	/** @type {Set<ReadableStreamDefaultController>} */
-	const controllers = new Set();
+  // Track SSE controllers for live reload
+  /** @type {Set<ReadableStreamDefaultController>} */
+  const controllers = new Set();
 
-	// Ctrl+C
-	process.on("SIGINT", () => process.exit(0));
-	// kill command
-	process.on("SIGTERM", () => process.exit(0));
+  // Ctrl+C
+  process.on("SIGINT", () => process.exit(0));
+  // kill command
+  process.on("SIGTERM", () => process.exit(0));
 
-	try {
-		Bun.serve({
-			port: config.port,
-			development: true,
-			idleTimeout: 0, // SSE connections must stay open indefinitely
-			reusePort: false, // Fail loudly if another process is using this port (only works on Linux, unfortunately)
-			async fetch(req) {
-				const url = new URL(req.url);
+  try {
+    Bun.serve({
+      port: config.port,
+      development: true,
+      idleTimeout: 0, // SSE connections must stay open indefinitely
+      reusePort: false, // Fail loudly if another process is using this port (only works on Linux, unfortunately)
+      async fetch(req) {
+        const url = new URL(req.url);
 
-				// SSE endpoint for live reload
-				if (url.pathname === "/events") {
-					/** @type {ReadableStreamDefaultController} */
-					let sseController;
+        // SSE endpoint for live reload
+        if (url.pathname === "/events") {
+          /** @type {ReadableStreamDefaultController} */
+          let sseController;
 
-					const stream = new ReadableStream({
-						start(controller) {
-							sseController = controller;
-							controllers.add(controller);
-						},
-						cancel() {
-							controllers.delete(sseController);
-						},
-					});
+          const stream = new ReadableStream({
+            start(controller) {
+              sseController = controller;
+              controllers.add(controller);
+            },
+            cancel() {
+              controllers.delete(sseController);
+            },
+          });
 
-					return new Response(stream, {
-						headers: {
-							"Content-Type": "text/event-stream",
-							"Cache-Control": "no-cache",
-						},
-					});
-				}
+          return new Response(stream, {
+            headers: {
+              "Content-Type": "text/event-stream",
+              "Cache-Control": "no-cache",
+            },
+          });
+        }
 
-				const file = await resolveStaticFile(url.pathname);
+        const file = await resolveStaticFile(url.pathname);
 
-				if (file) {
-					return new Response(file);
-				}
+        if (file) {
+          return new Response(file);
+        }
 
-				// 404 fallback - serve 404.html for HTML requests (navigation, not assets)
-				const acceptsHtml = req.headers.get("accept")?.includes("text/html");
+        // 404 fallback - serve 404.html for HTML requests (navigation, not assets)
+        const acceptsHtml = req.headers.get("accept")?.includes("text/html");
 
-				if (acceptsHtml) {
-					const notFoundFile = Bun.file(join(OUTPUT_DIR, "404.html"));
+        if (acceptsHtml) {
+          const notFoundFile = Bun.file(join(OUTPUT_DIR, "404.html"));
 
-					if (await notFoundFile.exists()) {
-						return new Response(notFoundFile, {
-							status: 404,
-							headers: { "Content-Type": "text/html" },
-						});
-					}
-				}
+          if (await notFoundFile.exists()) {
+            return new Response(notFoundFile, {
+              status: 404,
+              headers: { "Content-Type": "text/html" },
+            });
+          }
+        }
 
-				// simple fallback if 404 page doesn't exist
-				return new Response("Not Found", { status: 404 });
-			},
-			error(err) {
-				console.error(messages.devServer.serverError(err.message));
-				return new Response("Internal Server Error", { status: 500 });
-			},
-		});
+        // simple fallback if 404 page doesn't exist
+        return new Response("Not Found", { status: 404 });
+      },
+      error(err) {
+        console.error(messages.devServer.serverError(err.message));
+        return new Response("Internal Server Error", { status: 500 });
+      },
+    });
 
-		console.info(
-			`\n${messages.devServer.ready(styleText("cyan", `http://localhost:${config.port}`))}`,
-		);
-	} catch (e) {
-		const err = /** @type {Bun.ErrorLike} */ (e);
+    console.info(
+      `\n${messages.devServer.ready(styleText("cyan", `http://localhost:${config.port}`))}`,
+    );
+  } catch (e) {
+    const err = /** @type {Bun.ErrorLike} */ (e);
 
-		console.error(messages.devServer.serverError(err.message));
+    console.error(messages.devServer.serverError(err.message));
 
-		// Let the process exit naturally after flushing stderr.
-		// process.exit(1) would force immediate termination, risking
-		// the error message above being truncated.
-		process.exitCode = 1;
-		return;
-	}
+    // Let the process exit naturally after flushing stderr.
+    // process.exit(1) would force immediate termination, risking
+    // the error message above being truncated.
+    process.exitCode = 1;
+    return;
+  }
 
-	// Debounced rebuild — collapses rapid file events (e.g., git checkout)
-	// into a single buildAll(). Serialized so builds never overlap.
-	// Only reloads the browser on success; errors are sent as a separate SSE
-	// event so the console message isn't lost to an immediate reload.
-	const rebuild = debounceRebuilds(async () => {
-		try {
-			await buildAll();
-			broadcast("data: reload\n\n");
-		} catch (e) {
-			const payload = toPayload(e);
+  // Debounced rebuild — collapses rapid file events (e.g., git checkout)
+  // into a single buildAll(). Serialized so builds never overlap.
+  // Only reloads the browser on success; errors are sent as a separate SSE
+  // event so the console message isn't lost to an immediate reload.
+  const rebuild = debounceRebuilds(async () => {
+    try {
+      await buildAll();
+      broadcast("data: reload\n\n");
+    } catch (e) {
+      const payload = toPayload(e);
 
-			console.error(renderErrorToTerminal(payload));
-			broadcast(`event: build-error\ndata: ${JSON.stringify(payload)}\n\n`);
-		}
-	}, 80);
+      console.error(renderErrorToTerminal(payload));
+      broadcast(`event: build-error\ndata: ${JSON.stringify(payload)}\n\n`);
+    }
+  }, 80);
 
-	watchDir(PAGES_DIR);
-	watchDir(LAYOUTS_DIR);
-	watchDir(COMPONENTS_DIR);
-	watchDir(PUBLIC_DIR);
-	watchConfig();
+  watchDir(PAGES_DIR);
+  watchDir(LAYOUTS_DIR);
+  watchDir(COMPONENTS_DIR);
+  watchDir(PUBLIC_DIR);
+  watchConfig();
 
-	/**
-	 * @param {string} watchedFilePath
-	 */
-	function logFileChanged(watchedFilePath) {
-		console.info(styleText("gray", messages.files.changed(watchedFilePath)));
-	}
+  /**
+   * @param {string} watchedFilePath
+   */
+  function logFileChanged(watchedFilePath) {
+    console.info(styleText("gray", messages.files.changed(watchedFilePath)));
+  }
 
-	/** @type {TextEncoder} */
-	const encoder = new TextEncoder();
+  /** @type {TextEncoder} */
+  const encoder = new TextEncoder();
 
-	/**
-	 * Send an SSE message to every connected browser, evicting dead connections.
-	 * @param {string} message
-	 */
-	function broadcast(message) {
-		const data = encoder.encode(message);
-		for (const controller of controllers) {
-			try {
-				controller.enqueue(data);
-			} catch {
-				controllers.delete(controller);
-			}
-		}
-	}
+  /**
+   * Send an SSE message to every connected browser, evicting dead connections.
+   * @param {string} message
+   */
+  function broadcast(message) {
+    const data = encoder.encode(message);
+    for (const controller of controllers) {
+      try {
+        controller.enqueue(data);
+      } catch {
+        controllers.delete(controller);
+      }
+    }
+  }
 
-	// Ignore editor temp files and OS metadata.
-	// Any file change that doesn't match triggers a rebuild.
-	const IGNORE = new Bun.Glob("{*~,*.swp,*.swo,*.tmp,.DS_Store,4913}");
-	/**
-	 * @param {string | undefined} filename
-	 * @returns {boolean}
-	 */
-	function isIgnored(filename) {
-		return !filename || IGNORE.match(filename.split("/").pop() ?? "");
-	}
+  // Ignore editor temp files and OS metadata.
+  // Any file change that doesn't match triggers a rebuild.
+  const IGNORE = new Bun.Glob("{*~,*.swp,*.swo,*.tmp,.DS_Store,4913}");
+  /**
+   * @param {string | undefined} filename
+   * @returns {boolean}
+   */
+  function isIgnored(filename) {
+    return !filename || IGNORE.match(filename.split("/").pop() ?? "");
+  }
 
-	/**
-	 * Watch castro.config.ts and tell the user a restart is needed.
-	 *
-	 * The config is read once at import, so there is nothing a rebuild could pick
-	 * up (see the module docblock in `config.js`). This watcher exists purely so
-	 * an edit says "restart" instead of looking like it took effect — best-effort
-	 * by design: an editor that saves by atomic rename swaps out the watched
-	 * inode and no further events arrive.
-	 */
-	async function watchConfig() {
-		/** @type {AsyncIterable<FileChangeInfo<string>>} */
-		let watcher;
+  /**
+   * Watch castro.config.ts and tell the user a restart is needed.
+   *
+   * The config is read once at import, so there is nothing a rebuild could pick
+   * up (see the module docblock in `config.js`). This watcher exists purely so
+   * an edit says "restart" instead of looking like it took effect — best-effort
+   * by design: an editor that saves by atomic rename swaps out the watched
+   * inode and no further events arrive.
+   */
+  async function watchConfig() {
+    /** @type {AsyncIterable<FileChangeInfo<string>>} */
+    let watcher;
 
-		try {
-			watcher = watch(configFilePath);
-		} catch (e) {
-			const err = /** @type {Bun.ErrorLike} */ (e);
+    try {
+      watcher = watch(configFilePath);
+    } catch (e) {
+      const err = /** @type {Bun.ErrorLike} */ (e);
 
-			// ENOENT = no config file, which is the common case.
-			if (err.code !== "ENOENT") {
-				console.warn(messages.devServer.watchError(CONFIG_FILE, err.message));
-			}
-			return;
-		}
+      // ENOENT = no config file, which is the common case.
+      if (err.code !== "ENOENT") {
+        console.warn(messages.devServer.watchError(CONFIG_FILE, err.message));
+      }
+      return;
+    }
 
-		for await (const _event of watcher) {
-			console.info(styleText("yellow", messages.devServer.configChanged));
-		}
-	}
+    for await (const _event of watcher) {
+      console.info(styleText("yellow", messages.devServer.configChanged));
+    }
+  }
 
-	/**
-	 * Watch a directory and schedule a rebuild on changes.
-	 *
-	 * The mtime filter breaks a self-inflicted feedback loop: every rebuild
-	 * reads the watched source trees (Bun.build on pages/layouts/components,
-	 * cp() on public/), and macOS FSEvents surfaces those reads as change
-	 * events — an unfiltered watcher rebuilds forever after any edit. Linux
-	 * inotify never reports them, so the loop is invisible there. Only events
-	 * whose mtime actually moved schedule a rebuild.
-	 *
-	 * @param {string} dir
-	 */
-	async function watchDir(dir) {
-		/** @type {AsyncIterable<FileChangeInfo<string>>} */
-		let watcher;
+  /**
+   * Watch a directory and schedule a rebuild on changes.
+   *
+   * The mtime filter breaks a self-inflicted feedback loop: every rebuild
+   * reads the watched source trees (Bun.build on pages/layouts/components,
+   * cp() on public/), and macOS FSEvents surfaces those reads as change
+   * events — an unfiltered watcher rebuilds forever after any edit. Linux
+   * inotify never reports them, so the loop is invisible there. Only events
+   * whose mtime actually moved schedule a rebuild.
+   *
+   * @param {string} dir
+   */
+  async function watchDir(dir) {
+    /** @type {AsyncIterable<FileChangeInfo<string>>} */
+    let watcher;
 
-		try {
-			watcher = watch(dir, { recursive: true });
-		} catch (e) {
-			const err = /** @type {Bun.ErrorLike} */ (e);
+    try {
+      watcher = watch(dir, { recursive: true });
+    } catch (e) {
+      const err = /** @type {Bun.ErrorLike} */ (e);
 
-			// ENOENT = directory doesn't exist yet.
-			if (err.code !== "ENOENT") {
-				console.warn(messages.devServer.watchError(dir, err.message));
-			}
-			return;
-		}
+      // ENOENT = directory doesn't exist yet.
+      if (err.code !== "ENOENT") {
+        console.warn(messages.devServer.watchError(dir, err.message));
+      }
+      return;
+    }
 
-		const modTimes = new Map();
+    const modTimes = new Map();
 
-		for await (const event of watcher) {
-			if (!event.filename || isIgnored(event.filename)) continue;
+    for await (const event of watcher) {
+      if (!event.filename || isIgnored(event.filename)) continue;
 
-			const watchedFilePath = join(dir, event.filename);
+      const watchedFilePath = join(dir, event.filename);
 
-			try {
-				const stats = await stat(watchedFilePath);
-				if (
-					stats.isDirectory() ||
-					modTimes.get(watchedFilePath) === stats.mtimeMs
-				) {
-					continue;
-				}
-				modTimes.set(watchedFilePath, stats.mtimeMs);
-			} catch {
-				// File was deleted, proceed to rebuild
-				modTimes.delete(watchedFilePath);
-			}
+      try {
+        const stats = await stat(watchedFilePath);
+        if (stats.isDirectory() || modTimes.get(watchedFilePath) === stats.mtimeMs) {
+          continue;
+        }
+        modTimes.set(watchedFilePath, stats.mtimeMs);
+      } catch {
+        // File was deleted, proceed to rebuild
+        modTimes.delete(watchedFilePath);
+      }
 
-			logFileChanged(watchedFilePath);
-			rebuild.schedule();
-		}
-	}
+      logFileChanged(watchedFilePath);
+      rebuild.schedule();
+    }
+  }
 }
 
 /**
@@ -334,37 +326,37 @@ export async function startDevServer() {
  * @param {number} ms - Debounce delay in milliseconds
  */
 export function debounceRebuilds(fn, ms) {
-	/** @type {NodeJS.Timeout | null} */
-	let timer = null;
+  /** @type {NodeJS.Timeout | null} */
+  let timer = null;
 
-	/**
-	 * Resolves when the current fn() call finishes. Null when idle.
-	 * @type {Promise<void> | null}
-	 */
-	let active = null;
+  /**
+   * Resolves when the current fn() call finishes. Null when idle.
+   * @type {Promise<void> | null}
+   */
+  let active = null;
 
-	async function flush() {
-		timer = null;
+  async function flush() {
+    timer = null;
 
-		// Wait for any in-progress run, then go again
-		if (active) {
-			await active;
+    // Wait for any in-progress run, then go again
+    if (active) {
+      await active;
 
-			return flush();
-		}
+      return flush();
+    }
 
-		active = fn();
-		await active;
-		active = null;
-	}
+    active = fn();
+    await active;
+    active = null;
+  }
 
-	return {
-		schedule() {
-			if (timer) {
-				clearTimeout(timer);
-			}
+  return {
+    schedule() {
+      if (timer) {
+        clearTimeout(timer);
+      }
 
-			timer = setTimeout(flush, ms);
-		},
-	};
+      timer = setTimeout(flush, ms);
+    },
+  };
 }

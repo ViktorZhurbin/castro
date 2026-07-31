@@ -12,12 +12,13 @@
 /** @import { CastroConfig, DefaultConfig } from './types' */
 
 import { join } from "node:path/posix";
+
 import { CastroError } from "./utils/errors.js";
 
 /** @type {DefaultConfig} */
 const defaults = {
-	port: 3000,
-	srcDir: ".",
+  port: 3000,
+  srcDir: ".",
 };
 
 /** @type {CastroConfig} */
@@ -29,14 +30,14 @@ export const CONFIG_FILE = "castro.config.ts";
 export const configFilePath = join(process.cwd(), CONFIG_FILE);
 
 if (await Bun.file(configFilePath).exists()) {
-	try {
-		userConfig = (await import(configFilePath)).default ?? {};
-	} catch (err) {
-		throw new CastroError("CONFIG_LOAD_FAILED", {
-			path: CONFIG_FILE,
-			errorMessage: err instanceof Error ? err.message : String(err),
-		});
-	}
+  try {
+    userConfig = (await import(configFilePath)).default ?? {};
+  } catch (err) {
+    throw new CastroError("CONFIG_LOAD_FAILED", {
+      path: CONFIG_FILE,
+      errorMessage: err instanceof Error ? err.message : String(err),
+    });
+  }
 }
 
 /** @type {CastroConfig & DefaultConfig} */

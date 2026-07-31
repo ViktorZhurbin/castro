@@ -23,16 +23,16 @@ const events = new EventSource("/events");
 
 /** @type {EventSource["onmessage"]} */
 events.onmessage = (event) => {
-	if (event.data === "reload") {
-		removeOverlay();
-		window.location.reload();
-	}
+  if (event.data === "reload") {
+    removeOverlay();
+    window.location.reload();
+  }
 };
 
 events.addEventListener("build-error", (event) => {
-	const payload = /** @type {CastroErrorPayload} */ (JSON.parse(event.data));
+  const payload = /** @type {CastroErrorPayload} */ (JSON.parse(event.data));
 
-	showOverlay(payload);
+  showOverlay(payload);
 });
 
 // ─── Overlay ─────────────────────────────────────────────────────────────────
@@ -63,18 +63,18 @@ overlaySheet.replaceSync(`
 `);
 
 class CastroErrorOverlay extends HTMLElement {
-	/** @type {CastroErrorPayload | null} */
-	payload = null;
+  /** @type {CastroErrorPayload | null} */
+  payload = null;
 
-	constructor() {
-		super();
-		this.attachShadow({ mode: "open" }).adoptedStyleSheets = [overlaySheet];
-	}
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" }).adoptedStyleSheets = [overlaySheet];
+  }
 
-	connectedCallback() {
-		if (!this.shadowRoot || !this.payload) return;
+  connectedCallback() {
+    if (!this.shadowRoot || !this.payload) return;
 
-		this.shadowRoot.innerHTML = `
+    this.shadowRoot.innerHTML = `
 			<div class="container">
 				<div class="title">❌ ${escapeHtml(this.payload.title)}</div>
 				${this.payload.message ? `<div class="message">${escapeHtml(this.payload.message)}</div>` : ""}
@@ -86,68 +86,65 @@ class CastroErrorOverlay extends HTMLElement {
 				${this.payload.hint ? `<div class="hint">→ ${escapeHtml(this.payload.hint)}</div>` : ""}
 			</div>
     `;
-	}
+  }
 
-	/**
-	 * @param {string[] | undefined} notes
-	 */
-	renderNotes(notes) {
-		if (!notes?.length) return "";
-		return `<ul class="notes">${notes.map((n) => `<li>${escapeHtml(n)}</li>`).join("")}</ul>`;
-	}
+  /**
+   * @param {string[] | undefined} notes
+   */
+  renderNotes(notes) {
+    if (!notes?.length) return "";
+    return `<ul class="notes">${notes.map((n) => `<li>${escapeHtml(n)}</li>`).join("")}</ul>`;
+  }
 
-	/**
-	 * @param {CodeFrame} frame
-	 */
-	renderFrame(frame) {
-		let header = "";
+  /**
+   * @param {CodeFrame} frame
+   */
+  renderFrame(frame) {
+    let header = "";
 
-		if (frame.file) {
-			const relPath = frame.file.replace(
-				/^.*\/(pages|layouts|components)/,
-				"$1",
-			);
-			const suffix = `${frame.line !== undefined ? `:${frame.line}` : ""}${frame.column !== undefined ? `:${frame.column}` : ""}`;
+    if (frame.file) {
+      const relPath = frame.file.replace(/^.*\/(pages|layouts|components)/, "$1");
+      const suffix = `${frame.line !== undefined ? `:${frame.line}` : ""}${frame.column !== undefined ? `:${frame.column}` : ""}`;
 
-			const locationText = `${relPath}${suffix}`;
-			const vsCodeUrl = `vscode://file/${frame.file}${suffix}`;
+      const locationText = `${relPath}${suffix}`;
+      const vsCodeUrl = `vscode://file/${frame.file}${suffix}`;
 
-			header = `<a href="${escapeHtml(vsCodeUrl)}">${escapeHtml(locationText)}</a>`;
-		} else if (frame.line !== undefined) {
-			header = escapeHtml(
-				`Line ${frame.line}${frame.column !== undefined ? `:${frame.column}` : ""}`,
-			);
-		}
+      header = `<a href="${escapeHtml(vsCodeUrl)}">${escapeHtml(locationText)}</a>`;
+    } else if (frame.line !== undefined) {
+      header = escapeHtml(
+        `Line ${frame.line}${frame.column !== undefined ? `:${frame.column}` : ""}`,
+      );
+    }
 
-		let codeSnippet = "";
-		if (frame.lineText) {
-			codeSnippet = `
+    let codeSnippet = "";
+    if (frame.lineText) {
+      codeSnippet = `
         <div class="frame-code">
           <div class="line error-row">
             <div class="line-num">${frame.line || 0}</div>
             <div class="line-text">${escapeHtml(frame.lineText)}</div>
           </div>
           ${
-						frame.column !== undefined
-							? `
+            frame.column !== undefined
+              ? `
           <div class="line">
             <div class="line-num"></div>
             <div class="caret">${" ".repeat(frame.column - 1)}^</div>
           </div>`
-							: ""
-					}
+              : ""
+          }
         </div>
       `;
-		}
+    }
 
-		return `
+    return `
       <div>
         ${frame.message ? `<div class="raw-error">${escapeHtml(frame.message)}</div>` : ""}
         ${header ? `<div>${header}</div>` : ""}
         ${codeSnippet}
       </div>
     `;
-	}
+  }
 }
 
 /**
@@ -156,27 +153,25 @@ class CastroErrorOverlay extends HTMLElement {
  * @param {string} str
  */
 function escapeHtml(str) {
-	return str
-		.replace(/&/g, "&amp;")
-		.replace(/</g, "&lt;")
-		.replace(/>/g, "&gt;")
-		.replace(/"/g, "&quot;");
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 if (!customElements.get(OVERLAY_TAG)) {
-	customElements.define(OVERLAY_TAG, CastroErrorOverlay);
+  customElements.define(OVERLAY_TAG, CastroErrorOverlay);
 }
 
 /** @param {CastroErrorPayload} payload */
 function showOverlay(payload) {
-	removeOverlay();
-	const overlay = /** @type {CastroErrorOverlay} */ (
-		document.createElement(OVERLAY_TAG)
-	);
-	overlay.payload = payload;
-	document.body.appendChild(overlay);
+  removeOverlay();
+  const overlay = /** @type {CastroErrorOverlay} */ (document.createElement(OVERLAY_TAG));
+  overlay.payload = payload;
+  document.body.appendChild(overlay);
 }
 
 function removeOverlay() {
-	document.querySelector(OVERLAY_TAG)?.remove();
+  document.querySelector(OVERLAY_TAG)?.remove();
 }

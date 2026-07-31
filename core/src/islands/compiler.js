@@ -17,6 +17,7 @@
  */
 
 import { basename, dirname, extname, resolve } from "node:path/posix";
+
 import { collectClientDeps } from "../builder/vendor.js";
 import { safeBunBuild } from "../utils/bunBuild.js";
 import { getModule } from "../utils/cache.js";
@@ -38,39 +39,39 @@ import { PREACT_BUILD_CONFIG, PREACT_CLIENT_PATH } from "./preact.js";
  * @returns {Promise<IslandComponent>}
  */
 export async function compileIsland({ sourceFilePath, outputDir, publicDir }) {
-	// Compile SSR version first (runs at build time in Bun)
-	const ssrCode = await compileIslandSSR({ sourceFilePath });
+  // Compile SSR version first (runs at build time in Bun)
+  const ssrCode = await compileIslandSSR({ sourceFilePath });
 
-	// Compile client version (runs in browser)
-	const clientResult = await compileIslandClient({ sourceFilePath, outputDir });
+  // Compile client version (runs in browser)
+  const clientResult = await compileIslandClient({ sourceFilePath, outputDir });
 
-	// Find the actual generated files (with hashes)
-	const jsFile = clientResult.outputs.find((f) => f.path.endsWith(".js"));
-	const cssFile = clientResult.outputs.find((f) => f.path.endsWith(".css"));
+  // Find the actual generated files (with hashes)
+  const jsFile = clientResult.outputs.find((f) => f.path.endsWith(".js"));
+  const cssFile = clientResult.outputs.find((f) => f.path.endsWith(".css"));
 
-	if (!jsFile) {
-		throw new CastroError("BUNDLE_FAILED", {
-			errorMessage: `Island ${sourceFilePath} compiled with no .js output`,
-		});
-	}
+  if (!jsFile) {
+    throw new CastroError("BUNDLE_FAILED", {
+      errorMessage: `Island ${sourceFilePath} compiled with no .js output`,
+    });
+  }
 
-	const publicJsPath = `${publicDir}/${basename(jsFile.path)}`;
+  const publicJsPath = `${publicDir}/${basename(jsFile.path)}`;
 
-	// CSS kept as a string (not written to disk) — it's inlined per-page
-	// in writeHtmlPage.js, since each page uses a different island subset.
-	const cssContent = cssFile ? await cssFile.text() : "";
+  // CSS kept as a string (not written to disk) — it's inlined per-page
+  // in writeHtmlPage.js, since each page uses a different island subset.
+  const cssContent = cssFile ? await cssFile.text() : "";
 
-	// Loaded here rather than handed back as a string: renderMarker() needs the
-	// module synchronously during renderToString(), and this is the last await
-	// on the island's path, so there is no reason for a caller to hold the code.
-	const ssrModule = await getModule(sourceFilePath, ssrCode, "ssr");
+  // Loaded here rather than handed back as a string: renderMarker() needs the
+  // module synchronously during renderToString(), and this is the last await
+  // on the island's path, so there is no reason for a caller to hold the code.
+  const ssrModule = await getModule(sourceFilePath, ssrCode, "ssr");
 
-	return {
-		sourceFilePath,
-		publicJsPath,
-		cssContent,
-		ssrModule,
-	};
+  return {
+    sourceFilePath,
+    publicJsPath,
+    cssContent,
+    ssrModule,
+  };
 }
 
 /**
@@ -83,51 +84,48 @@ export async function compileIsland({ sourceFilePath, outputDir, publicDir }) {
  * @param {{ sourceFilePath: string, outputDir: string }} params
  */
 async function compileIslandClient({ sourceFilePath, outputDir }) {
-	const componentName = basename(sourceFilePath, extname(sourceFilePath));
+  const componentName = basename(sourceFilePath, extname(sourceFilePath));
 
-	// Virtual entry point: a generated module that imports the real component
-	// and wraps it in a mounting function for hydration. This file never exists
-	// on disk — Bun's `files` option lets us feed code strings directly into the
-	// bundler as if they were real files (same concept as Vite/Rollup virtual modules).
-	//
-	// preact.client.js exports `hydrate(container, props, Component)`. We inline
-	// its source verbatim, then write a default export that wires the
-	// statically-imported Component into the call.
-	const clientSource = await Bun.file(PREACT_CLIENT_PATH).text();
+  // Virtual entry point: a generated module that imports the real component
+  // and wraps it in a mounting function for hydration. This file never exists
+  // on disk — Bun's `files` option lets us feed code strings directly into the
+  // bundler as if they were real files (same concept as Vite/Rollup virtual modules).
+  //
+  // preact.client.js exports `hydrate(container, props, Component)`. We inline
+  // its source verbatim, then write a default export that wires the
+  // statically-imported Component into the call.
+  const clientSource = await Bun.file(PREACT_CLIENT_PATH).text();
 
-	const virtualEntry = `
+  const virtualEntry = `
 		import Component from './${basename(sourceFilePath)}';
 		${clientSource}
 		export default (container, props = {}) => hydrate(container, props, Component);
 	`.trim();
 
-	// The vendored deps are resolved via the page's import map, so they must
-	// stay external — Bun must not bundle them.
-	const external = [...collectClientDeps()];
+  // The vendored deps are resolved via the page's import map, so they must
+  // stay external — Bun must not bundle them.
+  const external = [...collectClientDeps()];
 
-	// Path must be absolute and in the same directory as the island source,
-	// so the relative import ('./${basename}') resolves to the real file
-	const virtualEntryPath = resolve(
-		dirname(sourceFilePath),
-		`${componentName}.virtual.js`,
-	);
+  // Path must be absolute and in the same directory as the island source,
+  // so the relative import ('./${basename}') resolves to the real file
+  const virtualEntryPath = resolve(dirname(sourceFilePath), `${componentName}.virtual.js`);
 
-	const result = await safeBunBuild({
-		entrypoints: [virtualEntryPath],
-		files: { [virtualEntryPath]: virtualEntry },
-		outdir: outputDir,
-		naming: { entry: `${componentName}-[hash].[ext]` },
-		format: "esm",
-		target: "browser",
-		define: {
-			"process.env.NODE_ENV": JSON.stringify("production"),
-		},
-		loader: { ".css": "css" },
-		...PREACT_BUILD_CONFIG,
-		external,
-	});
+  const result = await safeBunBuild({
+    entrypoints: [virtualEntryPath],
+    files: { [virtualEntryPath]: virtualEntry },
+    outdir: outputDir,
+    naming: { entry: `${componentName}-[hash].[ext]` },
+    format: "esm",
+    target: "browser",
+    define: {
+      "process.env.NODE_ENV": JSON.stringify("production"),
+    },
+    loader: { ".css": "css" },
+    ...PREACT_BUILD_CONFIG,
+    external,
+  });
 
-	return result;
+  return result;
 }
 
 /**
@@ -143,50 +141,50 @@ async function compileIslandClient({ sourceFilePath, outputDir }) {
  * @param {{ sourceFilePath: string }} params
  */
 async function compileIslandSSR({ sourceFilePath }) {
-	// Replace plain `.css` imports with an empty module during SSR. The client
-	// compile already extracted island CSS into a separate artifact (inlined
-	// per-page in writeHtmlPage.js); SSR only runs the component to produce
-	// HTML, so the stylesheet bytes are dead weight here — and Bun's `bun`
-	// target has no CSS loader, so resolving them would either error or pull
-	// the file through the loader chain for nothing.
-	//
-	// CSS Modules (`.module.css`) are deliberately not stubbed: their default
-	// export is the class-name map (`styles.button` → "button_x7f3"), and SSR
-	// needs that map so server-rendered `className` strings match what the
-	// hydrated client expects. The negative lookbehind in the filter is what
-	// splits the two cases.
-	/** @type {Bun.BunPlugin} */
-	const cssStubPlugin = {
-		name: "css-stub",
-		setup(build) {
-			build.onResolve({ filter: /(?<!\.module)\.css$/ }, () => ({
-				path: "css-stub",
-				namespace: "css-stub",
-			}));
+  // Replace plain `.css` imports with an empty module during SSR. The client
+  // compile already extracted island CSS into a separate artifact (inlined
+  // per-page in writeHtmlPage.js); SSR only runs the component to produce
+  // HTML, so the stylesheet bytes are dead weight here — and Bun's `bun`
+  // target has no CSS loader, so resolving them would either error or pull
+  // the file through the loader chain for nothing.
+  //
+  // CSS Modules (`.module.css`) are deliberately not stubbed: their default
+  // export is the class-name map (`styles.button` → "button_x7f3"), and SSR
+  // needs that map so server-rendered `className` strings match what the
+  // hydrated client expects. The negative lookbehind in the filter is what
+  // splits the two cases.
+  /** @type {Bun.BunPlugin} */
+  const cssStubPlugin = {
+    name: "css-stub",
+    setup(build) {
+      build.onResolve({ filter: /(?<!\.module)\.css$/ }, () => ({
+        path: "css-stub",
+        namespace: "css-stub",
+      }));
 
-			build.onLoad({ filter: /.*/, namespace: "css-stub" }, () => ({
-				contents: "export default {};",
-				loader: "js",
-			}));
-		},
-	};
+      build.onLoad({ filter: /.*/, namespace: "css-stub" }, () => ({
+        contents: "export default {};",
+        loader: "js",
+      }));
+    },
+  };
 
-	const result = await safeBunBuild({
-		entrypoints: [sourceFilePath],
-		format: "esm",
-		target: "bun",
-		// Externalizes all NPM package imports found in package.json.
-		// This enables native support for tsconfig `paths` aliases (e.g., @components/*),
-		// as Bun will resolve local paths that are NOT in the dependencies list.
-		external: await getProjectDependencies(),
-		define: {
-			"process.env.NODE_ENV": JSON.stringify("production"),
-		},
-		...PREACT_BUILD_CONFIG,
-		plugins: [cssStubPlugin],
-	});
+  const result = await safeBunBuild({
+    entrypoints: [sourceFilePath],
+    format: "esm",
+    target: "bun",
+    // Externalizes all NPM package imports found in package.json.
+    // This enables native support for tsconfig `paths` aliases (e.g., @components/*),
+    // as Bun will resolve local paths that are NOT in the dependencies list.
+    external: await getProjectDependencies(),
+    define: {
+      "process.env.NODE_ENV": JSON.stringify("production"),
+    },
+    ...PREACT_BUILD_CONFIG,
+    plugins: [cssStubPlugin],
+  });
 
-	const output = result.outputs[0];
+  const output = result.outputs[0];
 
-	return output ? await output.text() : "";
+  return output ? await output.text() : "";
 }

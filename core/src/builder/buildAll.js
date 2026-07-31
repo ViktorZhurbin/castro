@@ -13,12 +13,13 @@
 import { cp, mkdir, rm } from "node:fs/promises";
 import { join } from "node:path/posix";
 import { styleText } from "node:util";
+
 import {
-	ISLAND_RUNTIME_FILE,
-	OUTPUT_DIR,
-	PAGE_EXT_PATTERN,
-	PAGES_DIR,
-	PUBLIC_DIR,
+  ISLAND_RUNTIME_FILE,
+  OUTPUT_DIR,
+  PAGE_EXT_PATTERN,
+  PAGES_DIR,
+  PUBLIC_DIR,
 } from "../constants.js";
 import { runWithPageState } from "../islands/pageState.js";
 import { islands } from "../islands/registry.js";
@@ -29,64 +30,62 @@ import { buildPage } from "./buildPage.js";
 import { vendorClientDeps } from "./vendor.js";
 
 export async function buildAll() {
-	const isProd = process.env.NODE_ENV === "production";
+  const isProd = process.env.NODE_ENV === "production";
 
-	console.info(messages.build.starting);
+  console.info(messages.build.starting);
 
-	// Fresh build: wipe and recreate output dir.
-	await rm(OUTPUT_DIR, { recursive: true, force: true });
-	await mkdir(OUTPUT_DIR, { recursive: true });
+  // Fresh build: wipe and recreate output dir.
+  await rm(OUTPUT_DIR, { recursive: true, force: true });
+  await mkdir(OUTPUT_DIR, { recursive: true });
 
-	// Copy static assets from public → output dir
-	try {
-		await cp(PUBLIC_DIR, OUTPUT_DIR, { recursive: true });
-	} catch (e) {
-		const err = /** @type {Bun.ErrorLike} */ (e);
+  // Copy static assets from public → output dir
+  try {
+    await cp(PUBLIC_DIR, OUTPUT_DIR, { recursive: true });
+  } catch (e) {
+    const err = /** @type {Bun.ErrorLike} */ (e);
 
-		// ENOENT means PUBLIC_DIR doesn't exist, which is fine
-		if (err.code !== "ENOENT") {
-			throw err;
-		}
-	}
+    // ENOENT means PUBLIC_DIR doesn't exist, which is fine
+    if (err.code !== "ENOENT") {
+      throw err;
+    }
+  }
 
-	await islands.load();
-	await layouts.load();
-	const pagesMap = await scanPages();
+  await islands.load();
+  await layouts.load();
+  const pagesMap = await scanPages();
 
-	// Real SSGs would cap concurrency to bound Bun.build's memory pressure
-	const results = await Promise.all(
-		[...pagesMap.entries()].map(
-			async ([relativeOutputPath, relativeSourcePath]) => {
-				const sourceFilePath = join(PAGES_DIR, relativeSourcePath);
-				const outputFilePath = join(OUTPUT_DIR, relativeOutputPath);
+  // Real SSGs would cap concurrency to bound Bun.build's memory pressure
+  const results = await Promise.all(
+    [...pagesMap.entries()].map(async ([relativeOutputPath, relativeSourcePath]) => {
+      const sourceFilePath = join(PAGES_DIR, relativeSourcePath);
+      const outputFilePath = join(OUTPUT_DIR, relativeOutputPath);
 
-				const { usedIslands } = await runWithPageState(sourceFilePath, () =>
-					buildPage(sourceFilePath, outputFilePath),
-				);
+      const { usedIslands } = await runWithPageState(sourceFilePath, () =>
+        buildPage(sourceFilePath, outputFilePath),
+      );
 
-				// Log on completion so lines appear in the order pages actually finish
-				if (isProd) {
-					console.info(
-						messages.build.writingFile(
-							styleText("cyan", relativeSourcePath),
-							styleText("gray", relativeOutputPath),
-						),
-					);
-				}
+      // Log on completion so lines appear in the order pages actually finish
+      if (isProd) {
+        console.info(
+          messages.build.writingFile(
+            styleText("cyan", relativeSourcePath),
+            styleText("gray", relativeOutputPath),
+          ),
+        );
+      }
 
-				return { hasIslands: usedIslands.size > 0 };
-			},
-		),
-	);
+      return { hasIslands: usedIslands.size > 0 };
+    }),
+  );
 
-	// Island output is conditional: a site that rendered no islands ships
-	// neither the hydration runtime nor any vendored Preact code.
-	if (results.some((result) => result.hasIslands)) {
-		await copyIslandRuntime();
-		await vendorClientDeps();
-	}
+  // Island output is conditional: a site that rendered no islands ships
+  // neither the hydration runtime nor any vendored Preact code.
+  if (results.some((result) => result.hasIslands)) {
+    await copyIslandRuntime();
+    await vendorClientDeps();
+  }
 
-	console.info(messages.build.success(pagesMap.size));
+  console.info(messages.build.success(pagesMap.size));
 }
 
 /**
@@ -96,10 +95,10 @@ export async function buildAll() {
  * mount function comes from islands/preact.client.js, inlined at compile time.)
  */
 async function copyIslandRuntime() {
-	await Bun.write(
-		join(OUTPUT_DIR, ISLAND_RUNTIME_FILE),
-		Bun.file(join(import.meta.dir, "../islands/castroIsland.js")),
-	);
+  await Bun.write(
+    join(OUTPUT_DIR, ISLAND_RUNTIME_FILE),
+    Bun.file(join(import.meta.dir, "../islands/castroIsland.js")),
+  );
 }
 
 /**
@@ -107,52 +106,47 @@ async function copyIslandRuntime() {
  * @returns {Promise<Map<string, string>>} relativeOutputPath → relativeSourcePath
  */
 async function scanPages() {
-	/** @type {Map<string, string>} */
-	const pagesMap = new Map();
+  /** @type {Map<string, string>} */
+  const pagesMap = new Map();
 
-	/** @type {Map<string, string>} route → relativeSourcePath */
-	const routes = new Map();
-	const pageGlob = new Bun.Glob("**/*.{md,jsx,tsx}");
+  /** @type {Map<string, string>} route → relativeSourcePath */
+  const routes = new Map();
+  const pageGlob = new Bun.Glob("**/*.{md,jsx,tsx}");
 
-	// Missing pages/ throws here naturally
-	// Empty pages/ falls through to NO_PAGES below.
-	for await (const relativeSourcePath of pageGlob.scan(PAGES_DIR)) {
-		// Skip files/folders prefixed with `_` (private convention, e.g. _drafts/, _partial.tsx)
-		if (
-			relativeSourcePath.split("/").some((segment) => segment.startsWith("_"))
-		) {
-			continue;
-		}
+  // Missing pages/ throws here naturally
+  // Empty pages/ falls through to NO_PAGES below.
+  for await (const relativeSourcePath of pageGlob.scan(PAGES_DIR)) {
+    // Skip files/folders prefixed with `_` (private convention, e.g. _drafts/, _partial.tsx)
+    if (relativeSourcePath.split("/").some((segment) => segment.startsWith("_"))) {
+      continue;
+    }
 
-		const relativeOutputPath = relativeSourcePath.replace(
-			PAGE_EXT_PATTERN,
-			".html",
-		);
-		const route = toRoute(relativeOutputPath);
+    const relativeOutputPath = relativeSourcePath.replace(PAGE_EXT_PATTERN, ".html");
+    const route = toRoute(relativeOutputPath);
 
-		// Keyed on the route, not the output file: two pages can write different
-		// files and still answer one URL, and which one a visitor gets is then up
-		// to the host. Building both and letting the deploy target pick is worse
-		// than refusing to build.
-		const claimedBy = routes.get(route);
-		if (claimedBy) {
-			throw new CastroError("ROUTE_CONFLICT", {
-				route,
-				file1: join(PAGES_DIR, claimedBy),
-				file2: join(PAGES_DIR, relativeSourcePath),
-			});
-		}
+    // Keyed on the route, not the output file: two pages can write different
+    // files and still answer one URL, and which one a visitor gets is then up
+    // to the host. Building both and letting the deploy target pick is worse
+    // than refusing to build.
+    const claimedBy = routes.get(route);
+    if (claimedBy) {
+      throw new CastroError("ROUTE_CONFLICT", {
+        route,
+        file1: join(PAGES_DIR, claimedBy),
+        file2: join(PAGES_DIR, relativeSourcePath),
+      });
+    }
 
-		routes.set(route, relativeSourcePath);
-		pagesMap.set(relativeOutputPath, relativeSourcePath);
-	}
+    routes.set(route, relativeSourcePath);
+    pagesMap.set(relativeOutputPath, relativeSourcePath);
+  }
 
-	// pages/ present but empty — distinct from missing, which throws above
-	if (pagesMap.size === 0) {
-		throw new CastroError("NO_PAGES", { dir: PAGES_DIR });
-	}
+  // pages/ present but empty — distinct from missing, which throws above
+  if (pagesMap.size === 0) {
+    throw new CastroError("NO_PAGES", { dir: PAGES_DIR });
+  }
 
-	return pagesMap;
+  return pagesMap;
 }
 
 /**
@@ -163,7 +157,7 @@ async function scanPages() {
  * @returns {string}
  */
 function toRoute(relativeOutputPath) {
-	const withoutExt = relativeOutputPath.slice(0, -".html".length);
+  const withoutExt = relativeOutputPath.slice(0, -".html".length);
 
-	return `/${withoutExt.replace(/(^|\/)index$/, "")}`;
+  return `/${withoutExt.replace(/(^|\/)index$/, "")}`;
 }

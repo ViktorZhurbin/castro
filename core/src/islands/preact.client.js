@@ -11,6 +11,6 @@
  * @param {import("preact").ComponentType<any>} Component
  */
 export async function hydrate(container, props, Component) {
-	const { h, hydrate } = await import("preact");
-	hydrate(h(Component, props), container);
+  const { h, hydrate } = await import("preact");
+  hydrate(h(Component, props), container);
 }

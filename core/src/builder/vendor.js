@@ -16,6 +16,7 @@
 
 import { mkdir } from "node:fs/promises";
 import { join, resolve } from "node:path/posix";
+
 import { config } from "../config.js";
 import { OUTPUT_DIR } from "../constants.js";
 import { PREACT_CLIENT_DEPS } from "../islands/preact.js";
@@ -34,57 +35,57 @@ const VENDOR_OUTPUT_DIR = "vendor";
  * @returns {Set<string>}
  */
 export function collectClientDeps() {
-	return new Set([...PREACT_CLIENT_DEPS, ...(config.clientDependencies ?? [])]);
+  return new Set([...PREACT_CLIENT_DEPS, ...(config.clientDependencies ?? [])]);
 }
 
 /**
  * Bundle the shared client dependencies into dist/vendor/.
  */
 export async function vendorClientDeps() {
-	/** @type { string[] } */
-	const entrypoints = [];
+  /** @type { string[] } */
+  const entrypoints = [];
 
-	/** @type { Record<string, string> } */
-	const files = {};
+  /** @type { Record<string, string> } */
+  const files = {};
 
-	const virtualRoot = resolveTempDir("vendor-dependencies");
-	await mkdir(virtualRoot, { recursive: true });
+  const virtualRoot = resolveTempDir("vendor-dependencies");
+  await mkdir(virtualRoot, { recursive: true });
 
-	// Each dependency gets a virtual entry module that re-exports everything
-	// from the real package. Bun.build resolves 'preact' from node_modules,
-	// bundles it, and writes it to dist/vendor/.
-	for (const pkg of collectClientDeps()) {
-		const virtualPath = resolve(virtualRoot, `${getSafePkgName(pkg)}.js`);
+  // Each dependency gets a virtual entry module that re-exports everything
+  // from the real package. Bun.build resolves 'preact' from node_modules,
+  // bundles it, and writes it to dist/vendor/.
+  for (const pkg of collectClientDeps()) {
+    const virtualPath = resolve(virtualRoot, `${getSafePkgName(pkg)}.js`);
 
-		entrypoints.push(virtualPath);
+    entrypoints.push(virtualPath);
 
-		// Re-export both named and default exports.
-		// Many ESM-only packages (e.g. preact/hooks) have no default export;
-		// in that case we re-export the namespace so `import x from 'preact/hooks'`
-		// at least resolves to something usable instead of undefined.
-		files[virtualPath] =
-			`import * as m from '${pkg}'; export * from '${pkg}'; export default m.default || m;`;
-	}
+    // Re-export both named and default exports.
+    // Many ESM-only packages (e.g. preact/hooks) have no default export;
+    // in that case we re-export the namespace so `import x from 'preact/hooks'`
+    // at least resolves to something usable instead of undefined.
+    files[virtualPath] =
+      `import * as m from '${pkg}'; export * from '${pkg}'; export default m.default || m;`;
+  }
 
-	// Bundle the virtual entries and write the output to dist/vendor/
-	await safeBunBuild({
-		entrypoints,
-		files,
-		root: virtualRoot,
-		outdir: join(OUTPUT_DIR, VENDOR_OUTPUT_DIR),
-		format: "esm",
-		target: "browser",
-		// splitting extracts shared code into chunks. Without it, preact and
-		// preact/hooks would each bundle the full preact internals independently.
-		// It's also what keeps a single Preact instance: a vendored dep that
-		// imports preact (e.g. @preact/signals) shares the chunk the vendored
-		// preact entry points at.
-		splitting: true,
-		minify: true,
-		define: {
-			"process.env.NODE_ENV": JSON.stringify("production"),
-		},
-	});
+  // Bundle the virtual entries and write the output to dist/vendor/
+  await safeBunBuild({
+    entrypoints,
+    files,
+    root: virtualRoot,
+    outdir: join(OUTPUT_DIR, VENDOR_OUTPUT_DIR),
+    format: "esm",
+    target: "browser",
+    // splitting extracts shared code into chunks. Without it, preact and
+    // preact/hooks would each bundle the full preact internals independently.
+    // It's also what keeps a single Preact instance: a vendored dep that
+    // imports preact (e.g. @preact/signals) shares the chunk the vendored
+    // preact entry points at.
+    splitting: true,
+    minify: true,
+    define: {
+      "process.env.NODE_ENV": JSON.stringify("production"),
+    },
+  });
 }
 
 /**
@@ -94,15 +95,15 @@ export async function vendorClientDeps() {
  * @returns {ImportsMap}
  */
 export function getIslandImportMap() {
-	/** @type {ImportsMap} */
-	const importMap = {};
+  /** @type {ImportsMap} */
+  const importMap = {};
 
-	for (const dep of collectClientDeps()) {
-		// Real framework would probably have cache busting - we don't.
-		importMap[dep] = `/${VENDOR_OUTPUT_DIR}/${getSafePkgName(dep)}.js`;
-	}
+  for (const dep of collectClientDeps()) {
+    // Real framework would probably have cache busting - we don't.
+    importMap[dep] = `/${VENDOR_OUTPUT_DIR}/${getSafePkgName(dep)}.js`;
+  }
 
-	return importMap;
+  return importMap;
 }
 
 /**
@@ -113,5 +114,5 @@ export function getIslandImportMap() {
  * @param {string} name
  */
 function getSafePkgName(name) {
-	return name.replace(/[@/]/g, "_");
+  return name.replace(/[@/]/g, "_");
 }

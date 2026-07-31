@@ -21,6 +21,7 @@
 
 import { rmSync } from "node:fs";
 import { join, parse, relative, resolve } from "node:path/posix";
+
 import { PROJECT_ROOT } from "../constants.js";
 
 const CACHE_DIR = join(PROJECT_ROOT, "node_modules/.cache/castro");
@@ -32,7 +33,7 @@ const CACHE_DIR = join(PROJECT_ROOT, "node_modules/.cache/castro");
  * invalidation — just an rmSync on every dev rebuild.
  */
 export function cleanupCacheDir() {
-	rmSync(CACHE_DIR, { recursive: true, force: true });
+  rmSync(CACHE_DIR, { recursive: true, force: true });
 }
 
 /**
@@ -42,10 +43,10 @@ export function cleanupCacheDir() {
  * @returns {string}
  */
 export function resolveTempDir(subpath) {
-	const resolvedSubpath = resolve(PROJECT_ROOT, subpath);
-	const relativeSubpath = relative(PROJECT_ROOT, resolvedSubpath);
+  const resolvedSubpath = resolve(PROJECT_ROOT, subpath);
+  const relativeSubpath = relative(PROJECT_ROOT, resolvedSubpath);
 
-	return join(CACHE_DIR, relativeSubpath);
+  return join(CACHE_DIR, relativeSubpath);
 }
 
 /**
@@ -59,11 +60,11 @@ export function resolveTempDir(subpath) {
  * @returns {string}
  */
 function createTempPath(sourceFilePath, content, subpath = "") {
-	const parsed = parse(sourceFilePath);
-	const hash = Bun.hash(content).toString(36);
-	const targetDir = resolveTempDir(join(parsed.dir, subpath));
+  const parsed = parse(sourceFilePath);
+  const hash = Bun.hash(content).toString(36);
+  const targetDir = resolveTempDir(join(parsed.dir, subpath));
 
-	return join(targetDir, `${parsed.base}.${hash}.js`);
+  return join(targetDir, `${parsed.base}.${hash}.js`);
 }
 
 /**
@@ -78,13 +79,13 @@ function createTempPath(sourceFilePath, content, subpath = "") {
  * @returns {Promise<any>} The imported module
  */
 export async function getModule(sourceFilePath, content, subpath) {
-	const path = createTempPath(sourceFilePath, content, subpath);
+  const path = createTempPath(sourceFilePath, content, subpath);
 
-	// A failed write (disk full, bad permissions) throws raw
-	await Bun.write(path, content);
+  // A failed write (disk full, bad permissions) throws raw
+  await Bun.write(path, content);
 
-	// file:// URL ensures Bun's module resolver can find bare imports
-	const fileUrl = Bun.pathToFileURL(path);
+  // file:// URL ensures Bun's module resolver can find bare imports
+  const fileUrl = Bun.pathToFileURL(path);
 
-	return import(fileUrl.href);
+  return import(fileUrl.href);
 }

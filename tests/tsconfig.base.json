@@ -4,16 +4,16 @@
 // `include`/`exclude` are deliberately absent: TypeScript resolves those
 // relative to the config that declares them, so they cannot live in a base.
 {
-	"compilerOptions": {
-		"lib": ["ES2022", "DOM"],
-		"jsx": "react-jsx",
-		"jsxImportSource": "preact",
-		"types": ["@vktrz/castro"],
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"noEmit": true,
-		"isolatedModules": true,
-		"forceConsistentCasingInFileNames": true,
-		"skipLibCheck": true
-	}
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "types": ["@vktrz/castro"],
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  }
 }

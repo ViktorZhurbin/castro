@@ -1,16 +1,16 @@
 {
-	"name": "website",
-	"version": "1.0.0",
-	"private": true,
-	"type": "module",
-	"scripts": {
-		"dev": "castro",
-		"build": "castro build",
-		"type-check": "tsc --noEmit"
-	},
-	"dependencies": {
-		"@vktrz/castro": "workspace:*",
-		"@vktrz/bare-css": "workspace:*",
-		"preact": "^10.28.2"
-	}
+  "name": "website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "castro",
+    "build": "castro build",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@vktrz/bare-css": "workspace:*",
+    "@vktrz/castro": "workspace:*",
+    "preact": "^10.28.2"
+  }
 }

@@ -1,4 +1,5 @@
 import { relative } from "node:path/posix";
+
 import { PROJECT_ROOT } from "../constants.js";
 
 /**
@@ -11,5 +12,5 @@ import { PROJECT_ROOT } from "../constants.js";
  * @example "src/islands/ui/Button.tsx"
  */
 export function getIslandId(sourceFilePath) {
-	return relative(PROJECT_ROOT, sourceFilePath);
+  return relative(PROJECT_ROOT, sourceFilePath);
 }

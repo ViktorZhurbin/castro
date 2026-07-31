@@ -1,4 +1,5 @@
 import { join } from "node:path/posix";
+
 import { PROJECT_ROOT } from "../constants.js";
 
 /** @type {string[] | null} */
@@ -22,15 +23,15 @@ let depsCache = null;
  * @returns {Promise<string[]>}
  */
 export async function getProjectDependencies() {
-	if (depsCache) return depsCache;
+  if (depsCache) return depsCache;
 
-	const pkg = await Bun.file(join(PROJECT_ROOT, "package.json")).json();
+  const pkg = await Bun.file(join(PROJECT_ROOT, "package.json")).json();
 
-	depsCache = Object.keys({
-		...pkg.dependencies,
-		...pkg.devDependencies,
-		...pkg.peerDependencies,
-	});
+  depsCache = Object.keys({
+    ...pkg.dependencies,
+    ...pkg.devDependencies,
+    ...pkg.peerDependencies,
+  });
 
-	return depsCache;
+  return depsCache;
 }

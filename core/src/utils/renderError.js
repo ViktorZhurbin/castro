@@ -9,13 +9,13 @@ import { styleText } from "node:util";
 /** @import { CastroErrorPayload, CodeFrame } from "../types.d.ts"; */
 
 const COLORS = /** @type {const} */ ({
-	title: "red",
-	rawError: "redBright",
-	note: "gray",
-	location: "gray",
-	lineNumber: "gray",
-	caret: "red",
-	hint: "yellow",
+  title: "red",
+  rawError: "redBright",
+  note: "gray",
+  location: "gray",
+  lineNumber: "gray",
+  caret: "red",
+  hint: "yellow",
 });
 
 const LINE_MARKER = "   > ";
@@ -26,41 +26,39 @@ const LINE_SEPARATOR = "  ";
  * @returns {string}
  */
 export function renderErrorToTerminal(payload) {
-	const lines = [];
+  const lines = [];
 
-	lines.push(styleText(COLORS.title, `❌ ${payload.title}`));
+  lines.push(styleText(COLORS.title, `❌ ${payload.title}`));
 
-	if (payload.message) {
-		lines.push(`   ${payload.message}`);
-	}
+  if (payload.message) {
+    lines.push(`   ${payload.message}`);
+  }
 
-	if (payload.errorMessage) {
-		lines.push("", styleText(COLORS.rawError, `   ${payload.errorMessage}`));
-	}
+  if (payload.errorMessage) {
+    lines.push("", styleText(COLORS.rawError, `   ${payload.errorMessage}`));
+  }
 
-	if (payload.notes && payload.notes.length > 0) {
-		const notes = payload.notes.map((note) =>
-			styleText(COLORS.note, `   · ${note}`),
-		);
+  if (payload.notes && payload.notes.length > 0) {
+    const notes = payload.notes.map((note) => styleText(COLORS.note, `   · ${note}`));
 
-		lines.push("", ...notes);
-	}
+    lines.push("", ...notes);
+  }
 
-	if (payload.frames && payload.frames.length > 0) {
-		for (const frame of payload.frames) {
-			const frameLines = renderFrame(frame);
+  if (payload.frames && payload.frames.length > 0) {
+    for (const frame of payload.frames) {
+      const frameLines = renderFrame(frame);
 
-			if (frameLines) {
-				lines.push("", ...frameLines);
-			}
-		}
-	}
+      if (frameLines) {
+        lines.push("", ...frameLines);
+      }
+    }
+  }
 
-	if (payload.hint) {
-		lines.push("", styleText(COLORS.hint, `   → ${payload.hint}`));
-	}
+  if (payload.hint) {
+    lines.push("", styleText(COLORS.hint, `   → ${payload.hint}`));
+  }
 
-	return lines.join("\n");
+  return lines.join("\n");
 }
 
 /**
@@ -70,40 +68,36 @@ export function renderErrorToTerminal(payload) {
  * @returns {string[] | null}
  */
 function renderFrame(frame) {
-	const lines = [];
+  const lines = [];
 
-	// Why this location failed, above the location itself — it is the first
-	// thing worth reading, and the snippet below only shows where.
-	if (frame.message) {
-		lines.push(styleText(COLORS.rawError, `   ${frame.message}`));
-	}
+  // Why this location failed, above the location itself — it is the first
+  // thing worth reading, and the snippet below only shows where.
+  if (frame.message) {
+    lines.push(styleText(COLORS.rawError, `   ${frame.message}`));
+  }
 
-	const location = formatLocation(frame);
-	if (location) {
-		lines.push(styleText(COLORS.location, `   ${location}`));
-	}
+  const location = formatLocation(frame);
+  if (location) {
+    lines.push(styleText(COLORS.location, `   ${location}`));
+  }
 
-	// Skip the snippet if we have no line number to anchor it to —
-	// rendering "> 0  <code>" would be misleading.
-	if (frame.lineText && frame.line !== undefined) {
-		const lineNum = frame.line;
-		const errLinePrefix = styleText(
-			COLORS.lineNumber,
-			`${LINE_MARKER}${lineNum}`,
-		);
-		lines.push(`${errLinePrefix}${LINE_SEPARATOR}${frame.lineText}`);
+  // Skip the snippet if we have no line number to anchor it to —
+  // rendering "> 0  <code>" would be misleading.
+  if (frame.lineText && frame.line !== undefined) {
+    const lineNum = frame.line;
+    const errLinePrefix = styleText(COLORS.lineNumber, `${LINE_MARKER}${lineNum}`);
+    lines.push(`${errLinePrefix}${LINE_SEPARATOR}${frame.lineText}`);
 
-		// column is 1-based (normalized in bunBuild.js); subtract 1 so
-		// column 1 lands directly under the first character of lineText.
-		if (frame.column !== undefined) {
-			const prefixWidth =
-				LINE_MARKER.length + String(lineNum).length + LINE_SEPARATOR.length;
-			const caretPad = " ".repeat(prefixWidth + frame.column - 1);
-			lines.push(`${caretPad}${styleText(COLORS.caret, "^")}`);
-		}
-	}
+    // column is 1-based (normalized in bunBuild.js); subtract 1 so
+    // column 1 lands directly under the first character of lineText.
+    if (frame.column !== undefined) {
+      const prefixWidth = LINE_MARKER.length + String(lineNum).length + LINE_SEPARATOR.length;
+      const caretPad = " ".repeat(prefixWidth + frame.column - 1);
+      lines.push(`${caretPad}${styleText(COLORS.caret, "^")}`);
+    }
+  }
 
-	return lines.length ? lines : null;
+  return lines.length ? lines : null;
 }
 
 /**
@@ -112,16 +106,16 @@ function renderFrame(frame) {
  * @returns {string | undefined}
  */
 function formatLocation(frame) {
-	if (!frame.file && frame.line === undefined) return undefined;
+  if (!frame.file && frame.line === undefined) return undefined;
 
-	let location = frame.file || "";
-	if (frame.line !== undefined) {
-		location += location ? `:${frame.line}` : `Line ${frame.line}`;
+  let location = frame.file || "";
+  if (frame.line !== undefined) {
+    location += location ? `:${frame.line}` : `Line ${frame.line}`;
 
-		if (frame.column !== undefined) {
-			location += `:${frame.column}`;
-		}
-	}
+    if (frame.column !== undefined) {
+      location += `:${frame.column}`;
+    }
+  }
 
-	return location || undefined;
+  return location || undefined;
 }

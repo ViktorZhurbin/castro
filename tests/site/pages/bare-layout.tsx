@@ -9,11 +9,11 @@ import Counter from "../components/Counter.island.tsx";
 export const meta = { title: "BareLayout", layout: "bare" };
 
 export default function BareLayoutPage() {
-	return (
-		<div>
-			<h1>Bare Layout Test</h1>
-			<Card>Styled by a CSS module</Card>
-			<Counter initial={1} comrade:eager />
-		</div>
-	);
+  return (
+    <div>
+      <h1>Bare Layout Test</h1>
+      <Card>Styled by a CSS module</Card>
+      <Counter initial={1} comrade:eager />
+    </div>
+  );
 }

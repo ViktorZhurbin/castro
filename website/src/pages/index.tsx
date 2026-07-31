@@ -5,13 +5,13 @@ import { IslandShowcase } from "./_components/index/IslandShowcase";
 export const meta = { title: "Castro - The People's Framework" };
 
 export default function Home() {
-	return (
-		<>
-			<Hero />
+  return (
+    <>
+      <Hero />
 
-			<HowItWorks />
+      <HowItWorks />
 
-			<IslandShowcase />
-		</>
-	);
+      <IslandShowcase />
+    </>
+  );
 }

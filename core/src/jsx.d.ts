@@ -6,49 +6,49 @@
  */
 
 declare module "preact" {
-	namespace JSX {
-		interface IntrinsicAttributes {
-			/**
-			 * Immediate hydration - loads JavaScript immediately on page load.
-			 * Use for critical interactive elements like navigation or search.
-			 *
-			 * @example
-			 * ```tsx
-			 * <Counter initial={5} comrade:eager />
-			 * ```
-			 */
-			"comrade:eager"?: true;
+  namespace JSX {
+    interface IntrinsicAttributes {
+      /**
+       * Immediate hydration - loads JavaScript immediately on page load.
+       * Use for critical interactive elements like navigation or search.
+       *
+       * @example
+       * ```tsx
+       * <Counter initial={5} comrade:eager />
+       * ```
+       */
+      "comrade:eager"?: true;
 
-			/**
-			 * Idle hydration - loads JavaScript after page load, when browser is idle.
-			 * Uses requestIdleCallback for efficient scheduling.
-			 * Best for important above-the-fold content that isn't critical-path.
-			 *
-			 * @example
-			 * ```tsx
-			 * <Counter initial={5} comrade:patient />
-			 * ```
-			 */
-			"comrade:patient"?: true;
+      /**
+       * Idle hydration - loads JavaScript after page load, when browser is idle.
+       * Uses requestIdleCallback for efficient scheduling.
+       * Best for important above-the-fold content that isn't critical-path.
+       *
+       * @example
+       * ```tsx
+       * <Counter initial={5} comrade:patient />
+       * ```
+       */
+      "comrade:patient"?: true;
 
-			/**
-			 * Lazy hydration - loads JavaScript when component scrolls into viewport.
-			 * This is the DEFAULT behavior if no directive is specified.
-			 *
-			 * Uses IntersectionObserver for efficient viewport detection.
-			 * Best for below-the-fold interactive content.
-			 *
-			 * @example
-			 * ```tsx
-			 * // Explicit:
-			 * <Counter initial={5} comrade:visible />
-			 * // Or implicit (same result):
-			 * <Counter initial={5} />
-			 * ```
-			 */
-			"comrade:visible"?: true;
-		}
-	}
+      /**
+       * Lazy hydration - loads JavaScript when component scrolls into viewport.
+       * This is the DEFAULT behavior if no directive is specified.
+       *
+       * Uses IntersectionObserver for efficient viewport detection.
+       * Best for below-the-fold interactive content.
+       *
+       * @example
+       * ```tsx
+       * // Explicit:
+       * <Counter initial={5} comrade:visible />
+       * // Or implicit (same result):
+       * <Counter initial={5} />
+       * ```
+       */
+      "comrade:visible"?: true;
+    }
+  }
 }
 
 export {};

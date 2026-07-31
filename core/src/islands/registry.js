@@ -9,11 +9,8 @@
 
 import { access } from "node:fs/promises";
 import { dirname, join } from "node:path/posix";
-import {
-	COMPONENTS_DIR,
-	ISLANDS_OUTPUT_DIR,
-	OUTPUT_DIR,
-} from "../constants.js";
+
+import { COMPONENTS_DIR, ISLANDS_OUTPUT_DIR, OUTPUT_DIR } from "../constants.js";
 import { compileIsland } from "./compiler.js";
 import { getIslandId } from "./islandId.js";
 
@@ -24,63 +21,63 @@ import { getIslandId } from "./islandId.js";
  */
 
 class IslandsRegistry {
-	/** @type {Map<IslandId, IslandComponent>} */
-	#islands = new Map();
+  /** @type {Map<IslandId, IslandComponent>} */
+  #islands = new Map();
 
-	/**
-	 * Island ID → CSS content string, used for per-page CSS injection
-	 * @type {Map<IslandId, string>}
-	 */
-	#cssManifest = new Map();
+  /**
+   * Island ID → CSS content string, used for per-page CSS injection
+   * @type {Map<IslandId, string>}
+   */
+  #cssManifest = new Map();
 
-	/** @param {IslandId} id */
-	getIsland(id) {
-		return this.#islands.get(id);
-	}
+  /** @param {IslandId} id */
+  getIsland(id) {
+    return this.#islands.get(id);
+  }
 
-	getCssManifest() {
-		return this.#cssManifest;
-	}
+  getCssManifest() {
+    return this.#cssManifest;
+  }
 
-	/**
-	 * Discover, compile, and load all islands from disk.
-	 */
-	async load() {
-		this.#islands.clear();
-		this.#cssManifest.clear();
+  /**
+   * Discover, compile, and load all islands from disk.
+   */
+  async load() {
+    this.#islands.clear();
+    this.#cssManifest.clear();
 
-		// Islands are optional — a project with no components/ dir is valid.
-		try {
-			await access(COMPONENTS_DIR);
-		} catch (e) {
-			const err = /** @type {Bun.ErrorLike} */ (e);
+    // Islands are optional — a project with no components/ dir is valid.
+    try {
+      await access(COMPONENTS_DIR);
+    } catch (e) {
+      const err = /** @type {Bun.ErrorLike} */ (e);
 
-			if (err.code === "ENOENT") return;
+      if (err.code === "ENOENT") return;
 
-			throw err;
-		}
+      throw err;
+    }
 
-		const islandGlob = new Bun.Glob("**/*.island.{jsx,tsx}");
+    const islandGlob = new Bun.Glob("**/*.island.{jsx,tsx}");
 
-		for await (const relativeSourcePath of islandGlob.scan(COMPONENTS_DIR)) {
-			const sourceFilePath = join(COMPONENTS_DIR, relativeSourcePath);
-			const { outputDir, publicDir } = derivePaths(relativeSourcePath);
+    for await (const relativeSourcePath of islandGlob.scan(COMPONENTS_DIR)) {
+      const sourceFilePath = join(COMPONENTS_DIR, relativeSourcePath);
+      const { outputDir, publicDir } = derivePaths(relativeSourcePath);
 
-			const component = await compileIsland({
-				sourceFilePath,
-				outputDir,
-				publicDir,
-			});
+      const component = await compileIsland({
+        sourceFilePath,
+        outputDir,
+        publicDir,
+      });
 
-			const islandId = getIslandId(sourceFilePath);
+      const islandId = getIslandId(sourceFilePath);
 
-			this.#islands.set(islandId, component);
+      this.#islands.set(islandId, component);
 
-			if (component.cssContent) {
-				this.#cssManifest.set(islandId, component.cssContent);
-			}
-		}
-	}
+      if (component.cssContent) {
+        this.#cssManifest.set(islandId, component.cssContent);
+      }
+    }
+  }
 }
 
 export const islands = new IslandsRegistry();
@@ -95,9 +92,9 @@ export const islands = new IslandsRegistry();
  * @returns {{ outputDir: string, publicDir: string }}
  */
 function derivePaths(relativeSourcePath) {
-	const relativeDir = dirname(relativeSourcePath);
-	return {
-		outputDir: join(OUTPUT_DIR, ISLANDS_OUTPUT_DIR, relativeDir),
-		publicDir: join("/", ISLANDS_OUTPUT_DIR, relativeDir),
-	};
+  const relativeDir = dirname(relativeSourcePath);
+  return {
+    outputDir: join(OUTPUT_DIR, ISLANDS_OUTPUT_DIR, relativeDir),
+    publicDir: join("/", ISLANDS_OUTPUT_DIR, relativeDir),
+  };
 }

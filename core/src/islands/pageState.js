@@ -30,10 +30,10 @@ const pageStateStore = new AsyncLocalStorage();
  * @returns {Promise<PageState>}
  */
 export async function runWithPageState(sourceFilePath, fn) {
-	/** @type {PageState} */
-	const state = { sourceFilePath, usedIslands: new Set() };
-	await pageStateStore.run(state, fn);
-	return state;
+  /** @type {PageState} */
+  const state = { sourceFilePath, usedIslands: new Set() };
+  await pageStateStore.run(state, fn);
+  return state;
 }
 
 /**
@@ -47,12 +47,12 @@ export async function runWithPageState(sourceFilePath, fn) {
  * @returns {PageState}
  */
 export function getPageState() {
-	const state = pageStateStore.getStore();
-	if (!state) {
-		throw new Error(
-			"getPageState() called outside runWithPageState(). " +
-				"Every page render must be wrapped — see buildAll.js.",
-		);
-	}
-	return state;
+  const state = pageStateStore.getStore();
+  if (!state) {
+    throw new Error(
+      "getPageState() called outside runWithPageState(). " +
+        "Every page render must be wrapped — see buildAll.js.",
+    );
+  }
+  return state;
 }

@@ -29,41 +29,41 @@ await Bun.write(join(root, "dist.html"), "not served");
 const { debounceRebuilds, resolveStaticFile } = await import("./server.js");
 
 afterAll(() => {
-	process.chdir(originalCwd);
-	rmSync(root, { recursive: true, force: true });
+  process.chdir(originalCwd);
+  rmSync(root, { recursive: true, force: true });
 });
 
 /** @param {string} pathname */
 async function serve(pathname) {
-	const file = await resolveStaticFile(pathname);
+  const file = await resolveStaticFile(pathname);
 
-	return file && (await file.text());
+  return file && (await file.text());
 }
 
 // ------ Clean URLs ------
 
 test("root path resolves to index.html", async () => {
-	expect(await serve("/")).toBe("<h1>home</h1>");
+  expect(await serve("/")).toBe("<h1>home</h1>");
 });
 
 test("clean URL resolves to the sibling .html file", async () => {
-	expect(await serve("/about")).toBe("<h1>about</h1>");
+  expect(await serve("/about")).toBe("<h1>about</h1>");
 });
 
 test("clean URL falls back to a directory index", async () => {
-	expect(await serve("/blog")).toBe("<h1>blog</h1>");
+  expect(await serve("/blog")).toBe("<h1>blog</h1>");
 });
 
 test("trailing slash resolves to the directory index", async () => {
-	expect(await serve("/blog/")).toBe("<h1>blog</h1>");
+  expect(await serve("/blog/")).toBe("<h1>blog</h1>");
 });
 
 test("an extension is served at its exact path", async () => {
-	expect(await serve("/style.css")).toBe("body{}");
+  expect(await serve("/style.css")).toBe("body{}");
 });
 
 test("a miss resolves to null so the caller can 404", async () => {
-	expect(await serve("/nope")).toBeNull();
+  expect(await serve("/nope")).toBeNull();
 });
 
 // ------ Percent-decoding ------
@@ -71,60 +71,60 @@ test("a miss resolves to null so the caller can 404", async () => {
 // disagrees with every real static host.
 
 test("percent-encoded space resolves", async () => {
-	expect(await serve("/my%20page")).toBe("<h1>spaced</h1>");
+  expect(await serve("/my%20page")).toBe("<h1>spaced</h1>");
 });
 
 test("percent-encoded non-ASCII resolves", async () => {
-	expect(await serve("/%C3%BCber")).toBe("<h1>unicode</h1>");
+  expect(await serve("/%C3%BCber")).toBe("<h1>unicode</h1>");
 });
 
 test("the root's sibling is not a candidate for the root itself", async () => {
-	// The clean-URL candidate derived from "/" is `dist.html`, a sibling of the
-	// output dir; only the index inside dist/ may answer.
-	expect(await serve("/")).not.toBe("not served");
+  // The clean-URL candidate derived from "/" is `dist.html`, a sibling of the
+  // output dir; only the index inside dist/ may answer.
+  expect(await serve("/")).not.toBe("not served");
 });
 
 // ------ Debounced rebuilds ------
 
 test("rapid schedules collapse into a single run", async () => {
-	let runs = 0;
-	const rebuild = debounceRebuilds(async () => {
-		runs++;
-	}, 5);
+  let runs = 0;
+  const rebuild = debounceRebuilds(async () => {
+    runs++;
+  }, 5);
 
-	rebuild.schedule();
-	rebuild.schedule();
-	rebuild.schedule();
+  rebuild.schedule();
+  rebuild.schedule();
+  rebuild.schedule();
 
-	await Bun.sleep(40);
-	expect(runs).toBe(1);
+  await Bun.sleep(40);
+  expect(runs).toBe(1);
 });
 
 test("a schedule during an in-flight run triggers exactly one more run", async () => {
-	let runs = 0;
-	/** @type {(() => void) | undefined} */
-	let release;
-	const firstRunStarted = Promise.withResolvers();
+  let runs = 0;
+  /** @type {(() => void) | undefined} */
+  let release;
+  const firstRunStarted = Promise.withResolvers();
 
-	const rebuild = debounceRebuilds(async () => {
-		runs++;
-		if (runs === 1) {
-			firstRunStarted.resolve(undefined);
-			await new Promise((r) => {
-				release = () => r(undefined);
-			});
-		}
-	}, 5);
+  const rebuild = debounceRebuilds(async () => {
+    runs++;
+    if (runs === 1) {
+      firstRunStarted.resolve(undefined);
+      await new Promise((r) => {
+        release = () => r(undefined);
+      });
+    }
+  }, 5);
 
-	rebuild.schedule();
-	await firstRunStarted.promise;
+  rebuild.schedule();
+  await firstRunStarted.promise;
 
-	// Arrives while the first run is still going.
-	rebuild.schedule();
-	await Bun.sleep(20);
-	expect(runs).toBe(1); // still blocked — builds must not overlap
+  // Arrives while the first run is still going.
+  rebuild.schedule();
+  await Bun.sleep(20);
+  expect(runs).toBe(1); // still blocked — builds must not overlap
 
-	release?.();
-	await Bun.sleep(40);
-	expect(runs).toBe(2);
+  release?.();
+  await Bun.sleep(40);
+  expect(runs).toBe(2);
 });

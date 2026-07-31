@@ -13,38 +13,38 @@ import { renderErrorToTerminal } from "./utils/renderError.js";
 const command = process.argv[2] || "dev";
 
 try {
-	// Dynamic, like every import below it: cache.js reaches constants.js and so
-	// evaluates config.js, and a config that throws at module scope has to land
-	// in this catch to render as CONFIG_LOAD_FAILED rather than a raw trace.
-	const { cleanupCacheDir } = await import("./utils/cache.js");
-	cleanupCacheDir();
+  // Dynamic, like every import below it: cache.js reaches constants.js and so
+  // evaluates config.js, and a config that throws at module scope has to land
+  // in this catch to render as CONFIG_LOAD_FAILED rather than a raw trace.
+  const { cleanupCacheDir } = await import("./utils/cache.js");
+  cleanupCacheDir();
 
-	switch (command) {
-		case "dev": {
-			const { startDevServer } = await import("./dev/server.js");
-			await startDevServer();
-			break;
-		}
+  switch (command) {
+    case "dev": {
+      const { startDevServer } = await import("./dev/server.js");
+      await startDevServer();
+      break;
+    }
 
-		case "build": {
-			process.env.NODE_ENV = "production";
-			const { buildAll } = await import("./builder/buildAll.js");
-			await buildAll();
+    case "build": {
+      process.env.NODE_ENV = "production";
+      const { buildAll } = await import("./builder/buildAll.js");
+      await buildAll();
 
-			// Explicit exit — imported page modules or Bun internals can
-			// hold handles that prevent natural process termination.
-			process.exit(0);
-		}
+      // Explicit exit — imported page modules or Bun internals can
+      // hold handles that prevent natural process termination.
+      process.exit(0);
+    }
 
-		default: {
-			console.error(messages.commands.unknown(command));
-			console.info(messages.commands.usage);
-			process.exit(1);
-		}
-	}
+    default: {
+      console.error(messages.commands.unknown(command));
+      console.info(messages.commands.usage);
+      process.exit(1);
+    }
+  }
 } catch (err) {
-	// Catch any fatal errors during initial boot or production build
-	const payload = toPayload(err);
-	console.error(renderErrorToTerminal(payload));
-	process.exit(1);
+  // Catch any fatal errors during initial boot or production build
+  const payload = toPayload(err);
+  console.error(renderErrorToTerminal(payload));
+  process.exit(1);
 }

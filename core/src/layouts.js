@@ -9,6 +9,7 @@
 
 import { access } from "node:fs/promises";
 import { dirname, extname, join } from "node:path/posix";
+
 import { compileJSX } from "./builder/compileJsx.js";
 import { writeCSSFiles } from "./builder/writeCss.js";
 import { LAYOUTS_DIR, LAYOUTS_OUTPUT_DIR, OUTPUT_DIR } from "./constants.js";
@@ -33,97 +34,92 @@ import { CastroError } from "./utils/errors.js";
  * Singleton registry for layouts
  */
 class LayoutsRegistry {
-	/**
-	 * Map of layout IDs to layout JSX components
-	 * @type {Map<LayoutId, LayoutComponent>}
-	 */
-	#layouts = new Map();
+  /**
+   * Map of layout IDs to layout JSX components
+   * @type {Map<LayoutId, LayoutComponent>}
+   */
+  #layouts = new Map();
 
-	/**
-	 * Map of layout IDs to stylesheet <link> tags
-	 * @type {Map<LayoutId, string[]>}
-	 */
-	#cssTags = new Map();
+  /**
+   * Map of layout IDs to stylesheet <link> tags
+   * @type {Map<LayoutId, string[]>}
+   */
+  #cssTags = new Map();
 
-	/**
-	 * Resolve a page's `layout` meta field to a concrete layout component.
-	 * Returns the id alongside so a missing layout can name what it looked for.
-	 *
-	 * @param {LayoutId} [layout]
-	 * @returns {{ id: LayoutId, component: LayoutComponent | undefined }}
-	 */
-	resolve(layout = "default") {
-		return { id: layout, component: this.#layouts.get(layout) };
-	}
+  /**
+   * Resolve a page's `layout` meta field to a concrete layout component.
+   * Returns the id alongside so a missing layout can name what it looked for.
+   *
+   * @param {LayoutId} [layout]
+   * @returns {{ id: LayoutId, component: LayoutComponent | undefined }}
+   */
+  resolve(layout = "default") {
+    return { id: layout, component: this.#layouts.get(layout) };
+  }
 
-	/**
-	 * @param {LayoutId} id
-	 * @returns {string[]}
-	 */
-	getCssTags(id) {
-		return this.#cssTags.get(id) ?? [];
-	}
+  /**
+   * @param {LayoutId} id
+   * @returns {string[]}
+   */
+  getCssTags(id) {
+    return this.#cssTags.get(id) ?? [];
+  }
 
-	/**
-	 * Discover, compile, and load all JSX layouts
-	 */
-	async load() {
-		this.#layouts.clear();
-		this.#cssTags.clear();
+  /**
+   * Discover, compile, and load all JSX layouts
+   */
+  async load() {
+    this.#layouts.clear();
+    this.#cssTags.clear();
 
-		// Bun.file().exists() returns false for directories, so use fs.access here.
-		try {
-			await access(LAYOUTS_DIR);
-		} catch (e) {
-			const err = /** @type {Bun.ErrorLike} */ (e);
+    // Bun.file().exists() returns false for directories, so use fs.access here.
+    try {
+      await access(LAYOUTS_DIR);
+    } catch (e) {
+      const err = /** @type {Bun.ErrorLike} */ (e);
 
-			if (err.code === "ENOENT") {
-				throw new CastroError("NO_DEFAULT_LAYOUT", { dir: LAYOUTS_DIR });
-			}
+      if (err.code === "ENOENT") {
+        throw new CastroError("NO_DEFAULT_LAYOUT", { dir: LAYOUTS_DIR });
+      }
 
-			throw err;
-		}
+      throw err;
+    }
 
-		const layoutGlob = new Bun.Glob("**/*.{jsx,tsx}");
+    const layoutGlob = new Bun.Glob("**/*.{jsx,tsx}");
 
-		for await (const relativeSourcePath of layoutGlob.scan(LAYOUTS_DIR)) {
-			const sourceFilePath = join(LAYOUTS_DIR, relativeSourcePath);
-			const ext = extname(relativeSourcePath);
-			const layoutId = relativeSourcePath.slice(0, -ext.length);
+    for await (const relativeSourcePath of layoutGlob.scan(LAYOUTS_DIR)) {
+      const sourceFilePath = join(LAYOUTS_DIR, relativeSourcePath);
+      const ext = extname(relativeSourcePath);
+      const layoutId = relativeSourcePath.slice(0, -ext.length);
 
-			const { module: layoutModule, cssFiles } =
-				await compileJSX(sourceFilePath);
+      const { module: layoutModule, cssFiles } = await compileJSX(sourceFilePath);
 
-			if (typeof layoutModule.default !== "function") {
-				throw new CastroError("LAYOUT_NO_DEFAULT_EXPORT", {
-					file: relativeSourcePath,
-				});
-			}
+      if (typeof layoutModule.default !== "function") {
+        throw new CastroError("LAYOUT_NO_DEFAULT_EXPORT", {
+          file: relativeSourcePath,
+        });
+      }
 
-			this.#layouts.set(layoutId, layoutModule.default);
+      this.#layouts.set(layoutId, layoutModule.default);
 
-			// Output dir mirrors the layout's nesting under LAYOUTS_OUTPUT_DIR (not
-			// LAYOUTS_DIR, which is srcDir-prefixed) so two layouts with the same
-			// basename get distinct CSS files, and the public URL never leaks
-			// srcDir (see ISLANDS_OUTPUT_DIR for the same split applied to islands).
-			const layoutOutputDir = join(
-				OUTPUT_DIR,
-				LAYOUTS_OUTPUT_DIR,
-				dirname(relativeSourcePath),
-			);
-			const layoutCssTags = await writeCSSFiles(cssFiles, layoutOutputDir);
+      // Output dir mirrors the layout's nesting under LAYOUTS_OUTPUT_DIR (not
+      // LAYOUTS_DIR, which is srcDir-prefixed) so two layouts with the same
+      // basename get distinct CSS files, and the public URL never leaks
+      // srcDir (see ISLANDS_OUTPUT_DIR for the same split applied to islands).
+      const layoutOutputDir = join(OUTPUT_DIR, LAYOUTS_OUTPUT_DIR, dirname(relativeSourcePath));
+      const layoutCssTags = await writeCSSFiles(cssFiles, layoutOutputDir);
 
-			if (layoutCssTags.length > 0) {
-				this.#cssTags.set(layoutId, layoutCssTags);
-			}
-		}
+      if (layoutCssTags.length > 0) {
+        this.#cssTags.set(layoutId, layoutCssTags);
+      }
+    }
 
-		// Missing layouts/, empty layouts/, and layout files without a default.*
-		// among them all converge on the same fix, so they share one error.
-		if (!this.#layouts.has("default")) {
-			throw new CastroError("NO_DEFAULT_LAYOUT", { dir: LAYOUTS_DIR });
-		}
-	}
+    // Missing layouts/, empty layouts/, and layout files without a default.*
+    // among them all converge on the same fix, so they share one error.
+    if (!this.#layouts.has("default")) {
+      throw new CastroError("NO_DEFAULT_LAYOUT", { dir: LAYOUTS_DIR });
+    }
+  }
 }
 
 // Export singleton instance

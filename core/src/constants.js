@@ -8,6 +8,7 @@
  */
 
 import { join } from "node:path/posix";
+
 import { config } from "./config.js";
 
 /** Filename of the <castro-island> custom-element runtime in dist/. */

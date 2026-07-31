@@ -1,31 +1,31 @@
 {
-	"compilerOptions": {
-		// Language and environment
-		"lib": ["ES2022", "DOM"],
-		"jsx": "react-jsx",
-		"jsxImportSource": "preact",
-		"types": ["@vktrz/castro"],
+  "compilerOptions": {
+    // Language and environment
+    "lib": ["ES2022", "DOM"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "types": ["@vktrz/castro"],
 
-		// Module resolution
-		"moduleResolution": "bundler",
+    // Module resolution
+    "moduleResolution": "bundler",
 
-		// Emit
-		"noEmit": true,
-		"isolatedModules": true,
+    // Emit
+    "noEmit": true,
+    "isolatedModules": true,
 
-		// Type checking
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true,
+    // Type checking
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
 
-		// Interop
-		"forceConsistentCasingInFileNames": true,
-		"skipLibCheck": true,
+    // Interop
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
 
-		// Path mappings (optional, for convenience)
-		"paths": {
-			"@/*": ["./*"]
-		}
-	},
-	"include": ["types/**/*", "pages/**/*", "layouts/**/*", "components/**/*"]
+    // Path mappings (optional, for convenience)
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["types/**/*", "pages/**/*", "layouts/**/*", "components/**/*"]
 }

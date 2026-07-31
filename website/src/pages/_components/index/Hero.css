@@ -1,64 +1,64 @@
 .hero {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background-color: var(--code-background-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--code-background-color);
 
-	@media (min-width: 576px) {
-		min-height: calc(100vh - var(--header-height));
-	}
+  @media (min-width: 576px) {
+    min-height: calc(100vh - var(--header-height));
+  }
 }
 
 .hero-content {
-	text-align: center;
-	padding: var(--spacing-xl);
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+  text-align: center;
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-	svg {
-		width: 6rem;
-		height: 6rem;
-		margin-bottom: var(--spacing-2xl);
-		color: var(--primary);
+  svg {
+    width: 6rem;
+    height: 6rem;
+    margin-bottom: var(--spacing-2xl);
+    color: var(--primary);
 
-		@media (min-width: 768px) {
-			width: 8rem;
-			height: 8rem;
-		}
-	}
+    @media (min-width: 768px) {
+      width: 8rem;
+      height: 8rem;
+    }
+  }
 
-	h1 {
-		margin: 0;
-	}
+  h1 {
+    margin: 0;
+  }
 }
 
 .hero-hr {
-	border: 0;
-	border-top: var(--border-primary-8);
-	width: 8rem;
-	margin: var(--spacing-2-5xl) auto;
+  border: 0;
+  border-top: var(--border-primary-8);
+  width: 8rem;
+  margin: var(--spacing-2-5xl) auto;
 }
 
 .hero-subtitle {
-	color: var(--muted-color);
-	font-size: var(--text-lg);
-	max-width: 36rem;
-	margin-bottom: var(--spacing-xl);
+  color: var(--muted-color);
+  font-size: var(--text-lg);
+  max-width: 36rem;
+  margin-bottom: var(--spacing-xl);
 }
 
 .hero-quote {
-	position: relative;
-	font-style: italic;
-	margin-bottom: var(--spacing-2-5xl);
-	font-size: var(--text-lg);
+  position: relative;
+  font-style: italic;
+  margin-bottom: var(--spacing-2-5xl);
+  font-size: var(--text-lg);
 
-	&::before {
-		content: "";
-		display: block;
-		width: 2rem;
-		height: 2px;
-		background: var(--primary);
-		margin: 0 auto var(--spacing);
-	}
+  &::before {
+    content: "";
+    display: block;
+    width: 2rem;
+    height: 2px;
+    background: var(--primary);
+    margin: 0 auto var(--spacing);
+  }
 }

@@ -18,21 +18,17 @@ const siteDir = import.meta.dir;
 const distDir = join(siteDir, "dist");
 
 beforeAll(() => {
-	execSync("bun run build", { cwd: siteDir, stdio: "inherit" });
+  execSync("bun run build", { cwd: siteDir, stdio: "inherit" });
 });
 
 test("layout CSS is emitted at /layouts/, not srcDir-prefixed", async () => {
-	const html = await Bun.file(join(distDir, "index.html")).text();
+  const html = await Bun.file(join(distDir, "index.html")).text();
 
-	expect(html).toContain('href="/layouts/default.css"');
-	expect(html).not.toContain("/src/");
+  expect(html).toContain('href="/layouts/default.css"');
+  expect(html).not.toContain("/src/");
 });
 
 test("layout CSS file is written to dist/layouts/, not dist/src/layouts/", async () => {
-	expect(await Bun.file(join(distDir, "layouts", "default.css")).exists()).toBe(
-		true,
-	);
-	expect(
-		await Bun.file(join(distDir, "src", "layouts", "default.css")).exists(),
-	).toBe(false);
+  expect(await Bun.file(join(distDir, "layouts", "default.css")).exists()).toBe(true);
+  expect(await Bun.file(join(distDir, "src", "layouts", "default.css")).exists()).toBe(false);
 });

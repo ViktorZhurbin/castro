@@ -1,14 +1,14 @@
 {
-	"name": "create-castro",
-	"version": "0.2.0",
-	"type": "module",
-	"description": "Scaffold a new Castro site",
-	"license": "MIT",
-	"bin": {
-		"create-castro": "./index.js"
-	},
-	"files": [
-		"index.js",
-		"template"
-	]
+  "name": "create-castro",
+  "version": "0.2.0",
+  "description": "Scaffold a new Castro site",
+  "license": "MIT",
+  "bin": {
+    "create-castro": "./index.js"
+  },
+  "files": [
+    "index.js",
+    "template"
+  ],
+  "type": "module"
 }

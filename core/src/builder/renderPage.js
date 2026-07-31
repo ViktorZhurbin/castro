@@ -10,7 +10,9 @@
  */
 
 import { basename } from "node:path/posix";
+
 import { renderToString } from "preact-render-to-string";
+
 import { PAGE_EXT_PATTERN } from "../constants.js";
 import { getPageState } from "../islands/pageState.js";
 import { layouts } from "../layouts.js";
@@ -32,42 +34,41 @@ import { writeHtmlPage } from "./writeHtmlPage.js";
  * }} params
  */
 export async function renderPage({
-	createContentVNode,
-	outputFilePath,
-	sourceFilePath,
-	pageMeta,
-	pageCssTags = [],
+  createContentVNode,
+  outputFilePath,
+  sourceFilePath,
+  pageMeta,
+  pageCssTags = [],
 }) {
-	const cssTags = [...pageCssTags];
+  const cssTags = [...pageCssTags];
 
-	const contentVNode = createContentVNode();
+  const contentVNode = createContentVNode();
 
-	const layout = layouts.resolve(pageMeta.layout);
+  const layout = layouts.resolve(pageMeta.layout);
 
-	if (!layout.component) {
-		throw new CastroError("LAYOUT_NOT_FOUND", {
-			layoutId: layout.id,
-			sourceFilePath,
-		});
-	}
+  if (!layout.component) {
+    throw new CastroError("LAYOUT_NOT_FOUND", {
+      layoutId: layout.id,
+      sourceFilePath,
+    });
+  }
 
-	cssTags.push(...layouts.getCssTags(layout.id));
+  cssTags.push(...layouts.getCssTags(layout.id));
 
-	const title =
-		pageMeta.title || basename(sourceFilePath).replace(PAGE_EXT_PATTERN, "");
+  const title = pageMeta.title || basename(sourceFilePath).replace(PAGE_EXT_PATTERN, "");
 
-	const vnodeToRender = layout.component({
-		...pageMeta,
-		title,
-		children: contentVNode,
-	});
+  const vnodeToRender = layout.component({
+    ...pageMeta,
+    title,
+    children: contentVNode,
+  });
 
-	const finalHtml = renderToString(vnodeToRender);
+  const finalHtml = renderToString(vnodeToRender);
 
-	const state = getPageState();
+  const state = getPageState();
 
-	await writeHtmlPage(finalHtml, outputFilePath, {
-		cssTags,
-		usedIslands: state.usedIslands,
-	});
+  await writeHtmlPage(finalHtml, outputFilePath, {
+    cssTags,
+    usedIslands: state.usedIslands,
+  });
 }

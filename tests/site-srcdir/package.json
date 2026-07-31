@@ -1,15 +1,15 @@
 {
-	"name": "test-site-srcdir",
-	"version": "1.0.0",
-	"private": true,
-	"type": "module",
-	"scripts": {
-		"build": "castro build",
-		"test": "bun test",
-		"type-check": "tsc"
-	},
-	"dependencies": {
-		"@vktrz/castro": "workspace:*",
-		"preact": "^10"
-	}
+  "name": "test-site-srcdir",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "castro build",
+    "test": "bun test",
+    "type-check": "tsc"
+  },
+  "dependencies": {
+    "@vktrz/castro": "workspace:*",
+    "preact": "^10"
+  }
 }

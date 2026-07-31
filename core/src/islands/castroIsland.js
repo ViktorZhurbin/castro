@@ -23,135 +23,135 @@
 const ELEMENT_TAG = "castro-island";
 
 class CastroIsland extends HTMLElement {
-	#hydrated = false;
-	/** @type {IntersectionObserver | null} */
-	#observer = null;
+  #hydrated = false;
+  /** @type {IntersectionObserver | null} */
+  #observer = null;
 
-	async connectedCallback() {
-		// Only hydrate once
-		if (this.#hydrated) return;
+  async connectedCallback() {
+    // Only hydrate once
+    if (this.#hydrated) return;
 
-		const directive = this.getAttribute("directive");
+    const directive = this.getAttribute("directive");
 
-		// Wait for trigger condition based on directive
-		switch (directive) {
-			case "comrade:patient":
-				await this.waitIdle();
-				break;
-			case "comrade:eager":
-				break; // Some comrades wait, this one doesn't
-			default:
-				await this.waitVisible(); // covers explicit "comrade:visible", incorrect directive and no directive
-				break;
-		}
+    // Wait for trigger condition based on directive
+    switch (directive) {
+      case "comrade:patient":
+        await this.waitIdle();
+        break;
+      case "comrade:eager":
+        break; // Some comrades wait, this one doesn't
+      default:
+        await this.waitVisible(); // covers explicit "comrade:visible", incorrect directive and no directive
+        break;
+    }
 
-		// Load and mount component
-		await this.hydrate();
-	}
+    // Load and mount component
+    await this.hydrate();
+  }
 
-	/**
-	 * Wait until browser is idle after page load
-	 *
-	 * Waits for page load first (idle during initial load defeats the purpose),
-	 * then uses requestIdleCallback. Falls back to immediate hydration in
-	 * browsers that don't support requestIdleCallback (Safari <119).
-	 *
-	 * @returns {Promise<void>}
-	 */
-	waitIdle() {
-		return new Promise((resolve) => {
-			const onLoad = () => {
-				if ("requestIdleCallback" in window) {
-					requestIdleCallback(() => resolve());
-				} else {
-					resolve();
-				}
-			};
-			if (document.readyState === "complete") {
-				onLoad();
-			} else {
-				window.addEventListener("load", onLoad, { once: true });
-			}
-		});
-	}
+  /**
+   * Wait until browser is idle after page load
+   *
+   * Waits for page load first (idle during initial load defeats the purpose),
+   * then uses requestIdleCallback. Falls back to immediate hydration in
+   * browsers that don't support requestIdleCallback (Safari <119).
+   *
+   * @returns {Promise<void>}
+   */
+  waitIdle() {
+    return new Promise((resolve) => {
+      const onLoad = () => {
+        if ("requestIdleCallback" in window) {
+          requestIdleCallback(() => resolve());
+        } else {
+          resolve();
+        }
+      };
+      if (document.readyState === "complete") {
+        onLoad();
+      } else {
+        window.addEventListener("load", onLoad, { once: true });
+      }
+    });
+  }
 
-	/**
-	 * Wait until element is visible in viewport
-	 *
-	 * Uses IntersectionObserver which is more efficient than scroll listeners.
-	 * The browser natively tracks element visibility.
-	 *
-	 * @returns {Promise<void>}
-	 */
-	waitVisible() {
-		return new Promise((resolve) => {
-			this.#observer = new IntersectionObserver(
-				(entries) => {
-					if (entries[0].isIntersecting) {
-						this.#observer?.disconnect();
-						this.#observer = null;
-						resolve();
-					}
-				},
-				// rootMargin extends the viewport boundary:
-				// start loading 100px before element enters viewport.
-				{ rootMargin: "100px" },
-			);
-			this.#observer.observe(this);
-		});
-	}
+  /**
+   * Wait until element is visible in viewport
+   *
+   * Uses IntersectionObserver which is more efficient than scroll listeners.
+   * The browser natively tracks element visibility.
+   *
+   * @returns {Promise<void>}
+   */
+  waitVisible() {
+    return new Promise((resolve) => {
+      this.#observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            this.#observer?.disconnect();
+            this.#observer = null;
+            resolve();
+          }
+        },
+        // rootMargin extends the viewport boundary:
+        // start loading 100px before element enters viewport.
+        { rootMargin: "100px" },
+      );
+      this.#observer.observe(this);
+    });
+  }
 
-	disconnectedCallback() {
-		// If we were waiting on visibility and got removed first, free the observer.
-		// The hydrate Promise stays pending forever, but no DOM ref is held.
-		this.#observer?.disconnect();
-		this.#observer = null;
-	}
+  disconnectedCallback() {
+    // If we were waiting on visibility and got removed first, free the observer.
+    // The hydrate Promise stays pending forever, but no DOM ref is held.
+    this.#observer?.disconnect();
+    this.#observer = null;
+  }
 
-	/**
-	 * Hydrate the island - load JS and make it interactive
-	 *
-	 * "Hydration" means attaching JavaScript behavior to existing HTML.
-	 * The HTML was rendered at build time, now we're making it interactive.
-	 */
-	async hydrate() {
-		if (this.#hydrated) return;
+  /**
+   * Hydrate the island - load JS and make it interactive
+   *
+   * "Hydration" means attaching JavaScript behavior to existing HTML.
+   * The HTML was rendered at build time, now we're making it interactive.
+   */
+  async hydrate() {
+    if (this.#hydrated) return;
 
-		this.#hydrated = true;
+    this.#hydrated = true;
 
-		try {
-			// Parse props from JSON
-			const propsJson = this.dataset.props;
-			const props = propsJson ? JSON.parse(propsJson) : {};
+    try {
+      // Parse props from JSON
+      const propsJson = this.dataset.props;
+      const props = propsJson ? JSON.parse(propsJson) : {};
 
-			// Get the path from import="/components/counter.js" attribute
-			const importPath = this.getAttribute("import");
-			if (!importPath) {
-				console.error(`${ELEMENT_TAG}: missing import attribute`);
-				return;
-			}
+      // Get the path from import="/components/counter.js" attribute
+      const importPath = this.getAttribute("import");
+      if (!importPath) {
+        console.error(`${ELEMENT_TAG}: missing import attribute`);
+        return;
+      }
 
-			// Dynamically import the compiled component bundle.
-			// This import() call triggers a network request for the JS.
-			const module = await import(importPath);
+      // Dynamically import the compiled component bundle.
+      // This import() call triggers a network request for the JS.
+      const module = await import(importPath);
 
-			// module.default is the mounting function generated by compiler.
-			// It receives the container and props, then calls Preact hydrate().
-			if (typeof module.default === "function") {
-				await module.default(this, props);
-			} else {
-				console.error(`${ELEMENT_TAG}: module must export mounting function`);
-			}
+      // module.default is the mounting function generated by compiler.
+      // It receives the container and props, then calls Preact hydrate().
+      if (typeof module.default === "function") {
+        await module.default(this, props);
+      } else {
+        console.error(`${ELEMENT_TAG}: module must export mounting function`);
+      }
 
-			// Mark as ready (useful for CSS transitions or debugging)
-			this.setAttribute("ready", "");
-		} catch (err) {
-			console.error(`${ELEMENT_TAG}: hydration failed`, err);
-		}
-	}
+      // Mark as ready (useful for CSS transitions or debugging)
+      this.setAttribute("ready", "");
+    } catch (err) {
+      console.error(`${ELEMENT_TAG}: hydration failed`, err);
+    }
+  }
 }
 
 // Register custom element
 if (!customElements.get(ELEMENT_TAG)) {
-	customElements.define(ELEMENT_TAG, CastroIsland);
+  customElements.define(ELEMENT_TAG, CastroIsland);
 }

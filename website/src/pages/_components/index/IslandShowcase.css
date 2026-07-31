@@ -1,33 +1,33 @@
 .island-showcase {
-	padding: var(--spacing-6xl) var(--spacing-xl);
-	background-color: var(--code-background-color);
+  padding: var(--spacing-6xl) var(--spacing-xl);
+  background-color: var(--code-background-color);
 }
 
 .island-showcase-container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: var(--spacing-2xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2xl);
 }
 
 .island-showcase-label {
-	font-family: var(--font-display);
-	letter-spacing: 0.05rem;
-	font-size: var(--text-3xl);
-	color: var(--primary);
-	margin: 0;
+  font-family: var(--font-display);
+  letter-spacing: 0.05rem;
+  font-size: var(--text-3xl);
+  color: var(--primary);
+  margin: 0;
 }
 
 .island-showcase-desc {
-	margin: 0;
-	color: var(--muted-color);
-	font-size: var(--text-sm);
+  margin: 0;
+  color: var(--muted-color);
+  font-size: var(--text-sm);
 }
 
 .island-showcase-island {
-	max-width: 768px;
+  max-width: 768px;
 }
 
 .island-showcase-cta {
-	margin-top: var(--spacing-3xl);
+  margin-top: var(--spacing-3xl);
 }

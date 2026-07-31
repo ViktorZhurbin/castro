@@ -14,6 +14,7 @@
  */
 
 import { h } from "preact";
+
 import { CastroError } from "../utils/errors.js";
 import { getPageState } from "./pageState.js";
 import { renderIslandToString } from "./preact.js";
@@ -38,46 +39,46 @@ import { islands } from "./registry.js";
  * @returns {VNode}
  */
 export function renderMarker(islandId, props = {}) {
-	// Built once up front so every throw below names both the island and the page.
-	const state = getPageState();
-	/** @type {IslandErrorTokens} */
-	const errorTokens = { islandId, sourceFilePath: state.sourceFilePath };
+  // Built once up front so every throw below names both the island and the page.
+  const state = getPageState();
+  /** @type {IslandErrorTokens} */
+  const errorTokens = { islandId, sourceFilePath: state.sourceFilePath };
 
-	const island = lookupIsland(errorTokens);
-	const { directive, cleanProps } = processProps(props, errorTokens);
+  const island = lookupIsland(errorTokens);
+  const { directive, cleanProps } = processProps(props, errorTokens);
 
-	state.usedIslands.add(islandId);
+  state.usedIslands.add(islandId);
 
-	// Rejected here rather than left to serializeProps because whether a VNode
-	// is cyclic depends on whether the SSR pass traversed it — an island that
-	// ignores its children would serialize Preact's internals into data-props
-	// and fail in the browser instead of throwing during the build.
-	//
-	// Matched by value, and the value that matters is `false`: `{cond && <X />}`
-	// leaves `children: false` when cond is false, which every conditional
-	// render produces and which must not throw. null/undefined get the same
-	// pass. Everything else is a nesting attempt and is rejected on sight —
-	// including `[]` from an empty `.map()`, which nested nothing either but
-	// isn't worth a second arm to tell apart.
-	const { children } = cleanProps;
-	if (children != null && children !== false) {
-		throw new CastroError("ISLAND_HAS_CHILDREN", errorTokens);
-	}
+  // Rejected here rather than left to serializeProps because whether a VNode
+  // is cyclic depends on whether the SSR pass traversed it — an island that
+  // ignores its children would serialize Preact's internals into data-props
+  // and fail in the browser instead of throwing during the build.
+  //
+  // Matched by value, and the value that matters is `false`: `{cond && <X />}`
+  // leaves `children: false` when cond is false, which every conditional
+  // render produces and which must not throw. null/undefined get the same
+  // pass. Everything else is a nesting attempt and is rejected on sight —
+  // including `[]` from an empty `.map()`, which nested nothing either but
+  // isn't worth a second arm to tell apart.
+  const { children } = cleanProps;
+  if (children != null && children !== false) {
+    throw new CastroError("ISLAND_HAS_CHILDREN", errorTokens);
+  }
 
-	const ssrHtml = renderIslandSSR(island, cleanProps, errorTokens);
-	const dataProps = serializeProps(cleanProps, errorTokens);
+  const ssrHtml = renderIslandSSR(island, cleanProps, errorTokens);
+  const dataProps = serializeProps(cleanProps, errorTokens);
 
-	/**
-	 * Build the <castro-island> VNode that the hydration runtime upgrades in the
-	 * browser. The SSR HTML is injected as the element's children so the page is
-	 * interactive-looking before any JS runs.
-	 */
-	return h("castro-island", {
-		directive,
-		import: island.publicJsPath,
-		"data-props": dataProps,
-		dangerouslySetInnerHTML: { __html: ssrHtml },
-	});
+  /**
+   * Build the <castro-island> VNode that the hydration runtime upgrades in the
+   * browser. The SSR HTML is injected as the element's children so the page is
+   * interactive-looking before any JS runs.
+   */
+  return h("castro-island", {
+    directive,
+    import: island.publicJsPath,
+    "data-props": dataProps,
+    dangerouslySetInnerHTML: { __html: ssrHtml },
+  });
 }
 
 /**
@@ -87,13 +88,13 @@ export function renderMarker(islandId, props = {}) {
  * @returns {IslandComponent}
  */
 function lookupIsland(errorTokens) {
-	const island = islands.getIsland(errorTokens.islandId);
+  const island = islands.getIsland(errorTokens.islandId);
 
-	if (!island) {
-		throw new CastroError("ISLAND_NOT_FOUND", errorTokens);
-	}
+  if (!island) {
+    throw new CastroError("ISLAND_NOT_FOUND", errorTokens);
+  }
 
-	return island;
+  return island;
 }
 
 /**
@@ -106,14 +107,14 @@ function lookupIsland(errorTokens) {
  * @returns {string}
  */
 function renderIslandSSR(island, cleanProps, errorTokens) {
-	try {
-		return renderIslandToString(island.ssrModule.default, cleanProps);
-	} catch (err) {
-		throw new CastroError("ISLAND_RENDER_FAILED", {
-			...errorTokens,
-			errorMessage: err instanceof Error ? err.message : String(err),
-		});
-	}
+  try {
+    return renderIslandToString(island.ssrModule.default, cleanProps);
+  } catch (err) {
+    throw new CastroError("ISLAND_RENDER_FAILED", {
+      ...errorTokens,
+      errorMessage: err instanceof Error ? err.message : String(err),
+    });
+  }
 }
 
 /**
@@ -126,14 +127,14 @@ function renderIslandSSR(island, cleanProps, errorTokens) {
  * @returns {string}
  */
 function serializeProps(cleanProps, errorTokens) {
-	try {
-		return JSON.stringify(cleanProps);
-	} catch (err) {
-		throw new CastroError("ISLAND_PROPS_NOT_SERIALIZABLE", {
-			...errorTokens,
-			errorMessage: err instanceof Error ? err.message : String(err),
-		});
-	}
+  try {
+    return JSON.stringify(cleanProps);
+  } catch (err) {
+    throw new CastroError("ISLAND_PROPS_NOT_SERIALIZABLE", {
+      ...errorTokens,
+      errorMessage: err instanceof Error ? err.message : String(err),
+    });
+  }
 }
 
 /** @type {Directive[]} */
@@ -149,22 +150,22 @@ const DEFAULT_DIRECTIVE = "comrade:visible";
  * @returns {{ directive: Directive, cleanProps: Record<string, any> }}
  */
 function processProps(props, errorTokens) {
-	const specified = DIRECTIVES.filter((d) => d in props);
+  const specified = DIRECTIVES.filter((d) => d in props);
 
-	// Each directive is independently optional in the JSX types, so nothing stops
-	// an island carrying two. Picking one by array order would silently demote a
-	// directive the author wrote on purpose.
-	if (specified.length > 1) {
-		throw new CastroError("ISLAND_MULTIPLE_DIRECTIVES", {
-			...errorTokens,
-			directives: specified,
-		});
-	}
+  // Each directive is independently optional in the JSX types, so nothing stops
+  // an island carrying two. Picking one by array order would silently demote a
+  // directive the author wrote on purpose.
+  if (specified.length > 1) {
+    throw new CastroError("ISLAND_MULTIPLE_DIRECTIVES", {
+      ...errorTokens,
+      directives: specified,
+    });
+  }
 
-	const cleanProps = { ...props };
-	for (const directive of DIRECTIVES) {
-		delete cleanProps[directive];
-	}
+  const cleanProps = { ...props };
+  for (const directive of DIRECTIVES) {
+    delete cleanProps[directive];
+  }
 
-	return { cleanProps, directive: specified[0] ?? DEFAULT_DIRECTIVE };
+  return { cleanProps, directive: specified[0] ?? DEFAULT_DIRECTIVE };
 }
