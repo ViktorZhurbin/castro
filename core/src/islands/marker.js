@@ -11,10 +11,6 @@
  *
  * Also records which islands the page uses (into the per-page state from
  * pageState.js), so only their CSS gets injected.
- *
- * Islands take props, never children: everything crossing into the browser
- * goes through the `data-props` JSON, so children are rejected here rather
- * than quietly dropped at hydration.
  */
 
 import { h } from "preact";
@@ -28,6 +24,9 @@ import { islands } from "./registry.js";
  * @import { Directive, IslandComponent } from "../types.d.ts"
  *
  * @typedef {IslandComponent & { ssrModule: NonNullable<IslandComponent["ssrModule"]> }} LoadedIsland
+ *
+ * @typedef {{ islandId: string, sourceFilePath: string }} IslandErrorTokens
+ * The pair every island error carries: which island, and the page rendering it.
  */
 
 /**
@@ -41,9 +40,12 @@ import { islands } from "./registry.js";
  * @returns {VNode}
  */
 export function renderMarker(islandId, props = {}) {
-	// Read before the lookup so every island error below can name the page.
+	// Built once up front so every throw below names both the island and the page.
 	const state = getPageState();
-	const island = lookupIsland(islandId, state.sourceFilePath);
+	/** @type {IslandErrorTokens} */
+	const errorTokens = { islandId, sourceFilePath: state.sourceFilePath };
+
+	const island = lookupIsland(errorTokens);
 	const { directive, cleanProps } = processProps(props);
 
 	state.usedIslands.add(islandId);
@@ -52,20 +54,20 @@ export function renderMarker(islandId, props = {}) {
 	// is cyclic depends on whether the SSR pass traversed it — an island that
 	// ignores its children would serialize Preact's internals into data-props
 	// and fail in the browser instead of throwing during the build.
-	if ("children" in cleanProps) {
-		throw new CastroError("ISLAND_HAS_CHILDREN", {
-			islandId,
-			sourceFilePath: state.sourceFilePath,
-		});
+	//
+	// Matched by value, and the value that matters is `false`: `{cond && <X />}`
+	// leaves `children: false` when cond is false, which every conditional
+	// render produces and which must not throw. null/undefined get the same
+	// pass. Everything else is a nesting attempt and is rejected on sight —
+	// including `[]` from an empty `.map()`, which nested nothing either but
+	// isn't worth a second arm to tell apart.
+	const { children } = cleanProps;
+	if (children != null && children !== false) {
+		throw new CastroError("ISLAND_HAS_CHILDREN", errorTokens);
 	}
 
-	const ssrHtml = renderIslandSSR(
-		island,
-		islandId,
-		cleanProps,
-		state.sourceFilePath,
-	);
-	const dataProps = serializeProps(islandId, cleanProps, state.sourceFilePath);
+	const ssrHtml = renderIslandSSR(island, cleanProps, errorTokens);
+	const dataProps = serializeProps(cleanProps, errorTokens);
 
 	/**
 	 * Build the <castro-island> VNode that the hydration runtime upgrades in the
@@ -83,15 +85,14 @@ export function renderMarker(islandId, props = {}) {
 /**
  * Look up a compiled island and assert its SSR module is loaded.
  *
- * @param {string} islandId
- * @param {string} sourceFilePath
+ * @param {IslandErrorTokens} errorTokens
  * @returns {LoadedIsland}
  */
-function lookupIsland(islandId, sourceFilePath) {
-	const island = islands.getIsland(islandId);
+function lookupIsland(errorTokens) {
+	const island = islands.getIsland(errorTokens.islandId);
 
 	if (!island?.ssrModule) {
-		throw new CastroError("ISLAND_NOT_FOUND", { islandId, sourceFilePath });
+		throw new CastroError("ISLAND_NOT_FOUND", errorTokens);
 	}
 
 	return /** @type {LoadedIsland} */ (island);
@@ -102,18 +103,16 @@ function lookupIsland(islandId, sourceFilePath) {
  * a CastroError so the build surfaces a structured error instead of a raw stack.
  *
  * @param {LoadedIsland} island
- * @param {string} islandId
  * @param {Record<string, any>} cleanProps
- * @param {string} sourceFilePath
+ * @param {IslandErrorTokens} errorTokens
  * @returns {string}
  */
-function renderIslandSSR(island, islandId, cleanProps, sourceFilePath) {
+function renderIslandSSR(island, cleanProps, errorTokens) {
 	try {
 		return renderIslandToString(island.ssrModule.default, cleanProps);
 	} catch (err) {
 		throw new CastroError("ISLAND_RENDER_FAILED", {
-			islandId,
-			sourceFilePath,
+			...errorTokens,
 			errorMessage: err instanceof Error ? err.message : String(err),
 		});
 	}
@@ -124,18 +123,16 @@ function renderIslandSSR(island, islandId, cleanProps, sourceFilePath) {
  * in a CastroError so a bad prop names its island instead of surfacing as a
  * raw V8 message.
  *
- * @param {string} islandId
  * @param {Record<string, any>} cleanProps
- * @param {string} sourceFilePath
+ * @param {IslandErrorTokens} errorTokens
  * @returns {string}
  */
-function serializeProps(islandId, cleanProps, sourceFilePath) {
+function serializeProps(cleanProps, errorTokens) {
 	try {
 		return JSON.stringify(cleanProps);
 	} catch (err) {
 		throw new CastroError("ISLAND_PROPS_NOT_SERIALIZABLE", {
-			islandId,
-			sourceFilePath,
+			...errorTokens,
 			errorMessage: err instanceof Error ? err.message : String(err),
 		});
 	}
@@ -153,9 +150,7 @@ const DEFAULT_DIRECTIVE = "comrade:visible";
  * @returns {{ directive: Directive, cleanProps: Record<string, any> }}
  */
 function processProps(props = {}) {
-	// Matched by value, not key presence: the directives are typed `boolean`, so
-	// `comrade:eager={false}` is valid TS that has to read as off, not as on.
-	const specifiedDirective = DIRECTIVES.find((d) => props[d]);
+	const specifiedDirective = DIRECTIVES.find((d) => d in props);
 
 	const cleanProps = { ...props };
 	for (const directive of DIRECTIVES) {

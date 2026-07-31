@@ -26,8 +26,10 @@ import { PROJECT_ROOT } from "../constants.js";
 const CACHE_DIR = join(PROJECT_ROOT, "node_modules/.cache/castro");
 
 /**
- * Clean cache directory. Called at the start of every build so stale
- * content-hashed modules from prior builds don't accumulate on disk.
+ * Clean cache directory. Called once at CLI startup, not per build: the
+ * content hash in each filename already isolates runs from each other, and
+ * Bun caches modules by path in memory, so wiping mid-session buys no
+ * invalidation — just an rmSync on every dev rebuild.
  */
 export function cleanupCacheDir() {
 	rmSync(CACHE_DIR, { recursive: true, force: true });

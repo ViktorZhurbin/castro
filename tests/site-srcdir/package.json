@@ -5,7 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"build": "castro build",
-		"test": "bun test"
+		"test": "bun test",
+		"type-check": "tsc"
 	},
 	"dependencies": {
 		"@vktrz/castro": "workspace:*",

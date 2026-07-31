@@ -1,3 +1,6 @@
+import { join } from "node:path/posix";
+import { PROJECT_ROOT } from "../constants.js";
+
 /** @type {string[] | null} */
 let depsCache = null;
 
@@ -13,14 +16,15 @@ let depsCache = null;
  * tsconfig `paths` aliases: Bun resolves imports that aren't in the external
  * list, so local aliases like `@components/` pass through to path resolution.
  *
- * Results are cached for the duration of a single build.
+ * Cached for the process lifetime: a dependency added mid-session needs a
+ * restart to be picked up.
  *
  * @returns {Promise<string[]>}
  */
 export async function getProjectDependencies() {
 	if (depsCache) return depsCache;
 
-	const pkg = await Bun.file("package.json").json();
+	const pkg = await Bun.file(join(PROJECT_ROOT, "package.json")).json();
 
 	depsCache = Object.keys({
 		...pkg.dependencies,

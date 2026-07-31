@@ -1,6 +1,8 @@
 import Counter from "./Counter.island.tsx";
 
-export default function Section({ title }) {
+type Props = { title: string };
+
+export default function Section({ title }: Props) {
 	return (
 		<section>
 			<h2>{title}</h2>

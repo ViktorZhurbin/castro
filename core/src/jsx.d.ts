@@ -3,8 +3,6 @@
  *
  * Declares island hydration directives as valid props on all Preact components.
  *
- * Set to `false`, a directive is ignored and the default
- * (`comrade:visible`) applies — there is no "don't hydrate" state.
  */
 
 declare module "preact" {
@@ -19,7 +17,7 @@ declare module "preact" {
 			 * <Counter initial={5} comrade:eager />
 			 * ```
 			 */
-			"comrade:eager"?: boolean;
+			"comrade:eager"?: true;
 
 			/**
 			 * Idle hydration - loads JavaScript after page load, when browser is idle.
@@ -31,7 +29,7 @@ declare module "preact" {
 			 * <Counter initial={5} comrade:patient />
 			 * ```
 			 */
-			"comrade:patient"?: boolean;
+			"comrade:patient"?: true;
 
 			/**
 			 * Lazy hydration - loads JavaScript when component scrolls into viewport.
@@ -48,7 +46,7 @@ declare module "preact" {
 			 * <Counter initial={5} />
 			 * ```
 			 */
-			"comrade:visible"?: boolean;
+			"comrade:visible"?: true;
 		}
 	}
 }

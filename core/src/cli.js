@@ -13,6 +13,12 @@ import { renderErrorToTerminal } from "./utils/renderError.js";
 const command = process.argv[2] || "dev";
 
 try {
+	// Dynamic, like every import below it: cache.js reaches constants.js and so
+	// evaluates config.js, and a config that throws at module scope has to land
+	// in this catch to render as CONFIG_LOAD_FAILED rather than a raw trace.
+	const { cleanupCacheDir } = await import("./utils/cache.js");
+	cleanupCacheDir();
+
 	switch (command) {
 		case "dev": {
 			const { startDevServer } = await import("./dev/server.js");

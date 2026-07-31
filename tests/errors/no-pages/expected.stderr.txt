@@ -1,4 +1,4 @@
 ❌ No pages found
-   The revolution requires at least one page in pages
+   The revolution requires at least one page in pages/
 
    → Create a .md or .jsx/.tsx file in pages/ to continue

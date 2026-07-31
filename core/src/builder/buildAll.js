@@ -24,7 +24,6 @@ import { runWithPageState } from "../islands/pageState.js";
 import { islands } from "../islands/registry.js";
 import { layouts } from "../layouts.js";
 import { messages } from "../messages/index.js";
-import { cleanupCacheDir } from "../utils/cache.js";
 import { CastroError } from "../utils/errors.js";
 import { buildPage } from "./buildPage.js";
 import { vendorClientDeps } from "./vendor.js";
@@ -32,7 +31,6 @@ import { vendorClientDeps } from "./vendor.js";
 export async function buildAll() {
 	const isProd = process.env.NODE_ENV === "production";
 
-	cleanupCacheDir();
 	console.info(messages.build.starting);
 
 	// Fresh build: wipe and recreate output dir.
@@ -60,9 +58,10 @@ export async function buildAll() {
 		[...pagesMap.entries()].map(
 			async ([relativeOutputPath, relativeSourcePath]) => {
 				const sourceFilePath = join(PAGES_DIR, relativeSourcePath);
+				const outputFilePath = join(OUTPUT_DIR, relativeOutputPath);
 
 				const { usedIslands } = await runWithPageState(sourceFilePath, () =>
-					buildPage(sourceFilePath, relativeSourcePath),
+					buildPage(sourceFilePath, outputFilePath),
 				);
 
 				// Log on completion so lines appear in the order pages actually finish

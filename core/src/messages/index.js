@@ -103,7 +103,7 @@ export const messages = {
 
 		NO_PAGES: ({ dir }) => ({
 			title: "No pages found",
-			message: `The revolution requires at least one page in ${dir}`,
+			message: `The revolution requires at least one page in ${dir}/`,
 			hint: "Create a .md or .jsx/.tsx file in pages/ to continue",
 		}),
 

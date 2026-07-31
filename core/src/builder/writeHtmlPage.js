@@ -65,18 +65,18 @@ async function collectHeadTags({ usedIslands, cssTags = [] }) {
 }
 
 /** @type {string | null} */
-let _liveReloadTagCache = null;
+let liveReloadTagCache = null;
 
 async function getLiveReloadTag() {
-	if (!_liveReloadTagCache) {
+	if (!liveReloadTagCache) {
 		const source = await Bun.file(
 			join(import.meta.dir, "../dev/liveReload.js"),
 		).text();
 
-		_liveReloadTagCache = `<script type="module">${source}</script>`;
+		liveReloadTagCache = `<script type="module">${source}</script>`;
 	}
 
-	return _liveReloadTagCache;
+	return liveReloadTagCache;
 }
 
 /**

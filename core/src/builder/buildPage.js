@@ -1,7 +1,6 @@
-import { dirname, extname, join } from "node:path/posix";
+import { dirname, extname } from "node:path/posix";
 import { h } from "preact";
 import { config } from "../config.js";
-import { OUTPUT_DIR, PAGE_EXT_PATTERN } from "../constants.js";
 import { CastroError } from "../utils/errors.js";
 import { compileJSX } from "./compileJsx.js";
 import { parseFrontmatter } from "./markdown.js";
@@ -9,19 +8,15 @@ import { renderPage } from "./renderPage.js";
 import { writeCSSFiles } from "./writeCss.js";
 
 /**
+ * Both paths come from the caller: scanPages() already derived the route when
+ * it checked for conflicts, so re-deriving it here would be a second copy of
+ * the source→route mapping to keep in sync.
+ *
  * @param {string} sourceFilePath
- * @param {string} relativeSourcePath
+ * @param {string} outputFilePath
  */
-export async function buildPage(sourceFilePath, relativeSourcePath) {
-	const sourceExt = extname(relativeSourcePath);
-	const relativeOutputPath = relativeSourcePath.replace(
-		PAGE_EXT_PATTERN,
-		".html",
-	);
-
-	const outputFilePath = join(OUTPUT_DIR, relativeOutputPath);
-
-	if (sourceExt === ".md") {
+export async function buildPage(sourceFilePath, outputFilePath) {
+	if (extname(sourceFilePath) === ".md") {
 		await buildMarkdownPage(sourceFilePath, outputFilePath);
 	} else {
 		await buildJSXPage(sourceFilePath, outputFilePath);

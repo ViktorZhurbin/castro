@@ -1,5 +1,8 @@
+import type { ComponentChildren } from "preact";
 import styles from "./Card.module.css";
 
-export default function Card({ children }) {
+type Props = { children: ComponentChildren };
+
+export default function Card({ children }: Props) {
 	return <div class={styles.card}>{children}</div>;
 }
