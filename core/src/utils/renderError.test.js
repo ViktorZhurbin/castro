@@ -12,7 +12,7 @@ import { renderErrorToTerminal } from "./renderError.js";
  * @param {string} s
  */
 function stripAnsi(s) {
-	// biome-ignore lint/suspicious/noControlCharactersInRegex: stripping ANSI
+	// oxlint-disable-next-line no-control-regex
 	return s.replace(/\x1b\[[0-9;]*m/g, "");
 }
 

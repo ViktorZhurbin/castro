@@ -26,7 +26,6 @@ try {
 			break;
 		}
 
-		// biome-ignore lint/suspicious/noFallthroughSwitchClause: process.exit() would do the job
 		case "build": {
 			process.env.NODE_ENV = "production";
 			const { buildAll } = await import("./builder/buildAll.js");

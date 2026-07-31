@@ -25,5 +25,5 @@ function themeInit(storageKey: string, dark: string, light: string) {
 
 		document.documentElement.setAttribute("data-theme", theme);
 		localStorage.setItem(storageKey, theme);
-	} catch (_) {}
+	} catch {}
 }

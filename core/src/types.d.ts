@@ -1,4 +1,5 @@
 /// <reference types="bun" />
+// oxlint-disable-next-line typescript/triple-slash-reference
 /// <reference path="./jsx.d.ts" />
 
 /**

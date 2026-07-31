@@ -5,7 +5,7 @@ import { h } from "preact";
  */
 export function ClientScript(props: {
 	args?: readonly unknown[];
-	// biome-ignore lint/suspicious/noExplicitAny: this is fine :)
+	// oxlint-disable-next-line typescript/no-explicit-any
 	fn: (...args: any[]) => unknown;
 }) {
 	const { fn, args = [] } = props;

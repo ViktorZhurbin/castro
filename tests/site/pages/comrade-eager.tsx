@@ -12,6 +12,7 @@ export default function EagerTest() {
 			    needs the opt-out below (see types/islandContracts.tsx). */}
 			{/* @ts-expect-error */}
 			<Counter initial={10} comrade:eager>
+				{/* oxlint-disable-next-line no-constant-binary-expression */}
 				{false && <span>never</span>}
 			</Counter>
 		</div>

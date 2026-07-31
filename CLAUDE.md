@@ -13,9 +13,9 @@ Peer reference: Fresh, early Astro, Eleventy + is-land, Marko, Capri, Mastro, Il
 ```
 bun run dev          # dev server with live reload (website playground)
 bun run build        # production build (website playground)
-bun format           # Biome (tabs, double quotes) + Prettier for Markdown
+bun format           # oxfmt
 bun check            # format + lint + type-check/knip + all tests + every build (run before committing)
-bun lint             # Biome lint with --write
+bun lint             # oxlint
 bun test:site        # build and verify test sites only
 bun test:errors      # run error DX golden suite (tests/errors/)
 bun loc              # LOC count (core only, excludes messages/)
@@ -71,7 +71,7 @@ File watchers on `pages/`, `layouts/`, `components/`, and `public/` rebuild on c
 
 ## Conventions
 
-- **Biome** for linting/formatting.
+- **Oxlint/Oxfmt** for linting/formatting.
 - **JSDoc** for all types and function intent. `.d.ts` files only for shared/reusable types.
 - **Bun-native APIs** over Node equivalents — `Bun.file().exists()`, `Bun.file().json()`, etc. If going async requires changing a caller, do it explicitly rather than falling back to Node.
 - **No `createElement`** — use JSX or `h()` from preact.
