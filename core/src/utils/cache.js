@@ -26,7 +26,8 @@ import { PROJECT_ROOT } from "../constants.js";
 const CACHE_DIR = join(PROJECT_ROOT, "node_modules/.cache/castro");
 
 /**
- * Clean cache directory. Called once at startup to ensure fresh state.
+ * Clean cache directory. Called at the start of every build so stale
+ * content-hashed modules from prior builds don't accumulate on disk.
  */
 export function cleanupCacheDir() {
 	rmSync(CACHE_DIR, { recursive: true, force: true });

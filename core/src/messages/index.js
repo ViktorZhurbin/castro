@@ -27,8 +27,9 @@ export const messages = {
 
 	build: {
 		starting: "Realizing the Five-Year Plan...",
-		/** @param {string} count */
-		success: (count) => `✓ Delivered ${count} pages to the people.`,
+		/** @param {number} count */
+		success: (count) =>
+			`✓ Delivered ${count} page${count === 1 ? "" : "s"} to the people.`,
 		/** @param {string} source @param {string} dest */
 		writingFile: (source, dest) => `Writing ${source} → ${dest}`,
 	},

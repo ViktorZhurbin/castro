@@ -47,22 +47,21 @@ class LayoutsRegistry {
 
 	/**
 	 * Resolve a page's `layout` meta field to a concrete layout component.
-	 * Anything other than a string falls back to `"default"`.
+	 * Returns the id alongside so a missing layout can name what it looked for.
 	 *
-	 * @param {unknown} layout
+	 * @param {LayoutId} [layout]
 	 * @returns {{ id: LayoutId, component: LayoutComponent | undefined }}
 	 */
-	resolve(layout) {
-		const id = typeof layout === "string" ? layout : "default";
-
-		return { id, component: this.#layouts.get(id) };
+	resolve(layout = "default") {
+		return { id: layout, component: this.#layouts.get(layout) };
 	}
 
 	/**
 	 * @param {LayoutId} id
+	 * @returns {string[]}
 	 */
 	getCssTags(id) {
-		return this.#cssTags.get(id);
+		return this.#cssTags.get(id) ?? [];
 	}
 
 	/**

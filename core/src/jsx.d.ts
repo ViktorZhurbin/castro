@@ -2,6 +2,9 @@
  * Castro Type Declarations
  *
  * Declares island hydration directives as valid props on all Preact components.
+ *
+ * Set to `false`, a directive is ignored and the default
+ * (`comrade:visible`) applies — there is no "don't hydrate" state.
  */
 
 declare module "preact" {

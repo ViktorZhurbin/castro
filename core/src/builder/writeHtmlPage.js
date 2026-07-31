@@ -98,7 +98,7 @@ function injectTags(html, tags) {
 	// Nothing requires a layout to render a <head> or a <body> — one that
 	// returns a bare fragment leaves no anchor. String.replace with no match
 	// is a silent no-op, so without this branch the tags (CSS, import map,
-	// island runtime, hydration styles) would just vanish. Prepend instead.
+	// island runtime, hydration styles) would just vanish.
 	const output = anchor.test(html)
 		? html.replace(anchor, (match) => `${injection}\n${match}`)
 		: `${injection}\n${html}`;

@@ -1,0 +1,27 @@
+// Shared by every fixture in tests/errors/. Each one is a whole castro site,
+// so they all need identical compiler options — a per-fixture copy would be 17
+// files to keep in sync.
+//
+// `include`/`exclude` are deliberately absent: TypeScript resolves those
+// relative to the config that declares them, so they cannot live in a base.
+// Omitting them lets each fixture default to "everything under my directory",
+// which is what a fixture wants anyway.
+{
+	"compilerOptions": {
+		"target": "ES2022",
+		"lib": ["ES2022", "DOM"],
+		"jsx": "react-jsx",
+		"jsxImportSource": "preact",
+		"types": ["@vktrz/castro"],
+
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+
+		"noEmit": true,
+		"isolatedModules": true,
+
+		"strict": true,
+		"forceConsistentCasingInFileNames": true,
+		"skipLibCheck": true
+	}
+}

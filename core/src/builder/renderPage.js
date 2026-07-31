@@ -51,7 +51,7 @@ export async function renderPage({
 		});
 	}
 
-	cssTags.push(...(layouts.getCssTags(layout.id) ?? []));
+	cssTags.push(...layouts.getCssTags(layout.id));
 
 	const title =
 		pageMeta.title || basename(sourceFilePath).replace(PAGE_EXT_PATTERN, "");

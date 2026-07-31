@@ -48,10 +48,6 @@ export function renderMarker(islandId, props = {}) {
 
 	state.usedIslands.add(islandId);
 
-	// The rule is all children, not just unserializable ones. A string child
-	// would survive the JSON trip and a VNode wouldn't; one flat rule beats an
-	// API where nesting works until the day it doesn't.
-	//
 	// Rejected here rather than left to serializeProps because whether a VNode
 	// is cyclic depends on whether the SSR pass traversed it — an island that
 	// ignores its children would serialize Preact's internals into data-props

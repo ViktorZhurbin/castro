@@ -85,12 +85,14 @@ Plain strings, not `ErrorContent` — these aren't part of the error payload, ju
 ```javascript
 // Good
 writingFile: (source, dest) => `Writing ${source} → ${dest}`,
-success: (count) => `✓ Delivered ${count} pages to the people.`,
+success: (count) => `✓ Delivered ${count} page${count === 1 ? "" : "s"} to the people.`,
 
-// Bad - Emoji clutter
+// Bad - Emoji clutter, and "1 pages" on every single-page build
 writingFile: (source, dest) => `📝 Distributing ${source} → ${dest}`,
 success: (count) => `✅ Delivered ${count} pages to the people.`,
 ```
+
+Any message interpolating a count reads correctly at 1 and at 0. Run it — a site with one page is the common case for a fresh project, and that's the first message it ever prints.
 
 ### Error Messages
 

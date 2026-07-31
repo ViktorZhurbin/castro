@@ -4,8 +4,8 @@
  * Pins that `srcDir` only shifts where sources are read from — output always
  * lands under dist/ with no srcDir segment. tests/site/ uses the default
  * srcDir: "." for which layout CSS already resolves to the right place, so it
- * cannot catch a srcDir leak (AUDIT.md #4). This site is the minimal fixture
- * that can: srcDir: "src" with a layout that imports CSS.
+ * cannot catch a srcDir leak. This site is the minimal fixture that can:
+ * srcDir: "src" with a layout that imports CSS.
  *
  * Usage: bun test:site
  */

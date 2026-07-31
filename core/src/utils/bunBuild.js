@@ -48,6 +48,7 @@ function bunLogToFrame(log) {
 	// position" so renderError.js's "no line to anchor to" guard drops the
 	// snippet instead of printing "file:-1:0".
 	const hasLine = !!position && position.line > 0;
+	const hasColumn = !!position && position.column >= 0;
 
 	return {
 		file: position?.file,
@@ -55,7 +56,7 @@ function bunLogToFrame(log) {
 		// Bun/esbuild columns are 0-based; normalize to 1-based here so the
 		// displayed location, the vscode:// link, and both caret renderers all
 		// share the editor convention. Renderers subtract 1 for the 0-based offset.
-		column: hasLine && position.column >= 0 ? position.column + 1 : undefined,
+		column: hasColumn ? position.column + 1 : undefined,
 		lineText: hasLine ? position.lineText : undefined,
 	};
 }

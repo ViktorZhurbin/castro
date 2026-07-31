@@ -84,31 +84,9 @@ export async function startDevServer() {
 				// Static file serving with clean URLs
 				// Real SSGs would handle more variations
 
-				// url.pathname keeps percent-encoding (e.g. "my%20file.txt"), which
-				// doesn't match the literal filename on disk. Real static hosts
-				// decode before lookup. A stray "%" (invalid escape) throws —
-				// fall back to the raw pathname rather than 500ing the dev server.
-				let pathname;
-				try {
-					pathname = decodeURIComponent(url.pathname);
-				} catch {
-					pathname = url.pathname;
-				}
+				const basePath = join(OUTPUT_DIR, url.pathname);
 
-				const basePath = join(OUTPUT_DIR, pathname);
-
-				// Two paths only decoding can produce, both fatal downstream:
-				// "%2e%2e%2f" survives new URL()'s "../" normalization and escapes
-				// OUTPUT_DIR, and "%00" becomes a NUL that makes Bun.file() throw.
-				// join() normalizes, so anything still inside starts with "dist/".
-				if (
-					pathname.includes("\0") ||
-					(basePath !== OUTPUT_DIR && !basePath.startsWith(`${OUTPUT_DIR}/`))
-				) {
-					return new Response("Not Found", { status: 404 });
-				}
-
-				if (pathname.endsWith("/")) {
+				if (url.pathname.endsWith("/")) {
 					// Trailing slash (e.g. /blog/) is an explicit directory request.
 					const dirIndexFile = Bun.file(join(basePath, "index.html"));
 
@@ -120,7 +98,7 @@ export async function startDevServer() {
 				// Assets (/style.css, /app.js) are served at their exact path.
 				// Missing ones fall through to the 404 handling below — browsers
 				// probe paths like /favicon.ico and /.well-known/… on every site.
-				if (extname(pathname)) {
+				if (extname(url.pathname)) {
 					const assetFile = Bun.file(basePath);
 
 					if (await assetFile.exists()) {
@@ -199,8 +177,11 @@ export async function startDevServer() {
 	watchDir(COMPONENTS_DIR);
 	watchDir(PUBLIC_DIR);
 
-	function logFileChanged(/** @type {string} */ sourceFilePath) {
-		console.info(styleText("gray", messages.files.changed(sourceFilePath)));
+	/**
+	 * @param {string} watchedFilePath
+	 */
+	function logFileChanged(watchedFilePath) {
+		console.info(styleText("gray", messages.files.changed(watchedFilePath)));
 	}
 
 	/** @type {TextEncoder} */
@@ -265,23 +246,23 @@ export async function startDevServer() {
 		for await (const event of watcher) {
 			if (!event.filename || isIgnored(event.filename)) continue;
 
-			const sourceFilePath = join(dir, event.filename);
+			const watchedFilePath = join(dir, event.filename);
 
 			try {
-				const stats = await stat(sourceFilePath);
+				const stats = await stat(watchedFilePath);
 				if (
 					stats.isDirectory() ||
-					modTimes.get(sourceFilePath) === stats.mtimeMs
+					modTimes.get(watchedFilePath) === stats.mtimeMs
 				) {
 					continue;
 				}
-				modTimes.set(sourceFilePath, stats.mtimeMs);
+				modTimes.set(watchedFilePath, stats.mtimeMs);
 			} catch {
 				// File was deleted, proceed to rebuild
-				modTimes.delete(sourceFilePath);
+				modTimes.delete(watchedFilePath);
 			}
 
-			logFileChanged(sourceFilePath);
+			logFileChanged(watchedFilePath);
 			rebuild.schedule();
 		}
 	}

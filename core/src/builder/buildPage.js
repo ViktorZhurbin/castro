@@ -1,7 +1,7 @@
 import { dirname, extname, join } from "node:path/posix";
 import { h } from "preact";
 import { config } from "../config.js";
-import { OUTPUT_DIR, PAGE_EXT_PATTERN, PAGES_DIR } from "../constants.js";
+import { OUTPUT_DIR, PAGE_EXT_PATTERN } from "../constants.js";
 import { CastroError } from "../utils/errors.js";
 import { compileJSX } from "./compileJsx.js";
 import { parseFrontmatter } from "./markdown.js";
@@ -9,9 +9,10 @@ import { renderPage } from "./renderPage.js";
 import { writeCSSFiles } from "./writeCss.js";
 
 /**
- * @param {string} relativeSourcePath - Relative path of source file
+ * @param {string} sourceFilePath
+ * @param {string} relativeSourcePath
  */
-export async function buildPage(relativeSourcePath) {
+export async function buildPage(sourceFilePath, relativeSourcePath) {
 	const sourceExt = extname(relativeSourcePath);
 	const relativeOutputPath = relativeSourcePath.replace(
 		PAGE_EXT_PATTERN,
@@ -19,7 +20,6 @@ export async function buildPage(relativeSourcePath) {
 	);
 
 	const outputFilePath = join(OUTPUT_DIR, relativeOutputPath);
-	const sourceFilePath = join(PAGES_DIR, relativeSourcePath);
 
 	if (sourceExt === ".md") {
 		await buildMarkdownPage(sourceFilePath, outputFilePath);

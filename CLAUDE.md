@@ -75,8 +75,9 @@ File watchers on `pages/`, `layouts/`, `components/`, and `public/` rebuild on c
 - **Bun-native APIs** over Node equivalents — `Bun.file().exists()`, `Bun.file().json()`, etc. If going async requires changing a caller, do it explicitly rather than falling back to Node.
 - **No `createElement`** — use JSX or `h()` from preact.
 - **No non-null assertions** (`foo!.bar`).
-- **Path names** say what the path is relative to. `relativeSourcePath`/`relativeOutputPath` are relative to a scan root and are what `Bun.Glob.scan()` yields; `sourceFilePath`/`outputFilePath` include that root and are what you pass to file APIs; `outputDir` is a directory, never a file. The scan roots themselves are the `*_DIR` constants in `constants.js`. Bare `sourcePath`/`outputPath`/`filePath` are banned — they were four names for two concepts, and the ambiguity hid the fact that `scanPages()` keys and values were both root-relative.
-- **Module docblocks**: 3-8 lines on the file's architectural role. **Inline comments**: answer "why?" or "why not the obvious way?" — delete anything that restates what the code says. **JSDoc prose**: only when name + types aren't enough.
+- **Path names** say what they're relative to: `relativeSourcePath`/`relativeOutputPath` are relative to a scan root (the `*_DIR` constants in `constants.js`) and are what `Bun.Glob.scan()` yields, while `sourceFilePath`/`outputFilePath` include that root and are what you pass to file APIs — `outputDir` is always a directory, and bare `sourcePath`/`outputPath`/`filePath` are banned as ambiguous between the two. If a name's JSDoc still has to say "absolute _or_ relative," it isn't done — that ambiguity is exactly what these names exist to remove.
+- **`type` over `interface`** in `.d.ts` — one declaration form, and no accidental declaration merging across files.
+- **Module docblocks**: 3-8 lines on the file's architectural role; **inline comments** answer "why?" or "why not the obvious way," never restate the code, and stop at the non-obvious fact — one that outgrows its code belongs in the docblock or here instead; **JSDoc prose** only when name + types aren't enough.
 - Never condescend. No "Educational note:" or "Simply put:" prefixes.
 
 ## Messages

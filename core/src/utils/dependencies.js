@@ -1,15 +1,5 @@
 /** @type {string[] | null} */
-let _depsCache = null;
-
-/**
- * Clears the cache so the next getProjectDependencies() call re-reads
- * package.json. The dev server rebuilds in-process across the whole session,
- * so without this a dependency added mid-session would stay bundled instead
- * of external until the process restarted.
- */
-export function resetDependenciesCache() {
-	_depsCache = null;
-}
+let depsCache = null;
 
 /**
  * Returns all package names from the project's package.json for use as
@@ -28,19 +18,15 @@ export function resetDependenciesCache() {
  * @returns {Promise<string[]>}
  */
 export async function getProjectDependencies() {
-	if (_depsCache) return _depsCache;
+	if (depsCache) return depsCache;
 
-	try {
-		const pkg = await Bun.file("package.json").json();
+	const pkg = await Bun.file("package.json").json();
 
-		_depsCache = Object.keys({
-			...pkg.dependencies,
-			...pkg.devDependencies,
-			...pkg.peerDependencies,
-		});
-	} catch {
-		_depsCache = [];
-	}
+	depsCache = Object.keys({
+		...pkg.dependencies,
+		...pkg.devDependencies,
+		...pkg.peerDependencies,
+	});
 
-	return _depsCache;
+	return depsCache;
 }

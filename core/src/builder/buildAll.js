@@ -24,7 +24,7 @@ import { runWithPageState } from "../islands/pageState.js";
 import { islands } from "../islands/registry.js";
 import { layouts } from "../layouts.js";
 import { messages } from "../messages/index.js";
-import { resetDependenciesCache } from "../utils/dependencies.js";
+import { cleanupCacheDir } from "../utils/cache.js";
 import { CastroError } from "../utils/errors.js";
 import { buildPage } from "./buildPage.js";
 import { vendorClientDeps } from "./vendor.js";
@@ -32,11 +32,8 @@ import { vendorClientDeps } from "./vendor.js";
 export async function buildAll() {
 	const isProd = process.env.NODE_ENV === "production";
 
+	cleanupCacheDir();
 	console.info(messages.build.starting);
-
-	// The dev server rebuilds in-process across the whole session; reset here
-	// so a package.json edit mid-session is picked up on the next build.
-	resetDependenciesCache();
 
 	// Fresh build: wipe and recreate output dir.
 	await rm(OUTPUT_DIR, { recursive: true, force: true });
@@ -62,9 +59,10 @@ export async function buildAll() {
 	const results = await Promise.all(
 		[...pagesMap.entries()].map(
 			async ([relativeOutputPath, relativeSourcePath]) => {
-				const { usedIslands } = await runWithPageState(
-					join(PAGES_DIR, relativeSourcePath),
-					() => buildPage(relativeSourcePath),
+				const sourceFilePath = join(PAGES_DIR, relativeSourcePath);
+
+				const { usedIslands } = await runWithPageState(sourceFilePath, () =>
+					buildPage(sourceFilePath, relativeSourcePath),
 				);
 
 				// Log on completion so lines appear in the order pages actually finish
@@ -89,7 +87,7 @@ export async function buildAll() {
 		await vendorClientDeps();
 	}
 
-	console.info(messages.build.success(`${pagesMap.size}`));
+	console.info(messages.build.success(pagesMap.size));
 }
 
 /**

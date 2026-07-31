@@ -158,7 +158,7 @@
       },
     },
     "tests/errors/route-conflict": {
-      "name": "@test-errors/route-conflicts",
+      "name": "@test-errors/route-conflict",
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
@@ -305,7 +305,7 @@
 
     "@test-errors/page-syntax-error": ["@test-errors/page-syntax-error@workspace:tests/errors/page-syntax-error"],
 
-    "@test-errors/route-conflicts": ["@test-errors/route-conflicts@workspace:tests/errors/route-conflict"],
+    "@test-errors/route-conflict": ["@test-errors/route-conflict@workspace:tests/errors/route-conflict"],
 
     "@test-errors/yaml-broken": ["@test-errors/yaml-broken@workspace:tests/errors/yaml-broken"],
 

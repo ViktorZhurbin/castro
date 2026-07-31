@@ -1,5 +1,5 @@
 {
-	"name": "@test-errors/route-conflicts",
+	"name": "@test-errors/route-conflict",
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {

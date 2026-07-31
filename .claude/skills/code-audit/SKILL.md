@@ -72,17 +72,12 @@ theme afterward.
 
 **Assume intent before defect.** Odd code is often load-bearing. Before
 "fixing" anything that implies a design decision: check the docs, then ask
-the user. Two findings that look like clear bugs have turned out to be
-deliberate design before — and the evidence of the intent was sometimes the
-odd code itself (e.g. a suspicious `display: none`).
+the user — odd code has turned out to be deliberate design more than once.
 
-**Verify by executing, not reading.** Two tricks that pay off:
-
-- Test runners often suppress `console.log` (Vitest does) — force a value
-  into an assertion failure (`expect({ actual }).toBe("SHOW")`) and read it
-  off the diff.
-- To prove a test actually guards something, break the source deliberately
-  and confirm it fails. This is how overstated findings get caught.
+**Verify by executing, not reading.** Force values into assertion failures
+to read them off the diff (Vitest suppresses `console.log`). To prove a test
+actually guards something, break the source and confirm it fails — this is
+how overstated findings get caught.
 
 **Record corrections.** When a finding turns out wrong or overstated, remove it from
 the output doc.
@@ -91,9 +86,47 @@ the output doc.
 expensive to reconstruct later — and it's what makes the doc usable for
 release planning.
 
-**One rationale, one home.** When a fix needs a comment explaining _why_,
-write it once, at the site a future reader will actually hit first — don't
-restate it elsewhere.
+## 4. Fix, batched by theme
+
+Only after the user signs off on the findings. Each fix is new code and gets
+judged as new code — the finding justifies changing something, it does not
+pre-approve whatever you write.
+
+**Re-read the project's stated non-goals before writing the fix.** Most
+codebases name things they deliberately don't handle (this one: `CLAUDE.md`
+→ "Two Forces"). A defensive branch, cache, or compatibility shim has to
+clear that bar like any feature would — an audit is an easy place to smuggle
+in code the project already decided not to have.
+
+**A fix that needs its own guard is bigger than the finding.** If patching X
+opens Y and you write a second block to close Y, stop and price the pair
+against just leaving X alone. Net lines matter, and so does the fact that
+the second block is now load-bearing for a problem that didn't exist before.
+
+**When the fix removes a capability, grep for what only existed to serve
+it.** Coercions, `| false` unions, optional returns, fallback branches — the
+feature goes, the scaffolding stays, and it reads as intentional forever
+after.
+
+**Prove the fix on the real path.** Tests passing isn't the same as running
+the thing. Anything touching user-facing output — messages, logs, error
+rendering — gets read with your own eyes at least once, including boring
+values (0, 1, empty).
+
+**Adding the Nth copy of a file is a finding, not a fixture.** Before a fix
+lands new fixtures/configs/test sites, check what the existing ones already
+duplicate. Widening an existing fixture usually beats cloning one.
+
+**Comment the non-obvious fact once, then stop.** Earn the lines by saying
+what a reader can't infer from the code — not by narrating the fix or
+restating the finding. Write it once, at the site a reader hits first; if it
+doesn't fit in a couple of lines, its home is the module docblock or
+`CLAUDE.md`.
+
+**A rename is finished only when the new rule holds everywhere.** If a
+renamed symbol's doc has to say "or" ("absolute or project-relative"), the
+name lost — that ambiguity is what the rename was supposed to kill. Sweep
+every call site and every doc comment, or don't rename.
 
 ## The output doc
 
@@ -101,6 +134,11 @@ One `AUDIT.md` file, amended in place as items resolve. It
 must be readable **cold**, by someone with no context:
 
 - findings, each with severity and a breaking/internal tag
+
+**Nothing committed may reference it.** Not a code comment, not a test, not
+another doc — no "see AUDIT.md #3". The doc is deleted at the end of the
+pass, so every pointer becomes a dead link. Where a fix needs the rationale,
+write it at that line instead of citing the doc.
 
 ## Retiring findings as they resolve
 

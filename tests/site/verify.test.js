@@ -114,7 +114,7 @@ test("comrade:eager has island runtime", async () => {
 
 // ------ Directive matched by value, not key presence ------
 // `comrade:eager={false}` is valid TS and must fall back to the default
-// directive; matching on `d in props` turned it on instead — see AUDIT.md #8.
+// directive; matching on `d in props` turned it on instead.
 
 test("comrade:eager={false} falls back to the default directive", async () => {
 	const html = await readHtml("eager-false.html");
@@ -154,7 +154,7 @@ test("shell-less layout page still gets its page CSS link", async () => {
 // ------ Nested layouts (layout id includes the directory) ------
 // layouts/nested/default.tsx deliberately shares a basename with
 // layouts/default.tsx. Before layout ids included the directory, whichever
-// one the glob visited last silently won for id "default" — see AUDIT.md #3.
+// one the glob visited last silently won for id "default".
 
 test("page selecting a nested layout by its directory-qualified id renders that layout", async () => {
 	const html = await readHtml("nested-layout.html");
