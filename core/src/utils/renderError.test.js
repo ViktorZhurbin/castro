@@ -4,7 +4,7 @@
  * golden-file tests can't catch when source happens to have leading whitespace.
  */
 
-import { test } from "bun:test";
+import { expect, test } from "bun:test";
 import { renderErrorToTerminal } from "./renderError.js";
 
 /**
@@ -34,18 +34,19 @@ test("caret lands directly under the first character when column is 1", () => {
 
 	const lines = out.split("\n");
 	const codeLine = lines.find((l) => l.includes("> 1"));
-	const caretLine = lines[lines.indexOf(/** @type {string} */ (codeLine)) + 1];
 
-	if (!codeLine || !caretLine) throw new Error("Missing code/caret lines");
+	expect(codeLine).toBeDefined();
+	// `find` types its result as possibly undefined; narrow for tsc since
+	// `indexOf` below needs a definite string.
+	if (!codeLine) throw new Error("unreachable");
 
-	const caretIdx = caretLine.indexOf("^");
+	const caretLine = lines[lines.indexOf(codeLine) + 1];
+	expect(caretLine).toBeDefined();
+
+	const caretIdx = /** @type {string} */ (caretLine).indexOf("^");
 	const firstCharIdx = codeLine.indexOf("abc");
 
-	if (caretIdx !== firstCharIdx) {
-		throw new Error(
-			`Caret at ${caretIdx}, first char at ${firstCharIdx} — expected match`,
-		);
-	}
+	expect(caretIdx).toBe(firstCharIdx);
 });
 
 test("frame with neither file nor line is skipped silently", () => {
@@ -58,9 +59,7 @@ test("frame with neither file nor line is skipped silently", () => {
 	);
 
 	// Should not contain a stray blank-line gutter for the empty frame.
-	if (out.includes("\n\n\n")) {
-		throw new Error("Empty frame produced spurious blank lines");
-	}
+	expect(out).not.toContain("\n\n\n");
 });
 
 test("snippet is skipped when lineText is present but line number is missing", () => {
@@ -72,7 +71,6 @@ test("snippet is skipped when lineText is present but line number is missing", (
 		}),
 	);
 
-	if (out.includes("> 0") || out.includes("abc")) {
-		throw new Error("Snippet rendered without a line number");
-	}
+	expect(out).not.toContain("> 0");
+	expect(out).not.toContain("abc");
 });

@@ -3,7 +3,7 @@
  * Validates payload structure only; terminal/browser rendering is manual.
  */
 
-import { test } from "bun:test";
+import { expect, test } from "bun:test";
 import { CastroError, toPayload } from "./errors.js";
 
 test("CastroError creates structured payload with tokens", () => {
@@ -13,31 +13,15 @@ test("CastroError creates structured payload with tokens", () => {
 		outputPath: "about.html",
 	});
 
-	if (!err.castroPayload) {
-		throw new Error("Missing castroPayload");
-	}
+	expect(err.castroPayload).toBeDefined();
 
 	const payload = err.castroPayload;
 
-	if (payload.code !== "ROUTE_CONFLICT") {
-		throw new Error(`Expected code ROUTE_CONFLICT, got ${payload.code}`);
-	}
-
-	if (!payload.title) {
-		throw new Error("Missing title");
-	}
-
-	if (!payload.message) {
-		throw new Error("Missing message");
-	}
-
-	if (!payload.hint) {
-		throw new Error("Missing hint");
-	}
-
-	if (!payload.notes || payload.notes.length === 0) {
-		throw new Error("Expected notes array");
-	}
+	expect(payload.code).toBe("ROUTE_CONFLICT");
+	expect(payload.title).toBeTruthy();
+	expect(payload.message).toBeTruthy();
+	expect(payload.hint).toBeTruthy();
+	expect(payload.notes?.length).toBeGreaterThan(0);
 });
 
 test("CastroError preserves frames in payload", () => {
@@ -60,30 +44,23 @@ test("CastroError preserves frames in payload", () => {
 
 	const payload = err.castroPayload;
 
-	if (!Array.isArray(payload.frames) || payload.frames.length !== 2) {
-		throw new Error(`Expected 2 frames, got ${payload.frames?.length}`);
-	}
+	expect(payload.frames).toBeArray();
+	expect(payload.frames).toHaveLength(2);
 
-	const [first] = payload.frames;
-	if (
-		first.file !== "/project/pages/about.md" ||
-		first.line !== 3 ||
-		first.column !== 1 ||
-		first.lineText !== "layout: missing"
-	) {
-		throw new Error("Frame fields not preserved correctly");
-	}
+	// Optional chaining (rather than destructuring) avoids relying on a
+	// type-narrowing `if` for `frames`, which is optional on the payload type.
+	const first = payload.frames?.[0];
+	expect(first?.file).toBe("/project/pages/about.md");
+	expect(first?.line).toBe(3);
+	expect(first?.column).toBe(1);
+	expect(first?.lineText).toBe("layout: missing");
 });
 
 test("CastroError defaults to empty frames array", () => {
 	const err = new CastroError("NO_DEFAULT_LAYOUT", { dir: "layouts" });
 
-	if (
-		!Array.isArray(err.castroPayload.frames) ||
-		err.castroPayload.frames.length !== 0
-	) {
-		throw new Error("Expected empty frames array by default");
-	}
+	expect(err.castroPayload.frames).toBeArray();
+	expect(err.castroPayload.frames).toHaveLength(0);
 });
 
 test("CastroError surfaces errorMessage token in payload", () => {
@@ -94,49 +71,28 @@ test("CastroError surfaces errorMessage token in payload", () => {
 
 	const payload = err.castroPayload;
 
-	if (payload.errorMessage !== "window is not defined") {
-		throw new Error(
-			`Expected errorMessage to be "window is not defined", got ${payload.errorMessage}`,
-		);
-	}
+	expect(payload.errorMessage).toBe("window is not defined");
 });
 
 test("toPayload passes through CastroError payload unchanged", () => {
 	const err = new CastroError("NO_PAGES", { dir: "pages/" });
 	const payload = toPayload(err);
 
-	if (payload !== err.castroPayload) {
-		throw new Error(
-			"toPayload should return the exact castroPayload reference",
-		);
-	}
-
-	if (payload.code !== "NO_PAGES") {
-		throw new Error(`Expected code NO_PAGES, got ${payload.code}`);
-	}
+	expect(payload).toBe(err.castroPayload);
+	expect(payload.code).toBe("NO_PAGES");
 });
 
 test("toPayload normalizes plain Error to UNEXPECTED", () => {
 	const plainErr = new Error("boom");
 	const payload = toPayload(plainErr);
 
-	if (payload.code !== "UNEXPECTED") {
-		throw new Error(`Expected UNEXPECTED, got ${payload.code}`);
-	}
-
-	if (payload.message !== "boom") {
-		throw new Error(`Expected message "boom", got ${payload.message}`);
-	}
+	expect(payload.code).toBe("UNEXPECTED");
+	expect(payload.message).toBe("boom");
 });
 
 test("toPayload normalizes non-Error thrown values", () => {
 	const payload = toPayload("something went wrong");
 
-	if (payload.code !== "UNEXPECTED") {
-		throw new Error(`Expected UNEXPECTED, got ${payload.code}`);
-	}
-
-	if (payload.message !== "something went wrong") {
-		throw new Error(`Expected string value as message, got ${payload.message}`);
-	}
+	expect(payload.code).toBe("UNEXPECTED");
+	expect(payload.message).toBe("something went wrong");
 });
