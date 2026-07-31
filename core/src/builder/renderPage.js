@@ -42,32 +42,25 @@ export async function renderPage({
 
 	const contentVNode = createContentVNode();
 
-	// Pages can opt out of layouts with `layout: false`
-	let vnodeToRender;
+	const layout = layouts.resolve(pageMeta.layout);
 
-	if (pageMeta.layout === false) {
-		vnodeToRender = contentVNode;
-	} else {
-		const layout = layouts.resolve(pageMeta.layout);
-
-		if (!layout.component) {
-			throw new CastroError("LAYOUT_NOT_FOUND", {
-				layoutId: layout.id,
-				sourceFilePath,
-			});
-		}
-
-		cssTags.push(...(layouts.getCssTags(layout.id) ?? []));
-
-		const title =
-			pageMeta.title || basename(sourceFilePath).replace(PAGE_EXT_PATTERN, "");
-
-		vnodeToRender = layout.component({
-			...pageMeta,
-			title,
-			children: contentVNode,
+	if (!layout.component) {
+		throw new CastroError("LAYOUT_NOT_FOUND", {
+			layoutId: layout.id,
+			sourceFilePath,
 		});
 	}
+
+	cssTags.push(...(layouts.getCssTags(layout.id) ?? []));
+
+	const title =
+		pageMeta.title || basename(sourceFilePath).replace(PAGE_EXT_PATTERN, "");
+
+	const vnodeToRender = layout.component({
+		...pageMeta,
+		title,
+		children: contentVNode,
+	});
 
 	const finalHtml = renderToString(vnodeToRender);
 

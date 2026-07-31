@@ -103,10 +103,9 @@ export type IslandComponent = {
 export type PageMeta = {
 	/**
 	 * Layout id: the path under `layouts/` with the extension stripped, so
-	 * `layouts/nested/default.tsx` is `"nested/default"`. Omit for `"default"`,
-	 * `false` to render the page with no layout at all.
+	 * `layouts/nested/default.tsx` is `"nested/default"`. Omit for `"default"`.
 	 */
-	layout?: string | false;
+	layout?: string;
 	title?: string;
 	[key: string]: unknown;
 };

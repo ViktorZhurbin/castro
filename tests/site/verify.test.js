@@ -122,32 +122,33 @@ test("comrade:eager={false} falls back to the default directive", async () => {
 	expect(html).not.toContain('directive="comrade:eager"');
 });
 
-// ------ layout: false (no <head>/<body> shell) ------
-// injectTags() anchors injection to </head> or </body>; a layout:false page
-// has neither. Guards against the fix regressing to a silent no-op that
-// drops the import map, runtime script, and CSS (writeHtmlPage.js).
+// ------ Shell-less layout (no <head>/<body> to anchor to) ------
+// injectTags() anchors injection to </head> or </body>; layouts/bare.tsx
+// returns a fragment with neither. Guards against the fix regressing to a
+// silent no-op that drops the import map, runtime script, and CSS
+// (writeHtmlPage.js).
 
-test("layout:false page still has DOCTYPE and content", async () => {
-	const html = await readHtml("layout-false.html");
+test("shell-less layout page still has DOCTYPE and content", async () => {
+	const html = await readHtml("bare-layout.html");
 	expect(html).toContain("<!DOCTYPE html>");
-	expect(html).toContain("<h1>No Layout Test</h1>");
+	expect(html).toContain("<h1>Bare Layout Test</h1>");
 });
 
-test("layout:false page still gets the island runtime and import map", async () => {
-	const html = await readHtml("layout-false.html");
+test("shell-less layout page still gets the island runtime and import map", async () => {
+	const html = await readHtml("bare-layout.html");
 	expect(html).toContain("castro-island.js");
 	expect(html).toContain('type="importmap"');
 });
 
-test("layout:false page still gets inline island CSS", async () => {
-	const html = await readHtml("layout-false.html");
+test("shell-less layout page still gets inline island CSS", async () => {
+	const html = await readHtml("bare-layout.html");
 	expect(html).toContain("<style>");
 	expect(html).toContain("color: red");
 });
 
-test("layout:false page still gets its page CSS link", async () => {
-	const html = await readHtml("layout-false.html");
-	expect(html).toContain('href="/layout-false.css"');
+test("shell-less layout page still gets its page CSS link", async () => {
+	const html = await readHtml("bare-layout.html");
+	expect(html).toContain('href="/bare-layout.css"');
 });
 
 // ------ Nested layouts (layout id includes the directory) ------

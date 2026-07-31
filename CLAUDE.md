@@ -26,7 +26,7 @@ bun loc              # LOC count (core only, excludes messages/)
 - `packages/` — `create-castro`, the project scaffolder
 - `EXPLORATIONS.md` — the scope/complexity filter for building anything new here; read it before starting a package
 - `website/` — demo playground that consumes castro. `website/tsconfig.json` is the canonical tsconfig; `packages/create-castro/template/tsconfig.json` shares the same `compilerOptions` but uses root-level `pages/`/`layouts/` instead of `src/`.
-- `tests/site/` — minimal test site exercising Preact islands, all hydration directives, CSS modules, signals, layout CSS extraction, `layout: false`, and nested layouts sharing a basename with the root one
+- `tests/site/` — minimal test site exercising Preact islands, all hydration directives, CSS modules, signals, layout CSS extraction, a shell-less layout, and nested layouts sharing a basename with the root one
 - `tests/site-srcdir/` — pins the `srcDir` output contract: a `srcDir: "src"` site with a layout that imports CSS, asserting the emitted URL never leaks the `src` segment
 - `tests/errors/` — isolated error cases for manual DX verification of the error overlay and terminal renderer
 
