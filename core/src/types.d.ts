@@ -15,7 +15,11 @@
  */
 
 export type ErrorTokens = {
-	ROUTE_CONFLICT: { route1: string; route2: string; outputPath: string };
+	ROUTE_CONFLICT: {
+		route1: string;
+		route2: string;
+		relativeOutputPath: string;
+	};
 	LAYOUT_NOT_FOUND: { layoutId: string; sourceFilePath: string };
 	NO_DEFAULT_LAYOUT: { dir: string };
 	LAYOUT_NO_DEFAULT_EXPORT: { file: string };
@@ -42,12 +46,12 @@ export type ErrorTokens = {
 export type ErrorCode = keyof ErrorTokens;
 
 /** A source location with optional context line from file. */
-export interface CodeFrame {
+export type CodeFrame = {
 	file?: string; // absolute path
 	line?: number;
 	column?: number;
 	lineText?: string; // source line for display
-}
+};
 
 export type ErrorContent = {
 	title: string; // "Route conflict", "Layout not found", etc.
@@ -63,10 +67,10 @@ export type ErrorMessages = {
 };
 
 /** Structured error payload: data + code, voice in messages/. */
-export interface CastroErrorPayload extends ErrorContent {
+export type CastroErrorPayload = ErrorContent & {
 	code: ErrorCode;
 	frames?: CodeFrame[]; // 0..N source locations
-}
+};
 
 // ─── Core types ──────────────────────────────────────────────────────── //
 
@@ -89,7 +93,7 @@ export type CastroConfig = {
 export type DefaultConfig = Required<Pick<CastroConfig, "port" | "srcDir">>;
 
 export type IslandComponent = {
-	sourcePath: string;
+	sourceFilePath: string;
 	publicJsPath: string;
 	cssContent?: string;
 	ssrCode: string;

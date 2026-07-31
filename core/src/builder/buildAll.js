@@ -60,24 +60,26 @@ export async function buildAll() {
 
 	// Real SSGs would cap concurrency to bound Bun.build's memory pressure
 	const results = await Promise.all(
-		[...pagesMap.entries()].map(async ([outputPath, sourcePath]) => {
-			const { usedIslands } = await runWithPageState(
-				join(PAGES_DIR, sourcePath),
-				() => buildPage(sourcePath),
-			);
-
-			// Log on completion so lines appear in the order pages actually finish
-			if (isProd) {
-				console.info(
-					messages.build.writingFile(
-						styleText("cyan", sourcePath),
-						styleText("gray", outputPath),
-					),
+		[...pagesMap.entries()].map(
+			async ([relativeOutputPath, relativeSourcePath]) => {
+				const { usedIslands } = await runWithPageState(
+					join(PAGES_DIR, relativeSourcePath),
+					() => buildPage(relativeSourcePath),
 				);
-			}
 
-			return { hasIslands: usedIslands.size > 0 };
-		}),
+				// Log on completion so lines appear in the order pages actually finish
+				if (isProd) {
+					console.info(
+						messages.build.writingFile(
+							styleText("cyan", relativeSourcePath),
+							styleText("gray", relativeOutputPath),
+						),
+					);
+				}
+
+				return { hasIslands: usedIslands.size > 0 };
+			},
+		),
 	);
 
 	// Island output is conditional: a site that rendered no islands ships
@@ -105,7 +107,7 @@ async function copyIslandRuntime() {
 
 /**
  * Glob all pages, skip private paths, detect route conflicts.
- * @returns {Promise<Map<string, string>>} outputPath → sourcePath
+ * @returns {Promise<Map<string, string>>} relativeOutputPath → relativeSourcePath
  */
 async function scanPages() {
 	/** @type {Map<string, string>} */
@@ -114,24 +116,33 @@ async function scanPages() {
 
 	// Missing pages/ throws here naturally
 	// Empty pages/ falls through to NO_PAGES below.
-	for await (const sourcePath of pageGlob.scan(PAGES_DIR)) {
+	for await (const relativeSourcePath of pageGlob.scan(PAGES_DIR)) {
 		// Skip files/folders prefixed with `_` (private convention, e.g. _drafts/, _partial.tsx)
-		if (sourcePath.split("/").some((segment) => segment.startsWith("_"))) {
+		if (
+			relativeSourcePath.split("/").some((segment) => segment.startsWith("_"))
+		) {
 			continue;
 		}
 
-		const outputPath = sourcePath.replace(PAGE_EXT_PATTERN, ".html");
+		const relativeOutputPath = relativeSourcePath.replace(
+			PAGE_EXT_PATTERN,
+			".html",
+		);
 
 		// Example: both foo.md and foo.jsx try to be foo.html
-		if (pagesMap.has(outputPath)) {
-			const existingFile = pagesMap.get(outputPath);
+		if (pagesMap.has(relativeOutputPath)) {
+			const existingFile = pagesMap.get(relativeOutputPath);
 			const route1 = `${PAGES_DIR}/${existingFile}`;
-			const route2 = `${PAGES_DIR}/${sourcePath}`;
+			const route2 = `${PAGES_DIR}/${relativeSourcePath}`;
 
-			throw new CastroError("ROUTE_CONFLICT", { route1, route2, outputPath });
+			throw new CastroError("ROUTE_CONFLICT", {
+				route1,
+				route2,
+				relativeOutputPath,
+			});
 		}
 
-		pagesMap.set(outputPath, sourcePath);
+		pagesMap.set(relativeOutputPath, relativeSourcePath);
 	}
 
 	// pages/ present but empty — distinct from missing, which throws above

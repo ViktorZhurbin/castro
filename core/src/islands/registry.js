@@ -63,22 +63,22 @@ class IslandsRegistry {
 
 		const islandGlob = new Bun.Glob("**/*.island.{jsx,tsx}");
 
-		for await (const relativePath of islandGlob.scan(COMPONENTS_DIR)) {
-			const sourcePath = join(COMPONENTS_DIR, relativePath);
-			const { outputDir, publicDir } = derivePaths(relativePath);
+		for await (const relativeSourcePath of islandGlob.scan(COMPONENTS_DIR)) {
+			const sourceFilePath = join(COMPONENTS_DIR, relativeSourcePath);
+			const { outputDir, publicDir } = derivePaths(relativeSourcePath);
 
 			const component = await compileIsland({
-				sourcePath,
+				sourceFilePath,
 				outputDir,
 				publicDir,
 			});
 
-			const islandId = getIslandId(sourcePath);
+			const islandId = getIslandId(sourceFilePath);
 
 			// Pre-load SSR module so renderMarker() can access it synchronously
 			// during renderToString() traversal
 			component.ssrModule = await getModule(
-				sourcePath,
+				sourceFilePath,
 				component.ssrCode,
 				"ssr",
 			);
@@ -100,11 +100,11 @@ export const islands = new IslandsRegistry();
  * `dist/islands/ui/`, `/islands/ui`). Public paths are normalized to posix
  * since they ship to the browser.
  *
- * @param {string} relativePath - Path of the island source relative to COMPONENTS_DIR
+ * @param {string} relativeSourcePath - Path of the island source relative to COMPONENTS_DIR
  * @returns {{ outputDir: string, publicDir: string }}
  */
-function derivePaths(relativePath) {
-	const relativeDir = dirname(relativePath);
+function derivePaths(relativeSourcePath) {
+	const relativeDir = dirname(relativeSourcePath);
 	return {
 		outputDir: join(OUTPUT_DIR, ISLANDS_OUTPUT_DIR, relativeDir),
 		publicDir: join("/", ISLANDS_OUTPUT_DIR, relativeDir),

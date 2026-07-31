@@ -33,15 +33,15 @@ import { PREACT_BUILD_CONFIG, PREACT_CLIENT_PATH } from "./preact.js";
  * Handles hashing and file writing. The compiler generates hashed filenames
  * for cache busting and returns the actual public paths to use in HTML.
  *
- * @param {{ sourcePath: string, outputDir: string, publicDir: string }} params
+ * @param {{ sourceFilePath: string, outputDir: string, publicDir: string }} params
  * @returns {Promise<IslandComponent>}
  */
-export async function compileIsland({ sourcePath, outputDir, publicDir }) {
+export async function compileIsland({ sourceFilePath, outputDir, publicDir }) {
 	// Compile SSR version first (runs at build time in Bun)
-	const ssrCode = await compileIslandSSR({ sourcePath });
+	const ssrCode = await compileIslandSSR({ sourceFilePath });
 
 	// Compile client version (runs in browser)
-	const clientResult = await compileIslandClient({ sourcePath, outputDir });
+	const clientResult = await compileIslandClient({ sourceFilePath, outputDir });
 
 	// Find the actual generated files (with hashes)
 	const jsFile = clientResult.outputs.find((f) => f.path.endsWith(".js"));
@@ -49,7 +49,7 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
 
 	if (!jsFile) {
 		throw new CastroError("BUNDLE_FAILED", {
-			errorMessage: `Island ${sourcePath} compiled with no .js output`,
+			errorMessage: `Island ${sourceFilePath} compiled with no .js output`,
 		});
 	}
 
@@ -61,7 +61,7 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
 
 	return {
 		ssrCode,
-		sourcePath,
+		sourceFilePath,
 		publicJsPath,
 		cssContent,
 	};
@@ -74,10 +74,10 @@ export async function compileIsland({ sourcePath, outputDir, publicDir }) {
  * The mounting function handles hydration when called.
  * Outputs files with content hashes for cache busting.
  *
- * @param {{ sourcePath: string, outputDir: string }} params
+ * @param {{ sourceFilePath: string, outputDir: string }} params
  */
-async function compileIslandClient({ sourcePath, outputDir }) {
-	const componentName = basename(sourcePath, extname(sourcePath));
+async function compileIslandClient({ sourceFilePath, outputDir }) {
+	const componentName = basename(sourceFilePath, extname(sourceFilePath));
 
 	// Virtual entry point: a generated module that imports the real component
 	// and wraps it in a mounting function for hydration. This file never exists
@@ -90,7 +90,7 @@ async function compileIslandClient({ sourcePath, outputDir }) {
 	const clientSource = await Bun.file(PREACT_CLIENT_PATH).text();
 
 	const virtualEntry = `
-		import Component from './${basename(sourcePath)}';
+		import Component from './${basename(sourceFilePath)}';
 		${clientSource}
 		export default (container, props = {}) => hydrate(container, props, Component);
 	`.trim();
@@ -102,7 +102,7 @@ async function compileIslandClient({ sourcePath, outputDir }) {
 	// Path must be absolute and in the same directory as the island source,
 	// so the relative import ('./${basename}') resolves to the real file
 	const virtualEntryPath = resolve(
-		dirname(sourcePath),
+		dirname(sourceFilePath),
 		`${componentName}.virtual.js`,
 	);
 
@@ -134,9 +134,9 @@ async function compileIslandClient({ sourcePath, outputDir }) {
  * - Result is kept in memory, not written to disk
  * - Used only to generate static HTML at build time
  *
- * @param {{ sourcePath: string }} params
+ * @param {{ sourceFilePath: string }} params
  */
-async function compileIslandSSR({ sourcePath }) {
+async function compileIslandSSR({ sourceFilePath }) {
 	// Replace plain `.css` imports with an empty module during SSR. The client
 	// compile already extracted island CSS into a separate artifact (inlined
 	// per-page in writeHtmlPage.js); SSR only runs the component to produce
@@ -166,7 +166,7 @@ async function compileIslandSSR({ sourcePath }) {
 	};
 
 	const result = await safeBunBuild({
-		entrypoints: [sourcePath],
+		entrypoints: [sourceFilePath],
 		format: "esm",
 		target: "bun",
 		// Externalizes all NPM package imports found in package.json.

@@ -10,7 +10,7 @@ test("CastroError creates structured payload with tokens", () => {
 	const err = new CastroError("ROUTE_CONFLICT", {
 		route1: "pages/about.md",
 		route2: "pages/about.tsx",
-		outputPath: "about.html",
+		relativeOutputPath: "about.html",
 	});
 
 	expect(err.castroPayload).toBeDefined();

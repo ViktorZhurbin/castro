@@ -50,13 +50,13 @@ export function resolveTempDir(subpath) {
  *
  * Example: pages/index.tsx → .cache/castro/pages/index.tsx.a1b2c3d4.js
  *
- * @param {string} sourcePath
+ * @param {string} sourceFilePath
  * @param {string} content - Compiled code (used for hash)
  * @param {string} [subpath] - Optional subdirectory (e.g., "ssr")
  * @returns {string}
  */
-function createTempPath(sourcePath, content, subpath = "") {
-	const parsed = parse(sourcePath);
+function createTempPath(sourceFilePath, content, subpath = "") {
+	const parsed = parse(sourceFilePath);
 	const hash = Bun.hash(content).toString(36);
 	const targetDir = resolveTempDir(join(parsed.dir, subpath));
 
@@ -69,13 +69,13 @@ function createTempPath(sourcePath, content, subpath = "") {
  * This is where the write-to-disk-then-import pattern happens:
  * code string → .js file on disk → dynamic import() → live module.
  *
- * @param {string} sourcePath - Original source path (for cache directory structure)
+ * @param {string} sourceFilePath - Original source path (for cache directory structure)
  * @param {string} content - Compiled JavaScript code
  * @param {string} [subpath] - Optional subdirectory (e.g., "ssr")
  * @returns {Promise<any>} The imported module
  */
-export async function getModule(sourcePath, content, subpath) {
-	const path = createTempPath(sourcePath, content, subpath);
+export async function getModule(sourceFilePath, content, subpath) {
+	const path = createTempPath(sourceFilePath, content, subpath);
 
 	// A failed write (disk full, bad permissions) throws raw
 	await Bun.write(path, content);

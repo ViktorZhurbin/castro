@@ -199,8 +199,8 @@ export async function startDevServer() {
 	watchDir(COMPONENTS_DIR);
 	watchDir(PUBLIC_DIR);
 
-	function logFileChanged(/** @type {string} */ filePath) {
-		console.info(styleText("gray", messages.files.changed(filePath)));
+	function logFileChanged(/** @type {string} */ sourceFilePath) {
+		console.info(styleText("gray", messages.files.changed(sourceFilePath)));
 	}
 
 	/** @type {TextEncoder} */
@@ -265,20 +265,23 @@ export async function startDevServer() {
 		for await (const event of watcher) {
 			if (!event.filename || isIgnored(event.filename)) continue;
 
-			const filePath = join(dir, event.filename);
+			const sourceFilePath = join(dir, event.filename);
 
 			try {
-				const stats = await stat(filePath);
-				if (stats.isDirectory() || modTimes.get(filePath) === stats.mtimeMs) {
+				const stats = await stat(sourceFilePath);
+				if (
+					stats.isDirectory() ||
+					modTimes.get(sourceFilePath) === stats.mtimeMs
+				) {
 					continue;
 				}
-				modTimes.set(filePath, stats.mtimeMs);
+				modTimes.set(sourceFilePath, stats.mtimeMs);
 			} catch {
 				// File was deleted, proceed to rebuild
-				modTimes.delete(filePath);
+				modTimes.delete(sourceFilePath);
 			}
 
-			logFileChanged(filePath);
+			logFileChanged(sourceFilePath);
 			rebuild.schedule();
 		}
 	}

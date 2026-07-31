@@ -87,17 +87,17 @@ class LayoutsRegistry {
 
 		const layoutGlob = new Bun.Glob("**/*.{jsx,tsx}");
 
-		for await (const relativePath of layoutGlob.scan(LAYOUTS_DIR)) {
-			const sourceFilePath = join(LAYOUTS_DIR, relativePath);
-			const ext = extname(relativePath);
-			const layoutId = relativePath.slice(0, -ext.length);
+		for await (const relativeSourcePath of layoutGlob.scan(LAYOUTS_DIR)) {
+			const sourceFilePath = join(LAYOUTS_DIR, relativeSourcePath);
+			const ext = extname(relativeSourcePath);
+			const layoutId = relativeSourcePath.slice(0, -ext.length);
 
 			const { module: layoutModule, cssFiles } =
 				await compileJSX(sourceFilePath);
 
 			if (typeof layoutModule.default !== "function") {
 				throw new CastroError("LAYOUT_NO_DEFAULT_EXPORT", {
-					file: relativePath,
+					file: relativeSourcePath,
 				});
 			}
 
@@ -110,7 +110,7 @@ class LayoutsRegistry {
 			const layoutOutputDir = join(
 				OUTPUT_DIR,
 				LAYOUTS_OUTPUT_DIR,
-				dirname(relativePath),
+				dirname(relativeSourcePath),
 			);
 			const layoutCssTags = await writeCSSFiles(cssFiles, layoutOutputDir);
 

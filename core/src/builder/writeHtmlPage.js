@@ -17,13 +17,13 @@ import { getIslandImportMap } from "./vendor.js";
 
 /**
  * @param {string} rawHtml
- * @param {string} outputPath
+ * @param {string} outputFilePath
  * @param {Options} options
  */
-export async function writeHtmlPage(rawHtml, outputPath, options) {
+export async function writeHtmlPage(rawHtml, outputFilePath, options) {
 	const tags = await collectHeadTags(options);
 
-	await Bun.write(outputPath, injectTags(rawHtml, tags));
+	await Bun.write(outputFilePath, injectTags(rawHtml, tags));
 }
 
 /**

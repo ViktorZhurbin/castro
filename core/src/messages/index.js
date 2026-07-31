@@ -49,9 +49,9 @@ export const messages = {
 
 	// The Ministry of Errors (Exceptions)
 	errors: /** @satisfies {ErrorMessages} */ ({
-		ROUTE_CONFLICT: ({ route1, route2, outputPath }) => ({
+		ROUTE_CONFLICT: ({ route1, route2, relativeOutputPath }) => ({
 			title: "Route conflict",
-			message: `Two pages claim the same route - ${outputPath}`,
+			message: `Two pages claim the same route - ${relativeOutputPath}`,
 			notes: [route1, route2],
 			hint: "The revolution cannot serve two masters — remove the impostor",
 		}),

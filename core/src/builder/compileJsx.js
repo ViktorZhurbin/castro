@@ -15,12 +15,12 @@ import { CastroError } from "../utils/errors.js";
  * Also extracts any imported CSS files for injection.
  * Uses island build plugins to replace island imports with marker components.
  *
- * @param {string} sourcePath - Path to JSX/TSX file
+ * @param {string} sourceFilePath - Path to JSX/TSX file
  */
-export async function compileJSX(sourcePath) {
+export async function compileJSX(sourceFilePath) {
 	// Build configuration
 	// Bun.build requires absolute entrypoints when using onResolve plugins
-	const absoluteSourcePath = resolve(sourcePath);
+	const absoluteSourcePath = resolve(sourceFilePath);
 
 	const result = await safeBunBuild({
 		entrypoints: [absoluteSourcePath],
@@ -54,6 +54,6 @@ export async function compileJSX(sourcePath) {
 
 	return {
 		cssFiles,
-		module: await getModule(sourcePath, jsText),
+		module: await getModule(sourceFilePath, jsText),
 	};
 }
