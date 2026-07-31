@@ -1,14 +1,12 @@
 {
 	"compilerOptions": {
 		// Language and environment
-		"target": "ES2022",
 		"lib": ["ES2022", "DOM"],
 		"jsx": "react-jsx",
 		"jsxImportSource": "preact",
 		"types": ["@vktrz/castro"],
 
 		// Module resolution
-		"module": "ESNext",
 		"moduleResolution": "bundler",
 
 		// Emit
@@ -16,7 +14,6 @@
 		"isolatedModules": true,
 
 		// Type checking
-		"strict": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true,

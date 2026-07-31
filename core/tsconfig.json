@@ -1,13 +1,10 @@
 {
 	"compilerOptions": {
 		"lib": ["ESNext"],
-		"target": "ESNext",
-		"module": "Preserve",
 		"moduleDetection": "force",
 		"jsx": "react-jsx",
 		"jsxImportSource": "preact",
 		"types": ["bun"],
-		"strict": true,
 		"noEmit": true,
 		"skipLibCheck": true,
 		"allowJs": true,

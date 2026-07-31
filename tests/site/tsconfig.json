@@ -1,18 +1,6 @@
 {
+	"extends": "../tsconfig.base.json",
 	"compilerOptions": {
-		"target": "ES2022",
-		"lib": ["ES2022", "DOM"],
-		"jsx": "react-jsx",
-		"jsxImportSource": "preact",
-		"types": ["@vktrz/castro"],
-		"module": "ESNext",
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"noEmit": true,
-		"isolatedModules": true,
-		"strict": true,
-		"forceConsistentCasingInFileNames": true,
-		"skipLibCheck": true,
 		"paths": {
 			"@/*": ["./*"]
 		}
