@@ -3,7 +3,6 @@ import { useEffect, useState } from "preact/hooks";
 import "./PropagandaRadio.css";
 
 const HEADLINES = [
-  "Harvest exceeds projections by 400%",
   "Virtual DOM dissidents sent to re-education",
   "Bundle sizes redistributed equally",
   "Hydration declared mandatory for all components",
