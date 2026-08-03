@@ -34,8 +34,8 @@
     "type-check": "tsc"
   },
   "dependencies": {
-    "preact": "^10",
-    "preact-render-to-string": "^6.5.12"
+    "preact": "^10.29.8",
+    "preact-render-to-string": "^6.7.0"
   },
   "devDependencies": {
     "knip": "^5.83.0",

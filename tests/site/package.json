@@ -11,6 +11,6 @@
   "dependencies": {
     "@preact/signals": "^2.8.1",
     "@vktrz/castro": "workspace:*",
-    "preact": "^10"
+    "preact": "^10.29.8"
   }
 }

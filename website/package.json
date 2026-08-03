@@ -11,6 +11,6 @@
   "dependencies": {
     "@vktrz/bare-css": "workspace:*",
     "@vktrz/castro": "workspace:*",
-    "preact": "^10.28.2"
+    "preact": "^10.29.8"
   }
 }

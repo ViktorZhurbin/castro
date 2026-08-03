@@ -5,7 +5,7 @@
  *
  */
 
-declare module "preact" {
+declare module "preact/jsx-runtime" {
   namespace JSX {
     interface IntrinsicAttributes {
       /**
