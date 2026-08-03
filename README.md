@@ -5,7 +5,7 @@ _A static site generator built to be read._
 Preact for pages and islands, Bun for everything else.
 
 > [!NOTE]
-> Requires [Bun](https://bun.sh) 1.3.8+
+> Requires [Bun](https://bun.sh) 1.3.14+
 
 ## Quick Start
 
