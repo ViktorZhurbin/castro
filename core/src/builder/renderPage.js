@@ -11,6 +11,7 @@
 
 import { basename } from "node:path/posix";
 
+import { h } from "preact";
 import { renderToString } from "preact-render-to-string";
 
 import { PAGE_EXT_PATTERN } from "../constants.js";
@@ -21,12 +22,12 @@ import { writeHtmlPage } from "./writeHtmlPage.js";
 
 /**
  * @import { PageMeta } from "../types.d.ts"
- * @import { VNode } from "preact"
+ * @import { FunctionComponent } from "preact"
  */
 
 /**
  * @param {{
- *   createContentVNode: () => VNode,
+ *   pageComponent: FunctionComponent<PageMeta & { title: string }>,
  *   outputFilePath: string,
  *   sourceFilePath: string,
  *   pageMeta: PageMeta,
@@ -34,15 +35,13 @@ import { writeHtmlPage } from "./writeHtmlPage.js";
  * }} params
  */
 export async function renderPage({
-  createContentVNode,
+  pageComponent,
   outputFilePath,
   sourceFilePath,
   pageMeta,
   pageCssTags = [],
 }) {
   const cssTags = [...pageCssTags];
-
-  const contentVNode = createContentVNode();
 
   const layout = layouts.resolve(pageMeta.layout);
 
@@ -57,10 +56,16 @@ export async function renderPage({
 
   const title = pageMeta.title || basename(sourceFilePath).replace(PAGE_EXT_PATTERN, "");
 
-  const vnodeToRender = layout.component({
-    ...pageMeta,
-    title,
-    children: contentVNode,
+  // Page and layout see the same props, so `title` means the same thing in
+  // both — the frontmatter value, or the filename once it has been derived.
+  const pageProps = { ...pageMeta, title };
+
+  // h() rather than calling the components directly: Preact installs the hook
+  // dispatcher only while rendering a VNode, so a direct call leaves useState
+  // and friends without one. Passing props here is what makes them arrive at all.
+  const vnodeToRender = h(layout.component, {
+    ...pageProps,
+    children: h(pageComponent, pageProps),
   });
 
   const finalHtml = renderToString(vnodeToRender);

@@ -164,6 +164,31 @@ test("nested and root layouts extract CSS to distinct files", async () => {
   expect(nestedHtml).toContain('href="/layouts/nested/default.css"');
 });
 
+// ------ Page props and hooks ------
+
+test("page receives its frontmatter as props", async () => {
+  const html = await readHtml("page-props.html");
+  expect(html).toContain("<h1>Page Props</h1>");
+  expect(html).toContain("<p>From frontmatter</p>");
+});
+
+test("page and layout see the same title", async () => {
+  const html = await readHtml("page-props.html");
+  expect(html).toContain("<title>Page Props</title>");
+  expect(html).toContain("<h1>Page Props</h1>");
+});
+
+test("hooks work in a page", async () => {
+  const html = await readHtml("page-props.html");
+  expect(html).toContain(">5</span>");
+  expect(html).toMatch(/data-hook-id="[^"]+"/);
+});
+
+test("hooks work in a layout", async () => {
+  const html = await readHtml("static.html");
+  expect(html).toMatch(/data-layout-id="[^"]+"/);
+});
+
 // ------ Multiple islands ------
 
 test("multi page has both islands", async () => {

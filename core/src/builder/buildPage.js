@@ -45,9 +45,8 @@ async function buildJSXPage(sourceFilePath, outputFilePath) {
   const pageCssTags = await writeCSSFiles(cssFiles, outputDir);
 
   // Use shared rendering pipeline
-  // Pass the page component function to be called to get a VNode
   await renderPage({
-    createContentVNode: pageModule.default,
+    pageComponent: pageModule.default,
     outputFilePath,
     sourceFilePath,
     pageMeta: pageModule.meta || {},
@@ -73,7 +72,7 @@ async function buildMarkdownPage(sourceFilePath, outputFilePath) {
 
   // Use shared rendering pipeline
   await renderPage({
-    createContentVNode: () =>
+    pageComponent: () =>
       h("div", {
         dangerouslySetInnerHTML: { __html: contentHtml },
       }),
