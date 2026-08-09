@@ -59,11 +59,14 @@ export function renderMarker(islandId, props = {}) {
   // render produces and which must not throw. null/undefined get the same
   // pass. Everything else is a nesting attempt and is rejected on sight —
   // including `[]` from an empty `.map()`, which nested nothing either but
-  // isn't worth a second arm to tell apart.
+  // isn't worth a second arm to tell apart. What nested nothing isn't a prop,
+  // so it's dropped here rather than shipped — before the SSR render, so both
+  // ends of the data-props trip see the same object.
   const { children } = cleanProps;
   if (children != null && children !== false) {
     throw new CastroError("ISLAND_HAS_CHILDREN", errorTokens);
   }
+  delete cleanProps.children;
 
   const ssrHtml = renderIslandSSR(island, cleanProps, errorTokens);
   const dataProps = serializeProps(cleanProps, errorTokens);

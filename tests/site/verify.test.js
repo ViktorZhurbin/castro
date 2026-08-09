@@ -112,6 +112,14 @@ test("comrade:eager has island runtime", async () => {
   expect(html).toContain("castro-island.js");
 });
 
+// The page nests `{false && <span/>}`, which leaves `children: false` — legal
+// (it nested nothing) but not a prop, so it must not reach the browser.
+test("a false-branch child is not serialized into data-props", async () => {
+  const html = await readHtml("comrade-eager.html");
+  expect(html).toContain("&quot;initial&quot;:10");
+  expect(html).not.toContain("&quot;children&quot;");
+});
+
 // ------ Shell-less layout (no <head>/<body> to anchor to) ------
 // injectTags() anchors injection to </head> or </body>; layouts/bare.tsx
 // returns a fragment with neither. Guards against the fix regressing to a
