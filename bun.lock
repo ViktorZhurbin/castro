@@ -43,7 +43,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
-        "preact": "^10",
+        "preact": "^10.29.8",
       },
     },
     "tests/errors/empty-layouts-dir": {
@@ -51,7 +51,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
-        "preact": "^10",
+        "preact": "^10.29.8",
       },
     },
     "tests/errors/island-children": {
@@ -59,7 +59,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
-        "preact": "^10",
+        "preact": "^10.29.8",
       },
     },
     "tests/errors/island-import-missing": {
@@ -67,7 +67,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
-        "preact": "^10",
+        "preact": "^10.29.8",
       },
     },
     "tests/errors/island-multiple-directives": {
@@ -75,7 +75,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
-        "preact": "^10",
+        "preact": "^10.29.8",
       },
     },
     "tests/errors/island-props-not-serializable": {
@@ -83,7 +83,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
-        "preact": "^10",
+        "preact": "^10.29.8",
       },
     },
     "tests/errors/island-render-failed": {
@@ -91,7 +91,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
-        "preact": "^10",
+        "preact": "^10.29.8",
       },
     },
     "tests/errors/island-syntax-error": {
@@ -99,7 +99,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
-        "preact": "^10",
+        "preact": "^10.29.8",
       },
     },
     "tests/errors/layout-no-default": {
@@ -107,7 +107,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
-        "preact": "^10",
+        "preact": "^10.29.8",
       },
     },
     "tests/errors/layout-not-found": {
@@ -115,7 +115,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
-        "preact": "^10",
+        "preact": "^10.29.8",
       },
     },
     "tests/errors/layout-syntax-error": {
@@ -123,7 +123,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
-        "preact": "^10",
+        "preact": "^10.29.8",
       },
     },
     "tests/errors/missing-default-layout": {
@@ -131,7 +131,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
-        "preact": "^10",
+        "preact": "^10.29.8",
       },
     },
     "tests/errors/no-layouts-dir": {
@@ -139,7 +139,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
-        "preact": "^10",
+        "preact": "^10.29.8",
       },
     },
     "tests/errors/no-pages": {
@@ -147,7 +147,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
-        "preact": "^10",
+        "preact": "^10.29.8",
       },
     },
     "tests/errors/page-no-default-export": {
@@ -155,7 +155,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
-        "preact": "^10",
+        "preact": "^10.29.8",
       },
     },
     "tests/errors/page-syntax-error": {
@@ -163,7 +163,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
-        "preact": "^10",
+        "preact": "^10.29.8",
       },
     },
     "tests/errors/route-conflict": {
@@ -171,7 +171,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
-        "preact": "^10",
+        "preact": "^10.29.8",
       },
     },
     "tests/errors/yaml-broken": {
@@ -179,7 +179,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
-        "preact": "^10",
+        "preact": "^10.29.8",
       },
     },
     "tests/site": {
@@ -434,7 +434,7 @@
 
     "picomatch": ["picomatch@4.0.5", "", {}, "sha512-RvwwcruNjI1ncT5xRakeyS9Lf8lcItv34KD+aif+VH9kduAyfYBipGh12274xtenIPZ119/R9BdTBa8gAwSh0A=="],
 
-    "preact": ["preact@10.29.7", "", { "peerDependencies": { "preact-render-to-string": ">=5" }, "optionalPeers": ["preact-render-to-string"] }, "sha512-DCHYrK/B10yUD3ZjLfhZ3WIE/9Vf9VFUODcRE2dRomTYDpJk6z6L9wecSfhfE6M9ZTHUdyQkoC46arIDhEV84Q=="],
+    "preact": ["preact@10.29.8", "", { "peerDependencies": { "preact-render-to-string": ">=5" }, "optionalPeers": ["preact-render-to-string"] }, "sha512-ej2aVZ+vZ8WO7tvlQWRM9N63A0KzF9q4mWJfDUHgYaIofWY9hu74QdnQrjoPMmZi2/nZ5gN0bJCQF49xQqx09Q=="],
 
     "preact-render-to-string": ["preact-render-to-string@6.7.0", "", { "peerDependencies": { "preact": ">=10 || >= 11.0.0-0" } }, "sha512-Z4WR8fmLMRpdYqJ9i7vrlXSsSrxVJydwrkEXHapexfARbWfGb7vGcnvNQnIzN0cXciMVOlz/XLoiMCi9gUsy9Q=="],
 
@@ -472,14 +472,6 @@
 
     "zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
 
-    "@vktrz/castro/preact": ["preact@10.29.8", "", { "peerDependencies": { "preact-render-to-string": ">=5" }, "optionalPeers": ["preact-render-to-string"] }, "sha512-ej2aVZ+vZ8WO7tvlQWRM9N63A0KzF9q4mWJfDUHgYaIofWY9hu74QdnQrjoPMmZi2/nZ5gN0bJCQF49xQqx09Q=="],
-
     "micromatch/picomatch": ["picomatch@2.3.2", "", {}, "sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA=="],
-
-    "test-site/preact": ["preact@10.29.8", "", { "peerDependencies": { "preact-render-to-string": ">=5" }, "optionalPeers": ["preact-render-to-string"] }, "sha512-ej2aVZ+vZ8WO7tvlQWRM9N63A0KzF9q4mWJfDUHgYaIofWY9hu74QdnQrjoPMmZi2/nZ5gN0bJCQF49xQqx09Q=="],
-
-    "test-site-srcdir/preact": ["preact@10.29.8", "", { "peerDependencies": { "preact-render-to-string": ">=5" }, "optionalPeers": ["preact-render-to-string"] }, "sha512-ej2aVZ+vZ8WO7tvlQWRM9N63A0KzF9q4mWJfDUHgYaIofWY9hu74QdnQrjoPMmZi2/nZ5gN0bJCQF49xQqx09Q=="],
-
-    "website/preact": ["preact@10.29.8", "", { "peerDependencies": { "preact-render-to-string": ">=5" }, "optionalPeers": ["preact-render-to-string"] }, "sha512-ej2aVZ+vZ8WO7tvlQWRM9N63A0KzF9q4mWJfDUHgYaIofWY9hu74QdnQrjoPMmZi2/nZ5gN0bJCQF49xQqx09Q=="],
   }
 }

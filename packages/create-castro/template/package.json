@@ -9,6 +9,6 @@
   },
   "dependencies": {
     "@vktrz/castro": "latest",
-    "preact": "^10"
+    "preact": "^10.29.8"
   }
 }

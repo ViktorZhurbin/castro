@@ -8,6 +8,6 @@
 	},
 	"dependencies": {
 		"@vktrz/castro": "workspace:*",
-		"preact": "^10"
+		"preact": "^10.29.8"
 	}
 }
