@@ -3,7 +3,9 @@
  *
  * Builds the test site, then checks the HTML output using Bun's test runner.
  * Tests cover static pages, all three directives, component composition,
- * CSS modules, markdown, and the vendored Preact import map.
+ * CSS modules, markdown, and the vendored Preact import map. The last section
+ * crosses into dist/castro-island.js to pin the marker attributes the build
+ * and the browser runtime have to agree on.
  *
  * Usage: bun test:site
  */
@@ -370,4 +372,95 @@ test("vendored Preact runtime exists in dist", async () => {
 test("castro-island.js exists in dist (hydrated islands used)", async () => {
   const file = Bun.file(join(distDir, "castro-island.js"));
   expect(await file.exists()).toBe(true);
+});
+
+// ------ Hydration seam (build output ↔ shipped runtime) ------
+//
+// Every test above stops at the marker the build emits; castro-island.js is
+// its only consumer and nothing here executes it. Rename an attribute on
+// either side and the whole suite still passes while the site ships islands
+// that never hydrate — the one break no other layer can see.
+//
+// Both sides are read out of dist/: the attributes off real markup, the
+// runtime as the byte-for-byte file the browser loads. Matching against
+// core's source instead would let a renamed attribute pass on the strength of
+// a stale docblock — castroIsland.js's own header spells out a full marker.
+
+async function readRuntime() {
+  return Bun.file(join(distDir, "castro-island.js")).text();
+}
+
+/**
+ * The opening `<castro-island …>` tag of the first marker in a built page.
+ * @param {string} file
+ */
+async function readMarkerTag(file) {
+  const tag = (await readHtml(file)).match(/<castro-island\s[^>]*>/)?.[0];
+  if (!tag) throw new Error(`No island marker in ${file}`);
+  return tag;
+}
+
+/** @param {string} tag */
+function attributeNames(tag) {
+  // Consuming each quoted value keeps the scan from matching inside one.
+  return [...tag.matchAll(/\s([a-z-]+)="[^"]*"/g)].map((m) => m[1]);
+}
+
+/**
+ * Whether the runtime reads `attr`. A `data-*` attribute reaches JS through
+ * `dataset`, prefix dropped and camelCased — the one place the two sides
+ * spell the same attribute differently.
+ *
+ * @param {string} runtime
+ * @param {string} attr
+ */
+function readsAttribute(runtime, attr) {
+  if (attr.startsWith("data-")) {
+    const key = attr.slice("data-".length).replace(/-(.)/g, (_, c) => c.toUpperCase());
+
+    return runtime.includes(`dataset.${key}`);
+  }
+
+  return runtime.includes(`getAttribute("${attr}")`);
+}
+
+test("the runtime registers the element tag the build emits", async () => {
+  const tagName = (await readMarkerTag("comrade-visible.html")).match(/<([a-z-]+)/)?.[1];
+  expect(tagName).toBe("castro-island");
+
+  // Quoted, so the match is the ELEMENT_TAG literal and not a docblock
+  // mention of `<castro-island>`.
+  expect(await readRuntime()).toContain(`"${tagName}"`);
+});
+
+test("the runtime reads every attribute the build puts on a marker", async () => {
+  const runtime = await readRuntime();
+  const attrs = attributeNames(await readMarkerTag("comrade-visible.html"));
+
+  // Pinned as a set so the loop below can't pass by finding nothing, and so a
+  // new marker attribute has to be handled here rather than shipped unread.
+  expect(new Set(attrs)).toEqual(new Set(["directive", "import", "data-props"]));
+
+  expect(attrs.filter((attr) => !readsAttribute(runtime, attr))).toEqual([]);
+});
+
+test("every directive the build emits is handled by the runtime", async () => {
+  const runtime = await readRuntime();
+
+  const emitted = new Set(
+    await Promise.all(
+      ["comrade-eager.html", "comrade-patient.html", "comrade-visible.html"].map(
+        async (page) => (await readMarkerTag(page)).match(/directive="([^"]+)"/)?.[1],
+      ),
+    ),
+  );
+
+  // The directive dispatch is the runtime's only switch.
+  const cases = new Set([...runtime.matchAll(/case "([^"]+)":/g)].map((m) => m[1]));
+
+  expect([...cases].filter((c) => !emitted.has(c))).toEqual([]);
+  // The remainder is what the `default` branch absorbs, and which directive
+  // that is has to stay a decision: the default also catches a malformed or
+  // absent one, so whatever lands there hydrates every broken marker too.
+  expect([...emitted].filter((d) => !cases.has(d))).toEqual(["comrade:visible"]);
 });
