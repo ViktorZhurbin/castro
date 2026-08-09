@@ -9,21 +9,24 @@
     "tests/**/*"
   ],
   "scripts": {
+    "prepare": "husky",
     "dev": "bun --filter website dev",
     "build": "bun --filter website build",
     "format": "oxfmt",
     "lint": "oxlint --fix --format=agent",
-    "check": "bun format && bun lint && bun check:analyze && bun test && bun check:build",
-    "check:analyze": "bun run --parallel --filter '*' --if-present type-check knip",
+    "lint-format": "bun lint && bun format",
+    "check": "bun run --parallel --filter '*' --if-present type-check knip",
     "check:build": "bun run --parallel --filter '!@test-errors/*' --if-present build",
     "test:site": "bun test tests/site tests/site-srcdir",
     "test:errors": "bun test tests/errors",
     "test:errors:up": "UPDATE_SNAPSHOTS=1 bun test:errors",
+    "verify": "bun lint-format && bun check && bun test && bun check:build",
     "loc": "bunx cloc core/src/ --exclude-dir=messages --not-match-f '.test'",
     "loc:files": "bun run loc --by-file"
   },
   "devDependencies": {
     "@types/bun": "^1.3.14",
+    "husky": "^9.1.7",
     "oxfmt": "^0.61.0",
     "oxlint": "^1.76.0",
     "typescript": "^6.0.2"
