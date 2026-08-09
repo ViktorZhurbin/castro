@@ -47,37 +47,31 @@ class IslandsRegistry {
     }
 
     const islandGlob = new Bun.Glob("**/*.island.{jsx,tsx}");
+    const relativeSourcePaths = await Array.fromAsync(islandGlob.scan(COMPONENTS_DIR));
 
-    for await (const relativeSourcePath of islandGlob.scan(COMPONENTS_DIR)) {
-      const sourceFilePath = join(COMPONENTS_DIR, relativeSourcePath);
-      const { outputDir, publicDir } = derivePaths(relativeSourcePath);
+    // outputDir is derived per-directory, so two islands in one folder share
+    // one — safe to compile in parallel anyway, because compileIsland names
+    // its artifacts per component and getModule() writes content-hashed
+    // paths. Nothing here reads another island's output.
+    const compiled = await Promise.all(
+      relativeSourcePaths.map((relativeSourcePath) => {
+        const relativeDir = dirname(relativeSourcePath);
+        const outputDir = join(OUTPUT_DIR, ISLANDS_OUTPUT_DIR, relativeDir);
+        const publicDir = join("/", ISLANDS_OUTPUT_DIR, relativeDir);
+        const sourceFilePath = join(COMPONENTS_DIR, relativeSourcePath);
 
-      const component = await compileIsland({
-        sourceFilePath,
-        outputDir,
-        publicDir,
-      });
+        return compileIsland({
+          outputDir,
+          publicDir,
+          sourceFilePath,
+        });
+      }),
+    );
 
-      this.#islands.set(getIslandId(sourceFilePath), component);
+    for (const component of compiled) {
+      this.#islands.set(getIslandId(component.sourceFilePath), component);
     }
   }
 }
 
 export const islands = new IslandsRegistry();
-
-/**
- * Derive the on-disk output directory and the public URL prefix for an island,
- * preserving its source-tree nesting (e.g. `ui/Button.island.tsx` →
- * `dist/islands/ui/`, `/islands/ui`). Public paths are normalized to posix
- * since they ship to the browser.
- *
- * @param {string} relativeSourcePath - Path of the island source relative to COMPONENTS_DIR
- * @returns {{ outputDir: string, publicDir: string }}
- */
-function derivePaths(relativeSourcePath) {
-  const relativeDir = dirname(relativeSourcePath);
-  return {
-    outputDir: join(OUTPUT_DIR, ISLANDS_OUTPUT_DIR, relativeDir),
-    publicDir: join("/", ISLANDS_OUTPUT_DIR, relativeDir),
-  };
-}
