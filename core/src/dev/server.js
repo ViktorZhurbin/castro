@@ -14,7 +14,7 @@
  */
 
 import { stat, watch } from "node:fs/promises";
-import { extname, join, resolve } from "node:path/posix";
+import { basename, extname, join, resolve } from "node:path/posix";
 import { styleText } from "node:util";
 
 import { buildAll } from "../builder/buildAll.js";
@@ -28,8 +28,6 @@ import { renderErrorToTerminal } from "../utils/renderError.js";
  * @import { FileChangeInfo } from "node:fs/promises";
  */
 
-const OUTPUT_ROOT = resolve(OUTPUT_DIR);
-
 /**
  * Resolve a request path to a file in the output dir, trying the spellings a
  * static host would. Returns null when nothing matches, leaving 404 handling
@@ -39,12 +37,20 @@ const OUTPUT_ROOT = resolve(OUTPUT_DIR);
  * host would serve. It is not a security boundary — see "Hostile input" in
  * CLAUDE.md.
  *
+ * `outputRoot` is a parameter rather than a module constant so a test can point
+ * it at a fixture tree instead of `process.chdir()`-ing the whole process. It is
+ * resolved here so a relative path or trailing slash can't defeat the
+ * containment check below.
+ *
  * @param {string} pathname - raw, still-encoded `url.pathname`
+ * @param {string} outputRoot - path to the output dir, absolute or relative
  * @returns {Promise<Bun.BunFile | null>}
  */
-export async function resolveStaticFile(pathname) {
+export async function resolveStaticFile(pathname, outputRoot) {
+  const root = resolve(outputRoot);
+
   // Leading "." keeps an absolute-looking pathname relative to the root.
-  const basePath = resolve(OUTPUT_ROOT, `.${decodeURIComponent(pathname)}`);
+  const basePath = resolve(root, `.${decodeURIComponent(pathname)}`);
 
   /** @type {string[]} */
   const candidates = [];
@@ -73,7 +79,7 @@ export async function resolveStaticFile(pathname) {
   for (const candidate of new Set(candidates)) {
     // `${basePath}.html` is `dist.html` when the base is the output dir
     // itself — a sibling of it, not a file in it. A plain `/` reaches that.
-    if (!candidate.startsWith(`${OUTPUT_ROOT}/`)) continue;
+    if (!candidate.startsWith(`${root}/`)) continue;
 
     const file = Bun.file(candidate);
 
@@ -81,6 +87,148 @@ export async function resolveStaticFile(pathname) {
   }
 
   return null;
+}
+
+// Ignore editor temp files and OS metadata.
+// Any file change that doesn't match triggers a rebuild.
+const IGNORE = new Bun.Glob("{*~,*.swp,*.swo,*.tmp,.DS_Store,4913}");
+
+/**
+ * @param {string} filename
+ * @returns {boolean}
+ */
+export function isIgnored(filename) {
+  return IGNORE.match(basename(filename));
+}
+
+/**
+ * Decide whether a watch event names a file whose contents actually moved,
+ * recording the new mtime in `modTimes`.
+ *
+ * This breaks a self-inflicted feedback loop: every rebuild reads the watched
+ * source trees (Bun.build on pages/layouts/components, cp() on public/), and
+ * macOS FSEvents surfaces those reads as change events — an unfiltered watcher
+ * rebuilds forever after any edit. Linux inotify never reports them, so the
+ * loop is invisible there.
+ *
+ * A failed stat means the file is gone, which is a real change: the caller must
+ * still rebuild.
+ *
+ * `modTimes` is passed in rather than owned here so each watcher keeps its own.
+ *
+ * @param {Map<string, number>} modTimes - last-seen mtime per path, mutated here
+ * @param {string} watchedFilePath
+ * @returns {Promise<boolean>}
+ */
+export async function hasFileChanged(modTimes, watchedFilePath) {
+  try {
+    const stats = await stat(watchedFilePath);
+
+    if (stats.isDirectory() || modTimes.get(watchedFilePath) === stats.mtimeMs) {
+      return false;
+    }
+
+    modTimes.set(watchedFilePath, stats.mtimeMs);
+
+    return true;
+  } catch {
+    modTimes.delete(watchedFilePath);
+
+    return true;
+  }
+}
+
+/** @type {TextEncoder} */
+const encoder = new TextEncoder();
+
+/**
+ * Send an SSE message to every connected browser, evicting dead connections.
+ *
+ * One stale controller must not stop the others from receiving the message: a
+ * throw here would abort the loop mid-broadcast, and the callers in
+ * `startDevServer` sit inside a try whose catch reports build failures — so it
+ * would also surface as a fabricated build error.
+ *
+ * @param {Set<ReadableStreamDefaultController>} controllers - mutated when a dead connection is dropped
+ * @param {string} message
+ */
+export function broadcast(controllers, message) {
+  const data = encoder.encode(message);
+
+  for (const controller of controllers) {
+    try {
+      controller.enqueue(data);
+    } catch {
+      controllers.delete(controller);
+    }
+  }
+}
+
+/**
+ * Build the request handler: the SSE live-reload endpoint, static files, and an
+ * HTML-only 404 fallback.
+ *
+ * Separate from `startDevServer` so it can be driven with a bare `Request`.
+ * Reaching it through the server instead would mean a `buildAll()`, a bound
+ * port, process signal handlers, and four watchers that never terminate.
+ *
+ * @param {object} options
+ * @param {Set<ReadableStreamDefaultController>} options.controllers - live SSE connections, added and removed as browsers come and go
+ * @param {string} [options.outputRoot] - path to the output dir, absolute or relative
+ * @returns {(req: Request) => Promise<Response>}
+ */
+export function createFetchHandler({ controllers, outputRoot = resolve(OUTPUT_DIR) }) {
+  const root = resolve(outputRoot);
+
+  return async function handleRequest(req) {
+    const url = new URL(req.url);
+
+    // SSE endpoint for live reload
+    if (url.pathname === "/events") {
+      /** @type {ReadableStreamDefaultController} */
+      let sseController;
+
+      const stream = new ReadableStream({
+        start(controller) {
+          sseController = controller;
+          controllers.add(controller);
+        },
+        cancel() {
+          controllers.delete(sseController);
+        },
+      });
+
+      return new Response(stream, {
+        headers: {
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+        },
+      });
+    }
+
+    const file = await resolveStaticFile(url.pathname, root);
+
+    if (file) {
+      return new Response(file);
+    }
+
+    // 404 fallback - serve 404.html for HTML requests (navigation, not assets)
+    const acceptsHtml = req.headers.get("accept")?.includes("text/html");
+
+    if (acceptsHtml) {
+      const notFoundFile = Bun.file(join(root, "404.html"));
+
+      if (await notFoundFile.exists()) {
+        // No explicit Content-Type: Bun infers it from the extension, as the
+        // static-file response above relies on, and its inference keeps the
+        // charset that spelling it out here drops.
+        return new Response(notFoundFile, { status: 404 });
+      }
+    }
+
+    // simple fallback if 404 page doesn't exist
+    return new Response("Not Found", { status: 404 });
+  };
 }
 
 /**
@@ -105,55 +253,7 @@ export async function startDevServer() {
       development: true,
       idleTimeout: 0, // SSE connections must stay open indefinitely
       reusePort: false, // Fail loudly if another process is using this port (only works on Linux, unfortunately)
-      async fetch(req) {
-        const url = new URL(req.url);
-
-        // SSE endpoint for live reload
-        if (url.pathname === "/events") {
-          /** @type {ReadableStreamDefaultController} */
-          let sseController;
-
-          const stream = new ReadableStream({
-            start(controller) {
-              sseController = controller;
-              controllers.add(controller);
-            },
-            cancel() {
-              controllers.delete(sseController);
-            },
-          });
-
-          return new Response(stream, {
-            headers: {
-              "Content-Type": "text/event-stream",
-              "Cache-Control": "no-cache",
-            },
-          });
-        }
-
-        const file = await resolveStaticFile(url.pathname);
-
-        if (file) {
-          return new Response(file);
-        }
-
-        // 404 fallback - serve 404.html for HTML requests (navigation, not assets)
-        const acceptsHtml = req.headers.get("accept")?.includes("text/html");
-
-        if (acceptsHtml) {
-          const notFoundFile = Bun.file(join(OUTPUT_DIR, "404.html"));
-
-          if (await notFoundFile.exists()) {
-            return new Response(notFoundFile, {
-              status: 404,
-              headers: { "Content-Type": "text/html" },
-            });
-          }
-        }
-
-        // simple fallback if 404 page doesn't exist
-        return new Response("Not Found", { status: 404 });
-      },
+      fetch: createFetchHandler({ controllers }),
       error(err) {
         console.error(messages.devServer.serverError(err.message));
         return new Response("Internal Server Error", { status: 500 });
@@ -182,12 +282,12 @@ export async function startDevServer() {
   const rebuild = debounceRebuilds(async () => {
     try {
       await buildAll();
-      broadcast("data: reload\n\n");
+      broadcast(controllers, "data: reload\n\n");
     } catch (e) {
       const payload = toPayload(e);
 
       console.error(renderErrorToTerminal(payload));
-      broadcast(`event: build-error\ndata: ${JSON.stringify(payload)}\n\n`);
+      broadcast(controllers, `event: build-error\ndata: ${JSON.stringify(payload)}\n\n`);
     }
   }, 80);
 
@@ -202,35 +302,6 @@ export async function startDevServer() {
    */
   function logFileChanged(watchedFilePath) {
     console.info(styleText("gray", messages.files.changed(watchedFilePath)));
-  }
-
-  /** @type {TextEncoder} */
-  const encoder = new TextEncoder();
-
-  /**
-   * Send an SSE message to every connected browser, evicting dead connections.
-   * @param {string} message
-   */
-  function broadcast(message) {
-    const data = encoder.encode(message);
-    for (const controller of controllers) {
-      try {
-        controller.enqueue(data);
-      } catch {
-        controllers.delete(controller);
-      }
-    }
-  }
-
-  // Ignore editor temp files and OS metadata.
-  // Any file change that doesn't match triggers a rebuild.
-  const IGNORE = new Bun.Glob("{*~,*.swp,*.swo,*.tmp,.DS_Store,4913}");
-  /**
-   * @param {string | undefined} filename
-   * @returns {boolean}
-   */
-  function isIgnored(filename) {
-    return !filename || IGNORE.match(filename.split("/").pop() ?? "");
   }
 
   /**
@@ -269,12 +340,8 @@ export async function startDevServer() {
   /**
    * Watch a directory and schedule a rebuild on changes.
    *
-   * The mtime filter breaks a self-inflicted feedback loop: every rebuild
-   * reads the watched source trees (Bun.build on pages/layouts/components,
-   * cp() on public/), and macOS FSEvents surfaces those reads as change
-   * events — an unfiltered watcher rebuilds forever after any edit. Linux
-   * inotify never reports them, so the loop is invisible there. Only events
-   * whose mtime actually moved schedule a rebuild.
+   * Only events whose mtime actually moved schedule a rebuild — see
+   * `hasFileChanged` for why that filter exists.
    *
    * @param {string} dir
    */
@@ -294,6 +361,7 @@ export async function startDevServer() {
       return;
     }
 
+    /** @type {Map<string, number>} */
     const modTimes = new Map();
 
     for await (const event of watcher) {
@@ -301,16 +369,7 @@ export async function startDevServer() {
 
       const watchedFilePath = join(dir, event.filename);
 
-      try {
-        const stats = await stat(watchedFilePath);
-        if (stats.isDirectory() || modTimes.get(watchedFilePath) === stats.mtimeMs) {
-          continue;
-        }
-        modTimes.set(watchedFilePath, stats.mtimeMs);
-      } catch {
-        // File was deleted, proceed to rebuild
-        modTimes.delete(watchedFilePath);
-      }
+      if (!(await hasFileChanged(modTimes, watchedFilePath))) continue;
 
       logFileChanged(watchedFilePath);
       rebuild.schedule();

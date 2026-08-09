@@ -2,29 +2,9 @@
 
 Known coverage gaps, deferred deliberately. Each entry says what is uncovered, what breaks silently today, and the approach that was judged right — enough to act on without re-deriving the analysis.
 
-Ordered by value per line of test. Everything cheaper than these has already landed.
+Ordered by value per line of test as each was written.
 
-## 1. The dev server's testable surface is accidental
-
-`resolveStaticFile` and `debounceRebuilds` are tested because they are the only two exports. Everything else lives inside the ~250-line `startDevServer()` closure in `core/src/dev/server.js` and is unreachable:
-
-- `isIgnored()` — the editor-temp-file denylist glob
-- the **mtime-changed predicate** in `watchDir`
-- `broadcast()`'s dead-controller eviction
-- the 404 → `404.html` fallback, gated on the `Accept` header
-
-The mtime filter is the one that earns the extraction. CLAUDE.md gives it a full paragraph: it is a macOS-FSEvents-only guard against a self-rebuild loop, invisible on Linux, explicitly flagged as "don't treat it as dead code when testing there." An untested platform-specific guard whose failure mode does not reproduce on the other platform is the canonical thing that rots unnoticed. That is what justifies it against the brevity default — it is not defensive code surviving an edge case, it is a documented behavioral guard with no pin.
-
-**Approach**
-
-- Extract the mtime predicate and `isIgnored` to module scope and export both. Test directly; no fixture needed.
-- `broadcast()` and the 404 fallback need no extraction — start `Bun.serve` on port 0 in-process, `fetch` it, assert. That also covers the `Accept: text/html` branch and the SSE endpoint holding a connection open, which is the live-reload transport's only would-be test.
-
-**Fix the latent constraint while in here.** `core/src/dev/server.test.js` calls `process.chdir()` at module scope, and its own docblock admits this is safe _only because Bun runs one test file at a time_. That is a constraint on the whole suite, not just that file — parallel test files would break it. `OUTPUT_ROOT` resolving lazily instead of at module scope removes both the `chdir` and the constraint.
-
-Estimated 2-3 hours for both halves.
-
-## 2. Hydration is never executed
+## 1. Hydration is never executed
 
 `core/src/dev/liveReload.js` (177 lines) and `core/src/islands/castroIsland.js` (157 lines) — ~9% of core, both in the bucket CLAUDE.md says earns its lines on purpose — have no test that runs them.
 
@@ -36,9 +16,18 @@ The attribute-contract test at the bottom of `tests/site/verify.test.js` pins th
 
 Real coverage needs a DOM — `happy-dom` registered via `bun test --preload`, then mount a `<castro-island>`, drive the upgrade, assert the component hydrated. The price is one devDependency and a second execution environment to keep working, against 334 lines readable in one sitting. That is a genuine tension with the brevity default, not an oversight.
 
-Re-evaluate once entry 1 lands. The question to answer then: has anything in these two files actually broken without being noticed? If not, the contract test may be the right permanent ceiling.
+Re-evaluate the next time either file changes substantially. The question to answer then: has anything in them actually broken without being noticed? If not, the contract test may be the right permanent ceiling.
 
 Note: this is a question about whether the _project_ ships a DOM unit test. It is unrelated to verifying UI changes by hand, which stays manual either way.
+
+## What the dev-server tests still do not cover
+
+The dev server's own entry is closed — `core/src/dev/server.js` now exports `resolveStaticFile`, `isIgnored`, `hasFileChanged`, `broadcast`, `createFetchHandler`, and `debounceRebuilds`, all tested. Two gaps survive on purpose:
+
+- **`hasFileChanged`'s tests pin the predicate's logic, not the FSEvents rebuild loop.** That loop is unreproducible on Linux either way — don't read the green tests as covering the macOS guard end to end.
+- **`watchDir` and `startDevServer` are still closure-scoped and untested.** Measured, not assumed: inverting the `!` in `if (!(await hasFileChanged(...))) continue;`, or deleting that line outright, leaves the whole suite green. Covering it means extracting the watch loop from the `for await`, which buys much less than the fetch-handler extraction did — the logic left in `watchDir` is three lines of glue.
+
+`broadcast()`'s eviction guard is now pinned by "a dead connection is evicted without stopping the others." It looks like the defensive code CLAUDE.md deletes, and a probe on Bun 1.3.14 found a client disconnect never actually reaches it — but `broadcast` is called inside the try at `server.js` whose catch reports build failures, so a throwing `enqueue` would abort the loop mid-broadcast _and_ surface as a fabricated build error. The test pins the contract that matters regardless of how a controller dies: one stale connection must not cost the others their live reload.
 
 ## Known limitation of the `tests/site` layer
 
@@ -49,6 +38,12 @@ This is why the `{null}` / `{undefined}` island children in `pages/comrade-eager
 ## Working practice
 
 Every entry above should be verified the way the landed ones were: **write the test, then break the code it covers and confirm it goes red.** Also confirm whether any pre-existing test catches the same mutation — if one does, the new test may not be adding what it claims. A test that cannot go red is worth less than the lines it costs.
+
+Three lessons from the dev-server tests, all worth repeating:
+
+- **Mutate the branch that _does_ something, not just the skips.** The two obvious mutations of `hasFileChanged` (drop the mtime compare, drop the `isDirectory()` skip) both target early returns. The one that mattered was the `catch`: a failed stat means the file was deleted and must **still** rebuild, so `catch { return false }` silently stops deletions from rebuilding — a user-visible dev-server regression that both obvious mutations leave green.
+- **A green mutation can expose a weak pre-existing test.** Deleting the containment check in `resolveStaticFile` survived the whole suite, because `/` finds `dist/index.html` before it ever reaches the `dist.html` sibling — the assertion that claimed to cover it passed on candidate order alone. It took a second fixture whose output dir has no index to reach the check at all.
+- **A surviving mutation sometimes means the code should go, not that a test is missing.** Deleting the explicit `Content-Type: text/html` from the 404 response changed nothing observable, because Bun infers the type from the extension — and the explicit spelling was actually dropping the charset the inference includes. The fix was to delete the header and assert the inferred outcome, not to pin a redundant line.
 
 ## Not on this list, on purpose
 
