@@ -52,7 +52,7 @@ To verify fixes work, edit the broken file in place — the dev server will rebu
 | `island-multiple-directives` | Island carries two hydration directives | `ISLAND_MULTIPLE_DIRECTIVES` | `<Counter comrade:eager comrade:visible />` |
 | `island-props-not-serializable` | Island prop can't become JSON | `ISLAND_PROPS_NOT_SERIALIZABLE` | `<Counter data={...}>` where `data` holds a reference to itself |
 
-Two codes have no fixture on purpose: `ISLAND_NOT_FOUND` is an internal invariant — its own hint says "please report it" — and `UNEXPECTED` is the `toPayload()` fallback for any non-`CastroError` throw, so no single scenario pins it.
+Some codes have no fixture on purpose. `ISLAND_NOT_FOUND` and `BUNDLE_NO_OUTPUT` are internal invariants — the first says "please report it" in its own hint, and the second fires only when a *successful* `Bun.build` yields no `.js` output, which no user input can arrange. `UNEXPECTED` is the `toPayload()` fallback for any non-`CastroError` throw, so no single scenario pins it.
 
 ## Verification Checklist
 

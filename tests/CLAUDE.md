@@ -7,3 +7,7 @@ Its last section pins the hydration seam: the marker attributes the build emits,
 Sites are type-checked by `bun check`, which is load-bearing rather than incidental: hydration directives are typed `true` (not `boolean`), so `comrade:eager={false}` is rejected at compile time instead of being reinterpreted at runtime. `tests/site/types/islandContracts.tsx` holds `@ts-expect-error` pins for that rule and for islands-reject-children; it is never built, and a loosened rule surfaces as an unused-directive error.
 
 `bun test:errors` runs the golden suite in `tests/errors/`, which covers the terminal renderer only. After changing `messages/` or `renderError.js`, regenerate goldens with `bun test:errors:up` and inspect the diff before committing. The browser overlay isn't golden-tested — verify it by hand: load an error case in the dev server and eyeball the overlay.
+
+Every fixture site here carries its own package.json, and each one pins the same Preact range as `core/package.json` — see the peer-dependency decision in the root CLAUDE.md before changing one.
+
+`BACKLOG.md` holds the gaps left open on purpose, what breaks silently for each, and the mutation-testing practice new tests are expected to meet.
