@@ -37,6 +37,7 @@
     "preact-render-to-string": "^6.7.0"
   },
   "devDependencies": {
+    "happy-dom": "^20.11.2",
     "knip": "^5.83.0",
     "preact": "^10.29.8",
     "typescript": "^6.0.2"

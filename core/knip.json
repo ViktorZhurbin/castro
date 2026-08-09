@@ -1,6 +1,5 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "tags": ["-lintignore"],
-  "entry": ["src/cli.js", "src/islands/marker.js", "src/**/*.test.js"],
-  "ignore": ["src/dev/liveReload.js", "src/islands/castroIsland.js"]
+  "entry": ["src/cli.js", "src/islands/marker.js", "src/**/*.test.js"]
 }

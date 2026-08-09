@@ -141,9 +141,12 @@ class CastroIsland extends HTMLElement {
         await module.default(this, props);
       } else {
         console.error(`${ELEMENT_TAG}: module must export mounting function`);
+        return;
       }
 
-      // Mark as ready (useful for CSS transitions or debugging)
+      // Mark as ready (useful for CSS transitions or debugging). Every failure
+      // path above returns or throws, so the attribute means the island really
+      // did mount — never merely that it was tried.
       this.setAttribute("ready", "");
     } catch (err) {
       console.error(`${ELEMENT_TAG}: hydration failed`, err);
