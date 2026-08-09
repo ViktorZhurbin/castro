@@ -90,7 +90,8 @@ All user-facing strings live in `core/src/messages/`. Message factories keyed by
 
 ## Key Design Decisions
 
-- Preact handles SSR and VNode tree construction everywhere, including islands; it's a build-time dependency, never shipped to the browser for static pages. Preact-specific build values live in `core/src/islands/preact.js`.
+- Preact handles SSR and VNode tree construction everywhere, including islands; it runs at build time and is never shipped to the browser for static pages. Preact-specific build values live in `core/src/islands/preact.js`.
+- **Preact is a peer dependency of `core/`, and every package.json in this repo pins the same range as `core/package.json`.** Preact keeps its hook dispatcher on a module-level `options` singleton, so two copies means the dispatcher `h()` installs is invisible to the render pass — any island using `useState` dies at SSR with `undefined is not an object (evaluating 'r.__H')`. One copy is what makes hooks work, and identity here is the resolved path, not the version string: `bun install` symlinks matching ranges to a single store path and gives mismatched ones their own. A peer dep is what keeps a consuming project's Preact the only one. When bumping, bump every package.json together — the fixtures under `tests/errors/` and the scaffolder template included.
 - **Layouts receive `children` (VNode)**, not a pre-rendered `content` HTML string.
 - **Pages and layouts render as VNodes** via `h()` in `renderPage.js`, never called as plain functions — that is what installs Preact's hook dispatcher, so `useState`/`useContext`/`useId` work in both. Both receive the same props: the page's frontmatter plus the derived `title`.
 - **Islands take props, never children** — including string children, which would survive the `data-props` JSON trip. `renderMarker` throws `ISLAND_HAS_CHILDREN`; the reasoning for the flat rule is at that throw site.
