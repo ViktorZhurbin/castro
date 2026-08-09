@@ -1,5 +1,5 @@
-import Badge from "../components/Badge.island.tsx";
 import Counter from "../components/Counter.island.tsx";
+import Badge from "../components/ui/Badge.island.tsx";
 
 export const meta = { title: "Multi" };
 

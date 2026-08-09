@@ -211,6 +211,17 @@ test("multi page has CSS for both islands", async () => {
   expect(html).toContain("font-weight: bold");
 });
 
+// ------ Nested island (derivePaths preserves source-tree nesting) ------
+// components/ui/Badge.island.tsx must emit under /islands/ui/, not flattened
+// to /islands/. Badge is the fixture rather than Counter because the vendored-
+// deps test below globs `islands/Counter.island-*.js`, and `*` doesn't cross a
+// directory separator.
+
+test("a nested island keeps its directory in the bundle URL", async () => {
+  const html = await readHtml("multi.html");
+  expect(html).toContain('import="/islands/ui/Badge.island-');
+});
+
 // ------ Component composition ------
 
 test("island inside static component gets wrapper", async () => {
