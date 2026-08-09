@@ -1,11 +1,6 @@
-import { join } from "node:path/posix";
-
-import { PROJECT_ROOT } from "../constants.js";
-
-/** @type {string[] | null} */
-let depsCache = null;
-
 /**
+ * Project Dependencies
+ *
  * Returns all package names from the project's package.json for use as
  * Bun.build `external` entries during page/layout/island SSR compilation.
  *
@@ -19,7 +14,16 @@ let depsCache = null;
  *
  * Cached for the process lifetime: a dependency added mid-session needs a
  * restart to be picked up.
- *
+ */
+
+import { join } from "node:path/posix";
+
+import { PROJECT_ROOT } from "../constants.js";
+
+/** @type {string[] | null} */
+let depsCache = null;
+
+/**
  * @returns {Promise<string[]>}
  */
 export async function getProjectDependencies() {

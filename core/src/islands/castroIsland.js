@@ -4,7 +4,7 @@
  * This is the CLIENT-SIDE runtime that makes islands interactive.
  *
  * How it works:
- * 1. Server renders HTML like: <castro-island directive="comrade:visible" import="/components/counter.js" data-props='{"initial":5}'>
+ * 1. Server renders HTML like: <castro-island directive="comrade:visible" import="/islands/Counter.island-f5g4mkdd.js" data-props='{"initial":5}'>
  * 2. Browser loads this file and registers <castro-island> custom element
  * 3. When element connects to DOM, it checks the loading directive
  * 4. Waits for trigger (visibility, idle, etc.)
@@ -124,7 +124,7 @@ class CastroIsland extends HTMLElement {
       const propsJson = this.dataset.props;
       const props = propsJson ? JSON.parse(propsJson) : {};
 
-      // Get the path from import="/components/counter.js" attribute
+      // Get the path from import="/islands/Counter.island-f5g4mkdd.js" attribute
       const importPath = this.getAttribute("import");
       if (!importPath) {
         console.error(`${ELEMENT_TAG}: missing import attribute`);

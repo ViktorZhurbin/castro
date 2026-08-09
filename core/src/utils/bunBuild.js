@@ -1,12 +1,10 @@
-import { CastroError } from "./errors.js";
-
-/** @import { CodeFrame } from "../types.d.ts" */
-
 /**
- * Wraps Bun.build to standardize error handling.
+ * Bun.build wrapper
  *
- * Bun.build can fail in two shapes. Both paths will emit structured
- * BUNDLE_FAILED errors with code frames extracted from build logs:
+ * Standardizes error handling across every Bun.build call site (pages,
+ * layouts, islands). Bun.build can fail in two shapes, and both are
+ * normalized here into structured BUNDLE_FAILED errors with code frames
+ * extracted from build logs:
  *
  *  - Soft failure: returns `{ success: false, logs: [...] }`
  *  - Hard failure: throws AggregateError with `errors` array
@@ -14,7 +12,13 @@ import { CastroError } from "./errors.js";
  * Neither shape carries the reason at the top level — it is per-log, so a frame
  * is the only place it can travel. Anything Bun throws that is neither shape
  * (a plugin's own throw, for one) passes through to `toPayload`'s UNEXPECTED.
- *
+ */
+
+import { CastroError } from "./errors.js";
+
+/** @import { CodeFrame } from "../types.d.ts" */
+
+/**
  * @param {Bun.BuildConfig} config
  */
 export async function safeBunBuild(config) {

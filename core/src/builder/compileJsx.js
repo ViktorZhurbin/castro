@@ -1,3 +1,11 @@
+/**
+ * JSX Compiler
+ *
+ * Compiles a page or layout's JSX/TSX to JavaScript and imports the module.
+ * Also extracts any imported CSS files for injection, and runs the island
+ * build plugins so island imports are replaced with marker components.
+ */
+
 import { resolve } from "node:path/posix";
 
 import {
@@ -11,11 +19,6 @@ import { getProjectDependencies } from "../utils/dependencies.js";
 import { CastroError } from "../utils/errors.js";
 
 /**
- * Compile JSX/TSX to JavaScript and import the module
- *
- * Also extracts any imported CSS files for injection.
- * Uses island build plugins to replace island imports with marker components.
- *
  * @param {string} sourceFilePath - Path to JSX/TSX file
  */
 export async function compileJSX(sourceFilePath) {
@@ -26,9 +29,7 @@ export async function compileJSX(sourceFilePath) {
   const result = await safeBunBuild({
     entrypoints: [absoluteSourcePath],
     target: "bun",
-    // Externalizes all NPM package imports found in package.json.
-    // This enables native support for tsconfig `paths` aliases (e.g., @components/*),
-    // as Bun will resolve local paths that are NOT in the dependencies list.
+    // See getProjectDependencies() for why every package.json dependency is externalized.
     external: await getProjectDependencies(),
     format: "esm",
     // Pages and layouts compile to Preact VNodes (not HTML strings directly).

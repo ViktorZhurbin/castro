@@ -1,3 +1,12 @@
+/**
+ * Page Builder
+ *
+ * Builds a single source file (JSX/TSX or Markdown) to an HTML output file.
+ * Both paths on every exported function come from the caller: scanPages()
+ * already derived the route when it checked for conflicts, so re-deriving it
+ * here would be a second copy of the source→route mapping to keep in sync.
+ */
+
 import { dirname, extname } from "node:path/posix";
 
 import { h } from "preact";
@@ -10,10 +19,6 @@ import { renderPage } from "./renderPage.js";
 import { writeCSSFiles } from "./writeCss.js";
 
 /**
- * Both paths come from the caller: scanPages() already derived the route when
- * it checked for conflicts, so re-deriving it here would be a second copy of
- * the source→route mapping to keep in sync.
- *
  * @param {string} sourceFilePath
  * @param {string} outputFilePath
  */
