@@ -43,6 +43,36 @@ test("static page has no island artifacts", async () => {
   expect(html).not.toContain("<style>");
 });
 
+// ------ Private path skip (`_`-prefixed pages) ------
+// scanPages() skips any relativeSourcePath with a path segment starting with
+// `_` — two arms of one `.split("/").some(...)` check: a private directory
+// (pages/_drafts/) and a private file at the top level (pages/_partial.tsx).
+// If either arm regresses, the fixture below starts emitting a real route
+// and nothing else in this suite would notice — every other test only
+// asserts what dist/ contains, never what it must not.
+
+test("a page inside an `_`-prefixed directory produces no output file", async () => {
+  const file = Bun.file(join(distDir, "_drafts", "wip.html"));
+  expect(await file.exists()).toBe(false);
+});
+
+test("an `_`-prefixed file at the top level produces no output file", async () => {
+  const file = Bun.file(join(distDir, "_partial.html"));
+  expect(await file.exists()).toBe(false);
+});
+
+// Mirrors scanPages()'s own segment check against the actual build output,
+// rather than the two fixture paths above — catches a leak under a filename
+// this suite doesn't know to look for, not just a regression of the skip
+// itself.
+test("no emitted page path contains an `_`-prefixed segment", async () => {
+  const glob = new Bun.Glob("**/*.html");
+  const leaked = [...glob.scanSync(distDir)].filter((relativeOutputPath) =>
+    relativeOutputPath.split("/").some((segment) => segment.startsWith("_")),
+  );
+  expect(leaked).toEqual([]);
+});
+
 // ------ comrade:visible directive ------
 
 test("comrade:visible has island wrapper", async () => {
