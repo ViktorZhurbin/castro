@@ -84,10 +84,9 @@ export const messages = {
       hint: "Check the frontmatter block at the top of the file",
     }),
 
-    BUNDLE_FAILED: (tokens) => ({
+    BUNDLE_FAILED: () => ({
       title: "Sabotage detected",
       message: "Error during JavaScript compilation:",
-      errorMessage: tokens?.errorMessage,
       hint: "Check the code frame and error location above",
     }),
 

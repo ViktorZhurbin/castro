@@ -83,7 +83,7 @@ File watchers on `pages/`, `layouts/`, `components/`, and `public/` rebuild on c
 
 ## Messages
 
-All user-facing strings live in `core/src/messages/`. Message factories keyed by `ErrorCode` (typed via `ErrorMessages`) return a `CastroErrorPayload`; wording lives here, structure lives in the payload. **Never use inline strings for user-facing output.** Use `styleText` from `node:util` for colored logs. Tone, satire, and emoji rules: see `core/src/messages/README.md`.
+All user-facing strings live in `core/src/messages/`. Message factories keyed by `ErrorCode` (typed via `ErrorMessages`) return a `CastroErrorPayload`; wording lives here, structure lives in the payload. **Never use inline strings for user-facing output** — the one exemption is `islands/castroIsland.js`, which is copied verbatim into `dist/` and runs in the browser, so it can't import from here. The `errorMessage` field is for raw text from a caught exception (see `utils/errors.js`), never for prose Castro wrote; both renderers style it as foreign. Use `styleText` from `node:util` for colored logs. Tone, satire, and emoji rules: see `core/src/messages/README.md`.
 
 ## Key Design Decisions
 

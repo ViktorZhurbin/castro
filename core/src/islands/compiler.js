@@ -50,9 +50,7 @@ export async function compileIsland({ sourceFilePath, outputDir, publicDir }) {
   const cssFile = clientResult.outputs.find((f) => f.path.endsWith(".css"));
 
   if (!jsFile) {
-    throw new CastroError("BUNDLE_FAILED", {
-      errorMessage: `Island ${sourceFilePath} compiled with no .js output`,
-    });
+    throw new CastroError("BUNDLE_NO_OUTPUT", { sourceFilePath });
   }
 
   const publicJsPath = `${publicDir}/${basename(jsFile.path)}`;
@@ -184,7 +182,11 @@ async function compileIslandSSR({ sourceFilePath }) {
     plugins: [cssStubPlugin],
   });
 
-  const output = result.outputs[0];
+  const jsFile = result.outputs.find((f) => f.path.endsWith(".js"));
 
-  return output ? await output.text() : "";
+  if (!jsFile) {
+    throw new CastroError("BUNDLE_NO_OUTPUT", { sourceFilePath });
+  }
+
+  return await jsFile.text();
 }

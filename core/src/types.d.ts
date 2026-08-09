@@ -23,7 +23,7 @@ export type ErrorTokens = {
   PAGE_NO_DEFAULT_EXPORT: { file: string };
   ISLAND_NOT_FOUND: { islandId: string; sourceFilePath: string };
   NO_PAGES: { dir: string };
-  BUNDLE_FAILED: { errorMessage: string } | undefined;
+  BUNDLE_FAILED: undefined;
   BUNDLE_NO_OUTPUT: { sourceFilePath: string };
   YAML_PARSE_FAILED: { errorMessage: string; sourceFilePath: string };
   ISLAND_RENDER_FAILED: {
