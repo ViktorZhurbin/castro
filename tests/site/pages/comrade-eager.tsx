@@ -15,6 +15,16 @@ export default function EagerTest() {
         {/* oxlint-disable-next-line no-constant-binary-expression */}
         {false && <span>never</span>}
       </Counter>
+      {/* null and undefined children pass the same guard as false — a
+          `{cond ? <X/> : null}` or an unset conditional both nest nothing. */}
+      {/* @ts-expect-error */}
+      <Counter initial={11} comrade:eager>
+        {null}
+      </Counter>
+      {/* @ts-expect-error */}
+      <Counter initial={12} comrade:eager>
+        {undefined}
+      </Counter>
     </div>
   );
 }

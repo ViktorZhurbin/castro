@@ -156,7 +156,7 @@ async function scanPages() {
  * @param {string} relativeOutputPath
  * @returns {string}
  */
-function toRoute(relativeOutputPath) {
+export function toRoute(relativeOutputPath) {
   const withoutExt = relativeOutputPath.slice(0, -".html".length);
 
   return `/${withoutExt.replace(/(^|\/)index$/, "")}`;

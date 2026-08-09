@@ -152,6 +152,24 @@ test("a false-branch child is not serialized into data-props", async () => {
   expect(html).not.toContain("&quot;children&quot;");
 });
 
+// null and undefined nest nothing for the same reason `false` does, and
+// renderMarker() must pass all three. Narrowing the guard to reject either one
+// throws on `{cond ? <X/> : null}` — the page below is the only thing in the
+// suite that would notice, and it notices by failing the build outright.
+//
+// Asserting the whole serialized object, not just the surviving prop: that is
+// what makes the name true here, since a leaked `children` key would show up
+// inside these braces rather than merely somewhere on the page.
+test("a null child is not serialized into data-props", async () => {
+  const html = await readHtml("comrade-eager.html");
+  expect(html).toContain('data-props="{&quot;initial&quot;:11}"');
+});
+
+test("an undefined child is not serialized into data-props", async () => {
+  const html = await readHtml("comrade-eager.html");
+  expect(html).toContain('data-props="{&quot;initial&quot;:12}"');
+});
+
 // ------ Shell-less layout (no <head>/<body> to anchor to) ------
 // injectTags() anchors injection to </head> or </body>; layouts/bare.tsx
 // returns a fragment with neither. Guards against the fix regressing to a
