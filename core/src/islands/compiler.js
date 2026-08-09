@@ -43,7 +43,7 @@ export async function compileIsland({ sourceFilePath, outputDir, publicDir }) {
   const ssrCode = await compileIslandSSR({ sourceFilePath });
 
   // Compile client version (runs in browser)
-  const clientResult = await compileIslandClient({ sourceFilePath, outputDir });
+  const clientResult = await compileIslandClient({ sourceFilePath });
 
   // Find the actual generated files (with hashes)
   const jsFile = clientResult.outputs.find((f) => f.path.endsWith(".js"));
@@ -53,10 +53,16 @@ export async function compileIsland({ sourceFilePath, outputDir, publicDir }) {
     throw new CastroError("BUNDLE_NO_OUTPUT", { sourceFilePath });
   }
 
-  const publicJsPath = `${publicDir}/${basename(jsFile.path)}`;
+  const jsFileName = basename(jsFile.path);
+  const publicJsPath = `${publicDir}/${jsFileName}`;
 
-  // CSS kept as a string (not written to disk) — it's inlined per-page
-  // in writeHtmlPage.js, since each page uses a different island subset.
+  // Written here rather than via the build's `outdir`, which would emit every
+  // artifact — including a stylesheet nothing ever links. Island CSS reaches the
+  // page inlined as <style> in writeHtmlPage.js, so only the entry JS belongs
+  // on disk — there are no other outputs while island builds run without
+  // `splitting`.
+  await Bun.write(`${outputDir}/${jsFileName}`, jsFile);
+
   const cssContent = cssFile ? await cssFile.text() : "";
 
   // Loaded here rather than handed back as a string: renderMarker() needs the
@@ -77,11 +83,12 @@ export async function compileIsland({ sourceFilePath, outputDir, publicDir }) {
  *
  * Creates a module that exports a mounting function.
  * The mounting function handles hydration when called.
- * Outputs files with content hashes for cache busting.
+ * Artifacts are named with content hashes for cache busting and returned in
+ * memory; compileIsland() decides which of them reach disk.
  *
- * @param {{ sourceFilePath: string, outputDir: string }} params
+ * @param {{ sourceFilePath: string }} params
  */
-async function compileIslandClient({ sourceFilePath, outputDir }) {
+async function compileIslandClient({ sourceFilePath }) {
   const componentName = basename(sourceFilePath, extname(sourceFilePath));
 
   // Virtual entry point: a generated module that imports the real component
@@ -111,7 +118,6 @@ async function compileIslandClient({ sourceFilePath, outputDir }) {
   const result = await safeBunBuild({
     entrypoints: [virtualEntryPath],
     files: { [virtualEntryPath]: virtualEntry },
-    outdir: outputDir,
     naming: { entry: `${componentName}-[hash].[ext]` },
     format: "esm",
     target: "browser",
@@ -140,11 +146,10 @@ async function compileIslandClient({ sourceFilePath, outputDir }) {
  */
 async function compileIslandSSR({ sourceFilePath }) {
   // Replace plain `.css` imports with an empty module during SSR. The client
-  // compile already extracted island CSS into a separate artifact (inlined
-  // per-page in writeHtmlPage.js); SSR only runs the component to produce
-  // HTML, so the stylesheet bytes are dead weight here — and Bun's `bun`
-  // target has no CSS loader, so resolving them would either error or pull
-  // the file through the loader chain for nothing.
+  // compile already extracted island CSS (inlined per-page in writeHtmlPage.js);
+  // SSR only runs the component to produce HTML, so the stylesheet bytes are
+  // dead weight here — and Bun's `bun` target has no CSS loader, so resolving
+  // them would either error or pull the file through the loader chain for nothing.
   //
   // CSS Modules (`.module.css`) are deliberately not stubbed: their default
   // export is the class-name map (`styles.button` → "button_x7f3"), and SSR

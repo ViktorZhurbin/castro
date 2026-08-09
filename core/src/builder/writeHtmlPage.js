@@ -45,12 +45,11 @@ async function collectHeadTags({ usedIslands, cssTags = [] }) {
     tags.push(`<script type="module" src="/${ISLAND_RUNTIME_FILE}"></script>`);
   }
 
-  // Island CSS is inlined as <style> rather than written to disk because each
-  // page renders a different subset of islands — per-page permutations aren't
-  // worth caching as separate files. Only islands actually rendered get included.
-  const cssManifest = islands.getCssManifest();
+  // Island CSS is inlined as <style> rather than linked: these stylesheets run
+  // tens of bytes each, so a render-blocking request per island per page costs
+  // more than re-sending the bytes. Only islands actually rendered get included.
   for (const id of usedIslands) {
-    const css = cssManifest.get(id);
+    const css = islands.getIsland(id)?.cssContent;
 
     if (css) {
       tags.push(`<style>${css}</style>`);

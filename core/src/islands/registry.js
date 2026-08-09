@@ -24,19 +24,9 @@ class IslandsRegistry {
   /** @type {Map<IslandId, IslandComponent>} */
   #islands = new Map();
 
-  /**
-   * Island ID → CSS content string, used for per-page CSS injection
-   * @type {Map<IslandId, string>}
-   */
-  #cssManifest = new Map();
-
   /** @param {IslandId} id */
   getIsland(id) {
     return this.#islands.get(id);
-  }
-
-  getCssManifest() {
-    return this.#cssManifest;
   }
 
   /**
@@ -44,7 +34,6 @@ class IslandsRegistry {
    */
   async load() {
     this.#islands.clear();
-    this.#cssManifest.clear();
 
     // Islands are optional — a project with no components/ dir is valid.
     try {
@@ -69,13 +58,7 @@ class IslandsRegistry {
         publicDir,
       });
 
-      const islandId = getIslandId(sourceFilePath);
-
-      this.#islands.set(islandId, component);
-
-      if (component.cssContent) {
-        this.#cssManifest.set(islandId, component.cssContent);
-      }
+      this.#islands.set(getIslandId(sourceFilePath), component);
     }
   }
 }
