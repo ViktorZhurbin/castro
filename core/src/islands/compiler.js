@@ -142,6 +142,13 @@ async function compileIslandClient({ sourceFilePath }) {
  * - Result is kept in memory, not written to disk
  * - Used only to generate static HTML at build time
  *
+ * Bun runs TSX natively, so this compile and the getModule() layer it feeds look
+ * removable in favour of importing the source directly. They aren't: Bun's
+ * runtime loader returns a CSS module as a path string, not the class-name map.
+ * Only the bundler produces the hashed names, so a direct import would SSR
+ * `className={undefined}` against a client bundle using the hash — a mismatch
+ * Preact patches over in silence.
+ *
  * @param {{ sourceFilePath: string }} params
  */
 async function compileIslandSSR({ sourceFilePath }) {

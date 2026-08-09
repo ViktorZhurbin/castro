@@ -15,6 +15,10 @@
  *   module resolution can walk up to node_modules/
  * - A file:// URL ensures Bun treats it as a proper module with full resolution
  *
+ * Why not import the source directly and skip the compile? Pages need island
+ * imports swapped for markers first; island SSR needs the bundler's CSS-module
+ * class names (see compileIslandSSR in islands/compiler.js).
+ *
  * Cache busting: Bun's module loader caches by file path and ignores query
  * strings. We use content-hashed filenames so changed code gets a new path.
  */

@@ -5,8 +5,10 @@
  * renderToString() → HTML file with injected assets.
  *
  * Both JSX and Markdown pages flow through this single function.
- * The entire VNode tree (page + layout + any islands) renders in one
- * renderToString() pass, which is why island SSR modules must be pre-loaded.
+ * Page and layout render in one top-level renderToString() pass; each island
+ * instance renders through its own nested synchronous call (marker.js), so an
+ * island used three times renders three times. Synchronous throughout, which
+ * is why island SSR modules must be pre-loaded.
  */
 
 import { basename } from "node:path/posix";

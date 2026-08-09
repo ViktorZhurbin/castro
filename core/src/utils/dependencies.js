@@ -8,9 +8,11 @@
  * installed packages are available in node_modules. Pages and layouts only import
  * local files (components, islands) — not devDependencies directly — so externalizing them
  * causes no harm and avoids false bundling if a local file happens to share a
- * name with a package. Including all three dependency groups also enables
- * tsconfig `paths` aliases: Bun resolves imports that aren't in the external
- * list, so local aliases like `@components/` pass through to path resolution.
+ * name with a package.
+ *
+ * This list has nothing to do with tsconfig `paths` aliases — Bun resolves
+ * those natively, and an alias prefix like `@/` matches no package name to
+ * begin with.
  *
  * Cached for the process lifetime: a dependency added mid-session needs a
  * restart to be picked up.

@@ -238,9 +238,12 @@ export async function startDevServer() {
    *
    * The config is read once at import, so there is nothing a rebuild could pick
    * up (see the module docblock in `config.js`). This watcher exists purely so
-   * an edit says "restart" instead of looking like it took effect — best-effort
-   * by design: an editor that saves by atomic rename swaps out the watched
-   * inode and no further events arrive.
+   * an edit says "restart" instead of looking like it took effect.
+   *
+   * macOS watches by path, so this survives an editor saving by atomic rename
+   * and keeps firing after (verified, Bun 1.3.14). Linux inotify watches the
+   * inode, where a rename-over may end the watch silently; untested, and worth
+   * a missed advisory log at most.
    */
   async function watchConfig() {
     /** @type {AsyncIterable<FileChangeInfo<string>>} */

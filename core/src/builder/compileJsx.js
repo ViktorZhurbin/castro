@@ -33,9 +33,10 @@ export async function compileJSX(sourceFilePath) {
     external: await getProjectDependencies(),
     format: "esm",
     // Pages and layouts compile to Preact VNodes (not HTML strings directly).
-    // The final renderToString() call in renderPage.js converts the complete
-    // VNode tree to HTML in one pass. This is a build-time convenience —
-    // Preact is NOT shipped to the browser for static pages.
+    // The renderToString() call in renderPage.js converts the page + layout
+    // tree to HTML.
+    // This is a build-time convenience — Preact is NOT shipped to the browser
+    // for static pages.
     jsx: { runtime: "automatic", importSource: "preact" },
     loader: { ".css": "css" },
     define: {

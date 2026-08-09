@@ -9,7 +9,7 @@
  */
 
 import { h } from "preact";
-import { render } from "preact-render-to-string";
+import { renderToString } from "preact-render-to-string";
 
 /**
  * @import { ComponentType } from "preact"
@@ -41,5 +41,5 @@ export const PREACT_CLIENT_PATH = new URL("./preact.client.js", import.meta.url)
  * @returns {string}
  */
 export function renderIslandToString(Component, props) {
-  return render(h(/** @type {ComponentType<any>} */ (Component), props));
+  return renderToString(h(/** @type {ComponentType<any>} */ (Component), props));
 }

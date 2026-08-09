@@ -83,8 +83,8 @@ export const castroExternalsPlugin = {
  * `import "@vktrz/bare-css/style.css"`.
  *
  * compileJSX marks every package.json dependency external (see
- * getProjectDependencies) so JS deps resolve to their installed singletons and
- * tsconfig `paths` aliases pass through. That's right for JS but wrong for CSS:
+ * getProjectDependencies) so JS deps resolve to their installed singletons.
+ * That's right for JS but wrong for CSS:
  * a stylesheet has no runtime singleton — it must be bundled to be extracted
  * into the page's <link>. Resolving a bare `.css` specifier to its absolute
  * path (honouring the package's `exports`) sidesteps the external match, so Bun
