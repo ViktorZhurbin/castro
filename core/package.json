@@ -29,6 +29,10 @@
       "default": "./src/index.js"
     }
   },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
     "knip": "knip",
     "type-check": "tsc"
