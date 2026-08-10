@@ -125,7 +125,7 @@ See `tests/CLAUDE.md` for what each test suite covers and how to regenerate gold
 - **Backwards compatibility**: package is unpublished; breaking changes land freely.
 - **Dead island elimination**: every `*.island.{jsx,tsx}` under `components/` compiles and writes a client bundle to `dist/islands/`, whether or not a page imports it. Per-page `usedIslands` gating decides what the HTML _references_, not what ships. Pruning would mean deferring compilation until after pages render, but SSR modules have to be loaded before that — not worth the inversion.
 
-**Day-to-day DX** is the named exception. These subsystems cost lines on purpose and survive brevity passes intact:
+**Day-to-day DX** is the named exception. These subsystems cost lines on purpose and survive brevity passes:
 
 - structured errors;
 - the satirical voice (`messages/`);

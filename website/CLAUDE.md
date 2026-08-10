@@ -6,4 +6,10 @@ This is a demo site that consumes Castro. Global styling comes from `@vktrz/bare
 
 **Hidden page directories.** Directories prefixed with `_` are excluded from the build (e.g. `_components/`).
 
-**Site information architecture.** A single landing page (`src/pages/index.tsx`: Hero + HowItWorks + IslandShowcase) plus a `404`. No docs section, no public nav — the header is just Home, GitHub, and the theme toggle. The landing explains what Castro is, demonstrates one live island (`PropagandaRadio`, the site's only `<castro-island>`), and points at the source; it deliberately doesn't try to teach island architecture. Keep it that way.
+**Site information architecture:**
+
+- Landing page (`src/pages/index.tsx`),
+- `404`,
+- `docs/` section
+
+The landing still explains what Castro is and demonstrates one live island (`PropagandaRadio`, the site's only `<castro-island>`) without teaching island architecture — that's `docs/islands.md`'s job now. The docs section covers **usage only**: how to structure a project, write pages/layouts, use islands, configure the build. It is not an internals/architecture writeup — that already lives in the root `CLAUDE.md` and module docblocks, and duplicating it here is the thing that made the previous docs attempt a chore. If documenting the real usage surface ever needs more than these three pages, treat that as a signal the surface grew, not a cue to add pages.

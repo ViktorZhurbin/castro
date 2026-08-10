@@ -1,0 +1,6 @@
+/* Docs content: readable prose width, breathing room above/below. */
+
+.docs-content {
+  max-width: 700px;
+  padding-block: var(--spacing-2xl) var(--spacing-4xl);
+}

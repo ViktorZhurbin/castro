@@ -11,6 +11,7 @@ export function Header() {
         <a href="/" class="btn-square btn-square-primary" aria-label="Home">
           <StarIcon />
         </a>
+        <a href="/docs/quick-start">Docs</a>
       </div>
 
       <div class="navbar-end">
