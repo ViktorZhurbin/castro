@@ -128,12 +128,14 @@
   text-decoration: none;
 
   &:hover {
-    background-color: var(--code-background-color);
+    background-color: var(--contrast-background);
+    color: var(--contrast-inverse);
+    text-decoration: none;
   }
 
   &[aria-current="page"] {
-    color: var(--primary);
+    color: var(--contrast-inverse);
     border-left-color: var(--primary);
-    background-color: var(--code-background-color);
+    background-color: var(--contrast-background);
   }
 }

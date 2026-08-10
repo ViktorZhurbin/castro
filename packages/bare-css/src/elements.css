@@ -104,4 +104,9 @@ table {
     border: var(--border-2);
     text-align: left;
   }
+
+  & thead th,
+  & thead td {
+    border-bottom: var(--border-3);
+  }
 }

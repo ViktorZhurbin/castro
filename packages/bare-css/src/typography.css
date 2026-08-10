@@ -41,12 +41,6 @@ ul li {
   list-style: square;
 }
 
-/* Extra breathing room when a heading follows a block. */
-:where(article, address, blockquote, dl, figure, form, ol, p, pre, table, ul)
-  ~ :is(h1, h2, h3, h4, h5, h6) {
-  margin-top: var(--typography-spacing-top);
-}
-
 /* Base link — kept ahead of the heading rules so specificity ascends: heading
    links (higher specificity) still override this to inherit their color. */
 a {
@@ -70,6 +64,7 @@ h6 {
   margin-top: 0;
   margin-bottom: var(--typography-spacing-vertical);
   color: var(--color);
+  --font-weight: 700;
   font-weight: var(--font-weight);
   font-size: var(--font-size);
   line-height: var(--line-height);
@@ -88,11 +83,18 @@ h6 {
       text-decoration: underline;
     }
   }
+
+  & a > code {
+    padding: var(--spacing-4xs) var(--spacing-2xs);
+    border: 1px solid var(--muted-border-color);
+    background-color: var(--code-background-color);
+  }
 }
 
 h1 {
   --color: var(--h1-color);
   --font-size: 3rem;
+  --typography-spacing-top: 3rem;
 
   a {
     text-underline-offset: 6px;
@@ -101,18 +103,26 @@ h1 {
 h2 {
   --color: var(--h2-color);
   --font-size: 1.875rem;
+  --typography-spacing-top: 2.625rem;
 }
 h3 {
   --color: var(--h3-color);
+  --font-size: 1.5rem;
+  --typography-spacing-top: 2.25rem;
 }
 h4 {
   --color: var(--h4-color);
+  --font-size: 1.25rem;
+  --typography-spacing-top: 1.874rem;
 }
 h5 {
   --color: var(--h5-color);
+  --font-size: 1.125rem;
+  --typography-spacing-top: 1.6875rem;
 }
 h6 {
   --color: var(--h6-color);
+  --font-size: 1rem;
 }
 
 @media (min-width: 768px) {
@@ -127,6 +137,15 @@ h6 {
   }
 }
 
+/* Extra breathing room when a heading follows a block. Same specificity as
+   the margin-top: 0 above (:where() and :is() both resolve to a bare type
+   selector's weight) — must come after it in source order or the 0 wins the
+   tie and this never applies. */
+:where(article, address, blockquote, dl, figure, form, ol, p, pre, table, ul)
+  ~ :is(h1, h2, h3, h4, h5, h6) {
+  margin-top: var(--typography-spacing-top);
+}
+
 ins {
   color: var(--ins-color);
   text-decoration: none;
@@ -137,6 +156,14 @@ del {
 
 ::selection {
   background-color: var(--text-selection-color);
+}
+
+/* Sized here, not per-selector below, so inline code, code inside a heading
+   link, and <pre> all share one scale; pre > code resets to inherit so
+   nesting doesn't compound the reduction twice. */
+code,
+pre {
+  font-size: 0.875em;
 }
 
 /* Inline code (not inside a link or a <pre>). */
@@ -156,6 +183,7 @@ pre {
     display: block;
     padding: var(--spacing) var(--spacing-xl);
     overflow: auto;
+    font-size: inherit;
     font-family: var(--font-family-monospace);
   }
 }

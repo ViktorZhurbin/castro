@@ -22,6 +22,15 @@
   gap: var(--spacing);
 }
 
+/* Nav links use the display face, matching every other heading-weight
+   element on the site — Bebas Neue's lowercase glyphs are drawn at cap
+   height, so "Docs" reads as "DOCS" without a text-transform. */
+.navbar-start > a:not(.btn-square) {
+  font-family: var(--font-display);
+  letter-spacing: 0.05em;
+  font-size: var(--text-xl);
+}
+
 /* Base `a` already renders --primary at rest; underline (the existing hover
    treatment, driven by the same --text-decoration custom property) is what
    actually differentiates the active page. */

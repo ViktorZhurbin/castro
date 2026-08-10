@@ -69,6 +69,7 @@
 
   /* Border system — visual weight is carried by geometry. */
   --border-2: var(--border-width) solid var(--muted-border-color);
+  --border-3: 3px solid var(--muted-border-color);
   --border-4: 4px solid var(--muted-border-color);
   --border-primary-4: 4px solid var(--primary);
   --border-primary-8: 8px solid var(--primary);
