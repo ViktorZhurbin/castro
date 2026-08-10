@@ -21,7 +21,7 @@ bun test             # all tests (core unit + tests/site + tests/site-srcdir + t
 bun test:site        # build and verify test sites only
 bun test:errors      # run error DX golden suite (tests/errors/)
 bun test:errors:up   # regenerate the error goldens, then read the diff
-bun verify           # lint-format + check:code + test + every build (runs on pre-push)
+bun verify           # lint-format + check:code + test + every build (runs on pre-push and in CI)
 bun loc              # LOC count (core only, excludes messages/)
 ```
 

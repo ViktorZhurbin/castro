@@ -1,0 +1,25 @@
+name: verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+
+      # The one check pre-push can't make: locally the lockfile is whatever the
+      # last install wrote, so drift from package.json never surfaces.
+      - run: bun install --frozen-lockfile
+
+      # Byte-for-byte what .husky/pre-push runs, so the two can't drift.
+      - run: bun verify
+
+      # verify starts with `oxlint --fix && oxfmt`, which rewrite files rather
+      # than failing. A dirty tree here is unformatted code that got waved
+      # through by a `--no-verify` push.
+      - run: git diff --exit-code
