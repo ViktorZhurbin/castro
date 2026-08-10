@@ -16,11 +16,12 @@ bun run build        # production build (website playground)
 bun format           # oxfmt
 bun lint             # oxlint
 bun lint-format      # lint + format
-bun check            # type-check + knip across workspaces
-bun test             # all tests (core unit + tests/site + tests/site-srcdir + tests/errors)
+bun check:code       # type-check + knip across workspaces
+bun test             # all tests (core unit + tests/site + tests/site-srcdir + tests/errors + repo-wide guards)
 bun test:site        # build and verify test sites only
 bun test:errors      # run error DX golden suite (tests/errors/)
-bun verify           # lint-format + check + test + every build (runs on pre-push)
+bun test:errors:up   # regenerate the error goldens, then read the diff
+bun verify           # lint-format + check:code + test + every build (runs on pre-push)
 bun loc              # LOC count (core only, excludes messages/)
 ```
 
@@ -30,9 +31,9 @@ bun loc              # LOC count (core only, excludes messages/)
 - `packages/` — `create-castro`, the project scaffolder
 - `EXPLORATIONS.md` — the scope/complexity filter for building anything new here; read it before starting a package
 - `website/` — demo playground that consumes castro. `website/tsconfig.json` is the canonical tsconfig; `packages/create-castro/template/tsconfig.json` shares the same `compilerOptions` but uses root-level `pages/`/`layouts/` instead of `src/`.
-- `tests/site/` — minimal test site exercising Preact islands, all hydration directives, CSS modules, signals, layout CSS extraction, a shell-less layout, nested layouts sharing a basename with the root one, and an island nested under `components/ui/` pinning nested bundle URLs
-- `tests/site-srcdir/` — pins the `srcDir` output contract: a `srcDir: "src"` site with a layout that imports CSS, asserting the emitted URL never leaks the `src` segment
-- `tests/errors/` — isolated error cases for manual DX verification of the error overlay and terminal renderer
+- `tests/site/` — minimal test site exercising the full build pipeline
+- `tests/site-srcdir/` — minimal fixture pinning the `srcDir` output contract
+- `tests/errors/` — one fixture site per failure scenario, covering every `ErrorCode`
 
 ### Core Module Structure (`core/src/`)
 

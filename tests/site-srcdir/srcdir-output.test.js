@@ -3,11 +3,9 @@
  *
  * Pins that `srcDir` only shifts where sources are read from — output always
  * lands under dist/ with no srcDir segment. tests/site/ uses the default
- * srcDir: "." for which layout CSS already resolves to the right place, so it
- * cannot catch a srcDir leak. This site is the minimal fixture that can:
- * srcDir: "src" with a layout that imports CSS, and one island so the
- * separate outputDir/publicDir derivation in islands/registry.js gets the
- * same coverage — a leak there 404s the bundle and the site ships unhydrated.
+ * srcDir: "." and can't catch a leak; this is the minimal srcDir: "src"
+ * fixture that can, covering both layout CSS and the separate outputDir/
+ * publicDir derivation in islands/registry.js (a leak there 404s the bundle).
  *
  * Usage: bun test:site
  */

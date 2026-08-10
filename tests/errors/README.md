@@ -1,6 +1,6 @@
 # Test-Errors Sandbox
 
-Isolated test cases for Castro error DX, one per error code. Each is a minimal self-contained Castro site.
+Isolated test cases for Castro error DX: one fixture per failure scenario, together covering every `ErrorCode`. A code can have more than one fixture — `BUNDLE_FAILED` has four, `NO_DEFAULT_LAYOUT` has three — when distinct scenarios produce it. Each fixture is a minimal self-contained Castro site.
 
 ## Automated coverage
 
@@ -13,7 +13,7 @@ Runs `castro build` in all fixtures and compares stderr against committed golden
 To regenerate goldens after an intentional message change:
 
 ```bash
-UPDATE_SNAPSHOTS=1 bun test:errors
+bun test:errors:up    # UPDATE_SNAPSHOTS=1 bun test:errors
 ```
 
 Inspect the diff before committing — each golden should show clean structured output with no raw stack frames.
@@ -53,6 +53,23 @@ To verify fixes work, edit the broken file in place — the dev server will rebu
 | `island-props-not-serializable` | Island prop can't become JSON | `ISLAND_PROPS_NOT_SERIALIZABLE` | `<Counter data={...}>` where `data` holds a reference to itself |
 
 Some codes have no fixture on purpose. `ISLAND_NOT_FOUND` and `BUNDLE_NO_OUTPUT` are internal invariants — the first says "please report it" in its own hint, and the second fires only when a *successful* `Bun.build` yields no `.js` output, which no user input can arrange. `UNEXPECTED` is the `toPayload()` fallback for any non-`CastroError` throw, so no single scenario pins it.
+
+The table above is not documentation of the suite — it is an input to it. `error-goldens.test.js` parses these rows and fails when they stop matching the directories on disk, or when an `ErrorCode` is covered by neither a fixture nor the `EXEMPT_ERROR_CODES` list in that file. Only the table is parsed; the exemption list itself lives in the test, and the paragraph above is prose for a human reader, not an input the test reads. Keep it in sync by hand when `EXEMPT_ERROR_CODES` changes.
+
+## Adding a fixture
+
+Skipping step 4 is the one that fails cryptically.
+
+1. `mkdir tests/errors/<name>` and write the smallest site that triggers the error — usually `pages/index.tsx` plus `layouts/default.jsx`.
+2. A `package.json` named `@test-errors/<name>`, depending on `"@vktrz/castro": "workspace:*"` and the same Preact range as `core/package.json`. Copy a neighbour; `tests/preact-range.test.js` fails if the range drifts.
+3. A `tsconfig.json` holding only `{ "extends": "../tsconfig.base.json" }` — for the editor, since nothing type-checks these.
+4. **`bun install` at the repo root.** Until you do, the fixture has no `node_modules/.bin/castro` to spawn.
+5. `bun test:errors:up` to write `expected.stderr.txt`, then read it — structured output, no raw stack frames.
+6. Add the row to the table above, or the run goes red.
+
+## Why this directory is exempt from lint and format
+
+`.oxlintrc.json` and `.oxfmtrc.json` both ignore `**/tests/errors`. Several fixtures are deliberately unparseable — an unclosed brace is the entire point of `page-syntax-error` — and neither tool can format what it cannot parse. The exclusion is directory-wide rather than per-file, which is why this tree is tab-indented while the rest of the repo is two-space: nothing here is ever reformatted.
 
 ## Verification Checklist
 

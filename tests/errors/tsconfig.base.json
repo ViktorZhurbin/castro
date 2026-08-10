@@ -1,6 +1,11 @@
 // Shared by every fixture in tests/errors/. Each one is a whole castro site,
-// so they all need identical compiler options — a per-fixture copy would be 17
+// so they all need identical compiler options — a per-fixture copy would be 18
 // files to keep in sync.
+//
+// These configs are for the editor only. No fixture declares a `type-check`
+// script, so `bun check:code`'s `--if-present` skips all of them — and it has to:
+// several fixtures are deliberately unparseable, so tsc would report their
+// whole point as a failure.
 //
 // `include`/`exclude` are deliberately absent: TypeScript resolves those
 // relative to the config that declares them, so they cannot live in a base.
