@@ -2,8 +2,8 @@
  * Build Output Verifier
  *
  * Builds the test site, then checks the HTML output using Bun's test runner.
- * Tests cover static pages, all three directives, component composition,
- * CSS modules, markdown, and the vendored Preact import map. The last block
+ * Tests cover the output-dir wipe, static pages, all three directives, component
+ * composition, CSS modules, markdown, and the vendored Preact import map. The last block
  * crosses into dist/castro-island.js to pin the marker attributes the build
  * and the browser runtime have to agree on.
  *
@@ -24,8 +24,22 @@ async function readHtml(file) {
   return f.text();
 }
 
-beforeAll(() => {
+// Planted before the build rather than between two builds: the wipe is step 1,
+// so one build is enough to observe it. Bun.write creates dist/ when a fresh
+// clone hasn't got one.
+const staleOutputFile = join(distDir, "page-that-no-longer-exists.html");
+
+beforeAll(async () => {
+  await Bun.write(staleOutputFile, "<h1>output of a deleted page</h1>");
   execSync("bun run build", { cwd: siteDir, stdio: "inherit" });
+});
+
+describe("output dir", () => {
+  test("a build removes output the previous one left behind", async () => {
+    // Without the wipe, a deleted or renamed page keeps answering its old URL
+    // and every other assertion in this file still passes.
+    expect(await Bun.file(staleOutputFile).exists()).toBe(false);
+  });
 });
 
 describe("static pages", () => {
