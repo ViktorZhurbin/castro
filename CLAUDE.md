@@ -13,15 +13,16 @@ Peer reference: Fresh, early Astro, Eleventy + is-land, Marko, Capri, Mastro, Il
 ```
 bun run dev          # dev server with live reload (website playground)
 bun run build        # production build (website playground)
-bun format           # oxfmt
+bun format           # oxfmt --check
+bun format:fix       # oxfmt
 bun lint             # oxlint
-bun lint-format      # lint + format
+bun lint:fix         # oxlint --fix
 bun check:code       # type-check + knip across workspaces
 bun test             # all tests (core unit + tests/site + tests/site-srcdir + tests/errors + repo-wide guards)
 bun test:site        # build and verify test sites only
 bun test:errors      # run error DX golden suite (tests/errors/)
 bun test:errors:up   # regenerate the error goldens, then read the diff
-bun verify           # lint-format + check:code + test + every build (runs on pre-push and in CI)
+bun verify           # lint + format + check:code + test + every build (runs on pre-push and in CI)
 bun loc              # LOC count (core only, excludes messages/)
 ```
 

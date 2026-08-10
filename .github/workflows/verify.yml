@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
+    branches: [main]
 
 jobs:
   verify:
@@ -11,27 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      # Pinned to core/package.json's `engines.bun` rather than floating on
-      # latest: the minimum we claim to support is the one worth proving, and a
-      # floating version reds the build for reasons unrelated to the diff. Bump
-      # both together.
       - uses: oven-sh/setup-bun@v2
         with:
+          # Pinned to core/package.json's `engines.bun`
           bun-version: 1.3.14
 
-      # The one check pre-push can't make: locally the lockfile is whatever the
-      # last install wrote, so drift from package.json never surfaces.
       - run: bun install --frozen-lockfile
 
-      # Byte-for-byte what .husky/pre-push runs, so the two can't drift.
       - run: bun verify
-
-      # verify starts with `oxlint --fix && oxfmt`, which rewrite files rather
-      # than failing. Untracked files count too, so a build that starts emitting
-      # a new artifact can't slip through the way `git diff` would let it.
-      - name: verify was a no-op
-        run: |
-          if [ -n "$(git status --porcelain)" ]; then
-            git status --porcelain
-            exit 1
-          fi
