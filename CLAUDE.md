@@ -30,7 +30,7 @@ bun loc              # LOC count (core only, excludes messages/)
 - `core/` — core SSG engine (the npm package `@vktrz/castro`)
 - `packages/` — `create-castro`, the project scaffolder
 - `EXPLORATIONS.md` — the scope/complexity filter for building anything new here; read it before starting a package
-- `website/` — demo playground that consumes castro. `website/tsconfig.json` is the canonical tsconfig; `packages/create-castro/template/tsconfig.json` shares the same `compilerOptions` but uses root-level `pages/`/`layouts/` instead of `src/`.
+- `website/` — demo playground that consumes castro. `website/tsconfig.json` is the canonical tsconfig; `packages/create-castro/template/tsconfig.json` shares its `compilerOptions` apart from `paths`, which points at root-level `pages/`/`layouts/` instead of `src/`; it also carries no `exclude`. `tests/scaffolder-template.test.js` holds that to it.
 - `tests/site/` — minimal test site exercising the full build pipeline
 - `tests/site-srcdir/` — minimal fixture pinning the `srcDir` output contract
 - `tests/errors/` — one fixture site per failure scenario, covering every `ErrorCode`
