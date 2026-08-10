@@ -1,6 +1,7 @@
 ---
 title: Quick Start - Castro Guide
 layout: docs
+path: /docs/quick-start
 ---
 
 # QUICK START

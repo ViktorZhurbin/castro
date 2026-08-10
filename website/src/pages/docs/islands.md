@@ -1,6 +1,7 @@
 ---
 title: Islands - Castro Guide
 layout: docs
+path: /docs/islands
 ---
 
 # ISLANDS

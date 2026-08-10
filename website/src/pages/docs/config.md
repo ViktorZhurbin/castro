@@ -1,6 +1,7 @@
 ---
 title: Configuration - Castro Guide
 layout: docs
+path: /docs/config
 ---
 
 # CONFIGURATION

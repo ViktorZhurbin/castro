@@ -8,10 +8,11 @@ import "./PageShell.css";
 
 interface PageShellProps {
   title: string;
+  activePath?: string;
   children: ComponentChildren;
 }
 
-export function PageShell({ title, children }: PageShellProps) {
+export function PageShell({ title, activePath, children }: PageShellProps) {
   return (
     <html lang="en">
       <head>
@@ -27,7 +28,7 @@ export function PageShell({ title, children }: PageShellProps) {
         />
       </head>
       <body>
-        <Header />
+        <Header activePath={activePath} />
         {children}
       </body>
     </html>

@@ -1,6 +1,139 @@
-/* Docs content: readable prose width, breathing room above/below. */
+/* Docs shell: sidebar + scrolling content, collapsing to a pure-CSS mobile
+   drawer below 1024px (see docs.tsx for the checkbox-toggle markup). */
+
+.docs-shell {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  position: relative;
+
+  @media (min-width: 1024px) {
+    flex-direction: row;
+
+    .container {
+      padding-inline: var(--spacing-2xl);
+    }
+  }
+}
 
 .docs-content {
-  max-width: 700px;
-  padding-block: var(--spacing-2xl) var(--spacing-4xl);
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+
+  main {
+    max-width: 700px;
+    padding-block: var(--spacing-3xl);
+    flex: 1; /* Pushes the footer down if the content is short */
+  }
+}
+
+.docs-mobile-bar {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--spacing);
+  border-bottom: var(--border-2);
+  background-color: var(--background-color);
+  flex-shrink: 0;
+
+  position: sticky;
+  top: var(--header-height);
+  z-index: 40;
+
+  @media (min-width: 1024px) {
+    display: none;
+  }
+}
+
+/* Sidebar + drawer: hidden on mobile until the checkbox above is checked,
+   pinned to the viewport permanently at desktop widths. */
+.docs-sidebar {
+  width: 16rem;
+  background-color: var(--background-color);
+  border-right: var(--border-4);
+  flex-shrink: 0;
+  overflow-y: auto;
+
+  display: none;
+
+  :has(.docs-drawer-toggle:checked) & {
+    display: block;
+    position: fixed;
+    inset-block: 0;
+    left: 0;
+    z-index: 60;
+  }
+
+  @media (min-width: 1024px) {
+    display: block;
+    position: sticky;
+    top: var(--header-height);
+    height: calc(100vh - var(--header-height));
+  }
+}
+
+.docs-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  /* A scrim must stay dark in both themes — --contrast flips to white in dark
+     mode, so this reaches for the raw ink token with alpha instead, the same
+     pattern tokens.css itself uses for --text-selection-color. */
+  background-color: oklch(var(--ink-black-raw) / 60%);
+  z-index: 55;
+  cursor: default;
+
+  :has(.docs-drawer-toggle:checked) & {
+    display: block;
+  }
+
+  @media (min-width: 1024px) {
+    display: none;
+  }
+}
+
+.docs-sidebar nav {
+  padding: var(--spacing-xs) 0;
+}
+
+.docs-sidebar-section {
+  padding: var(--spacing-lg) var(--spacing);
+  border-bottom: var(--border-2);
+}
+
+.docs-sidebar-section h3 {
+  margin: 0;
+  /* Element-selector h3 rules bump --font-size at the md breakpoint; pin it
+     down so the sidebar label stays label-sized instead of heading-sized. */
+  --font-size: var(--text-base);
+}
+
+.docs-sidebar-section ul {
+  list-style: none;
+  margin: var(--spacing-xs) 0 0;
+  padding: 0;
+}
+
+.docs-sidebar-section li::marker {
+  content: none;
+}
+
+.docs-sidebar-section a {
+  display: block;
+  padding: var(--spacing-2xs) var(--spacing-sm);
+  border-left: var(--border-4);
+  border-color: transparent;
+  color: var(--color);
+  text-decoration: none;
+
+  &:hover {
+    background-color: var(--code-background-color);
+  }
+
+  &[aria-current="page"] {
+    color: var(--primary);
+    border-left-color: var(--primary);
+    background-color: var(--code-background-color);
+  }
 }
