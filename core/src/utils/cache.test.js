@@ -10,7 +10,7 @@
 import { afterAll, expect, test } from "bun:test";
 import { rmSync } from "node:fs";
 
-import { getModule, resolveTempDir } from "./cache.js";
+import { getModule, resolveCacheDir } from "./cache.js";
 
 // PROJECT_ROOT is the cwd, so these writes land in the same cache tree a real
 // `bun run dev` at the repo root uses. The subpath keeps them in a corner this
@@ -19,7 +19,7 @@ const fixtureSubpath = "cache-test";
 const sourceFilePath = "cache.test-fixture.js";
 
 afterAll(() => {
-  rmSync(resolveTempDir(fixtureSubpath), { recursive: true, force: true });
+  rmSync(resolveCacheDir(fixtureSubpath), { recursive: true, force: true });
 });
 
 test("recompiled content is imported fresh, not served from Bun's path cache", async () => {

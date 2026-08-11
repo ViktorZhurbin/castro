@@ -42,7 +42,7 @@ export type ErrorTokens = {
     sourceFilePath: string;
     errorMessage: string;
   };
-  CONFIG_LOAD_FAILED: { path: string; errorMessage: string };
+  CONFIG_LOAD_FAILED: { configFile: string; errorMessage: string };
   UNEXPECTED: undefined;
 };
 

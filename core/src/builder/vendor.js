@@ -21,7 +21,7 @@ import { config } from "../config.js";
 import { OUTPUT_DIR } from "../constants.js";
 import { PREACT_CLIENT_DEPS } from "../islands/preact.js";
 import { safeBunBuild } from "../utils/bunBuild.js";
-import { resolveTempDir } from "../utils/cache.js";
+import { resolveCacheDir } from "../utils/cache.js";
 
 /** @import { ImportsMap } from "../types.d.ts" */
 
@@ -48,7 +48,7 @@ export async function vendorClientDeps() {
   /** @type { Record<string, string> } */
   const files = {};
 
-  const virtualRoot = resolveTempDir("vendor-dependencies");
+  const virtualRoot = resolveCacheDir("vendor-dependencies");
   await mkdir(virtualRoot, { recursive: true });
 
   // Each dependency gets a virtual entry module that re-exports everything

@@ -33,8 +33,8 @@ export const messages = {
 
   // File operations
   files: {
-    /** @param {string} path */
-    changed: (path) => `Revised: ${path}`,
+    /** @param {string} sourceFilePath */
+    changed: (sourceFilePath) => `Revised: ${sourceFilePath}`,
   },
 
   // Commands
@@ -135,9 +135,9 @@ export const messages = {
       hint: "Props travel to the browser as JSON — no functions, class instances, or elements",
     }),
 
-    CONFIG_LOAD_FAILED: ({ path, errorMessage }) => ({
+    CONFIG_LOAD_FAILED: ({ configFile, errorMessage }) => ({
       title: "Config file failed to load",
-      message: `${path} threw an error during evaluation:`,
+      message: `${configFile} threw an error during evaluation:`,
       errorMessage,
       hint: "Fix the syntax or runtime error in your config file — the Plan cannot proceed otherwise",
     }),

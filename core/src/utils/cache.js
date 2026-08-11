@@ -48,7 +48,7 @@ export function cleanupCacheDir() {
  * @param {string} subpath
  * @returns {string}
  */
-export function resolveTempDir(subpath) {
+export function resolveCacheDir(subpath) {
   const resolvedSubpath = resolve(PROJECT_ROOT, subpath);
   const relativeSubpath = relative(PROJECT_ROOT, resolvedSubpath);
 
@@ -65,10 +65,10 @@ export function resolveTempDir(subpath) {
  * @param {string} [subpath] - Optional subdirectory (e.g., "ssr")
  * @returns {string}
  */
-function createTempPath(sourceFilePath, content, subpath = "") {
+function createCacheFilePath(sourceFilePath, content, subpath = "") {
   const parsed = parse(sourceFilePath);
   const hash = Bun.hash(content).toString(36);
-  const targetDir = resolveTempDir(join(parsed.dir, subpath));
+  const targetDir = resolveCacheDir(join(parsed.dir, subpath));
 
   return join(targetDir, `${parsed.base}.${hash}.js`);
 }
@@ -85,7 +85,7 @@ function createTempPath(sourceFilePath, content, subpath = "") {
  * @returns {Promise<any>} The imported module
  */
 export async function getModule(sourceFilePath, content, subpath) {
-  const cacheFilePath = createTempPath(sourceFilePath, content, subpath);
+  const cacheFilePath = createCacheFilePath(sourceFilePath, content, subpath);
 
   // A failed write (disk full, bad permissions) throws raw
   await Bun.write(cacheFilePath, content);

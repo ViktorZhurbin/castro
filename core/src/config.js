@@ -34,7 +34,7 @@ if (await Bun.file(configFilePath).exists()) {
     userConfig = (await import(configFilePath)).default ?? {};
   } catch (err) {
     throw new CastroError("CONFIG_LOAD_FAILED", {
-      path: CONFIG_FILE,
+      configFile: CONFIG_FILE,
       errorMessage: err instanceof Error ? err.message : String(err),
     });
   }

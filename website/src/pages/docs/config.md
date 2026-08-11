@@ -6,7 +6,7 @@ path: /docs/config
 
 # CONFIGURATION
 
-Castro works without any config file. When you need to customize behavior, create `castro.config.ts` at your project root — that exact filename is the only one Castro reads; anything else, including a `.js` config, is silently ignored.
+Castro works without any config file. When you need to customize behavior, create `castro.config.ts` at your project root — that exact filename is the only one Castro reads; anything else is silently ignored.
 
 ```typescript
 type CastroConfig = {

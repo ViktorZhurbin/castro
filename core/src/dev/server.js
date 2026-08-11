@@ -39,7 +39,7 @@ import { renderErrorToTerminal } from "../utils/renderError.js";
  *
  * `outputDir` is a parameter rather than a module constant so a test can point
  * it at a fixture tree instead of `process.chdir()`-ing the whole process. It is
- * resolved here so a trailing slash can't defeat the containment check below.
+ * resolved here so the prefix compare below sees a normalized, slash-free root.
  *
  * @param {string} pathname - raw, still-encoded `url.pathname`
  * @param {string} outputDir - absolute path to the output dir
