@@ -140,8 +140,17 @@ function serializeProps(cleanProps, errorTokens) {
   }
 }
 
-/** @type {Directive[]} */
-const DIRECTIVES = ["comrade:eager", "comrade:patient", "comrade:visible"];
+// So tsc rejects this object once `Directive` gains a member it doesn't have
+// — a plain array would still type-check with one missing. `jsx.d.ts`'s
+// props and castroIsland.js's hydration switch are the two legs this can't
+// reach; a new directive still means editing those by hand.
+/** @type {Record<Directive, true>} */
+const DIRECTIVE_SET = {
+  "comrade:eager": true,
+  "comrade:patient": true,
+  "comrade:visible": true,
+};
+const DIRECTIVES = /** @type {Directive[]} */ (Object.keys(DIRECTIVE_SET));
 /** @type {Directive} */
 const DEFAULT_DIRECTIVE = "comrade:visible";
 
