@@ -1,6 +1,6 @@
 # Castro
 
-Castro is a static site generator built to be read. Each module is small enough to hold in your head. Communist satire wraps the prose; the code itself stays serious.
+Castro is a static site generator and a personal hobby project. Communist satire wraps the prose; the code itself stays serious. Source code is meant to be readable: each module should be small enough to hold in one's head.
 
 Preact for page rendering and islands, Bun for everything else.
 

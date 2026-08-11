@@ -1,29 +1,13 @@
 # Castro
 
-_A static site generator built to be read._
-
-Preact for pages and islands, Bun for everything else.
+A small static site generator with JSX pages and islands on Preact, Bun for everything else.
 
 > [!NOTE]
 > Requires [Bun](https://bun.sh) 1.3.14+
 
-## Quick Start
-
-```bash
-bunx create-castro
-cd my-castro-site
-```
-
-```bash
-bun run dev    # → http://localhost:3000
-bun run build  # → dist/
-```
-
 ## Documentation
 
-The source is the documentation. `core/src/` is about 1,400 lines. Start at [core/src/builder/buildAll.js](core/src/builder/buildAll.js) — it names every build step in order — and follow the module docblocks from there. Architecture across files lives in [CLAUDE.md](CLAUDE.md).
-
-A one-page introduction lives at [castro.vktrz.workers.dev](https://castro.vktrz.workers.dev).
+[castro.vktrz.workers.dev/docs/quick-start](https://castro.vktrz.workers.dev/docs/quick-start)
 
 ## License
 

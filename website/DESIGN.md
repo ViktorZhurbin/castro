@@ -42,16 +42,16 @@ Pigments:
 
 ### Semantic Role Variables (per-theme)
 
-| Variable                  | Light     | Dark      | Use on                                 |
-| ------------------------- | --------- | --------- | -------------------------------------- |
-| `--primary`               | Crimson   | Gold      | Headlines, CTAs, accents               |
-| `--secondary`             | Iron grey | Blood red | Borders, backgrounds                   |
-| `--contrast`              | Black     | White     | Stark blocks, `.btn-neutral`           |
-| `--background-color`      | Cream     | Charcoal  | Page surface                           |
-| `--code-background-color` | Newsprint | Slate     | Secondary surface (cards, code blocks) |
-| `--color`                 | Black     | Chalk     | Body text                              |
-| `--muted-color`           | Graphite  | Ash       | Secondary labels, captions             |
-| `--muted-border-color`    | Black     | Concrete  | Standard border color                  |
+| Variable                  | Light     | Dark      | Use on                                  |
+| ------------------------- | --------- | --------- | --------------------------------------- |
+| `--primary`               | Crimson   | Gold      | Headlines, CTAs, accents                |
+| `--secondary`             | Iron grey | Blood red | Borders, backgrounds                    |
+| `--contrast`              | Black     | White     | Button text/hover, sidebar active state |
+| `--background-color`      | Cream     | Charcoal  | Page surface                            |
+| `--code-background-color` | Newsprint | Slate     | Secondary surface (cards, code blocks)  |
+| `--color`                 | Black     | Chalk     | Body text                               |
+| `--muted-color`           | Graphite  | Ash       | Secondary labels, captions              |
+| `--muted-border-color`    | Black     | Concrete  | Standard border color                   |
 
 `--color-accent` is outside the role system: mustard (light) / concrete grey (dark). Use it for icon highlights and structural accents — not text.
 
