@@ -6,7 +6,7 @@ path: /docs/config
 
 # CONFIGURATION
 
-Castro works without any config file. When you need to customize behavior, create `castro.config.ts` at your project root.
+Castro works without any config file. When you need to customize behavior, create `castro.config.ts` at your project root — that exact filename is the only one Castro reads; anything else, including a `.js` config, is silently ignored.
 
 ```typescript
 type CastroConfig = {
@@ -32,15 +32,7 @@ export default defineConfig({
 });
 ```
 
-`defineConfig` is an identity function — it returns the config object unchanged. Its only job is type inference in `.ts` files and editor autocomplete in `.js` files. A JSDoc hint works too:
-
-```javascript
-// castro.config.js
-/** @type {import("@vktrz/castro").CastroConfig} */
-export default {
-  port: 4123,
-};
-```
+`defineConfig` is an identity function — it returns the config object unchanged. Its only job is type inference in `.ts` files.
 
 ## REFERENCE
 
