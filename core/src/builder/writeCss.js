@@ -19,7 +19,7 @@ export async function writeCSSFiles(cssFiles, outputDir) {
   for (const cssFile of cssFiles) {
     // Bun names CSS outputs like "page.tsx.css" — strip the source extension
     const originalName = basename(cssFile.path);
-    const cssFileName = originalName.replace(/\.(jsx|tsx)\.css$/, ".css");
+    const cssFileName = originalName.replace(/\.[jt]sx\.css$/, ".css");
 
     const cssOutputFilePath = join(outputDir, cssFileName);
     await Bun.write(cssOutputFilePath, await cssFile.text());
