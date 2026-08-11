@@ -1,6 +1,6 @@
 # Castro
 
-A small static site generator with JSX pages and islands on Preact, Bun for everything else.
+A small SSG with Preact for page rendering and islands, and Bun for everything else.
 
 > [!NOTE]
 > Requires [Bun](https://bun.sh) 1.3.14+
