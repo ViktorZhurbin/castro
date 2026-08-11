@@ -4,7 +4,7 @@ Castro is a static site generator and a personal hobby project. Communist satire
 
 Preact for page rendering and islands, Bun for everything else.
 
-Peer reference: Fresh, early Astro, Eleventy + is-land, Marko, Capri, Mastro, Iles, Enhance.
+Peer reference: Fresh, early Astro, Eleventy + is-land.
 
 > Update this file when your changes affect what's documented here. Don't restate what lives in module docblocks or type definitions — reference the file instead.
 
@@ -22,6 +22,7 @@ bun test             # all tests (core unit + tests/site + tests/site-srcdir + t
 bun test:site        # build and verify test sites only
 bun test:errors      # run error DX golden suite (tests/errors/)
 bun test:errors:up   # regenerate the error goldens, then read the diff
+bun test:build       # build every workspace (skips tests/errors fixtures) — smoke test for build breaks
 bun verify           # lint + format + check:code + test + every build (runs on pre-push and in CI)
 bun loc              # LOC count (core only, excludes messages/)
 ```
@@ -93,7 +94,7 @@ All of Castro's user-facing prose lives in `core/src/messages/`. Message factori
 ## Key Design Decisions
 
 - Preact handles SSR and VNode tree construction everywhere, including islands; it runs at build time and is never shipped to the browser for static pages. Preact-specific build values live in `core/src/islands/preact.js`.
-- **Preact is a peer dependency of `core/`, and every package.json in this repo pins the same range as `core/package.json`.** Preact keeps its hook dispatcher on a module-level `options` singleton, so two copies means the dispatcher `h()` installs is invisible to the render pass — any island using `useState` dies at SSR with `undefined is not an object (evaluating 'r.__H')`. One copy is what makes hooks work, and identity here is the resolved path, not the version string: `bun install` symlinks matching ranges to a single store path and gives mismatched ones their own. A peer dep is what keeps a consuming project's Preact the only one. When bumping, bump every package.json together — the fixtures under `tests/errors/` and the scaffolder template included.
+- **Preact is a peer dependency of `core/`, and every package.json in this repo pins the same range as `core/package.json`.** Preact keeps its hook dispatcher on a module-level `options` singleton, so two copies means the dispatcher `h()` installs is invisible to the render pass — any island using `useState` dies at SSR with `undefined is not an object (evaluating 'r.__H')`. Identity here is the resolved path, not the version string: `bun install` symlinks matching ranges to a single store path and gives mismatched ones their own. A peer dep is what keeps a consuming project's Preact the only one. When bumping, bump every package.json together — the fixtures under `tests/errors/` and the scaffolder template included.
 - **Layouts receive `children` (VNode)**, not a pre-rendered `content` HTML string.
 - **Pages and layouts render as VNodes** via `h()` in `renderPage.js`, never called as plain functions — that is what installs Preact's hook dispatcher, so `useState`/`useContext`/`useId` work in both. Both receive the same props: the page's frontmatter plus the derived `title`.
 - **Islands take props, never children** — including string children, which would survive the `data-props` JSON trip. `renderMarker` throws `ISLAND_HAS_CHILDREN`; the reasoning for the flat rule is at that throw site.
@@ -111,7 +112,7 @@ See `tests/CLAUDE.md` for what each test suite covers and how to regenerate gold
 
 ## Two Forces
 
-**Brevity** is the default. For any defensive code path: if it merely survives an edge case rather than teaching framework machinery, delete it. The cases we deliberately don't handle:
+**Brevity** is the default. For any defensive code path: if it merely survives an edge case rather than being genuinely important, consider deleting it. The cases we deliberately don't handle:
 
 - **Cross-platform**: posix filesystem only (Linux, macOS, WSL). No Windows path normalization.
 - **Graceful recovery**: `pages/` throws naturally when missing; `public/` is silently skipped.
@@ -121,7 +122,7 @@ See `tests/CLAUDE.md` for what each test suite covers and how to regenerate gold
 - **Hostile filesystems**: no I/O retry, no defense against unusual mounts. (The mtime filter in `dev/server.js` is a deliberate carve-out — see Dev Server.)
 - **Hostile input**: the dev server binds localhost and serves a request path by decoding and resolving it — no traversal audit, no malformed-escape handling (`/%ZZ` throws into a 500). The one containment check in `resolveStaticFile()` is there because clean-URL candidates are built by string concatenation, not as a security boundary. Nothing here is a production server.
 - **Runtime config validation**: TypeScript catches misconfigs; no runtime re-validation.
-- **User extensibility**: no plugin API, no hook system. Last worked at commit `fdf04bd`.
+- **User extensibility**: no plugin API, no hook system. Last worked at commit `d5c82ff`, the parent of the commit that removed it (`e5cc3c9`).
 - **Backwards compatibility**: package is unpublished; breaking changes land freely.
 - **Dead island elimination**: every `*.island.{jsx,tsx}` under `components/` compiles and writes a client bundle to `dist/islands/`, whether or not a page imports it. Per-page `usedIslands` gating decides what the HTML _references_, not what ships. Pruning would mean deferring compilation until after pages render, but SSR modules have to be loaded before that — not worth the inversion.
 
