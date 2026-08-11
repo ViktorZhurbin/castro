@@ -5,6 +5,10 @@
  * Both paths on every exported function come from the caller: scanPages()
  * already derived the route when it checked for conflicts, so re-deriving it
  * here would be a second copy of the source→route mapping to keep in sync.
+ *
+ * Markdown pages never run compileJSX, so islandMarkerPlugin never sees
+ * them — a .md page cannot mount an island. The markdown body renders
+ * inside a bare <div>, which layouts end up styling around.
  */
 
 import { dirname, extname } from "node:path/posix";
