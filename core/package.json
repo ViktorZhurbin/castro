@@ -1,6 +1,6 @@
 {
   "name": "@vktrz/castro",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A simple static site generator with islands. Powered by Bun and Preact",
   "keywords": [
     "bun",
