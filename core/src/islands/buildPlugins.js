@@ -18,7 +18,7 @@ import { dirname, resolve } from "node:path/posix";
 
 import { getIslandId } from "./islandId.js";
 
-const CASTRO_SRC = resolve(dirname(import.meta.path), "..");
+const CASTRO_SRC = resolve(import.meta.dir, "..");
 const MARKER_PATH = resolve(CASTRO_SRC, "islands/marker.js");
 
 /**
