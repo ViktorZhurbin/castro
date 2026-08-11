@@ -41,8 +41,10 @@ export function cleanupCacheDir() {
 }
 
 /**
- * Returns a cache subdirectory path. Callers rely on Bun.write / Bun.build
- * to create the directory on first use.
+ * Returns a cache subdirectory path. Does not create it: a caller that goes
+ * on to Bun.write/Bun.build an output file into it gets the directory for
+ * free; a caller that needs it to exist on its own (e.g. a virtual build
+ * root) must create it.
  * @param {string} subpath
  * @returns {string}
  */
