@@ -1,5 +1,10 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "tags": ["-lintignore"],
-  "entry": ["src/cli.js", "src/islands/marker.js", "src/**/*.test.js"]
+  "entry": [
+    "src/cli.js",
+    "src/islands/marker.js",
+    "src/islands/preact.client.js",
+    "src/**/*.test.js"
+  ]
 }

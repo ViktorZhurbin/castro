@@ -8,6 +8,8 @@
  * entry.
  */
 
+import { join } from "node:path/posix";
+
 import { h } from "preact";
 import { renderToString } from "preact-render-to-string";
 
@@ -27,8 +29,12 @@ export const PREACT_BUILD_CONFIG = {
 /** Shared deps vendored to /dist/vendor/ and resolved via the island import map. */
 export const PREACT_CLIENT_DEPS = ["preact", "preact/hooks", "preact/jsx-runtime"];
 
-/** Browser hydration module, inlined verbatim into each island bundle. */
-export const PREACT_CLIENT_PATH = new URL("./preact.client.js", import.meta.url).pathname;
+/**
+ * Browser hydration module, inlined verbatim into each island bundle.
+ * `import.meta.dir`, not `new URL(...).pathname` — the URL form percent-encodes
+ * spaces and other reserved characters, and `Bun.file()` can't read the result.
+ */
+export const PREACT_CLIENT_PATH = join(import.meta.dir, "preact.client.js");
 
 /**
  * Render an island to static HTML at build time.
