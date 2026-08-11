@@ -16,7 +16,9 @@ cd <package-dir>
 #
 # Other bump types: major | minor | patch | premajor | preminor | prepatch | prerelease.
 # You can also pass an explicit version instead.
-pnpm version minor --tag-version-prefix "<prefix>@" --message "<prefix>@%s"
+pnpm version minor # for core/
+# OR
+pnpm version minor --tag-version-prefix "create-castro@" --message "create-castro@%s"
 
 # Run in a real terminal
 pnpm login
