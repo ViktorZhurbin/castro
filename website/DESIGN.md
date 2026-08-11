@@ -73,13 +73,13 @@ Pigments:
 
 The constructivist visual weight comes from border geometry, not shadows. Five weights are defined in `@vktrz/bare-css`:
 
-| Variable              | Value                        | Typical use                                  |
-| --------------------- | ----------------------------- | -------------------------------------------- |
-| `--border-2`          | 2px solid muted border color | Cards, dividers, form elements               |
-| `--border-3`          | 3px solid muted border color | Table header rule                            |
-| `--border-4`          | 4px solid muted border color | Structural separators                        |
-| `--border-primary-4`  | 4px solid primary            | Section dividers (footer top, page dividers) |
-| `--border-primary-8`  | 8px solid primary            | Major emphasis (hero hr)                     |
+| Variable             | Value                        | Typical use                                  |
+| -------------------- | ---------------------------- | -------------------------------------------- |
+| `--border-2`         | 2px solid muted border color | Cards, dividers, form elements               |
+| `--border-3`         | 3px solid muted border color | Table header rule                            |
+| `--border-4`         | 4px solid muted border color | Structural separators                        |
+| `--border-primary-4` | 4px solid primary            | Section dividers (footer top, page dividers) |
+| `--border-primary-8` | 8px solid primary            | Major emphasis (hero hr)                     |
 
 These apply to any border side: `border: var(--border-2)`, `border-top: var(--border-primary-4)`, `border-left: var(--border-primary-8)`.
 
