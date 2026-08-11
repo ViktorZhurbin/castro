@@ -58,23 +58,12 @@ async function collectHeadTags({ usedIslands, cssTags = [] }) {
 
   // Dev-only: live reload SSE client
   if (process.env.NODE_ENV !== "production") {
-    tags.push(await getLiveReloadTag());
+    const source = await Bun.file(join(import.meta.dir, "../dev/liveReload.js")).text();
+
+    tags.push(`<script type="module">${source}</script>`);
   }
 
   return tags;
-}
-
-/** @type {string | null} */
-let liveReloadTagCache = null;
-
-async function getLiveReloadTag() {
-  if (!liveReloadTagCache) {
-    const source = await Bun.file(join(import.meta.dir, "../dev/liveReload.js")).text();
-
-    liveReloadTagCache = `<script type="module">${source}</script>`;
-  }
-
-  return liveReloadTagCache;
 }
 
 /**
