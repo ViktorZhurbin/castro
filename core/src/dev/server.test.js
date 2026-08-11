@@ -25,15 +25,15 @@ import {
 } from "./server.js";
 
 const root = mkdtempSync(join(tmpdir(), "castro-server-"));
-const outputRoot = join(root, "dist");
+const outputDir = join(root, "dist");
 
-await Bun.write(join(outputRoot, "index.html"), "<h1>home</h1>");
-await Bun.write(join(outputRoot, "about.html"), "<h1>about</h1>");
-await Bun.write(join(outputRoot, "blog/index.html"), "<h1>blog</h1>");
-await Bun.write(join(outputRoot, "style.css"), "body{}");
-await Bun.write(join(outputRoot, "my page.html"), "<h1>spaced</h1>");
-await Bun.write(join(outputRoot, "über.html"), "<h1>unicode</h1>");
-await Bun.write(join(outputRoot, "404.html"), "<h1>fixture 404</h1>");
+await Bun.write(join(outputDir, "index.html"), "<h1>home</h1>");
+await Bun.write(join(outputDir, "about.html"), "<h1>about</h1>");
+await Bun.write(join(outputDir, "blog/index.html"), "<h1>blog</h1>");
+await Bun.write(join(outputDir, "style.css"), "body{}");
+await Bun.write(join(outputDir, "my page.html"), "<h1>spaced</h1>");
+await Bun.write(join(outputDir, "über.html"), "<h1>unicode</h1>");
+await Bun.write(join(outputDir, "404.html"), "<h1>fixture 404</h1>");
 await Bun.write(join(root, "dist.html"), "not served");
 
 afterAll(() => {
@@ -42,7 +42,7 @@ afterAll(() => {
 
 /** @param {string} pathname */
 async function serve(pathname) {
-  const file = await resolveStaticFile(pathname, outputRoot);
+  const file = await resolveStaticFile(pathname, outputDir);
 
   return file && (await file.text());
 }
@@ -120,7 +120,7 @@ function request(pathname, headers) {
 
 /** @param {Set<ReadableStreamDefaultController>} [controllers] */
 function handler(controllers = new Set()) {
-  return createFetchHandler({ controllers, outputRoot });
+  return createFetchHandler({ controllers, outputDir });
 }
 
 test("a resolved file is served with a 200", async () => {
@@ -141,7 +141,7 @@ test("a navigation miss serves 404.html with a 404 status", async () => {
   // check too, silently dropping the charset again.
   expect(res.headers.get("content-type")).toBe("text/html;charset=utf-8");
   // Asserted on content, not just status: a 404.html resolved against the cwd
-  // rather than outputRoot would still be *a* 404 page on a machine that has
+  // rather than outputDir would still be *a* 404 page on a machine that has
   // one, and this is the only thing that tells them apart.
   expect(await res.text()).toBe("<h1>fixture 404</h1>");
 });
@@ -162,10 +162,10 @@ test("a request with no Accept header gets the bare 404", async () => {
 });
 
 test("a navigation miss falls back to a bare 404 when no 404.html exists", async () => {
-  const bareRoot = join(root, "no-404-page");
-  await Bun.write(join(bareRoot, "index.html"), "<h1>home</h1>");
+  const bareOutputDir = join(root, "no-404-page");
+  await Bun.write(join(bareOutputDir, "index.html"), "<h1>home</h1>");
 
-  const res = await createFetchHandler({ controllers: new Set(), outputRoot: bareRoot })(
+  const res = await createFetchHandler({ controllers: new Set(), outputDir: bareOutputDir })(
     request("/nope", { accept: "text/html" }),
   );
 

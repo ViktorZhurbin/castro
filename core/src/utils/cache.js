@@ -83,13 +83,13 @@ function createTempPath(sourceFilePath, content, subpath = "") {
  * @returns {Promise<any>} The imported module
  */
 export async function getModule(sourceFilePath, content, subpath) {
-  const path = createTempPath(sourceFilePath, content, subpath);
+  const cacheFilePath = createTempPath(sourceFilePath, content, subpath);
 
   // A failed write (disk full, bad permissions) throws raw
-  await Bun.write(path, content);
+  await Bun.write(cacheFilePath, content);
 
   // file:// URL ensures Bun's module resolver can find bare imports
-  const fileUrl = Bun.pathToFileURL(path);
+  const fileUrl = Bun.pathToFileURL(cacheFilePath);
 
   return import(fileUrl.href);
 }

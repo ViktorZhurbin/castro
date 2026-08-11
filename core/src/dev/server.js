@@ -37,17 +37,16 @@ import { renderErrorToTerminal } from "../utils/renderError.js";
  * host would serve. It is not a security boundary — see "Hostile input" in
  * CLAUDE.md.
  *
- * `outputRoot` is a parameter rather than a module constant so a test can point
+ * `outputDir` is a parameter rather than a module constant so a test can point
  * it at a fixture tree instead of `process.chdir()`-ing the whole process. It is
- * resolved here so a relative path or trailing slash can't defeat the
- * containment check below.
+ * resolved here so a trailing slash can't defeat the containment check below.
  *
  * @param {string} pathname - raw, still-encoded `url.pathname`
- * @param {string} outputRoot - path to the output dir, absolute or relative
+ * @param {string} outputDir - absolute path to the output dir
  * @returns {Promise<Bun.BunFile | null>}
  */
-export async function resolveStaticFile(pathname, outputRoot) {
-  const root = resolve(outputRoot);
+export async function resolveStaticFile(pathname, outputDir) {
+  const root = resolve(outputDir);
 
   // Leading "." keeps an absolute-looking pathname relative to the root.
   const basePath = resolve(root, `.${decodeURIComponent(pathname)}`);
@@ -174,12 +173,10 @@ export function broadcast(controllers, message) {
  *
  * @param {object} options
  * @param {Set<ReadableStreamDefaultController>} options.controllers - live SSE connections, added and removed as browsers come and go
- * @param {string} [options.outputRoot] - path to the output dir, absolute or relative
+ * @param {string} [options.outputDir] - absolute path to the output dir
  * @returns {(req: Request) => Promise<Response>}
  */
-export function createFetchHandler({ controllers, outputRoot = resolve(OUTPUT_DIR) }) {
-  const root = resolve(outputRoot);
-
+export function createFetchHandler({ controllers, outputDir = resolve(OUTPUT_DIR) }) {
   return async function handleRequest(req) {
     const url = new URL(req.url);
 
@@ -206,7 +203,7 @@ export function createFetchHandler({ controllers, outputRoot = resolve(OUTPUT_DI
       });
     }
 
-    const file = await resolveStaticFile(url.pathname, root);
+    const file = await resolveStaticFile(url.pathname, outputDir);
 
     if (file) {
       return new Response(file);
@@ -216,7 +213,7 @@ export function createFetchHandler({ controllers, outputRoot = resolve(OUTPUT_DI
     const acceptsHtml = req.headers.get("accept")?.includes("text/html");
 
     if (acceptsHtml) {
-      const notFoundFile = Bun.file(join(root, "404.html"));
+      const notFoundFile = Bun.file(join(outputDir, "404.html"));
 
       if (await notFoundFile.exists()) {
         // No explicit Content-Type: Bun infers it from the extension, as the

@@ -21,10 +21,10 @@ export async function writeCSSFiles(cssFiles, outputDir) {
     const originalName = basename(cssFile.path);
     const cssFileName = originalName.replace(/\.(jsx|tsx)\.css$/, ".css");
 
-    const cssOutputPath = join(outputDir, cssFileName);
-    await Bun.write(cssOutputPath, await cssFile.text());
+    const cssOutputFilePath = join(outputDir, cssFileName);
+    await Bun.write(cssOutputFilePath, await cssFile.text());
 
-    const cssPublicPath = `/${relative(OUTPUT_DIR, cssOutputPath)}`;
+    const cssPublicPath = `/${relative(OUTPUT_DIR, cssOutputFilePath)}`;
     cssTags.push(`<link rel="stylesheet" href="${cssPublicPath}">`);
   }
 
