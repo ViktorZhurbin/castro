@@ -14,7 +14,7 @@ import { PROJECT_ROOT } from "../constants.js";
  * @param {string} sourceFilePath
  * @returns {string} A normalized project-relative path
  *
- * @example "src/islands/ui/Button.tsx"
+ * @example "components/Counter.island.tsx"
  */
 export function getIslandId(sourceFilePath) {
   return relative(PROJECT_ROOT, sourceFilePath);
