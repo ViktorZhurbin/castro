@@ -139,3 +139,17 @@
     background-color: var(--contrast-background);
   }
 }
+
+/* Back/next nav at the bottom of a doc page. Either link can be absent (first
+   and last page in the sidebar order have only one); :only-child keeps a lone
+   "next" pinned right instead of collapsing to the start. */
+.docs-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing);
+  margin-top: var(--spacing-3xl);
+}
+
+.docs-nav-next:only-child {
+  margin-left: auto;
+}

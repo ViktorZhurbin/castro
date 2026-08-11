@@ -93,4 +93,6 @@ export default defineConfig({
 });
 ```
 
-Next: [Quick Start →](/docs/quick-start) — project structure, layouts, pages · [Islands →](/docs/islands) — interactive components and hydration directives
+<div class="docs-nav">
+  <a href="/docs/islands" role="button" class="docs-nav-back">← Back to Islands</a>
+</div>

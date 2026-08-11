@@ -62,4 +62,7 @@ Stick to JSON primitives — strings, numbers, booleans, plain objects and array
 
 Islands also can't take children — including string children, which would survive the props round-trip anyway. Pass everything as props.
 
-Next: [Quick Start →](/docs/quick-start) — project structure, layouts, pages · [Configuration →](/docs/config) — the full `castro.config.ts` reference
+<div class="docs-nav">
+  <a href="/docs/quick-start" role="button" class="docs-nav-back">← Back to Quick Start</a>
+  <a href="/docs/config" role="button" class="docs-nav-next">Next: Configuration →</a>
+</div>

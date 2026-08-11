@@ -142,4 +142,6 @@ bun run build    # production build → dist/
 
 The dev server watches for changes and reloads automatically. `bun run build` produces static HTML in `dist/`, ready to deploy anywhere that serves files.
 
-Next: [Islands →](/docs/islands) — interactive components and hydration directives · [Configuration →](/docs/config) — the full `castro.config.ts` reference
+<div class="docs-nav">
+  <a href="/docs/islands" role="button" class="docs-nav-next">Next: Islands →</a>
+</div>
