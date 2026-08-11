@@ -120,7 +120,7 @@ class CastroErrorOverlay extends HTMLElement {
     if (frame.lineText) {
       codeSnippet = `
         <div class="frame-code">
-          <div class="line error-row">
+          <div class="line">
             <div class="line-num">${frame.line || 0}</div>
             <div class="line-text">${escapeHtml(frame.lineText)}</div>
           </div>
