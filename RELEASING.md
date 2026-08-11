@@ -16,7 +16,7 @@ cd <package-dir>
 #
 # Other bump types: major | minor | patch | premajor | preminor | prepatch | prerelease.
 # You can also pass an explicit version instead.
-pnpm version minor --tag-version-prefix "<package-name>@" --message "<package-name>@%s"
+pnpm version minor --tag-version-prefix "<prefix>@" --message "<prefix>@%s"
 
 # Run in a real terminal
 pnpm login

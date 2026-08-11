@@ -1,18 +1,20 @@
 {
   "name": "@vktrz/castro",
   "version": "0.1.0",
-  "description": "A static site generator built to be read.",
+  "description": "A simple static site generator with islands. Powered by Bun and Preact",
   "keywords": [
+    "bun",
     "island-architecture",
-    "islands",
     "preact",
-    "ssg",
-    "static-site-generator",
-    "web-components"
+    "ssg"
   ],
+  "homepage": "https://castro.vktrz.workers.dev",
+  "bugs": "https://github.com/ViktorZhurbin/castro/issues",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ViktorZhurbin/castro.git"
+    "url": "git+https://github.com/ViktorZhurbin/castro.git",
+    "directory": "core"
   },
   "bin": {
     "castro": "bin/castro"
