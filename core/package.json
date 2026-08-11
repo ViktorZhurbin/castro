@@ -15,7 +15,7 @@
     "url": "git+https://github.com/ViktorZhurbin/castro.git"
   },
   "bin": {
-    "castro": "./bin/castro"
+    "castro": "bin/castro"
   },
   "files": [
     "bin/",
