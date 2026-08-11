@@ -79,16 +79,16 @@ File watchers on `pages/`, `layouts/`, `components/`, and `public/` rebuild on c
 - **Oxlint/Oxfmt** for linting/formatting.
 - **JSDoc** for all types and function intent. `.d.ts` files only for shared/reusable types.
 - **Bun-native APIs** over Node equivalents — `Bun.file().exists()`, `Bun.file().json()`, etc. If going async requires changing a caller, do it explicitly rather than falling back to Node.
-- **No `createElement`** — use JSX or `h()` from preact.
+- **No Preact `createElement`** — use JSX or `h()` from preact; the DOM API is fine where Preact isn't available.
 - **No non-null assertions** (`foo!.bar`).
 - **Path names** say what they're relative to: `relativeSourcePath`/`relativeOutputPath` are relative to a scan root (the `*_DIR` constants in `constants.js`) and are what `Bun.Glob.scan()` yields, while `sourceFilePath`/`outputFilePath` include that root and are what you pass to file APIs — `outputDir` is always a directory, and bare `sourcePath`/`outputPath`/`filePath` are banned as ambiguous between the two. If a name's JSDoc still has to say "absolute _or_ relative," it isn't done — that ambiguity is exactly what these names exist to remove.
-- **`type` over `interface`** in `.d.ts` — one declaration form, and no accidental declaration merging across files.
-- **Module docblocks**: 3-8 lines on the file's architectural role; **inline comments** answer "why?" or "why not the obvious way," never restate the code, and stop at the non-obvious fact — one that outgrows its code belongs in the docblock or here instead; **JSDoc prose** only when name + types aren't enough.
+- **`type` over `interface`** in `.d.ts` — one declaration form, and no accidental declaration merging across files. Exception: `jsx.d.ts`, where `interface` is required to merge into Preact's JSX namespace.
+- **Module docblocks**: the file's architectural role, at whatever length teaching the machinery takes; **inline comments** answer "why?" or "why not the obvious way," never restate the code, and stop at the non-obvious fact — one that outgrows its code belongs in the docblock or here instead; **JSDoc prose** only when name + types aren't enough.
 - Never condescend. No "Educational note:" or "Simply put:" prefixes.
 
 ## Messages
 
-All user-facing strings live in `core/src/messages/`. Message factories keyed by `ErrorCode` (typed via `ErrorMessages`) return a `CastroErrorPayload`; wording lives here, structure lives in the payload. **Never use inline strings for user-facing output** — the one exemption is `islands/castroIsland.js`, which is copied verbatim into `dist/` and runs in the browser, so it can't import from here. The `errorMessage` field is for raw text from a caught exception (see `utils/errors.js`), never for prose Castro wrote; both renderers style it as foreign. Use `styleText` from `node:util` for colored logs. Tone, satire, and emoji rules: see `core/src/messages/README.md`.
+All of Castro's user-facing prose lives in `core/src/messages/`. Message factories keyed by `ErrorCode` (typed via `ErrorMessages`) return a `CastroErrorPayload`; wording lives here, structure lives in the payload. **Never inline prose Castro wrote** — the one exemption is `islands/castroIsland.js`, which is copied verbatim into `dist/` and runs in the browser, so it can't import from here. A protocol string like an HTTP reason phrase carries no voice and isn't prose. The `errorMessage` field is for raw text from a caught exception (see `utils/errors.js`), never for Castro's own prose; both renderers style it as foreign. Use `styleText` from `node:util` for colored logs. Tone, satire, and emoji rules: see `core/src/messages/README.md`.
 
 ## Key Design Decisions
 
