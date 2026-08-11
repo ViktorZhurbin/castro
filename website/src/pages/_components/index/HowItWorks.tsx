@@ -25,7 +25,7 @@ export function HowItWorks() {
         <p class="how-it-works-label">HOW IT WORKS</p>
         <div class="how-it-works-list">
           {items.map((item, i) => (
-            <div class="how-it-works-item">
+            <div class="how-it-works-item" key={item.title}>
               <p class="how-it-works-num">{String(i + 1).padStart(2, "0")}</p>
               <div class="how-it-works-body">
                 <p class="how-it-works-item-title">{item.title}</p>

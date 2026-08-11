@@ -116,6 +116,7 @@ export type PageMeta = {
    */
   layout?: string;
   title?: string;
+  description?: string;
   [key: string]: unknown;
 };
 

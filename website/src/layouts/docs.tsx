@@ -9,13 +9,14 @@ import "./docs.css";
 
 interface Props {
   title: string;
+  description?: string;
   path?: string;
   children: ComponentChildren;
 }
 
-export default function DocsLayout({ title, path, children }: Props) {
+export default function DocsLayout({ title, description, path, children }: Props) {
   return (
-    <PageShell title={title} activePath={path}>
+    <PageShell title={title} description={description} activePath={path}>
       <div class="docs-shell">
         {/* Pure CSS toggle: a hidden checkbox drives the mobile sidebar state, no JS required. */}
         <input

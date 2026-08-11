@@ -4,7 +4,7 @@ The Castro website uses a Soviet Constructivist aesthetic: unbleached paper, pro
 
 ## CSS Architecture
 
-The visual system lives in the `@vktrz/bare-css` package (`packages/bare-css/src/`), pulled in via `import "@vktrz/bare-css/style.css"` in `PageShell` — castro bundles it into the page CSS. The package is organized as:
+The visual system lives in the `@vktrz/bare-css` package (`packages/bare-css/src/`), pulled in via `import "@vktrz/bare-css/index.css"` in `PageShell` — castro bundles it into the page CSS. The package is organized as:
 
 - **`tokens.css`** — the source of truth. Global settings (zero radius, no shadows/transitions, Bebas Neue + Barlow), the raw-material variables (`--ink-*`, `--canvas-*`, `--color-*` — what colors physically are), the spacing/type/border scales, and the theme role variables (`--primary`, `--background-color`, etc.) mapped separately for light and dark.
 - **`reset.css`** — box model, root text defaults, focus outline, `hr`.
@@ -65,22 +65,23 @@ Pigments:
 
 **Body** (Barlow, `font-weight: 500`): set via `--font-family` and `--font-weight`. Default for all other text.
 
-**Font sizes**: Use `var(--text-xs)` through `var(--text-2xl)` for `font-size` declarations. Raw rem values belong in `@vktrz/bare-css` only, where the scale is defined.
+**Font sizes**: Use `var(--text-xs)` through `var(--text-4xl)` for `font-size` declarations. Raw rem values belong in `@vktrz/bare-css` only, where the scale is defined.
 
 **Heading scale**: `h1` and `h2` override `--font-size` in `@vktrz/bare-css`, with a responsive bump at 768px. `h1` uses `--h1-color: var(--primary)` so top-level headings are automatically crimson/gold.
 
 ## Border System
 
-The constructivist visual weight comes from border geometry, not shadows. Four weights are defined in `@vktrz/bare-css`:
+The constructivist visual weight comes from border geometry, not shadows. Five weights are defined in `@vktrz/bare-css`:
 
-| Variable            | Value                        | Typical use                                  |
-| ------------------- | ---------------------------- | -------------------------------------------- |
-| `--border-2`        | 2px solid muted border color | Cards, dividers, form elements               |
-| `--border-4`        | 4px solid muted border color | Structural separators                        |
-| `--border-accent-4` | 4px solid primary            | Section dividers (footer top, page dividers) |
-| `--border-accent-8` | 8px solid primary            | Major emphasis (hero hr)                     |
+| Variable              | Value                        | Typical use                                  |
+| --------------------- | ----------------------------- | -------------------------------------------- |
+| `--border-2`          | 2px solid muted border color | Cards, dividers, form elements               |
+| `--border-3`          | 3px solid muted border color | Table header rule                            |
+| `--border-4`          | 4px solid muted border color | Structural separators                        |
+| `--border-primary-4`  | 4px solid primary            | Section dividers (footer top, page dividers) |
+| `--border-primary-8`  | 8px solid primary            | Major emphasis (hero hr)                     |
 
-These apply to any border side: `border: var(--border-2)`, `border-top: var(--border-accent-4)`, `border-left: var(--border-accent-8)`.
+These apply to any border side: `border: var(--border-2)`, `border-top: var(--border-primary-4)`, `border-left: var(--border-primary-8)`.
 
 Cards typically combine `border: var(--border-2)` with a heavier directional border (`border-left-width: 6px` or `border-top-width: 8px`) for structural emphasis.
 
@@ -115,8 +116,8 @@ All buttons use `border-bottom-width: 4px` for a structural slab weight. Hover s
 
 When building a new component or page section:
 
-- **Visual emphasis**: Reach for border weight and background color, not text color. `border-top: var(--border-accent-4)` on a section header reads stronger than making the heading crimson.
-- **Cards**: `border: var(--border)` + a heavy directional border side. Background: `var(--code-background-color)` (newsprint/slate) to lift from page surface.
-- **Labels and badges**: Use `var(--font-display)` + uppercase + `var(--text-xs)` or `var(--text-sm)`. See `.badge` in `components.css`.
-- **Dividers**: `border-top: var(--border-accent-4)` with a constrained `max-width` for decorative separators; `border-top: var(--border-heavy)` for structural ones.
+- **Visual emphasis**: Reach for border weight and background color, not text color. `border-top: var(--border-primary-4)` on a section header reads stronger than making the heading crimson.
+- **Cards**: `border: var(--border-2)` + a heavy directional border side. Background: `var(--code-background-color)` (newsprint/slate) to lift from page surface.
+- **Labels and badges**: Use `var(--font-display)` + uppercase + `var(--text-xs)` or `var(--text-sm)`. See `.badge` in `website/src/components/islandExamples/PropagandaRadio.css`.
+- **Dividers**: `border-top: var(--border-primary-4)` with a constrained `max-width` for decorative separators; `border-top: var(--border-4)` for structural ones.
 - **Icons**: Match `color: currentColor` or `color: var(--primary)` depending on whether the icon is structural or decorative.

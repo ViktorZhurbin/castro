@@ -1,5 +1,6 @@
 ---
 title: Configuration - Castro Guide
+description: The full castro.config.ts reference — port, srcDir, markdown options, and client dependency vendoring.
 layout: docs
 path: /docs/config
 ---
@@ -7,6 +8,8 @@ path: /docs/config
 # CONFIGURATION
 
 Castro works without any config file. When you need to customize behavior, create `castro.config.ts` at your project root — that exact filename is the only one Castro reads; anything else is silently ignored.
+
+Config is read once, when the dev server starts — editing `castro.config.ts` while `bun run dev` is running doesn't take effect. Restart the server to pick up the change.
 
 ```typescript
 type CastroConfig = {
@@ -21,14 +24,14 @@ type CastroConfig = {
 
 ## EXAMPLE
 
-Serve on port 4123 with GFM tables enabled:
+Serve on port 4123 with Heading IDs and autolinks enabled:
 
 ```typescript
 import { defineConfig } from "@vktrz/castro";
 
 export default defineConfig({
   port: 4123,
-  markdown: { options: { tables: true } },
+  markdown: { options: { headings: true } },
 });
 ```
 
@@ -56,7 +59,7 @@ export default defineConfig({
 });
 ```
 
-Output is identical either way — paths in `dist/` are always relative to the project root, not to `srcDir`. `public/` stays at the project root regardless.
+Output is identical either way — paths in `dist/` mirror the layout under `pages/`; `srcDir` never appears in the output. `public/` stays at the project root regardless.
 
 ### `markdown`
 
@@ -90,7 +93,4 @@ export default defineConfig({
 });
 ```
 
-## WHAT'S NEXT
-
-- [Quick Start →](/docs/quick-start) — project structure, layouts, pages
-- [Islands →](/docs/islands) — interactive components and hydration directives
+Next: [Quick Start →](/docs/quick-start) — project structure, layouts, pages · [Islands →](/docs/islands) — interactive components and hydration directives

@@ -1,5 +1,6 @@
 ---
 title: Quick Start - Castro Guide
+description: Mobilize a static site with interactive islands in under three minutes.
 layout: docs
 path: /docs/quick-start
 ---
@@ -20,7 +21,7 @@ cd my-castro-site
 bun run dev
 ```
 
-That's a working project at `http://localhost:3000`.
+`create-castro` prompts for a project name (Enter accepts `my-castro-site`) and installs dependencies for you. That's a working project at `http://localhost:3000`.
 
 ## PROJECT STRUCTURE
 
@@ -31,7 +32,8 @@ my-site/
 ├── layouts/          ← HTML shell components
 ├── pages/             ← one file = one output route
 ├── components/        ← shared UI
-└── public/             ← assets copied directly to dist/
+├── public/             ← assets copied directly to dist/
+└── castro.config.ts    ← optional, see Configuration below
 ```
 
 ## LAYOUTS
@@ -81,7 +83,7 @@ export default function Home() {
 }
 ```
 
-The `meta` export is optional. It's passed to the layout alongside `children`.
+The `meta` export is optional. It's passed to the layout alongside `children`, and if it has no `title`, one is derived from the filename.
 
 ### Markdown pages
 
@@ -92,8 +94,22 @@ title: About
 
 # About
 
-Every `.md` file in `pages/` becomes an HTML route. Frontmatter fills the same role as `meta` in a `.tsx` page.
+Some text.
 ```
+
+Every `.md` file in `pages/` becomes an HTML route. Frontmatter fills the same role as `meta` in a `.tsx` page.
+
+## ROUTING
+
+Each page's route is derived from its path under `pages/`:
+
+- `pages/index.tsx` → `/`
+- `pages/blog.tsx` → `/blog`
+- `pages/blog/index.tsx` → `/blog` — `index` files collapse into their parent directory's route
+
+Files and directories prefixed with `_` are skipped entirely — they're not built and don't get a route. Use this for drafts or private helpers, e.g. `pages/_drafts/`, `pages/_partial.tsx`.
+
+Two pages that resolve to the same route — `pages/blog.tsx` and `pages/blog/index.tsx`, for instance — fail the build with a route conflict rather than silently picking one.
 
 ## COMPONENTS
 
@@ -126,7 +142,4 @@ bun run build    # production build → dist/
 
 The dev server watches for changes and reloads automatically. `bun run build` produces static HTML in `dist/`, ready to deploy anywhere that serves files.
 
-## WHAT'S NEXT
-
-- [Islands →](/docs/islands) — interactive components and hydration directives
-- [Configuration →](/docs/config) — the full `castro.config.ts` reference
+Next: [Islands →](/docs/islands) — interactive components and hydration directives · [Configuration →](/docs/config) — the full `castro.config.ts` reference

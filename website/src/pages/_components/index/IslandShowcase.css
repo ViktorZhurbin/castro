@@ -12,16 +12,16 @@
 
 .island-showcase-label {
   font-family: var(--font-display);
-  letter-spacing: 0.05rem;
   font-size: var(--text-3xl);
-  color: var(--primary);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted-color);
   margin: 0;
 }
 
 .island-showcase-desc {
   margin: 0;
   color: var(--muted-color);
-  font-size: var(--text-sm);
 }
 
 .island-showcase-island {

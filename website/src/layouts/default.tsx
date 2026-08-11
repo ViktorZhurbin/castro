@@ -7,14 +7,15 @@ import "./default.css";
 
 interface Props {
   title: string;
+  description?: string;
   children: ComponentChildren;
 }
 
 export default function DefaultLayout(props: Props) {
-  const { title, children } = props;
+  const { title, description, children } = props;
 
   return (
-    <PageShell title={title}>
+    <PageShell title={title} description={description}>
       <main class="default-main">
         {children}
 

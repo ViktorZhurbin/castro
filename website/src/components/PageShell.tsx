@@ -8,17 +8,22 @@ import "./PageShell.css";
 
 interface PageShellProps {
   title: string;
+  description?: string;
   activePath?: string;
   children: ComponentChildren;
 }
 
-export function PageShell({ title, activePath, children }: PageShellProps) {
+export function PageShell({ title, description, activePath, children }: PageShellProps) {
   return (
     <html lang="en">
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{title}</title>
+        {description && <meta name="description" content={description} />}
+        <meta property="og:title" content={title} />
+        {description && <meta property="og:description" content={description} />}
+        <meta property="og:type" content="website" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <ThemeScript />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
