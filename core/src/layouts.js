@@ -17,12 +17,9 @@ import { CastroError } from "./utils/errors.js";
 
 /**
  * @import { VNode } from "preact";
+ * @import { LayoutProps } from "./types.d.ts";
  *
- * @typedef {(props: {
- * 		title: string;
- * 		children: VNode;
- * 		[key: string]: unknown;
- *	}) => VNode} LayoutComponent
+ * @typedef {(props: LayoutProps) => VNode} LayoutComponent
  *
  * @typedef {string} LayoutId - Layout's path relative to LAYOUTS_DIR, extension
  * stripped, posix-style (e.g. `layouts/nested/default.tsx` -> "nested/default").

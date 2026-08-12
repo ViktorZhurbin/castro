@@ -38,17 +38,12 @@ my-site/
 
 ## LAYOUTS
 
-`layouts/default.tsx` is required — it wraps every page unless a page sets a different one. A layout receives `children` (the page content, a VNode — not a rendered string) plus whatever props the page passes through its `meta` export.
+`layouts/default.tsx` is required — it wraps every page unless a page sets a different one. A layout receives `children` (the page content, a VNode — not a rendered string) plus whatever props the page passes through its `meta` export. `LayoutProps` types all of that, so there's no props shape to hand-roll.
 
 ```tsx
-import type { ComponentChildren } from "preact";
+import type { LayoutProps } from "@vktrz/castro";
 
-interface Props {
-  children: ComponentChildren;
-  title: string;
-}
-
-export default function DefaultLayout({ title, children }: Props) {
+export default function DefaultLayout({ title, children }: LayoutProps) {
   return (
     <html lang="en">
       <head>
@@ -64,6 +59,8 @@ export default function DefaultLayout({ title, children }: Props) {
 ```
 
 Add more layouts under `layouts/` and select one per page via `meta.layout` — the value is the path under `layouts/` with the extension stripped, so `layouts/docs.tsx` is `"docs"`.
+
+Fields a layout doesn't know about arrive as `unknown`, since any page can put anything in `meta`. Name the ones you use to get them typed: `LayoutProps<{ path?: string }>`.
 
 ## PAGES
 
@@ -84,6 +81,22 @@ export default function Home() {
 ```
 
 The `meta` export is optional. It's passed to the layout alongside `children`, and if it has no `title`, one is derived from the filename.
+
+A page is a component too, so its own `meta` arrives back as props — `title` always among them, filename fallback included. `PageProps` is the layout's counterpart here:
+
+```tsx
+import type { PageMeta, PageProps } from "@vktrz/castro";
+
+export const meta = { title: "Home", tagline: "Onward" } satisfies PageMeta;
+
+export default function Home({ title, tagline }: PageProps<typeof meta>) {
+  return (
+    <h1>
+      {title} — {tagline}
+    </h1>
+  );
+}
+```
 
 ### Markdown pages
 

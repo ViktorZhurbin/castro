@@ -47,10 +47,15 @@ To verify fixes work, edit the broken file in place — the dev server will rebu
 | `layout-syntax-error` | Layout has syntax error | `BUNDLE_FAILED` | `layouts/default.jsx` unclosed brace |
 | `island-syntax-error` | Island has syntax error | `BUNDLE_FAILED` | `components/Counter.island.tsx` unclosed brace |
 | `island-import-missing` | Page imports non-existent island | `BUNDLE_FAILED` | imports `./components/Ghost.island.tsx` which doesn't exist |
+| `island-default-not-function` | Island default export isn't callable | `ISLAND_DEFAULT_NOT_FUNCTION` | `components/Silent.island.tsx` has `export default 42` |
 | `island-render-failed` | Island render fails at build time | `ISLAND_RENDER_FAILED` | hydrate export throws error |
 | `island-children` | Island is passed children | `ISLAND_HAS_CHILDREN` | `<Counter>` wraps `<strong>hi</strong>`; islands take props only |
 | `island-multiple-directives` | Island carries two hydration directives | `ISLAND_MULTIPLE_DIRECTIVES` | `<Counter comrade:eager comrade:visible />` |
 | `island-props-not-serializable` | Island prop can't become JSON | `ISLAND_PROPS_NOT_SERIALIZABLE` | `<Counter data={...}>` where `data` holds a reference to itself |
+
+An island whose default export is *missing entirely* is `BUNDLE_FAILED`, not `ISLAND_DEFAULT_NOT_FUNCTION` — the client compile's `import Component from ...` fails first, with `No matching export in "components/Silent.island.tsx" for import "default"`. Its code frame points at the generated `*.virtual.js` entry rather than a file on disk, so the message is what names the island, not the location. `ISLAND_DEFAULT_NOT_FUNCTION` covers the case that compile can't see: a default that exists and isn't callable.
+
+The fixture's default is a *primitive*, and that is the point. An object default throws inside `renderToString` on its own — `[object Object] is not a valid HTML tag name` — so without the guard it surfaces as `ISLAND_RENDER_FAILED` and the fixture would only prove that one error preempts another. `export default 42` is the case nothing else catches: the build exits 0 and ships `<42></42>`.
 
 Some codes have no fixture on purpose. `ISLAND_NOT_FOUND` and `BUNDLE_NO_OUTPUT` are internal invariants — the first says "please report it" in its own hint, and the second fires only when a *successful* `Bun.build` yields no `.js` output, which no user input can arrange. `UNEXPECTED` is the `toPayload()` fallback for any non-`CastroError` throw, so no single scenario pins it.
 

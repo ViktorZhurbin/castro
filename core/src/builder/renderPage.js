@@ -23,13 +23,13 @@ import { CastroError } from "../utils/errors.js";
 import { writeHtmlPage } from "./writeHtmlPage.js";
 
 /**
- * @import { PageMeta } from "../types.d.ts"
+ * @import { PageMeta, PageProps } from "../types.d.ts"
  * @import { FunctionComponent } from "preact"
  */
 
 /**
  * @param {{
- *   pageComponent: FunctionComponent<PageMeta & { title: string }>,
+ *   pageComponent: FunctionComponent<PageProps>,
  *   outputFilePath: string,
  *   sourceFilePath: string,
  *   pageMeta: PageMeta,

@@ -1,4 +1,4 @@
-❌ Page has no default export
-   pages/oops.tsx must export a default function
+❌ Page has no default component
+   pages/oops.tsx exports no default function
 
-   → Add a default export to this page
+   → Export the page component as this file's default

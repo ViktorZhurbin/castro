@@ -1,0 +1,4 @@
+❌ Island default export is not a component
+   components/Silent.island.tsx has a default export, but it is not a function
+
+   → Export the component itself, not an object or value wrapping it

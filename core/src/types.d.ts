@@ -4,9 +4,81 @@
 
 /**
  * Castro Type Definitions
+ *
+ * The first section is what `package.json`'s `types` entry promises a consuming
+ * project: config, and the props a page or layout is handed. The internal
+ * sections below it are the build's own vocabulary — they live here because
+ * these types are shared across `core/src`, not because anyone outside imports
+ * them.
  */
 
-// ─── Error types ──────────────────────────────────────────────────── //
+import type { VNode } from "preact";
+
+// ─── Public API ──────────────────────────────────────────────────────── //
+
+export type CastroConfig = {
+  port?: number;
+  markdown?: { options?: Bun.markdown.Options };
+  /**
+   * Source root for `pages/`, `layouts/`, and `components/`, e.g. `"src"`.
+   * `public/` is not affected — it stays at the project root — and output is
+   * always `dist/`, with no srcDir segment in emitted URLs.
+   */
+  srcDir?: string;
+  /**
+   * Extra npm packages to vendor to /dist/vendor/ and share across islands
+   * via the import map, e.g. ["@preact/signals"]. Anything not listed here
+   * gets bundled into each island bundle separately.
+   */
+  clientDependencies?: string[];
+};
+
+/**
+ * Identity function that provides type inference for castro config file.
+ * Runtime implementation lives in index.js (the package entry); this is the
+ * type the package exports under the same name.
+ */
+export function defineConfig(config: CastroConfig): CastroConfig;
+
+/**
+ * A page's frontmatter: `meta` in a JSX page, the YAML block in a Markdown one.
+ * The index signature is what lets a project carry its own fields; annotate a
+ * page's `meta` with `satisfies PageMeta` to have the known ones checked while
+ * keeping the rest.
+ */
+export type PageMeta = {
+  /**
+   * Layout id: the path under `layouts/` with the extension stripped, so
+   * `layouts/nested/default.tsx` is `"nested/default"`. Omit for `"default"`.
+   */
+  layout?: string;
+  title?: string;
+  description?: string;
+  [key: string]: unknown;
+};
+
+/**
+ * What a page component receives: its own frontmatter, plus the `title`
+ * renderPage.js derives (frontmatter value, or the filename as a fallback) —
+ * which is why `title` is required here while `PageMeta` leaves it optional.
+ *
+ * `T` narrows custom frontmatter that the index signature would otherwise
+ * hand back as `unknown`, e.g. `PageProps<{ subtitle: string }>`.
+ */
+export type PageProps<T = unknown> = PageMeta & T & { title: string };
+
+/**
+ * What a layout component receives: exactly a page's props, plus the page
+ * itself as `children`. Both are handed the same object — see "Layouts receive
+ * children (VNode)" in CLAUDE.md for why this is a VNode and not an HTML string.
+ *
+ * `VNode<any>`, not bare `VNode`: the latter means `VNode<{}>`, and `VNode` is
+ * invariant in its props, so the page node renderPage.js builds — which carries
+ * the page's own props — would not be assignable to it.
+ */
+export type LayoutProps<T = unknown> = PageProps<T> & { children: VNode<any> };
+
+// ─── Internal: errors ────────────────────────────────────────────────── //
 
 /**
  * Error codes and payload shapes for Castro build-time fatal errors.
@@ -21,6 +93,7 @@ export type ErrorTokens = {
   NO_DEFAULT_LAYOUT: { dir: string };
   LAYOUT_NO_DEFAULT_EXPORT: { file: string };
   PAGE_NO_DEFAULT_EXPORT: { file: string };
+  ISLAND_DEFAULT_NOT_FUNCTION: { file: string };
   ISLAND_NOT_FOUND: { islandId: string; sourceFilePath: string };
   NO_PAGES: { dir: string };
   BUNDLE_FAILED: undefined;
@@ -70,34 +143,23 @@ export type ErrorMessages = {
   [K in ErrorCode]: (tokens: ErrorTokens[K]) => ErrorContent;
 };
 
-/** Structured error payload: data + code, voice in messages/. */
+/**
+ * Structured error payload: data + code, voice in messages/.
+ *
+ * Every field must survive `JSON.stringify` — the payload crosses an SSE wire
+ * to the browser overlay (dev/server.js → dev/liveReload.js) with nothing
+ * validating either end, exactly like island props.
+ */
 export type CastroErrorPayload = ErrorContent & {
   code: ErrorCode;
   frames?: CodeFrame[]; // 0..N source locations
 };
 
-// ─── Core types ──────────────────────────────────────────────────────── //
+// ─── Internal: build ─────────────────────────────────────────────────── //
 
 export type Directive = "comrade:eager" | "comrade:patient" | "comrade:visible";
 
 export type ImportsMap = Record<string, string>;
-
-export type CastroConfig = {
-  port?: number;
-  markdown?: { options?: Bun.markdown.Options };
-  /**
-   * Source root for `pages/`, `layouts/`, and `components/`, e.g. `"src"`.
-   * `public/` is not affected — it stays at the project root — and output is
-   * always `dist/`, with no srcDir segment in emitted URLs.
-   */
-  srcDir?: string;
-  /**
-   * Extra npm packages to vendor to /dist/vendor/ and share across islands
-   * via the import map, e.g. ["@preact/signals"]. Anything not listed here
-   * gets bundled into each island bundle separately.
-   */
-  clientDependencies?: string[];
-};
 
 export type DefaultConfig = Required<Pick<CastroConfig, "port" | "srcDir">>;
 
@@ -106,25 +168,8 @@ export type IslandComponent = {
   publicJsPath: string;
   /** Empty when the island imports no stylesheet. */
   cssContent: string;
+  /** Guaranteed callable by the check in compileIsland(), not by the loader. */
   ssrModule: { default: AnyFunction };
 };
 
-export type PageMeta = {
-  /**
-   * Layout id: the path under `layouts/` with the extension stripped, so
-   * `layouts/nested/default.tsx` is `"nested/default"`. Omit for `"default"`.
-   */
-  layout?: string;
-  title?: string;
-  description?: string;
-  [key: string]: unknown;
-};
-
 export type AnyFunction = (...args: never) => unknown;
-
-/**
- * Identity function that provides type inference for castro config file.
- * Runtime implementation lives in index.js (the package entry); this is the
- * type the package exports under the same name.
- */
-export function defineConfig(config: CastroConfig): CastroConfig;

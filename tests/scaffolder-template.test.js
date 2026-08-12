@@ -1,10 +1,10 @@
 /**
  * Scaffolder Template Drift
  *
- * The template isn't a workspace: nothing installs it and `bun check:code`
- * never type-checks it, so its tsconfig can drift from the canonical one in
- * `website/` and no build fails. Root CLAUDE.md says the two match — this
- * converts that into a failing assertion.
+ * `bun check:code` type-checks the template *against this very file* — so a
+ * tsconfig that quietly loosens still passes its own check, and drift from the
+ * canonical one in `website/` fails nothing. Root CLAUDE.md says the two match;
+ * this converts that into a failing assertion.
  *
  * `import()` rather than `Bun.file().json()`: both files carry comments, which
  * the JSON parser rejects and Bun's JSON module loader accepts.

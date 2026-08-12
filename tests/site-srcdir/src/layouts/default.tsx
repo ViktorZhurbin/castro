@@ -1,13 +1,8 @@
-import type { ComponentChildren } from "preact";
+import type { LayoutProps } from "@vktrz/castro";
 
 import "./default.css";
 
-type Props = {
-  title: string;
-  children: ComponentChildren;
-};
-
-export default function Layout({ title, children }: Props) {
+export default function Layout({ title, children }: LayoutProps) {
   return (
     <html>
       <head>

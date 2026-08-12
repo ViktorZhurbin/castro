@@ -6,9 +6,11 @@
       "name": "castro-monorepo",
       "devDependencies": {
         "@types/bun": "^1.3.14",
+        "@vktrz/castro": "workspace:*",
         "husky": "^9.1.7",
         "oxfmt": "^0.61.0",
         "oxlint": "^1.76.0",
+        "preact": "^10.29.8",
         "typescript": "^6.0.2",
         "wrangler": "4.120.1",
       },
@@ -17,7 +19,7 @@
       "name": "@vktrz/castro",
       "version": "0.2.0",
       "bin": {
-        "castro": "./bin/castro",
+        "castro": "bin/castro",
       },
       "dependencies": {
         "preact-render-to-string": "^6.7.0",
@@ -61,6 +63,14 @@
     },
     "tests/errors/island-children": {
       "name": "@test-errors/island-children",
+      "version": "0.0.0",
+      "dependencies": {
+        "@vktrz/castro": "workspace:*",
+        "preact": "^10.29.8",
+      },
+    },
+    "tests/errors/island-default-not-function": {
+      "name": "@test-errors/island-default-not-function",
       "version": "0.0.0",
       "dependencies": {
         "@vktrz/castro": "workspace:*",
@@ -490,6 +500,8 @@
     "@test-errors/empty-layouts-dir": ["@test-errors/empty-layouts-dir@workspace:tests/errors/empty-layouts-dir"],
 
     "@test-errors/island-children": ["@test-errors/island-children@workspace:tests/errors/island-children"],
+
+    "@test-errors/island-default-not-function": ["@test-errors/island-default-not-function@workspace:tests/errors/island-default-not-function"],
 
     "@test-errors/island-import-missing": ["@test-errors/island-import-missing@workspace:tests/errors/island-import-missing"],
 

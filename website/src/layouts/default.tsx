@@ -1,17 +1,11 @@
-import type { ComponentChildren } from "preact";
+import type { LayoutProps } from "@vktrz/castro";
 
 import { Footer } from "@/components/Footer";
 import { PageShell } from "@/components/PageShell";
 
 import "./default.css";
 
-interface Props {
-  title: string;
-  description?: string;
-  children: ComponentChildren;
-}
-
-export default function DefaultLayout(props: Props) {
+export default function DefaultLayout(props: LayoutProps) {
   const { title, description, children } = props;
 
   return (

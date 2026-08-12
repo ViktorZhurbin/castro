@@ -1,12 +1,10 @@
-import type { ComponentChildren } from "preact";
+import type { LayoutProps } from "@vktrz/castro";
 
 import "./default.css";
 
-type Props = { title: string; children: ComponentChildren };
-
 // Deliberately shares a basename with layouts/default.tsx — regression
 // fixture for layout ids including the directory.
-export default function NestedDefaultLayout({ title, children }: Props) {
+export default function NestedDefaultLayout({ title, children }: LayoutProps) {
   return (
     <html>
       <head>

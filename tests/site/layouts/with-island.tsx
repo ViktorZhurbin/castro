@@ -1,10 +1,8 @@
-import type { ComponentChildren } from "preact";
+import type { LayoutProps } from "@vktrz/castro";
 
 import Counter from "../components/Counter.island.tsx";
 
-type Props = { title: string; children: ComponentChildren };
-
-export default function WithIsland({ title, children }: Props) {
+export default function WithIsland({ title, children }: LayoutProps) {
   return (
     <html>
       <head>

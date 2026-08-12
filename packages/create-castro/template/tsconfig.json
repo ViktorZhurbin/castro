@@ -27,5 +27,5 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["types/**/*", "pages/**/*", "layouts/**/*", "components/**/*"]
+  "include": ["castro.config.ts", "types/**/*", "pages/**/*", "layouts/**/*", "components/**/*"]
 }

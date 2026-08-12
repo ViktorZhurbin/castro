@@ -1,4 +1,4 @@
-❌ Layout has no default export
-   default.jsx must export a default function
+❌ Layout has no default component
+   default.jsx exports no default function
 
-   → Add a default export to this layout
+   → Export the layout component as this file's default

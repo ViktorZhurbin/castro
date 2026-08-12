@@ -70,6 +70,14 @@ export async function compileIsland({ sourceFilePath, outputDir, publicDir }) {
   // on the island's path, so there is no reason for a caller to hold the code.
   const ssrModule = await getModule(sourceFilePath, ssrCode, "ssr");
 
+  // A *missing* default already failed the client compile above, so this only
+  // fires for a default that exists and isn't callable — which h() accepts and
+  // renderToString() spells into the markup as a tag name: `export default 42`
+  // ships `<42></42>` with the build reporting success.
+  if (typeof ssrModule.default !== "function") {
+    throw new CastroError("ISLAND_DEFAULT_NOT_FUNCTION", { file: sourceFilePath });
+  }
+
   return {
     sourceFilePath,
     publicJsPath,

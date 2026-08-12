@@ -1,4 +1,4 @@
-import type { ComponentChildren } from "preact";
+import type { LayoutProps } from "@vktrz/castro";
 
 import { Footer } from "@/components/Footer";
 import { MenuIcon } from "@/components/icons/MenuIcon";
@@ -7,14 +7,12 @@ import { navSections } from "@/nav";
 
 import "./docs.css";
 
-interface Props {
-  title: string;
-  description?: string;
-  path?: string;
-  children: ComponentChildren;
-}
-
-export default function DocsLayout({ title, description, path, children }: Props) {
+export default function DocsLayout({
+  title,
+  description,
+  path,
+  children,
+}: LayoutProps<{ path?: string }>) {
   return (
     <PageShell title={title} description={description} activePath={path}>
       <div class="docs-shell">

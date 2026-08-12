@@ -65,16 +65,26 @@ export const messages = {
       hint: `Create default.jsx or default.tsx in ${dir}/ to continue`,
     }),
 
+    // "No default component" rather than "no default export": both codes are
+    // thrown by a callability check, so they also fire on a default that is
+    // present and isn't a function. The message says that once — the hint is
+    // the action, not a second spelling of the requirement.
     LAYOUT_NO_DEFAULT_EXPORT: ({ file }) => ({
-      title: "Layout has no default export",
-      message: `${file} must export a default function`,
-      hint: "Add a default export to this layout",
+      title: "Layout has no default component",
+      message: `${file} exports no default function`,
+      hint: "Export the layout component as this file's default",
     }),
 
     PAGE_NO_DEFAULT_EXPORT: ({ file }) => ({
-      title: "Page has no default export",
-      message: `${file} must export a default function`,
-      hint: "Add a default export to this page",
+      title: "Page has no default component",
+      message: `${file} exports no default function`,
+      hint: "Export the page component as this file's default",
+    }),
+
+    ISLAND_DEFAULT_NOT_FUNCTION: ({ file }) => ({
+      title: "Island default export is not a component",
+      message: `${file} has a default export, but it is not a function`,
+      hint: "Export the component itself, not an object or value wrapping it",
     }),
 
     YAML_PARSE_FAILED: ({ errorMessage, sourceFilePath }) => ({
