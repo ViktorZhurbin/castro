@@ -1,5 +1,6 @@
 import { ClientScript } from "../ClientScript";
 import { DARK, LIGHT, STORAGE_KEY } from "./constants";
+import { initState } from "./initState";
 
 import "./ThemeToggle.css";
 
@@ -14,20 +15,6 @@ export function ThemeToggle() {
       <ClientScript fn={initState} args={[STORAGE_KEY, DARK, LIGHT]} />
     </>
   );
-}
-
-function initState(storageKey: string, dark: string, light: string) {
-  const btn = document.getElementById("theme-toggle") as HTMLButtonElement | null;
-
-  if (!btn) return;
-
-  btn.addEventListener("click", () => {
-    const current = document.documentElement.getAttribute("data-theme");
-    const next = current === dark ? light : dark;
-
-    document.documentElement.setAttribute("data-theme", next);
-    localStorage.setItem(storageKey, next);
-  });
 }
 
 function SunIcon() {
