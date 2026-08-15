@@ -5,14 +5,99 @@ sanitization pass that culminated in commit `7f5efe5` ("trim the website").
 Organized by where it lived on the page. Verbatim quotes unless marked
 "(paraphrase)". Not a plan — just raw material.
 
-## Hero
+## The original landing page (`80bc1b1`, Jan 25) — full text
 
-Ran from the very first landing page (`80bc1b1`) through the brutalist era,
-died at `7f5efe5`.
+The very first landing page this project ever had, the day it got a website
+at all. Before any of the sanitization passes. Full committed, no hedging
+anywhere — the joke lives in proper nouns and headers, the prose paragraphs
+underneath stay plain and technical. This is the strongest reference for
+"don't take this seriously," stronger than anything from the brutalist era
+quoted below.
+
+> **[star emblem]**
+>
+> # Castro
+>
+> ### The People's Framework
+>
+> **The Educational Island Architecture Framework**
+> **(That Happens to Be Communist)**
+>
+> _"The satire is optional. The knowledge is real."_
+>
+> **[Read the Manifesto]** **[View Source Code]** **[Start Tutorial]**
+>
+> ---
+>
+> ## The Revolutionary Directives
+>
+> Learn how modern SSGs work by reading ~1500 lines of well-commented code.
+> Three hydration strategies. Zero configuration.
+>
+> **no:pasaran** — _"They shall not pass (to the client)"_
+> Component renders at build time. No JavaScript shipped to client. Pure
+> static HTML for maximum performance.
+> _[live counter demo]_
+> ↑ Try clicking. Nothing happens. Zero JS was sent to your browser.
+>
+> **lenin:awake** — _"The leader is always ready"_
+> Component becomes interactive immediately on page load. Full
+> interactivity from the start.
+> _[live counter demo]_
+> ↑ This counter is interactive immediately. JS loaded on page load.
+>
+> **comrade:visible** — _"Only work when the people are watching"_
+> Component hydrates when scrolled into viewport. Lazy loading with
+> IntersectionObserver. Default behavior.
+> _[live counter demo]_
+> ↑ JS loads when scrolled into view. Open DevTools Network tab to verify.
+>
+> ---
+>
+> ## How The Revolution Works
+>
+> Island architecture explained. No magic, just smart progressive
+> enhancement.
+>
+> **1 — Build Time**
+> Castro compiles your pages and renders all islands to static HTML. Every
+> component gets server-side rendered, creating instant visual content.
+>
+> **2 — Browser Receives HTML**
+> Pure HTML arrives first. Your page is visible immediately. No waiting for
+> JavaScript bundles. Islands are wrapped in `<castro-island>` custom
+> elements.
+>
+> **3 — Selective Hydration**
+> JavaScript loads based on your directive. `no:pasaran` stays static.
+> `lenin:awake` hydrates immediately. `comrade:visible` waits for viewport
+> intersection.
+>
+> **4 — Interactive Islands**
+> Components become interactive exactly when needed. Fast initial load,
+> progressive enhancement, minimal JavaScript. This is island architecture.
+>
+> ---
+>
+> **Workers of the Web, Unite!**
+> **Seize the Means of Rendering.**
+>
+> [About] [GitHub]
+>
+> _Built with Castro | The People's Framework_
+
+`/manifesto` and `/tutorial` were dead links from day one — never built.
+`/about` didn't exist yet either (came later at `9684d9d`). All three CTA
+targets, not two — "Start Tutorial" is a third button this early version
+had that no later version kept.
+
+## Hero (later eras)
 
 - Kicker under the logo: **THE PEOPLE'S FRAMEWORK** — currently only survives
   in the `<title>` tag (`Castro - The People's Framework`), never rendered
   on the page itself.
+- Original tagline (`80bc1b1`, see above): **"The Educational Island
+  Architecture Framework (That Happens to Be Communist)"**
 - Tagline (brutalist era, `7580509` → `514b420`): **"Your Five-Year Plan to
   Learn Island Architecture"**
 - Quote line (present from the start, killed at `7f5efe5`): **"The satire is
@@ -53,10 +138,37 @@ Demoted to a standalone `/showcase` page at `f32618b`, then gutted:
 `comrade:eager` (`135f460`, losing the personality-cult joke), `comrade:idle`
 renamed to `comrade:patient` (`0d1e8bf`). None of the three slogans survive
 anywhere today — `docs/islands.md` describes the same mechanics in flat
-prose only. The directive _names_ `no:pasaran`/`lenin:awake` are gone from
-the code, not just the copy — reviving the slogans doesn't require reviving
-the old names, they can reattach to whatever directives exist now
-(`comrade:visible`, `comrade:eager`, `comrade:patient`).
+prose only.
+
+Current directive names, for reference: `comrade:eager`, `comrade:patient`,
+`comrade:visible` (`core/src/jsx.d.ts`). `comrade:visible` kept its original
+name throughout every era. `no:pasaran` has no current equivalent at all —
+it was deleted, not renamed, because "static, no JS" isn't really a
+hydration directive, it's just... not using an island. `comrade:idle`/
+`comrade:patient` (wait-for-idle-time) wasn't part of the original three;
+it was added later, separately from the `no:pasaran` → nothing lineage.
+
+### Decision: restoring the original directive names
+
+The standardized names (`comrade:eager`/`comrade:patient`/`comrade:visible`)
+happened during the period this project was aiming to be an educational
+framework other people might actually adopt — sober, memorable, teachable
+API surface made sense under that goal. That's no longer the goal; this is
+personal software again. Current lean is to restore the original names
+together with their punchlines (`lenin:awake` → "The leader is always
+ready", etc.) rather than keep the sanitized names with the jokes bolted on
+separately.
+
+`no:pasaran` is the one exception worth thinking through before reviving:
+semantically it never quite made sense as a _directive_, since an island
+with no interactivity and no hydration isn't a variant of an island, it's
+just a regular server-rendered component wearing an island's clothes — the
+honest move would be to not use an island there at all. It could still come
+back as pure sarcasm rather than a real functional directive: e.g. a joke
+example in docs/marketing copy showing someone reaching for `no:pasaran`
+and being told to just use a component, or a directive that exists in name
+only and behaves identically to omitting the directive. Not settled yet —
+flagged here rather than decided.
 
 ## Island examples
 
