@@ -130,10 +130,13 @@ async function scanPages() {
     // than refusing to build.
     const claimedBy = routes.get(route);
     if (claimedBy) {
+      // Bun.Glob.scan() order reflects filesystem directory order, not
+      // scan order between runs/machines — sort so the message is stable.
+      const [file1, file2] = [claimedBy, relativeSourcePath].toSorted();
       throw new CastroError("ROUTE_CONFLICT", {
         route,
-        file1: join(PAGES_DIR, claimedBy),
-        file2: join(PAGES_DIR, relativeSourcePath),
+        file1: join(PAGES_DIR, file1),
+        file2: join(PAGES_DIR, file2),
       });
     }
 
