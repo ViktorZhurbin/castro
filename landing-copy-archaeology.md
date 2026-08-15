@@ -163,12 +163,31 @@ separately.
 semantically it never quite made sense as a _directive_, since an island
 with no interactivity and no hydration isn't a variant of an island, it's
 just a regular server-rendered component wearing an island's clothes — the
-honest move would be to not use an island there at all. It could still come
-back as pure sarcasm rather than a real functional directive: e.g. a joke
-example in docs/marketing copy showing someone reaching for `no:pasaran`
-and being told to just use a component, or a directive that exists in name
-only and behaves identically to omitting the directive. Not settled yet —
-flagged here rather than decided.
+honest move would be to not use an island there at all. Turns out a past
+version of this project already had this exact conversation with itself:
+at `5af7a7c`, `no:pasaran`'s showcase description read _"Component renders
+at build time only. In practice, use a regular Component.tsx if you don't
+need interactivity. **This directive is here for the memes.**"_ — shipped
+self-awareness, one commit before the whole thing got deleted at `9877a85`.
+That's the sarcasm option, already written, just needs a new home.
+
+That same commit (`5af7a7c`) also shipped a dedicated component for the
+`no:pasaran` demo card, **`BureaucraticPermit.island.tsx`**, deleted one
+commit later at `9877a85` — lived for exactly one commit:
+
+```
+FORM 27B/6 — REQUEST FOR CLIENT-SIDE INTERACTIVITY
+☐ Component requires user interaction
+☐ Static HTML is insufficient
+☐ I have read the Party's rendering guidelines
+[SUBMIT REQUEST]
+FORM STATUS: PERMANENTLY PENDING
+```
+
+— with a large rotated watermark reading **"JS DENIED"** stamped diagonally
+across the card. All checkboxes and the button are disabled; nothing on
+the form can ever be submitted, which is the joke: the form itself
+performs the "permanently pending" request it describes.
 
 ## Island examples
 
@@ -230,6 +249,162 @@ it wasn't written as a standalone joke, it lost its other half.
   needs."_ — parody of "from each according to his ability..."
 - `MIT — The people's license` — still in the current README, no revival
   needed.
+
+## More gems (deeper archaeology pass)
+
+Second pass through the full `80bc1b1..7f5efe5` range (181 commits), looking
+specifically for what the first pass missed. `no:pasaran`'s `BureaucraticPermit`
+island and its "here for the memes" line are folded into the directives
+section above since they answer that section's open question directly;
+everything else new is here.
+
+### Directive slogans not yet captured
+
+The doc already has the original three (`no:pasaran`/`lenin:awake`/
+`comrade:visible`) and notes `comrade:idle`→`comrade:patient` existed
+later without quoting its copy. It went through three slogans across three
+commits:
+
+- `"Work when nobody else is busy"` — as `comrade:idle`, `b7b107b`
+- `"Oh don't mind me, I'll hydrate when everyone else is done"` — renamed
+  to `comrade:patient`, `0d1e8bf`
+- `"Serves the collective once the essential work is complete."` — later
+  copy pass, `e2af088`
+
+`comrade:eager` (the renamed `lenin:awake`) also got its own replacement
+slogan once "the leader is always ready" was lost to the rename:
+**"Some comrades wait. This one doesn't."** (`135f460`, reused through
+`e2af088`). A "live demonstration" caption from the same era (`e2af088`):
+_"Before hydration, it is pure, state-approved HTML. Upon intersection, the
+`comrade:visible` directive executes, the Preact runtime is distributed,
+and the component becomes interactive."_ — bureaucratic verbs
+(state-approved, distributed) laid over ordinary hydration mechanics. None
+of this survives; `core/src/jsx.d.ts` and `docs/islands.md` are flat
+technical prose only today.
+
+### 404 page — one line never restored
+
+The 404 page is the only page whose voice survived intact to HEAD, but it
+wasn't always this short. Full original, commit `63b6c39` (first commit in
+the whole range):
+
+```
+This page has been redacted by the Ministry of Truth.
+It never existed.
+
+Perhaps it was a counter-revolutionary element that needed correction.
+
+[Return to the Collective]
+```
+
+The first two lines and the button are exactly what's in
+`website/src/pages/404.tsx` today. The middle line — **"Perhaps it was a
+counter-revolutionary element that needed correction."** — was cut at
+`11e8e25` ("switching to daisyUI - p1", a restyle commit with no reason to
+touch copy) and never came back.
+
+### Redactor's earlier drafts
+
+The doc has the final shipped version (`FIELD REPORT № 2847`). Two earlier,
+distinct drafts existed before it landed there:
+
+- **`b7b107b`/`5af7a7c`** — no field-report framing yet, just three toggled
+  lines: _"The recent harvest was poor → **GLORIOUS**. The tractors are old
+  and unreliable → **MAGNIFICENT**. Worker morale has declined →
+  **SKYROCKETED** since the last policy change."_ Toggle button:
+  `APPLY STATE CENSORSHIP`.
+- **`f42acaa`** — adds the field-report chrome, but numbered **"FIELD
+  REPORT № 1947"** (not 2847 — the number changed later), same
+  harvest/tractor/morale content. Toggle: `APPLY STATE CENSORSHIP` →
+  `✓ CENSORSHIP ACTIVE — REVEAL TRUTH`.
+- **`ff745bd`** — toggle wording becomes `SUBMIT FOR REVIEW` →
+  **`✓ APPROVED BY THE MINISTRY OF TRUTH`** — a direct callback to the 404
+  page's Ministry of Truth, in the doc above. Lost before the final
+  "APPROVED FOR DISTRIBUTION" wording shipped — the callback never made it
+  to the version that got recovered into
+  `website/src/components/islandExamples/Redactor.island.tsx`. Worth
+  reconsidering: "APPROVED BY THE MINISTRY OF TRUTH" ties two separate
+  jokes on the site together; "APPROVED FOR DISTRIBUTION" doesn't reference
+  anything else.
+
+### Error messages — a lost joke, and a whole deleted feature
+
+`castro.config.ts` used to have a **`messages: "satirical" | "serious"`**
+option — a user-facing toggle to turn the entire bit off, with `satirical.js`
+and `serious.js` as two complete implementations of the same interface.
+Removed at `d5c82ff` ("use a single satirical voice for messaging") — the
+satirical preset was inlined as the only voice, which is consistent with
+where this doc is trying to push things back to, but the point stands that
+the joke used to be optional at the infrastructure level, not just the
+landing page.
+
+One error factory died alongside the plugin system removal that same day
+(`e5cc3c9`) and was never replaced with an equivalent joke:
+
+```js
+CACHE_WRITE_FAILED: ({ path, errorMessage }) => ({
+  title: "Cache write failed",
+  message: `Compiled output at ${path} could not be requisitioned:`,
+  hint: "Check disk space and write permissions",
+}),
+```
+
+"Could not be **requisitioned**" for a plain disk-write failure — small
+event, grand verb, exactly the shape the messages README asks for. Today's
+equivalent (if one exists) uses plain phrasing.
+
+Also from the plugin-system era, `FRAMEWORK_CONFIG_INVALID`: _"Plugin has
+incomplete **papers** — missing: X"_, hint: _"Fill in the missing fields to
+**pass inspection**."_ Plugin-specific, so not directly revivable (the
+plugin system is gone), but the papers/inspection framing is reusable
+vocabulary for any other validation error.
+
+### Config docs — the satire made explicit as a feature
+
+From `2a6c546` ("tighten the docs"), before the docs became "usage only,
+plain informational" per `website/CLAUDE.md`:
+
+- `port` option: _"The port the dev server listens on. 3000 is the
+  default. **The Party has no strong feelings about this.**"_
+- `messages` option (back when it was configurable, see above): _"Controls
+  CLI output tone. 'satirical' wraps build output in communist bureaucracy
+  humor. 'serious' delivers the same information without the ideology.
+  **Both are equally correct. Only one is more fun.**"_
+- On the island marker plugin: _"Your page never ships the interactive
+  component code. **The Party has already arranged for it to be delivered
+  separately, on demand.**"_
+
+All three died with the docs-overhaul pass. Not for reviving in docs
+now — you've already decided docs stay plain — but the register ("no
+strong feelings," "equally correct, only one is more fun") is good hero/
+footer material: it's self-aware about the bit existing at all, which is
+close to what you're going for on the landing page.
+
+### DESIGN.md — the original design manifesto
+
+`035b8a5`'s original `website/DESIGN.md` (dev-facing, not visitor copy, but
+worth knowing about since it explains the _reasoning_ behind the visual
+register you're trying to get back to):
+
+> "The Castro website is **a Soviet Constructivist propaganda poster, not a
+> SaaS landing page**. Every design decision should serve that aesthetic."
+>
+> "Constructivism relies on **visual violence**... The satirical framing...
+> only works if the design commits fully. Muddiness, softness, or
+> SaaS-ness **breaks the joke**."
+
+Section header: _"What 'Gentle SaaS' Looks Like (Avoid This)."_ Rewritten to
+flat descriptive prose by `cfcb9f5`; today's `website/DESIGN.md` opens with
+the much tamer "The Castro website uses a Soviet Constructivist
+aesthetic... This document describes the design system." Same information,
+zero commitment to the bit — a documentation-level instance of the exact
+drift this whole doc is tracking.
+
+One more from this era, a now-deleted dev-only style-guide page
+(`e099577`, "add /theme page"): every row of its typography-scale specimen
+used **"The workers seize the means of production."** as filler text at
+every font size instead of lorem ipsum. Small, but a good instinct — even
+internal tooling stayed in character.
 
 ---
 
