@@ -23,7 +23,7 @@
     "test:errors:up": "UPDATE_SNAPSHOTS=1 bun test:errors",
     "test:all": "bun test",
     "verify": "bun lint && bun format && bun check:code && bun test:all && bun test:build",
-    "loc": "bunx cloc core/src/ --exclude-dir=messages --not-match-f '.test'",
+    "loc": "bunx cloc core/src/ --not-match-f '.test.|.d.ts|.md'",
     "loc:files": "bun run loc --by-file"
   },
   "devDependencies": {

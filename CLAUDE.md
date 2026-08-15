@@ -24,7 +24,7 @@ bun test:errors      # run error DX golden suite (tests/errors/)
 bun test:errors:up   # regenerate the error goldens, then read the diff
 bun test:build       # build every workspace (skips tests/errors fixtures) — smoke test for build breaks
 bun verify           # lint + format + check:code + test + every build (runs on pre-push and in CI)
-bun loc              # LOC count (core only, excludes messages/)
+bun loc              # LOC count (core only, executable JS only)
 ```
 
 ## Monorepo Layout
