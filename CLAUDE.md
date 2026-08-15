@@ -2,6 +2,8 @@
 
 Castro is a static site generator and a personal hobby project. Communist satire wraps the prose; the code itself stays serious. Source code is meant to be readable: each module should be small enough to hold in one's head.
 
+The joke lives in proper nouns, titles, and illustrations — the explanatory prose underneath stays plain and technical. Never flatten existing satirical copy as a side effect of a refactor, restyle, or docs pass: that's its own change, and it needs asking for.
+
 Preact for page rendering and islands, Bun for everything else.
 
 Peer reference: Fresh, early Astro, Eleventy + is-land.
