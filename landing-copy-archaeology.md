@@ -1,9 +1,43 @@
 # Landing page copy — recovered vocabulary
 
-Everything below existed on the site at some point and was cut during the
-sanitization pass that culminated in commit `7f5efe5` ("trim the website").
-Organized by where it lived on the page. Verbatim quotes unless marked
-"(paraphrase)". Not a plan — just raw material.
+## Why this document exists
+
+This project (a static site generator, personal hobby software) has gone
+through several tonal eras: fully satirical at launch, then progressively
+sanitized into serious marketing copy, then stripped to bare minimalism,
+then back to a plain/serious landing page — while the docs section stayed
+informational throughout and should **stay that way**. The only surviving
+joke on the current landing page was an orphaned footer line ("Workers of
+the web, unite!") and one live island (`PropagandaRadio`); even the hero
+copy explicitly disclaimed the bit ("The satire is optional. The code is
+serious.").
+
+The person driving this wants to reverse that drift — **specifically on
+the landing page, not the docs** — because the project's whole premise is
+self-aware and unserious (the name is a pun on Astro; the whole thing
+exists because Astro felt too complex, and Eleventy too messy for personal use,
+not because anyone is trying to compete with them). The goal is for a
+first-time visitor to understand within seconds that this isn't trying to
+be a serious competing SSG — before they read a single sentence of prose,
+ideally — the way the old `no:pasaran`/Five-Year-Plan/Ministry-of-Truth
+material used to land it.
+
+This document is the raw material for that rework: everything below
+existed on the site at some point and was cut during the sanitization pass
+that culminated in commit `7f5efe5` ("trim the website"), recovered via
+git archaeology across two passes. Organized by where it lived on the
+page. Verbatim quotes unless marked "(paraphrase)". **This is vocabulary,
+not a plan** — nothing here is committed to being reused as-is; some of it
+(the "Learn Island Architecture" framing, the plugin-era jokes) actively
+conflicts with decisions already made about the current site and needs
+adapting rather than copy-pasting. Two working islands recovered during
+this effort (`FiveYearPlan`, `Redactor`) are committed at
+`website/src/components/islandExamples/` but not wired into any page yet.
+Also see the "Decision" note under Directives below — restoring the
+original directive names (`no:pasaran`, `lenin:awake`, etc.) alongside
+their punchlines is the current direction, since the reason they got
+sanitized (this project briefly aiming to be an adoptable framework for
+others) no longer applies.
 
 ## The original landing page (`80bc1b1`, Jan 25) — full text
 
