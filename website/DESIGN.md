@@ -95,7 +95,7 @@ Cards typically combine `border: var(--border-2)` with a heavier directional bor
 
 **Breakpoints** (documented in `@vktrz/bare-css`):
 `sm` 576px / `md` 768px / `lg` 1024px / `xl` 1280px / `xxl` 1536px.
-The site uses `768px` for the main layout switches (hero, production-cycle list). `Section`'s `.section-body` caps the landing page's measure at 768px so every section shares one left edge.
+The site uses `768px` for the main layout switches (hero). `Section`'s `.section-body` caps the landing page's measure at 768px so every section shares one left edge.
 
 **Spacing**: Use `var(--spacing-*)` throughout. The scale runs from `--spacing-4xs` (0.1× base unit) to `--spacing-6xl` (6× base unit).
 

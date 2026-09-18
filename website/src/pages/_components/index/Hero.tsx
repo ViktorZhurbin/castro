@@ -14,8 +14,8 @@ export function Hero() {
 
         <hr class="hero-hr" />
 
-        <h2>A Five-Year Plan to Understand One's Own Framework</h2>
-        {/* <h2>My Five-Year Plan to Build a Framework Over a Weekend</h2> */}
+        {/* <h2>A Five-Year Plan to Understand One's Own Framework</h2> */}
+        <h2>My Five-Year Plan to Build a Framework Over a Weekend</h2>
         {/* <h2>A weekend project, three months in</h2> */}
         {/* <h2>Built with an LLM. Argued with it for three months</h2> */}
         <p class="hero-subtitle">Bun, Preact. ~1350 lines.</p>

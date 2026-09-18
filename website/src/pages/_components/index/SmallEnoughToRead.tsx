@@ -2,14 +2,14 @@ import { Section } from "./Section";
 
 export function SmallEnoughToRead() {
   return (
-    <Section title="A Framework Small Enough to Read" raised>
+    <Section title="A Framework Small Enough to Read">
       <p>
-        The core is about 1,350 lines of commented source — dev server, structured errors,
-        file-based routing, and the rest of it. Small enough to inspect, follow, and change.
+        The commented source covers the dev server, file-based routing, structured errors, the build
+        pipeline, and the hydration runtime. Each module is meant to fit in your head.
       </p>
       <p>
-        You can trace the build pipeline. You can see where rendering happens. You can see when an
-        island receives JavaScript.
+        You can trace a page from file to route to HTML. You can see exactly where an island's
+        JavaScript gets requested. When something is wrong, you can find it.
       </p>
       <a
         href="https://github.com/ViktorZhurbin/castro"

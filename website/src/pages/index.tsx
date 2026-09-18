@@ -1,8 +1,9 @@
 import { Demonstration } from "./_components/index/Demonstration";
 import { Hero } from "./_components/index/Hero";
 import { MeansOfProduction } from "./_components/index/MeansOfProduction";
-import { ProductionCycle } from "./_components/index/ProductionCycle";
+import { SelfCriticism } from "./_components/index/SelfCriticism";
 import { SmallEnoughToRead } from "./_components/index/SmallEnoughToRead";
+import { StandingDirectives } from "./_components/index/StandingDirectives";
 
 export const meta = {
   title: "Castro - The People's Framework",
@@ -17,9 +18,11 @@ export default function Home() {
 
       <MeansOfProduction />
 
-      <ProductionCycle />
+      <StandingDirectives />
 
       <Demonstration />
+
+      <SelfCriticism />
 
       <SmallEnoughToRead />
     </>
