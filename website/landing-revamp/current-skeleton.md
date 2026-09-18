@@ -1,9 +1,10 @@
 ```md
 # CASTRO
 
-### My Five-Year Plan to Build A Framework over a Weekend
+### A Five-Year Plan to Understand One's Own Framework
 
-Bun, Preact. ~1350 lines. Possibly overplanned.
+Bun, Preact. ~1350 lines.
+Delivered in three months, ahead of schedule.
 
 _"The satire is optional. The code compiles."_
 
@@ -68,7 +69,7 @@ when an island receives JavaScript.
 **[Read the Source]**
 
 ---
-**Workers of the Web, Unite.**
+**Workers of the web, unite.**
 
-_Built with Castro | The People's Framework_ * [GitHub]
+_Built with Castro | The People's Framework_ · [GitHub] · MIT · © 2026-present
 ```
