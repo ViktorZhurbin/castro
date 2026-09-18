@@ -1,7 +1,6 @@
 import type { ComponentChildren } from "preact";
 
 import "./Section.css";
-import { cx } from "@/helpers/css";
 
 /**
  * One landing-page section: the shared measure, vertical rhythm, and title.
@@ -9,12 +8,13 @@ import { cx } from "@/helpers/css";
  * the reader scrolls — sections used to carry their own container width, and
  * the text stepped in and out four times down the page.
  *
- * `raised` puts the section on the secondary surface. The page alternates it
- * so consecutive sections separate without a rule between them.
+ * Alternating background comes from `Section.css`'s `nth-of-type(even)` rule,
+ * not a prop — position on the page decides it, so it can't drift out of sync
+ * one component at a time.
  */
-export function Section(props: { title: string; raised?: boolean; children: ComponentChildren }) {
+export function Section(props: { title: string; children: ComponentChildren }) {
   return (
-    <section class={cx(props.raised ? "section section-raised" : "section")}>
+    <section class="section">
       <div class="section-body">
         <h2 class="section-title">{props.title}</h2>
         {props.children}

@@ -14,11 +14,11 @@ export function Hero() {
 
         <hr class="hero-hr" />
 
-        <h2>A Five-Year Plan to Understand One's Own Framework</h2>
-        {/* <h2>My Five-Year Plan to Build a Framework Over a Weekend</h2> */}
+        {/* <h2>A Five-Year Plan to Understand One's Own Framework</h2> */}
+        <h2>My Five-Year Plan to Build a Framework Over a Weekend</h2>
         {/* <h2>A weekend project, three months in</h2> */}
         {/* <h2>Built with an LLM. Argued with it for three months</h2> */}
-        <p class="hero-subtitle">Bun, Preact. ~1350 lines.</p>
+        <p class="hero-subtitle">A static site generator on Bun and Preact. ~1,350 lines.</p>
         <p class="hero-subtitle">Delivered in three months, ahead of schedule.</p>
         <p class="hero-quote">The satire is optional. The code compiles.</p>
         <CTAButtons />

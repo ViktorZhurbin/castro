@@ -2,7 +2,7 @@
   padding-block: var(--spacing-4xl);
 }
 
-.section-raised {
+.section:nth-of-type(even) {
   background-color: var(--code-background-color);
 }
 

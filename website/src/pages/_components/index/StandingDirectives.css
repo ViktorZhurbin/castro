@@ -35,6 +35,11 @@
   color: var(--muted-color);
 }
 
+.directives-slogan {
+  font-style: italic;
+  color: var(--muted-color);
+}
+
 .directives-aside {
   display: block;
   margin-top: var(--spacing-2xl);

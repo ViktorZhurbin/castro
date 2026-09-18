@@ -9,3 +9,5 @@ The satirical voice earns its place when it reframes a technical constraint in a
 **The design has to commit.** See `DESIGN.md`. Muddiness and SaaS-ness are the failure mode — a half-hearted constructivist poster breaks the joke rather than softening it.
 
 **`public/space-castro.jpg`** is a reference for the register, not site art. It's a reminder to consider illustration in future work; don't wire it into a page as-is.
+
+**Past landing copy.** Earlier eras of the page, the drafts, and retired slogans (`no:pasaran`, `lenin:awake`) are kept at tag `landing-drafts`, under `website/landing-revamp/` — `landing-history-context.md` is the summary.
