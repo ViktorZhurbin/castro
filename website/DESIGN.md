@@ -9,12 +9,6 @@ The Castro website is set as a broadsheet: a national Soviet newspaper with some
 - **Two themes, both maintained.** Light is the paper; dark is for night development. Check every change in both.
 - **Readable in every state.** Hover, active, and selected states keep full contrast — see the hover rule under Color System.
 
-## Design source
-
-The design was made in Claude Design, project "Castro" (`https://claude.ai/design/p/337d145f-eb74-4006-ab6e-3008d078ceb4`), file `Castro A Broadsheet.dc.html`; `Castro Broadsheet Preview.dc.html` shows it at desktop and mobile widths in both themes. The project also holds rejected directions (`Castro B Poster`, `Castro C Dossier`) — not specs.
-
-The site and the design file are kept in step by hand; nothing syncs them. When a visual change lands on the site, update the `.dc.html` to match, and copy this file over the project's `uploads/DESIGN.md`. The design file loads its fonts from Google Fonts because it can't reach the site's self-hosted files; that is the one intended difference.
-
 ## CSS Architecture
 
 The visual system lives in `src/styles/`, pulled in via `import "../styles/index.css"` in `PageShell`. It is organized as:
