@@ -86,6 +86,9 @@
   /* Papers (backgrounds) */
   --canvas-newsprint: oklch(94.7% 0.014 85);
   --canvas-soot: oklch(18.5% 0.008 67);
+  /* One press pass darker: the ground for a boxed code insert. */
+  --canvas-newsprint-shade: oklch(88.5% 0.02 85);
+  --canvas-soot-shade: oklch(26% 0.009 67);
 
   /* Pigments */
   --color-crimson: oklch(53% 0.207 22);
@@ -101,6 +104,7 @@
 [data-theme="light"],
 :root:not([data-theme="dark"]) {
   --background-color: var(--canvas-newsprint);
+  --code-background: var(--canvas-newsprint-shade);
   --color: var(--ink-black);
 
   --primary: var(--color-crimson);
@@ -117,6 +121,7 @@
 /* ─── LAYER 3: DARK THEME ─── */
 [data-theme="dark"] {
   --background-color: var(--canvas-soot);
+  --code-background: var(--canvas-soot-shade);
   --color: var(--ink-chalk);
 
   --primary: var(--color-gold);

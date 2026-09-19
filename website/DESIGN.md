@@ -41,9 +41,9 @@ Three roles per theme, nothing else:
 
 `--primary-inverse` is the text color on a `--primary` fill (the paper color). `--contrast-background` / `--contrast-inverse` are the inverted block — ink ground, paper text — used for hover states, the active half of the Day/Night toggle, and the footer.
 
-**No muted text, no tinted surfaces.** Captions and secondary labels are full ink; a section never sits on a second background color. Hierarchy comes from size, weight, and rule thickness. Grey text reads as SaaS, not as print.
+**No muted text, no tinted surfaces.** Captions and secondary labels are full ink; a section never sits on a second background color. Hierarchy comes from size, weight, and rule thickness. Grey text reads as SaaS, not as print. The one exception is `--code-background` (`--canvas-*-shade`, the same paper one step darker): the docs use it behind code blocks and inline code.
 
-Accent on text is reserved for display-size figures (section numbers, the `1,350` tally, the Five-Year Plan readout) and the footer slogan. Body text is never colored; links are ink with an accent underline.
+Accent on text is reserved for display-size figures (section numbers, the `1,350` tally, the Five-Year Plan readout, the docs page title) and the footer slogan. Body text is never colored; links are ink with an accent underline.
 
 Gold on the chalk footer fails contrast, so the footer slogan switches to crimson in dark mode (`Footer.css`). Check contrast whenever accent meets the inverted block.
 
@@ -106,7 +106,7 @@ Buttons are Oswald 500, uppercase, `--text-lg`. Hover swaps to the inverted ink 
 - **Sections** — `Section` (`website/src/pages/_components/index/Section.tsx`) owns the 8px top rule, the gutter, and the numbered title. Numbers come from a CSS counter. Add a section by rendering one; use `.section-columns` for a prose-beside-card body.
 - **Footer** — the inverted block: slogan in the accent, mono baseline under a paper rule. Docs pages render the same footer, full-width.
 
-Docs pages and `404` have no design file of their own: they take the `bare-css` element styles plus the shared header and footer. Keep them on those defaults; no landing-page treatments.
+Docs pages and `404` have no design file of their own: they take the `bare-css` element styles plus the shared header and footer. Keep them on those defaults; no landing-page treatments. The docs layout (`layouts/docs.css`) adds two things: the page `h1` in the accent, and the `--code-background` fill on `pre` and inline code.
 
 ## Adding New UI
 
