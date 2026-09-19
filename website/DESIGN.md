@@ -1,8 +1,19 @@
 # Website Design Reference
 
-The Castro website is set as a broadsheet: a national Soviet newspaper with some budget — one paper, one ink, one accent pigment, hierarchy made from type size and rule thickness. Cheap to print, so simple; not so cheap that it looks unfinished. This document describes the design system so that UI changes stay consistent with that identity.
+The Castro website is set as a broadsheet: a national Soviet newspaper with some budget — one paper, one ink, one accent pigment, hierarchy made from type size and rule thickness. Cheap to print, so simple; not so cheap that it looks unfinished. This document describes the design system so that UI changes stay consistent with that identity. What the site says, and to whom, is in `README.md`.
 
-The design came from Claude Design (project "Castro", file `Castro A Broadsheet.dc.html`).
+## Principles
+
+- **Print, not product.** Every choice should be one a newspaper press could make: ink on paper, rules, type size and weight, one spot color. Tinted panels, grey captions, soft shadows, rounded corners, gradients, and decoration read as SaaS — the failure mode `README.md` describes.
+- **Consistency over variety.** A new element takes an existing type role, rule weight, and spacing from this document. A new font, weight, size step, color, or rule weight needs a reason the existing set can't serve.
+- **Two themes, both maintained.** Light is the paper; dark is for night development. Check every change in both.
+- **Readable in every state.** Hover, active, and selected states keep full contrast — see the hover rule under Color System.
+
+## Design source
+
+The design was made in Claude Design, project "Castro" (`https://claude.ai/design/p/337d145f-eb74-4006-ab6e-3008d078ceb4`), file `Castro A Broadsheet.dc.html`; `Castro Broadsheet Preview.dc.html` shows it at desktop and mobile widths in both themes. The project also holds rejected directions (`Castro B Poster`, `Castro C Dossier`) — not specs.
+
+The site and the design file are kept in step by hand; nothing syncs them. When a visual change lands on the site, update the `.dc.html` to match, and copy this file over the project's `uploads/DESIGN.md`. The design file loads its fonts from Google Fonts because it can't reach the site's self-hosted files; that is the one intended difference.
 
 ## CSS Architecture
 
@@ -34,13 +45,15 @@ Three roles per theme, nothing else:
 
 Accent on text is reserved for display-size figures (section numbers, the `1,350` tally, the Five-Year Plan readout) and the footer slogan. Body text is never colored; links are ink with an accent underline.
 
-Gold on the chalk footer fails contrast, so the footer slogan switches to crimson in dark mode (`Footer.css`).
+Gold on the chalk footer fails contrast, so the footer slogan switches to crimson in dark mode (`Footer.css`). Check contrast whenever accent meets the inverted block.
+
+**Hover rule.** Hover swaps to the inverted block: `--contrast-background` ground, `--contrast-inverse` text. Text on an accent ground is always `--primary-inverse`, never ink.
 
 `--color-success` / `--color-error` exist only for the museum islands.
 
 ## Typography
 
-Two web fonts, two files, self-hosted in `public/fonts/` (latin subset, declared and preloaded in `PageShell`). Body text uses the system sans, so it costs no download.
+Two web fonts, two files (~31 KB), self-hosted in `public/fonts/` (latin subset, declared and preloaded in `PageShell`). Body text uses the system sans, so it costs no download. Adding a face adds a file, so it needs a reason (see Principles).
 
 - **Display** (`var(--font-display)`, Oswald, variable 500–700): headings, buttons, slogans, figures. Headings are uppercase globally with `letter-spacing: 0.01em`; `h1` is 700, other headings 600, buttons and sub-heads 500. Code inside a heading keeps its case.
 - **Body** (`var(--font-family)`, system sans): running text. The italic appears once — the hero's pull quote.
@@ -91,7 +104,9 @@ Buttons are Oswald 500, uppercase, `--text-lg`. Hover swaps to the inverted ink 
 - **Header** — mono strip: star (the only link home from the docs) and tagline left; Docs, GitHub, and the Day/Night toggle right. The tagline hides below 560px. The toggle is one button styled as two halves (`ThemeToggle.tsx` says why).
 - **Hero** — full-width `CASTRO` nameplate with the star, a 12px accent bar, then the headline beside the standfirst and CTAs.
 - **Sections** — `Section` (`website/src/pages/_components/index/Section.tsx`) owns the 8px top rule, the gutter, and the numbered title. Numbers come from a CSS counter. Add a section by rendering one; use `.section-columns` for a prose-beside-card body.
-- **Footer** — the inverted block: slogan in the accent, mono baseline under a paper rule.
+- **Footer** — the inverted block: slogan in the accent, mono baseline under a paper rule. Docs pages render the same footer, full-width.
+
+Docs pages and `404` have no design file of their own: they take the `bare-css` element styles plus the shared header and footer. Keep them on those defaults; no landing-page treatments.
 
 ## Adding New UI
 
