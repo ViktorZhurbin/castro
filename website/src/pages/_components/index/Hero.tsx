@@ -19,7 +19,6 @@ export function Hero() {
           <h2>My Five-Year Plan to Build a Framework Over a Weekend</h2>
           {/* <h2>A weekend project, three months in</h2> */}
           {/* <h2>Built with an LLM. Argued with it for three months</h2> */}
-          <p class="hero-quote">The satire is optional. The code compiles.</p>
         </div>
 
         <div class="hero-aside">
