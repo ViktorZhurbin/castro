@@ -55,4 +55,5 @@
 .navbar-end a[aria-current="page"] {
   text-decoration: underline;
   text-decoration-color: var(--primary);
+  text-decoration-thickness: 3px;
 }
