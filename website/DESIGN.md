@@ -6,14 +6,14 @@ The Castro website is set as a broadsheet: a national Soviet newspaper with some
 
 - **Print, not product.** Every choice should be one a newspaper press could make: ink on paper, rules, type size and weight, one spot color. Tinted panels, grey captions, soft shadows, rounded corners, gradients, and decoration read as SaaS — the failure mode `README.md` describes.
 - **Consistency over variety.** A new element takes an existing type role, rule weight, and spacing from this document. A new font, weight, size step, color, or rule weight needs a reason the existing set can't serve.
-- **Two themes, both maintained.** Light is the paper; dark is for night development. Check every change in both.
+- **One theme.** A newspaper is ink on paper, so there is no dark mode. The last version with one is the git tag `dark-mode`.
 - **Readable in every state.** Hover, active, and selected states keep full contrast — see the hover rule under Color System.
 
 ## CSS Architecture
 
 The visual system lives in `src/styles/`, pulled in via `import "../styles/index.css"` in `PageShell`. It is organized as:
 
-- **`tokens.css`** — the source of truth. The three font families, the raw materials (`--ink-*`, `--canvas-*`, `--color-*`), the fixed and fluid spacing/type scales, the border scale, the page geometry (`--header-height`, `--gutter`, `--measure`, `--column-min`), the breakpoint list, and the theme role variables (`--primary`, `--background-color`, etc.) mapped separately for light and dark.
+- **`tokens.css`** — the source of truth. The three font families, the raw materials (`--ink-*`, `--canvas-*`, `--color-*`), the fixed and fluid spacing/type scales, the border scale, the page geometry (`--header-height`, `--gutter`, `--measure`, `--column-min`), the breakpoint list, and the role variables (`--primary`, `--background-color`, etc.) mapped onto those materials.
 - **`reset.css`** — box model, root text defaults, focus outline, `hr`.
 - **`typography.css`** — bare headings/prose/lists/links/code, including the heading sizes and `md` breakpoint bump, plus the `.label` class.
 - **`elements.css`** — pre-styled `button` (bare = the ink-bordered slab; `.primary` fills it), `.btn-square` icon buttons, `.divider`, tables.
@@ -36,21 +36,19 @@ A component file names values through tokens. The raw values it may write:
 
 ## Color System
 
-Three roles per theme, nothing else:
+Three roles, nothing else:
 
-| Variable             | Light     | Dark  | Use on                                      |
-| -------------------- | --------- | ----- | ------------------------------------------- |
-| `--background-color` | Newsprint | Soot  | Page surface                                |
-| `--color`            | Ink black | Chalk | All text, all rules                         |
-| `--primary`          | Crimson   | Gold  | Accent bar, star, section numbers, CTA fill |
+| Variable             | Value     | Use on                                      |
+| -------------------- | --------- | ------------------------------------------- |
+| `--background-color` | Newsprint | Page surface                                |
+| `--color`            | Ink black | All text, all rules                         |
+| `--primary`          | Crimson   | Accent bar, star, section numbers, CTA fill |
 
-`--primary-inverse` is the text color on a `--primary` fill (the paper color). `--contrast-background` / `--contrast-inverse` are the inverted block — ink ground, paper text — used for hover states, the active half of the Day/Night toggle, and the footer.
+`--primary-inverse` is the text color on a `--primary` fill (the paper color). `--contrast-background` / `--contrast-inverse` are the inverted block — ink ground, paper text — used for hover states and the footer.
 
-**No muted text, no tinted surfaces.** Captions and secondary labels are full ink; a section never sits on a second background color. Hierarchy comes from size, weight, and rule thickness. Grey text reads as SaaS, not as print. The one exception is `--code-background` (`--canvas-*-shade`, the same paper one step darker): the docs use it behind code blocks and inline code.
+**No muted text, no tinted surfaces.** Captions and secondary labels are full ink; a section never sits on a second background color. Hierarchy comes from size, weight, and rule thickness. Grey text reads as SaaS, not as print. The one exception is `--code-background` (`--canvas-newsprint-shade`, the same paper one step darker): the docs use it behind code blocks and inline code.
 
 Accent on text is reserved for display-size figures (section numbers, the `1,350` tally, the Five-Year Plan readout, the docs page title) and the footer slogan. Body text is never colored; links are ink with an accent underline.
-
-Gold on the chalk footer fails contrast, so the footer slogan switches to crimson in dark mode (`Footer.css`). Check contrast whenever accent meets the inverted block.
 
 **Hover rule.** Hover swaps to the inverted block: `--contrast-background` ground, `--contrast-inverse` text. Text on an accent ground is always `--primary-inverse`, never ink.
 
@@ -77,7 +75,7 @@ All rules are ink. Weight carries the hierarchy:
 | Variable             | Value      | Typical use                                                      |
 | -------------------- | ---------- | ---------------------------------------------------------------- |
 | `--border-1`         | 1px ink    | Hairlines: between list rows, under a card caption, column rules |
-| `--border-2`         | 2px ink    | Small controls (theme toggle), `hr`                              |
+| `--border-2`         | 2px ink    | Small controls, `hr`, docs rules                                 |
 | `--border-3`         | 3px ink    | Cards, buttons, the header underline, section title rules        |
 | `--border-4`         | 4px ink    | Docs sidebar edge                                                |
 | `--border-8`         | 8px ink    | Top of every landing section                                     |
@@ -108,7 +106,7 @@ Buttons are Oswald 500, uppercase, `--text-lg`. Hover swaps to the inverted ink 
 
 ## Landing Page Structure
 
-- **Header** — mono strip: star (the only link home from the docs) and tagline left; Docs, GitHub, and the Day/Night toggle right. The tagline hides below 560px. The toggle is one button styled as two halves (`ThemeToggle.tsx` says why).
+- **Header** — mono strip: star (the only link home from the docs) and tagline left; Docs and GitHub right. The tagline hides below 576px; at high text zoom the links wrap to a second line.
 - **Hero** — full-width `CASTRO` nameplate with the star, a 12px accent bar, then the headline beside the standfirst and CTAs.
 - **Sections** — `Section` (`website/src/pages/_components/index/Section.tsx`) owns the 8px top rule, the gutter, and the numbered title. Numbers come from a CSS counter. Add a section by rendering one; use `.section-columns` for a prose-beside-card body.
 - **Footer** — the inverted block: slogan in the accent, mono baseline under a paper rule. Docs pages render the same footer, full-width.

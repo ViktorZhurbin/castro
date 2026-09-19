@@ -14,12 +14,6 @@
   line-height: 1.05;
   text-transform: uppercase;
   color: var(--primary);
-
-  /* The block is chalk in dark mode, and gold on chalk is unreadable
-     (~1.4:1). Crimson is the accent that holds up on a light ground. */
-  [data-theme="dark"] & {
-    color: var(--color-crimson);
-  }
 }
 
 .footer-baseline {

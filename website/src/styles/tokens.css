@@ -5,11 +5,10 @@
  *   1. Global settings + structural defaults (geometry, spacing, type scale).
  *   2. "Literal" materials (--ink-*, --canvas-*, --color-*) — what colors *are*,
  *      authored in OKLCH so ramps stay perceptually even.
- *   3. Semantic roles (--primary, --background-color, --contrast, …) mapped per
- *      theme in the light/dark blocks below.
+ *   3. Semantic roles (--primary, --background-color, --contrast, …) mapped
+ *      onto those materials.
  *
- * The palette is a broadsheet's: one paper, one ink, one accent pigment per
- * theme. There is no muted text and no tinted surface — hierarchy comes from
+ * The palette is a broadsheet's: one paper, one ink, one accent pigment. There is no muted text and no tinted surface — hierarchy comes from
  * type size, weight, and rule thickness, the tools a newspaper press has.
  *
  * Tokens are unprefixed: material and scale names carry their group (--color-*,
@@ -103,31 +102,23 @@
 
   /* ─── LAYER 1: "LITERAL" MATERIALS ─── */
 
-  /* Inks (text & rules). The raw triple is exposed for alpha scrims. */
-  --ink-black-raw: 18.9% 0.009 75;
-  --ink-black: oklch(var(--ink-black-raw));
-  --ink-chalk: oklch(92.4% 0.019 83); /* Dark-mode ink */
+  /* Ink (text & rules) */
+  --ink-black: oklch(18.9% 0.009 75);
 
-  /* Papers (backgrounds) */
+  /* Paper (backgrounds) */
   --canvas-newsprint: oklch(94.7% 0.014 85);
-  --canvas-soot: oklch(18.5% 0.008 67);
   /* One press pass darker: the ground for a boxed code insert. */
   --canvas-newsprint-shade: oklch(88.5% 0.02 85);
-  --canvas-soot-shade: oklch(26% 0.009 67);
 
-  /* Pigments */
+  /* Pigment */
   --color-crimson: oklch(53% 0.207 22);
-  --color-gold: oklch(79.5% 0.145 84);
 
-  /* Status greens & reds — only the museum islands use these. */
+  /* Status green — only the museum islands use it. */
   --color-pine: oklch(48% 0.12 150);
-  --color-sage: oklch(70% 0.15 150);
-  --color-brick: oklch(65% 0.2 28);
 }
 
-/* ─── LAYER 2: LIGHT THEME ─── */
-[data-theme="light"],
-:root:not([data-theme="dark"]) {
+/* ─── LAYER 2: SEMANTIC ROLES ─── */
+:root {
   --background-color: var(--canvas-newsprint);
   --code-background: var(--canvas-newsprint-shade);
   --color: var(--ink-black);
@@ -141,21 +132,4 @@
 
   --color-success: var(--color-pine);
   --color-error: var(--color-crimson);
-}
-
-/* ─── LAYER 3: DARK THEME ─── */
-[data-theme="dark"] {
-  --background-color: var(--canvas-soot);
-  --code-background: var(--canvas-soot-shade);
-  --color: var(--ink-chalk);
-
-  --primary: var(--color-gold);
-  --primary-inverse: var(--canvas-soot);
-
-  --contrast: var(--ink-chalk);
-  --contrast-background: var(--ink-chalk);
-  --contrast-inverse: var(--canvas-soot);
-
-  --color-success: var(--color-sage);
-  --color-error: var(--color-brick);
 }

@@ -1,6 +1,5 @@
-/* Masthead strip: star (home) and tagline left, links and edition toggle
-   right. All of it set as a .label — the header is the paper's dateline,
-   not a headline. */
+/* Masthead strip: star (home) and tagline left, links right. All of it set
+   as a .label — the header is the paper's dateline, not a headline. */
 
 .navbar {
   min-height: var(--header-height);

@@ -1,7 +1,6 @@
 import { navSections } from "@/nav";
 
 import { StarIcon } from "./icons/StarIcon";
-import { ThemeToggle } from "./theme/ThemeToggle";
 
 import "./Header.css";
 
@@ -32,7 +31,6 @@ export function Header({ activePath }: HeaderProps) {
       <div class="navbar-end">
         {navLinks}
         <a href="https://github.com/ViktorZhurbin/castro">GitHub</a>
-        <ThemeToggle />
       </div>
     </header>
   );

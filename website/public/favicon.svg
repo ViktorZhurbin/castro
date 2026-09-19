@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <style>
     path {
-      fill: #c51a38; /* --color-crimson, matches light-theme --primary */
+      fill: #c51a38; /* --color-crimson, the site's --primary */
     }
     @media (prefers-color-scheme: dark) {
       path {
-        fill: #f6af00; /* --color-gold, matches dark-theme --primary */
+        fill: #f6af00; /* gold: crimson is too dark on a dark browser tab bar */
       }
     }
   </style>

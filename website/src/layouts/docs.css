@@ -84,9 +84,7 @@
   display: none;
   position: fixed;
   inset: 0;
-  /* A scrim must stay dark in both themes — --contrast flips to chalk in dark
-     mode, so this reaches for the raw ink triple with alpha instead. */
-  background-color: oklch(var(--ink-black-raw) / 60%);
+  background-color: color-mix(in oklch, var(--color) 60%, transparent);
   z-index: 55;
   cursor: default;
 
