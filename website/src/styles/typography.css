@@ -4,7 +4,8 @@
  * Headings wear the uppercase display face and bump one step at the md
  * breakpoint.
  * Everything here is class-free — the point of the system is that raw markup
- * already reads as designed.
+ * already reads as designed — except `.label`, a type role no bare element
+ * carries.
  */
 
 b,
@@ -101,42 +102,42 @@ h6 {
 
 h1 {
   --font-weight: 700;
-  --font-size: 3rem;
-  --typography-spacing-top: 3rem;
+  --font-size: var(--text-5xl);
+  --typography-spacing-top: var(--spacing-3xl);
 
   a {
     text-underline-offset: 6px;
   }
 }
 h2 {
-  --font-size: 1.875rem;
-  --typography-spacing-top: 2.625rem;
+  --font-size: var(--text-3xl);
+  --typography-spacing-top: var(--spacing-2-5xl);
 }
 h3 {
-  --font-size: 1.5rem;
-  --typography-spacing-top: 2.25rem;
+  --font-size: var(--text-2xl);
+  --typography-spacing-top: var(--spacing-2xl);
 }
 h4 {
-  --font-size: 1.25rem;
-  --typography-spacing-top: 1.874rem;
+  --font-size: var(--text-xl);
+  --typography-spacing-top: var(--spacing-2xl);
 }
 h5 {
-  --font-size: 1.125rem;
-  --typography-spacing-top: 1.6875rem;
+  --font-size: var(--text-lg);
+  --typography-spacing-top: var(--spacing-xl);
 }
 h6 {
-  --font-size: 1rem;
+  --font-size: var(--text-base);
 }
 
 @media (min-width: 768px) {
   h1 {
-    --font-size: 4.25rem;
+    --font-size: var(--text-6xl);
   }
   h2 {
-    --font-size: 3rem;
+    --font-size: var(--text-5xl);
   }
   h3 {
-    --font-size: 2.25rem;
+    --font-size: var(--text-4xl);
   }
 }
 
@@ -188,4 +189,14 @@ pre {
     font-size: inherit;
     font-family: var(--font-family-monospace);
   }
+}
+
+/* The mono label: the header strip, footer baseline, card captions, badges.
+   Wide tracking belongs to this role only; buttons stay at 0.04em. */
+.label {
+  font-family: var(--font-family-monospace);
+  font-size: var(--text-sm);
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }

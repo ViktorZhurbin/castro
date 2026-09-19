@@ -22,16 +22,10 @@
   --font-display: "Oswald", sans-serif;
   --font-family-monospace: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
-  --border-radius: 0rem;
-
   --font-weight: 400;
-  --transition: 0s;
 
   /* Fixed root font size — no responsive type scaling. */
   --font-size: 100%;
-
-  /* Depth comes from border weight, never shadow. */
-  --box-shadow: none;
 
   --outline-width: 3px;
 
@@ -43,7 +37,6 @@
   --text-underline-offset: 0.1rem;
 
   /* Spacing scale — multiples of the base spacing unit. */
-  --spacing-4xs: calc(var(--spacing) * 0.1);
   --spacing-3xs: calc(var(--spacing) * 0.125);
   --spacing-2xs: calc(var(--spacing) * 0.25);
   --spacing-xs: calc(var(--spacing) * 0.5);
@@ -53,19 +46,51 @@
   --spacing-2xl: calc(var(--spacing) * 2);
   --spacing-2-5xl: calc(var(--spacing) * 2.5);
   --spacing-3xl: calc(var(--spacing) * 3);
-  --spacing-4xl: calc(var(--spacing) * 4);
   --spacing-5xl: calc(var(--spacing) * 5);
-  --spacing-6xl: calc(var(--spacing) * 6);
+
+  /* Fluid spacing — grows with the viewport between a phone and a wide
+     desktop. The landing page, header, and footer use these; the docs stay
+     on the fixed scale above. */
+  --spacing-fluid-xs: clamp(0.875rem, 1.8vw, 1.5rem);
+  --spacing-fluid-sm: clamp(1rem, 2vw, 2rem);
+  --spacing-fluid-md: clamp(1.125rem, 2.2vw, 1.625rem);
+  --spacing-fluid-lg: clamp(1.25rem, 2.6vw, 2rem);
+  --spacing-fluid-xl: clamp(1.5rem, 3vw, 3rem);
+  --spacing-fluid-2xl: clamp(1.75rem, 3.4vw, 3.25rem);
 
   /* Type scale. 15px is the floor: small print on a broadsheet is still
-     meant to be read, so nothing in the scale goes below it. */
+     meant to be read, so nothing in the scale goes below it. The steps
+     from 2xl up are heading sizes (typography.css). */
   --text-sm: 0.9375rem;
   --text-base: 1rem;
   --text-lg: 1.125rem;
   --text-xl: 1.25rem;
   --text-2xl: 1.5rem;
-  --text-3xl: 2.25rem;
-  --text-4xl: 3.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  --text-6xl: 4.25rem;
+
+  /* Fluid type — the landing page's prose and display sizes. */
+  --text-fluid-base: clamp(1rem, 1.5vw, 1.125rem);
+  --text-fluid-lg: clamp(1.25rem, 2vw, 1.625rem);
+  --text-fluid-xl: clamp(1.625rem, 3.4vw, 2.75rem);
+  --text-fluid-2xl: clamp(1.875rem, 5.2vw, 3.875rem);
+  --text-fluid-3xl: clamp(3.5rem, 9vw, 6.75rem);
+
+  /* ─── PAGE GEOMETRY ─── */
+  --header-height: 3rem;
+  /* Side margin for the header, footer, landing sections, and .container,
+     so every left edge on the page lines up at every width. */
+  --gutter: clamp(1.25rem, 3vw, 2.75rem);
+  /* Width of the docs text column and other .container content. */
+  --measure: 40rem;
+  /* Smallest width a landing column shrinks to before the row wraps. */
+  --column-min: min(18rem, 100%);
+
+  /* Breakpoints can't be custom properties (media queries don't read them),
+     so this is the list, written out in each @media rule:
+     sm 576px · md 768px · lg 1024px. */
 
   /* Border system — visual weight is carried by rule thickness. All rules
      are ink; the accent appears on rules only via the --border-primary-*. */

@@ -3,14 +3,14 @@
 .footer {
   background-color: var(--contrast-background);
   color: var(--contrast-inverse);
-  padding: clamp(1.75rem, 3.4vw, 3.25rem) var(--gutter);
+  padding: var(--spacing-fluid-2xl) var(--gutter);
 }
 
 .footer-slogan p {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(1.5rem, 3.6vw, 2.875rem);
+  font-size: var(--text-fluid-xl);
   line-height: 1.05;
   text-transform: uppercase;
   color: var(--primary);
@@ -27,13 +27,9 @@
   flex-wrap: wrap;
   justify-content: space-between;
   gap: var(--spacing-sm);
-  margin-top: clamp(1.25rem, 2.6vw, 1.875rem);
+  margin-top: var(--spacing-fluid-lg);
   padding-top: var(--spacing-sm);
   border-top: 3px solid var(--contrast-inverse);
-  font-family: var(--font-family-monospace);
-  font-size: var(--text-sm);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
 
   a {
     color: inherit;

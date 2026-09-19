@@ -19,7 +19,7 @@ export function SmallEnoughToRead() {
 
         <div class="small-tally">
           <div class="small-tally-figure">1,350</div>
-          <div class="small-tally-label">Lines, total output</div>
+          <div class="small-tally-label label">Lines, total output</div>
           <a
             href="https://github.com/ViktorZhurbin/castro"
             target="_blank"

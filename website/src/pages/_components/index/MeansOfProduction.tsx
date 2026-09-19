@@ -14,7 +14,7 @@ export function MeansOfProduction() {
         </div>
 
         <figure class="production-code">
-          <figcaption>pages/index.tsx</figcaption>
+          <figcaption class="label">pages/index.tsx</figcaption>
           <pre>
             <code>
               {"import Counter from "}

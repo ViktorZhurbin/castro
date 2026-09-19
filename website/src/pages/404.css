@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-5xl) var(--spacing-xl);
+  padding-block: var(--spacing-5xl);
 }
 
 .not-found-content {

@@ -21,7 +21,7 @@ export function Header({ activePath }: HeaderProps) {
   });
 
   return (
-    <header class="navbar">
+    <header class="navbar label">
       <div class="navbar-start">
         <a href="/" class="navbar-home" aria-label="Home">
           <StarIcon />

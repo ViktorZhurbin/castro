@@ -2,15 +2,17 @@
    then the headline beside the standfirst and the two calls to action. */
 
 .hero {
-  padding: clamp(1.25rem, 3vw, 2.5rem) var(--gutter) clamp(1.75rem, 4vw, 3.25rem);
-  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  padding: var(--spacing-fluid-lg) var(--gutter) var(--spacing-fluid-2xl);
+  font-size: var(--text-fluid-base);
 }
 
 .hero-masthead {
   display: flex;
   align-items: flex-end;
-  gap: clamp(1rem, 2vw, 2rem);
+  gap: var(--spacing-fluid-sm);
 
+  /* The nameplate and the star beside it are the page's one-off geometry:
+     sized to the viewport directly, not to a token. */
   h1 {
     margin: 0;
     font-size: clamp(4rem, 25vw, 18.75rem);
@@ -29,25 +31,25 @@
 
 .hero-bar {
   height: 0.75rem;
-  margin: clamp(0.875rem, 2vw, 1.5rem) 0 clamp(1.25rem, 2.6vw, 2rem);
+  margin: var(--spacing-fluid-xs) 0 var(--spacing-fluid-lg);
   background-color: var(--primary);
 }
 
 .hero-columns {
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(1.5rem, 3vw, 3rem);
+  gap: var(--spacing-fluid-xl);
 }
 
 .hero-lead {
-  flex: 1 1 22.5rem;
-  min-width: min(18.75rem, 100%);
+  flex: 1 1 22rem;
+  min-width: var(--column-min);
 
   h2 {
     max-width: 20ch;
     margin: 0;
     font-weight: 500;
-    font-size: clamp(1.875rem, 5.2vw, 3.875rem);
+    font-size: var(--text-fluid-2xl);
     line-height: 1.02;
     letter-spacing: 0;
   }
@@ -55,11 +57,7 @@
 
 .hero-aside {
   flex: 0 1 20rem;
-  min-width: min(16.875rem, 100%);
+  min-width: var(--column-min);
   padding-top: var(--spacing);
   border-top: var(--border-3);
-
-  p {
-    margin-bottom: 0.875rem;
-  }
 }

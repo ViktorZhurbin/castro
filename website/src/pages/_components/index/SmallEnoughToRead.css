@@ -6,27 +6,23 @@
 /* A production tally, the way a bulletin reports output. */
 .small-tally {
   flex: 0 1 20rem;
-  min-width: min(16.875rem, 100%);
+  min-width: var(--column-min);
 
   a {
-    margin-top: 1.25rem;
+    margin-top: var(--spacing-lg);
   }
 }
 
 .small-tally-figure {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(3.5rem, 9vw, 6.75rem);
+  font-size: var(--text-fluid-3xl);
   line-height: 0.85;
   color: var(--primary);
 }
 
 .small-tally-label {
-  margin-top: 0.625rem;
-  padding-top: 0.625rem;
+  margin-top: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
   border-top: var(--border-3);
-  font-family: var(--font-family-monospace);
-  font-size: var(--text-sm);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
 }

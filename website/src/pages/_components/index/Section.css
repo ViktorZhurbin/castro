@@ -5,26 +5,22 @@ main {
 .section {
   counter-increment: section;
   border-top: var(--border-8);
-  padding: clamp(1.75rem, 3.4vw, 3.25rem) var(--gutter);
-  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  padding: var(--spacing-fluid-2xl) var(--gutter);
+  font-size: var(--text-fluid-base);
 
   p:last-child {
     margin-bottom: 0;
   }
 }
 
-.section:last-of-type {
-  padding-bottom: clamp(2rem, 4vw, 3.75rem);
-}
-
 .section-title {
   display: flex;
   align-items: baseline;
-  gap: clamp(0.875rem, 1.8vw, 1.5rem);
-  margin: 0 0 clamp(1.25rem, 2.6vw, 2rem);
-  padding-bottom: 0.625rem;
+  gap: var(--spacing-fluid-xs);
+  margin: 0 0 var(--spacing-fluid-lg);
+  padding-bottom: var(--spacing-sm);
   border-bottom: var(--border-3);
-  --font-size: clamp(1.625rem, 3.4vw, 2.75rem);
+  --font-size: var(--text-fluid-xl);
   line-height: 1;
 
   &::before {
@@ -39,5 +35,5 @@ main {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  gap: clamp(1.5rem, 3vw, 2.75rem);
+  gap: var(--spacing-fluid-xl);
 }

@@ -64,7 +64,7 @@ export default function FiveYearPlan(props: { className?: string }) {
       {/* Header */}
       <div class="five-year-plan-header">
         <h4>FIVE-YEAR PLAN</h4>
-        <h4>CYCLE #{cycle}</h4>
+        <h4 class="label">CYCLE #{cycle}</h4>
       </div>
 
       {/* Content */}
@@ -75,7 +75,7 @@ export default function FiveYearPlan(props: { className?: string }) {
         </div>
 
         <div class="five-year-plan-badge-row">
-          <div class={`badge ${badgeStyle}`}>{badgeText}</div>
+          <div class={`badge label ${badgeStyle}`}>{badgeText}</div>
         </div>
 
         <progress value={progress} max="100" />

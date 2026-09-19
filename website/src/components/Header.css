@@ -1,6 +1,6 @@
 /* Masthead strip: star (home) and tagline left, links and edition toggle
-   right. All of it set in the mono label face — the header is the paper's
-   dateline, not a headline. */
+   right. All of it set as a .label — the header is the paper's dateline,
+   not a headline. */
 
 .navbar {
   min-height: var(--header-height);
@@ -14,10 +14,6 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-xl);
-  font-family: var(--font-family-monospace);
-  font-size: var(--text-sm);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
 
   a {
     text-decoration: none;
@@ -28,14 +24,14 @@
 .navbar-end {
   display: flex;
   align-items: center;
-  gap: clamp(var(--spacing), 2vw, var(--spacing-xl));
+  gap: var(--spacing-fluid-xs);
 }
 
 /* The star is the only way back to the landing page from the docs. */
 .navbar-home {
   display: block;
-  width: 1.375rem;
-  height: 1.375rem;
+  width: 1.5rem;
+  height: 1.5rem;
   color: var(--primary);
 
   &:hover {
@@ -51,7 +47,7 @@
 }
 
 .navbar-tagline {
-  @media (max-width: 560px) {
+  @media (max-width: 575px) {
     display: none;
   }
 }

@@ -5,7 +5,7 @@
 }
 
 .demonstration-card {
-  flex: 1 1 23.75rem;
-  min-width: min(18.75rem, 100%);
-  max-width: 32.5rem;
+  flex: 1 1 24rem;
+  min-width: var(--column-min);
+  max-width: 32rem;
 }

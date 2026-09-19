@@ -7,7 +7,7 @@ export function Footer() {
         <p>Workers of the Web, Unite.</p>
         <p>Seize the Means of Rendering.</p>
       </div>
-      <div class="footer-baseline">
+      <div class="footer-baseline label">
         <span>Built with Castro | The People's Framework</span>
         <span>
           <a href="https://github.com/ViktorZhurbin/castro" target="_blank" rel="noopener">

@@ -1,16 +1,12 @@
 /* Page shell — full-height viewport layout */
 
 html {
-  --header-height: 3rem;
-  /* Side margin shared by the header, footer, and landing sections, so
-     every edge on the page lines up at every width. */
-  --gutter: clamp(1.25rem, 3vw, 2.75rem);
-
   height: 100%;
-  scroll-padding-top: calc(var(--header-height) + 3rem);
+  /* Clears the sticky header, plus the docs' sticky mobile bar below lg. */
+  scroll-padding-top: calc(var(--header-height) + var(--spacing-3xl));
 
   @media (min-width: 1024px) {
-    scroll-padding-top: calc(var(--header-height) + 1rem);
+    scroll-padding-top: calc(var(--header-height) + var(--spacing));
   }
 }
 

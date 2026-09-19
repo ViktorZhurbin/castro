@@ -4,7 +4,7 @@
 }
 
 .production-claim {
-  padding-top: 0.875rem;
+  padding-top: var(--spacing);
   border-top: var(--border-1);
   font-weight: 600;
 }
@@ -12,18 +12,14 @@
 /* The filename sits in the card's own header strip instead of a comment
    line inside the code. */
 .production-code {
-  flex: 2 1 23.75rem;
-  min-width: min(18.75rem, 100%);
+  flex: 2 1 24rem;
+  min-width: var(--column-min);
   margin: 0;
   border: var(--border-3);
 
   figcaption {
-    padding: 0.5625rem var(--spacing);
+    padding: var(--spacing-xs) var(--spacing);
     border-bottom: var(--border-1);
-    font-family: var(--font-family-monospace);
-    font-size: var(--text-sm);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
   }
 
   pre {

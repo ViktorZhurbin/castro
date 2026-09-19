@@ -34,7 +34,7 @@ export function StandingDirectives() {
           <div key={name}>
             <dt>
               <code>{name}</code>
-              {isDefault && <span class="directives-default">DEFAULT</span>}
+              {isDefault && <span class="directives-default label">DEFAULT</span>}
             </dt>
             <dd class="directives-slogan">{slogan}</dd>
             <dd class="directives-behaviour">{behaviour}</dd>

@@ -5,16 +5,16 @@
 /* One row per directive: name and slogan on the left, the plain behaviour on
    the right, hairlines between rows and a heavy rule closing the list. */
 .directives {
-  margin: clamp(1.25rem, 2.4vw, 1.75rem) 0 0;
+  margin: var(--spacing-fluid-md) 0 0;
   border-bottom: var(--border-3);
 
   > div {
     display: grid;
-    gap: var(--spacing-sm) clamp(1rem, 2vw, 2.25rem);
-    padding: clamp(1.125rem, 2.2vw, 1.625rem) 0;
+    gap: var(--spacing-sm) var(--spacing-fluid-sm);
+    padding: var(--spacing-fluid-md) 0;
     border-top: var(--border-1);
 
-    @media (min-width: 640px) {
+    @media (min-width: 768px) {
       grid-template-columns: 1fr 1fr;
     }
   }
@@ -23,7 +23,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.625rem;
+    gap: var(--spacing-sm);
   }
 
   dd {
@@ -32,19 +32,16 @@
 }
 
 .directives-default {
-  padding: var(--spacing-2xs) 0.5625rem;
+  padding: var(--spacing-2xs) var(--spacing-xs);
   background-color: var(--primary);
   color: var(--primary-inverse);
-  font-family: var(--font-family-monospace);
-  font-size: var(--text-sm);
-  letter-spacing: 0.14em;
   line-height: 1.2;
 }
 
 .directives-slogan {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(1.25rem, 2vw, 1.625rem);
+  font-size: var(--text-fluid-lg);
   line-height: 1.15;
   letter-spacing: 0.01em;
   text-transform: uppercase;
@@ -52,7 +49,7 @@
 
 /* Second column, spanning both left-hand rows. */
 .directives-behaviour {
-  @media (min-width: 640px) {
+  @media (min-width: 768px) {
     grid-column: 2;
     grid-row: 1 / span 2;
     align-self: center;
@@ -62,5 +59,5 @@
 .directives-aside {
   display: block;
   max-width: 62ch;
-  margin-top: clamp(1.125rem, 2.2vw, 1.5rem);
+  margin-top: var(--spacing-fluid-md);
 }

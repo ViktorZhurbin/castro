@@ -14,7 +14,7 @@ button,
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.8125rem 1.125rem;
+  padding: var(--spacing-sm) var(--spacing-lg);
   border: var(--border-3);
   background-color: transparent;
   color: var(--contrast);
