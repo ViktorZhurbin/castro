@@ -32,23 +32,23 @@ A component file names values through tokens. The raw values it may write:
 - `px` for media-query widths, which can't read custom properties — only the breakpoints listed below.
 - Whole or half `rem` for the size of one element: an icon, the sidebar width, a column's `flex-basis`.
 
-`clamp()` and `vw` live in `tokens.css`. The hero nameplate and its star are the one exception, sized to the viewport in `Hero.css`. A value that two files need is a token; a spacing or font size that falls between two steps takes the nearer step.
+`clamp()` and `vw` live in `tokens.css`. Two exceptions are sized to the viewport directly: the hero nameplate and its star (`Hero.css`), and the footer's accent bar (`Footer.css`). A value that two files need is a token; a spacing or font size that falls between two steps takes the nearer step.
 
 ## Color System
 
 Three roles, nothing else:
 
-| Variable             | Value     | Use on                                      |
-| -------------------- | --------- | ------------------------------------------- |
-| `--background-color` | Newsprint | Page surface                                |
-| `--color`            | Ink black | All text, all rules                         |
-| `--primary`          | Crimson   | Accent bar, star, section numbers, CTA fill |
+| Variable             | Value     | Use on                                       |
+| -------------------- | --------- | -------------------------------------------- |
+| `--background-color` | Newsprint | Page surface                                 |
+| `--color`            | Ink black | All text, all rules                          |
+| `--primary`          | Crimson   | Accent bars, star, section numbers, CTA fill |
 
 `--primary-inverse` is the text color on a `--primary` fill (the paper color). `--contrast-background` / `--contrast-inverse` are the inverted block — ink ground, paper text — used for hover states and the footer.
 
 **No muted text, no tinted surfaces.** Captions and secondary labels are full ink; a section never sits on a second background color. Hierarchy comes from size, weight, and rule thickness. Grey text reads as SaaS, not as print. The one exception is `--code-background` (`--canvas-newsprint-shade`, the same paper one step darker): the docs use it behind code blocks and inline code.
 
-Accent on text is reserved for display-size figures (section numbers, the `1,350` tally, the Five-Year Plan readout, the docs page title) and the footer slogan. Body text is never colored; links are ink with an accent underline.
+Accent on text is reserved for display-size figures (section numbers, the `1,350` tally, the Five-Year Plan readout, the docs page title). Body text is never colored; links are ink with an accent underline.
 
 **Hover rule.** Hover swaps to the inverted block: `--contrast-background` ground, `--contrast-inverse` text. Text on an accent ground is always `--primary-inverse`, never ink.
 
@@ -109,7 +109,7 @@ Buttons are Oswald 500, uppercase, `--text-lg`. Hover swaps to the inverted ink 
 - **Header** — mono strip: star (the only link home from the docs) and tagline left; Docs and GitHub right. The tagline hides below 576px; at high text zoom the links wrap to a second line.
 - **Hero** — full-width `CASTRO` nameplate with the star, a 12px accent bar, then the headline beside the standfirst and CTAs.
 - **Sections** — `Section` (`website/src/pages/_components/index/Section.tsx`) owns the 8px top rule, the gutter, and the numbered title. Numbers come from a CSS counter. Add a section by rendering one; use `.section-columns` for a prose-beside-card body.
-- **Footer** — the inverted block: slogan in the accent, mono baseline under a paper rule. Docs pages render the same footer, full-width.
+- **Footer** — the inverted block: a short 6px accent bar, the slogan in paper, mono baseline under a paper rule. Docs pages render the same footer, full-width.
 
 Docs pages and `404` have no design file of their own: they take the `src/styles/` element styles plus the shared header and footer. Keep them on those defaults; no landing-page treatments. The docs layout (`layouts/docs.css`) adds two things: the page `h1` in the accent, and the `--code-background` fill on `pre` and inline code. Its content column is `.container`.
 

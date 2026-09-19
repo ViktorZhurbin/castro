@@ -3,6 +3,7 @@ import "./Footer.css";
 export function Footer() {
   return (
     <footer class="footer">
+      <div class="footer-bar" />
       <div class="footer-slogan">
         <p>Workers of the Web, Unite.</p>
         <p>Seize the Means of Rendering.</p>

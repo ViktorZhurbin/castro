@@ -1,9 +1,19 @@
-/* The page's one inverted block: ink ground, paper text, accent slogan. */
+/* The page's one inverted block: ink ground, paper text. The accent sits on a
+   short bar above the slogan, not on the type. */
 
 .footer {
   background-color: var(--contrast-background);
   color: var(--contrast-inverse);
   padding: var(--spacing-fluid-2xl) var(--gutter);
+}
+
+/* Sized to the viewport like the hero nameplate: a short rule that grows
+   with the page, never the full width the hero bar takes. */
+.footer-bar {
+  width: clamp(7.5rem, 18vw, 16.25rem);
+  height: 0.375rem;
+  margin-bottom: var(--spacing-fluid-md);
+  background-color: var(--primary);
 }
 
 .footer-slogan p {
@@ -13,7 +23,7 @@
   font-size: var(--text-fluid-xl);
   line-height: 1.05;
   text-transform: uppercase;
-  color: var(--primary);
+  color: var(--contrast-inverse);
 }
 
 .footer-baseline {
