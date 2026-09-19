@@ -1,10 +1,11 @@
 import "../styles/index.css";
 import type { ComponentChildren } from "preact";
 
+import { ClientScript } from "./ClientScript";
 import { Header } from "./Header";
-import { ThemeScript } from "./theme/ThemeScript";
 
 import "./PageShell.css";
+import { initTheme } from "./theme/theme";
 
 /**
  * Self-hosted latin subsets, downloaded from Google Fonts. Oswald is a
@@ -45,7 +46,7 @@ export function PageShell({ title, description, activePath, children }: PageShel
         {description && <meta property="og:description" content={description} />}
         <meta property="og:type" content="website" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <ThemeScript />
+        <ClientScript fn={initTheme} />
         {/* Both faces render above the fold, so fetch them alongside the CSS
             instead of after it has been parsed. */}
         <link
