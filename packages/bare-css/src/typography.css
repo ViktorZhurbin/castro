@@ -1,8 +1,8 @@
 /**
  * Bare typographic elements: prose flow, headings, lists, links, code.
  *
- * Headings wear the display face + tracking and bump one step at the md
- * breakpoint; h1 additionally recolors to primary via --h1-color.
+ * Headings wear the uppercase display face and bump one step at the md
+ * breakpoint.
  * Everything here is class-free — the point of the system is that raw markup
  * already reads as designed.
  */
@@ -43,15 +43,19 @@ ul li {
 
 /* Base link — kept ahead of the heading rules so specificity ascends: heading
    links (higher specificity) still override this to inherit their color. */
+/* Ink text with an accent underline: a colored link would be the only
+   colored text in running prose. Hover inverts to a solid ink block. */
 a {
-  --text-decoration: none;
-  color: var(--primary);
-  text-decoration: var(--text-decoration);
-  text-decoration-thickness: 3px;
+  color: var(--color);
+  text-decoration: underline;
+  text-decoration-color: var(--primary);
+  text-decoration-thickness: 2px;
   text-underline-offset: 3px;
 
   &:hover {
-    --text-decoration: underline;
+    background-color: var(--contrast-background);
+    color: var(--contrast-inverse);
+    text-decoration: none;
   }
 }
 
@@ -64,35 +68,38 @@ h6 {
   margin-top: 0;
   margin-bottom: var(--typography-spacing-vertical);
   color: var(--color);
-  --font-weight: 700;
+  --font-weight: 600;
   font-weight: var(--font-weight);
   font-size: var(--font-size);
-  line-height: var(--line-height);
+  line-height: 1.1;
   font-family: var(--font-display);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
 
-  & a,
-  & a > code {
-    color: inherit;
+  & a {
     text-decoration: none;
     text-decoration-thickness: 4px;
     text-underline-offset: 4px;
-    text-decoration-color: var(--primary);
 
     &:hover {
+      background-color: transparent;
+      color: inherit;
       text-decoration: underline;
+      text-decoration-color: var(--primary);
     }
   }
 
-  & a > code {
-    padding: var(--spacing-4xs) var(--spacing-2xs);
-    border: 1px solid var(--muted-border-color);
-    background-color: var(--code-background-color);
+  /* Identifiers keep their case — `comrade:visible` is not a headline — and
+     scale with the heading instead of taking the fixed prose code size. */
+  & code {
+    font-size: 0.8em;
+    text-transform: none;
+    letter-spacing: 0;
   }
 }
 
 h1 {
-  --color: var(--h1-color);
+  --font-weight: 700;
   --font-size: 3rem;
   --typography-spacing-top: 3rem;
 
@@ -101,27 +108,22 @@ h1 {
   }
 }
 h2 {
-  --color: var(--h2-color);
   --font-size: 1.875rem;
   --typography-spacing-top: 2.625rem;
 }
 h3 {
-  --color: var(--h3-color);
   --font-size: 1.5rem;
   --typography-spacing-top: 2.25rem;
 }
 h4 {
-  --color: var(--h4-color);
   --font-size: 1.25rem;
   --typography-spacing-top: 1.874rem;
 }
 h5 {
-  --color: var(--h5-color);
   --font-size: 1.125rem;
   --typography-spacing-top: 1.6875rem;
 }
 h6 {
-  --color: var(--h6-color);
   --font-size: 1rem;
 }
 
@@ -147,37 +149,36 @@ h6 {
 }
 
 ins {
-  color: var(--ins-color);
+  color: var(--color-success);
   text-decoration: none;
 }
 del {
-  color: var(--del-color);
+  color: var(--color-error);
 }
 
 ::selection {
-  background-color: var(--text-selection-color);
+  background-color: var(--primary);
+  color: var(--primary-inverse);
 }
 
-/* Sized here, not per-selector below, so inline code, code inside a heading
-   link, and <pre> all share one scale; pre > code resets to inherit so
-   nesting doesn't compound the reduction twice. */
+/* A fixed size rather than em, so code in 16px and 18px prose matches.
+   Headings override it above; pre > code resets to inherit so nesting
+   doesn't apply it twice. */
 code,
 pre {
-  font-size: 0.875em;
-}
-
-/* Inline code (not inside a link or a <pre>). */
-:not(pre):not(a) > code {
-  padding: var(--spacing-4xs) var(--spacing-2xs);
-  border: 1px solid var(--muted-border-color);
-  background-color: var(--code-background-color);
-  color: var(--code-color);
+  font-size: var(--text-sm);
   font-family: var(--font-family-monospace);
 }
 
+/* Inline code (not inside a <pre>). 1.5px sits between the hairline and
+   the 2px structural rule: a chip, not a box. */
+:not(pre) > code {
+  padding: 0.1em 0.4em;
+  border: 1.5px solid var(--color);
+}
+
 pre {
-  border: var(--border-2);
-  background-color: var(--code-background-color);
+  border: var(--border-3);
 
   > code {
     display: block;

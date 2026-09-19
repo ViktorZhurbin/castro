@@ -1,0 +1,11 @@
+/* Newspaper columns with a rule between them; one column on narrow screens. */
+.why-columns {
+  max-width: 78ch;
+  columns: 28ch 2;
+  column-gap: clamp(1.5rem, 3vw, 3rem);
+  column-rule: var(--border-1);
+
+  p {
+    break-inside: avoid;
+  }
+}

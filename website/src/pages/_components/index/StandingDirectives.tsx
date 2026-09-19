@@ -24,7 +24,7 @@ const directives = [
 export function StandingDirectives() {
   return (
     <Section title="The Standing Directives">
-      <p>
+      <p class="directives-intro">
         Every island has a directive, written or not. It decides when that island's JavaScript
         loads.
       </p>
@@ -36,8 +36,8 @@ export function StandingDirectives() {
               <code>{name}</code>
               {isDefault && <span class="directives-default">DEFAULT</span>}
             </dt>
-            <dd class="directives-slogan">"{slogan}"</dd>
-            <dd>{behaviour}</dd>
+            <dd class="directives-slogan">{slogan}</dd>
+            <dd class="directives-behaviour">{behaviour}</dd>
           </div>
         ))}
       </dl>

@@ -77,9 +77,8 @@
   display: none;
   position: fixed;
   inset: 0;
-  /* A scrim must stay dark in both themes — --contrast flips to white in dark
-     mode, so this reaches for the raw ink token with alpha instead, the same
-     pattern tokens.css itself uses for --text-selection-color. */
+  /* A scrim must stay dark in both themes — --contrast flips to chalk in dark
+     mode, so this reaches for the raw ink triple with alpha instead. */
   background-color: oklch(var(--ink-black-raw) / 60%);
   z-index: 55;
   cursor: default;

@@ -2,6 +2,9 @@
 
 html {
   --header-height: 3rem;
+  /* Side margin shared by the header, footer, and landing sections, so
+     every edge on the page lines up at every width. */
+  --gutter: clamp(1.25rem, 3vw, 2.75rem);
 
   height: 100%;
   scroll-padding-top: calc(var(--header-height) + 3rem);

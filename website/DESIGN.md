@@ -1,15 +1,17 @@
 # Website Design Reference
 
-The Castro website uses a Soviet Constructivist aesthetic: unbleached paper, propaganda red, industrial iron, heavy geometry. This document describes the design system so that UI changes stay consistent with that identity.
+The Castro website is set as a broadsheet: a national Soviet newspaper with some budget — one paper, one ink, one accent pigment, hierarchy made from type size and rule thickness. Cheap to print, so simple; not so cheap that it looks unfinished. This document describes the design system so that UI changes stay consistent with that identity.
+
+The design came from Claude Design (project "Castro", file `Castro A Broadsheet.dc.html`).
 
 ## CSS Architecture
 
 The visual system lives in the `@vktrz/bare-css` package (`packages/bare-css/src/`), pulled in via `import "@vktrz/bare-css/index.css"` in `PageShell`. The package is organized as:
 
-- **`tokens.css`** — the source of truth. Global settings (zero radius, no shadows/transitions, Bebas Neue display font + system sans body font), the raw-material variables (`--ink-*`, `--canvas-*`, `--color-*` — what colors physically are), the spacing/type/border scales, and the theme role variables (`--primary`, `--background-color`, etc.) mapped separately for light and dark.
+- **`tokens.css`** — the source of truth. Global settings (zero radius, no shadows/transitions, the three font families), the raw materials (`--ink-*`, `--canvas-*`, `--color-*`), the spacing/type/border scales, and the theme role variables (`--primary`, `--background-color`, etc.) mapped separately for light and dark.
 - **`reset.css`** — box model, root text defaults, focus outline, `hr`.
 - **`typography.css`** — bare headings/prose/lists/links/code, including the heading size scale and `md` breakpoint bump.
-- **`elements.css`** — pre-styled `button` (bare = the neutral bordered look; `.primary` fills it), `.btn-square` icon buttons, `.divider`, tables.
+- **`elements.css`** — pre-styled `button` (bare = the ink-bordered slab; `.primary` fills it), `.btn-square` icon buttons, `.divider`, tables.
 - **`layout.css`** — the responsive `.container`.
 
 The package styles bare tags directly (PicoCSS-style): a plain `<button>` already looks designed; classes only add intent (`.primary`, `.full`) or a distinct shape (`.btn-square`). Anchors that should look like buttons take `role="button"`.
@@ -18,108 +20,84 @@ Each component and page has its own co-located CSS file consuming these tokens. 
 
 ## Color System
 
-`@vktrz/bare-css` uses two naming layers. Work with the role variables in component CSS; reference the raw materials only when defining new theme rules.
+Three roles per theme, nothing else:
 
-### Raw Materials (defined in `:root`)
+| Variable             | Light     | Dark  | Use on                                      |
+| -------------------- | --------- | ----- | ------------------------------------------- |
+| `--background-color` | Newsprint | Soot  | Page surface                                |
+| `--color`            | Ink black | Chalk | All text, all rules                         |
+| `--primary`          | Crimson   | Gold  | Accent bar, star, section numbers, CTA fill |
 
-Inks (text and structural lines):
+`--primary-inverse` is the text color on a `--primary` fill (the paper color). `--contrast-background` / `--contrast-inverse` are the inverted block — ink ground, paper text — used for hover states, the active half of the Day/Night toggle, and the footer.
 
-- `--ink-black`, `--ink-white` — pure opposites
-- `--ink-chalk` — off-white for dark mode body text
-- `--ink-graphite` — heavy grey for light mode secondary text
-- `--ink-ash` — pale grey for dark mode secondary text
+**No muted text, no tinted surfaces.** Captions and secondary labels are full ink; a section never sits on a second background color. Hierarchy comes from size, weight, and rule thickness. Grey text reads as SaaS, not as print.
 
-Canvases (backgrounds):
+Accent on text is reserved for display-size figures (section numbers, the `1,350` tally, the Five-Year Plan readout) and the footer slogan. Body text is never colored; links are ink with an accent underline.
 
-- `--canvas-cream`, `--canvas-newsprint`, `--canvas-cardboard` — light mode surfaces, warm and slightly dirty
-- `--canvas-charcoal`, `--canvas-slate` — dark mode surfaces
+Gold on the chalk footer fails contrast, so the footer slogan switches to crimson in dark mode (`Footer.css`).
 
-Pigments:
-
-- `--color-crimson` — Soviet red, the primary pigment in light mode
-- `--color-gold` — propaganda gold, the primary pigment in dark mode
-- `--color-iron`, `--color-concrete` — industrial greys for secondary roles
-
-### Semantic Role Variables (per-theme)
-
-| Variable                  | Light     | Dark      | Use on                                  |
-| ------------------------- | --------- | --------- | --------------------------------------- |
-| `--primary`               | Crimson   | Gold      | Headlines, CTAs, accents                |
-| `--secondary`             | Iron grey | Blood red | Borders, backgrounds                    |
-| `--contrast`              | Black     | White     | Button text/hover, sidebar active state |
-| `--background-color`      | Cream     | Charcoal  | Page surface                            |
-| `--code-background-color` | Newsprint | Slate     | Secondary surface (cards, code blocks)  |
-| `--color`                 | Black     | Chalk     | Body text                               |
-| `--muted-color`           | Graphite  | Ash       | Secondary labels, captions              |
-| `--muted-border-color`    | Black     | Concrete  | Standard border color                   |
-
-`--color-accent` is outside the role system: mustard (light) / concrete grey (dark). Use it for icon highlights and structural accents — not text.
-
-### Color on Text
-
-`--primary` and `--color` are the only role variables that reliably pass WCAG AA contrast on the theme backgrounds. `--secondary` is a mid-tone in both themes and shouldn't appear as text. Color belongs on borders, backgrounds, and geometric elements — a thick crimson border-top on a card carries more visual weight than a crimson heading anyway.
+`--color-success` / `--color-error` exist only for the museum islands.
 
 ## Typography
 
-**Display** (`var(--font-display)`, Bebas Neue): headings, uppercase labels, the brand mark. Global `letter-spacing: 0.05em` is applied in `@vktrz/bare-css` to all heading elements. Don't remove it.
+Two web fonts, two files, self-hosted in `public/fonts/` (latin subset, declared and preloaded in `PageShell`). Body text uses the system sans, so it costs no download.
 
-**Body** (system sans-serif stack, `font-weight: 500`): set via `--font-family` and `--font-weight`. Default for all other text.
+- **Display** (`var(--font-display)`, Oswald, variable 500–700): headings, buttons, slogans, figures. Headings are uppercase globally with `letter-spacing: 0.01em`; `h1` is 700, other headings 600, buttons and sub-heads 500. Code inside a heading keeps its case.
+- **Body** (`var(--font-family)`, system sans): running text. The italic appears once — the hero's pull quote.
+- **Labels** (`var(--font-family-monospace)`, IBM Plex Mono 400): code, the header strip, footer baseline, badges, card captions. Labels set in mono are uppercase with `letter-spacing: 0.14em`. Nothing outside mono gets wide tracking — buttons stay at `0.04em`.
 
-**Font sizes**: Use `var(--text-xs)` through `var(--text-4xl)` for `font-size` declarations. Raw rem values belong in `@vktrz/bare-css` only, where the scale is defined.
+**15px floor.** `--text-sm` (0.9375rem) is the smallest step in the scale; nothing goes below it, including code.
 
-**Heading scale**: `h1` and `h2` override `--font-size` in `@vktrz/bare-css`, with a responsive bump at 768px. `h1` uses `--h1-color: var(--primary)` so top-level headings are automatically crimson/gold.
+**Font sizes**: Use `var(--text-sm)` through `var(--text-4xl)` in components. The landing page's fluid sizes are `clamp()` expressions in its component CSS, taken from the design.
 
 ## Border System
 
-The constructivist visual weight comes from border geometry, not shadows. Five weights are defined in `@vktrz/bare-css`:
+All rules are ink. Weight carries the hierarchy:
 
-| Variable             | Value                        | Typical use                                  |
-| -------------------- | ---------------------------- | -------------------------------------------- |
-| `--border-2`         | 2px solid muted border color | Cards, dividers, form elements               |
-| `--border-3`         | 3px solid muted border color | Table header rule                            |
-| `--border-4`         | 4px solid muted border color | Structural separators                        |
-| `--border-primary-4` | 4px solid primary            | Section dividers (footer top, page dividers) |
-| `--border-primary-8` | 8px solid primary            | Major emphasis (hero hr)                     |
+| Variable             | Value      | Typical use                                                      |
+| -------------------- | ---------- | ---------------------------------------------------------------- |
+| `--border-1`         | 1px ink    | Hairlines: between list rows, under a card caption, column rules |
+| `--border-2`         | 2px ink    | Small controls (theme toggle), `hr`                              |
+| `--border-3`         | 3px ink    | Cards, buttons, the header underline, section title rules        |
+| `--border-4`         | 4px ink    | Docs sidebar edge                                                |
+| `--border-8`         | 8px ink    | Top of every landing section                                     |
+| `--border-primary-4` | 4px accent | Decorative dividers (404)                                        |
 
-These apply to any border side: `border: var(--border-2)`, `border-top: var(--border-primary-4)`, `border-left: var(--border-primary-8)`.
-
-Cards typically combine `border: var(--border-2)` with a heavier directional border (`border-left-width: 6px` or `border-top-width: 8px`) for structural emphasis.
+Inline code takes a 1.5px ink border — a chip, heavier than a hairline and lighter than a structural rule.
 
 ## Layout Conventions
 
-**Zero border radius** — `--border-radius: 0rem` in `@vktrz/bare-css` applies globally. Don't add `border-radius` in component CSS.
+**Zero border radius, no shadows, no transitions.** Hover states change instantly.
 
-**No shadows** — `--box-shadow: none` (and card, button, dropdown equivalents) is set globally. Use border weight for depth, not shadows.
+**Gutter**: `--gutter` (`PageShell.css`) is the side margin for the header, footer, and every landing section, so all edges line up.
 
-**No transitions** — `--transition: 0s`. Hover states change instantly.
+**Breakpoints** (documented in `@vktrz/bare-css`): `sm` 576px / `md` 768px / `lg` 1024px / `xl` 1280px / `xxl` 1536px. Landing columns wrap by `flex-basis` instead of breakpoints; each text column caps its measure in `ch`.
 
-**Breakpoints** (documented in `@vktrz/bare-css`):
-`sm` 576px / `md` 768px / `lg` 1024px / `xl` 1280px / `xxl` 1536px.
-The site uses `768px` for the main layout switches (hero). `Section`'s `.section-body` caps the landing page's measure at 768px so every section shares one left edge.
-
-**Spacing**: Use `var(--spacing-*)` throughout. The scale runs from `--spacing-4xs` (0.1× base unit) to `--spacing-6xl` (6× base unit).
+**Spacing**: Use `var(--spacing-*)` for fixed gaps. The scale runs from `--spacing-4xs` (0.1× base unit) to `--spacing-6xl` (6× base unit).
 
 ## Buttons
 
-Buttons are pre-styled in `@vktrz/bare-css` (`elements.css`) — a bare `<button>` already carries the base look. Anchors that should read as buttons take `role="button"`.
+| Selector        | Fill        | Border  | Use               |
+| --------------- | ----------- | ------- | ----------------- |
+| `button` (bare) | Transparent | 3px ink | Neutral / default |
+| `.primary`      | Accent      | Accent  | Primary action    |
+| `.full`         | —           | —       | Stretch to 100%   |
+| `.btn-square`   | Transparent | —       | Icon-only shape   |
 
-| Selector        | Fill        | Text  | Use               |
-| --------------- | ----------- | ----- | ----------------- |
-| `button` (bare) | Transparent | Black | Neutral / default |
-| `.primary`      | Crimson     | White | Primary action    |
-| `.full`         | —           | —     | Stretch to 100%   |
-| `.btn-square`   | Transparent | —     | Icon-only shape   |
+Buttons are Oswald 500, uppercase, `--text-lg`. Hover swaps to the inverted ink block.
 
-All buttons use `border-bottom-width: 4px` for a structural slab weight. Hover swaps fill to the contrast block — no lift, no shadow, no transition.
+## Landing Page Structure
+
+- **Header** — mono strip: star (the only link home from the docs) and tagline left; Docs, GitHub, and the Day/Night toggle right. The tagline hides below 560px. The toggle is one button styled as two halves (`ThemeToggle.tsx` says why).
+- **Hero** — full-width `CASTRO` nameplate with the star, a 12px accent bar, then the headline beside the standfirst and CTAs.
+- **Sections** — `Section` (`website/src/pages/_components/index/Section.tsx`) owns the 8px top rule, the gutter, and the numbered title. Numbers come from a CSS counter. Add a section by rendering one; use `.section-columns` for a prose-beside-card body.
+- **Footer** — the inverted block: slogan in the accent, mono baseline under a paper rule.
 
 ## Adding New UI
 
-When building a new component or page section:
-
-- **Visual emphasis**: Reach for border weight and background color, not text color. `border-top: var(--border-primary-4)` on a section header reads stronger than making the heading crimson.
-- **Cards**: `border: var(--border-2)` + a heavy directional border side. Background: `var(--code-background-color)` (newsprint/slate) to lift from page surface.
-- **Labels and badges**: Use `var(--font-display)` + uppercase + `var(--text-xs)` or `var(--text-sm)`. See `.badge` in `website/src/components/islandExamples/PropagandaRadio.css`.
-- **Landing sections**: `Section` (`website/src/pages/_components/index/Section.tsx`) owns the measure, the vertical padding, and the title for every section on the landing page. Add a section by rendering one, not by writing another `section` + `.container` + title trio — the one-off widths it replaced made the text step in and out as the page scrolled. `raised` puts a section on `--code-background-color`; the page alternates it so neighbours separate without a rule.
-- **Dividers**: `border-top: var(--border-primary-4)` with a constrained `max-width` for decorative separators; `border-top: var(--border-4)` for structural ones.
-- **Asides**: A muted, smaller comment on the section above it, not a new list member — `border-left: var(--border-2)`, `color: var(--muted-color)`, `var(--text-sm)`. See `.directives-aside` in `MeansOfProduction.css`.
-- **Icons**: Match `color: currentColor` or `color: var(--primary)` depending on whether the icon is structural or decorative.
+- **Visual emphasis**: reach for rule weight, size, and the inverted block — not color on text.
+- **Cards**: `border: var(--border-3)`, a caption strip on top with a hairline or 3px rule under it. No background fill.
+- **Labels and badges**: mono, uppercase, `var(--text-sm)`, `letter-spacing: 0.14em`. A filled badge is accent ground + `--primary-inverse` text; see `.directives-default` in `StandingDirectives.css`.
+- **Lists of items**: rows separated by `--border-1`, closed by `--border-3` (see `.directives`).
+- **Figures**: Oswald 600 in `--primary`, with a mono label under a 3px rule (see `.small-tally`).
+- **Icons**: `color: currentColor` for structural icons, `var(--primary)` for the star.

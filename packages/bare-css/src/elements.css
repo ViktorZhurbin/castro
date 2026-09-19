@@ -14,18 +14,18 @@ button,
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-xs) var(--spacing-lg);
-  border: var(--border-2);
-  border-bottom-width: 4px;
+  padding: 0.8125rem 1.125rem;
+  border: var(--border-3);
   background-color: transparent;
   color: var(--contrast);
-  font-family: inherit;
-  font-size: var(--text-base);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  line-height: var(--line-height);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
   text-align: center;
   text-decoration: none;
+  text-transform: uppercase;
   cursor: pointer;
   user-select: none;
 
@@ -39,7 +39,7 @@ button,
 /* Primary — the filled, accent-colored call to action. */
 :is(button, [type="submit"], [type="button"], [role="button"]).primary {
   background-color: var(--primary);
-  border-color: var(--muted-border-color);
+  border-color: var(--primary);
   color: var(--primary-inverse);
 
   &:hover {
@@ -68,8 +68,7 @@ button,
   height: 2rem;
   padding: var(--spacing-3xs);
   margin: 0;
-  border: var(--border-2);
-  border-color: transparent;
+  border: 2px solid transparent;
   background-color: transparent;
   color: var(--contrast);
   cursor: pointer;
@@ -81,28 +80,19 @@ button,
   }
 }
 
-.btn-square-primary {
-  color: var(--primary);
-
-  &:hover {
-    background-color: var(--primary);
-    color: var(--primary-inverse);
-  }
-}
-
 .divider {
   border-top: var(--border-2);
 }
 
 table {
   width: 100%;
-  border: var(--border-4);
+  border: var(--border-3);
   border-collapse: collapse;
 
   & th,
   & td {
     padding: var(--spacing-xs) var(--spacing-sm);
-    border: var(--border-2);
+    border: var(--border-1);
     text-align: left;
   }
 

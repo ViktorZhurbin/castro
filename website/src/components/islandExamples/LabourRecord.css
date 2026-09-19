@@ -27,7 +27,6 @@
   font-size: var(--text-xl);
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--muted-color);
 }
 
 .labour-record-status-active {
@@ -37,7 +36,6 @@
 .labour-record-stamp {
   margin: var(--spacing-2xs) var(--spacing) 0;
   font-size: var(--text-sm);
-  color: var(--muted-color);
 }
 
 .labour-record button {

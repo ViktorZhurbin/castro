@@ -1,46 +1,62 @@
-/* Header layout and navigation styles */
+/* Masthead strip: star (home) and tagline left, links and edition toggle
+   right. All of it set in the mono label face — the header is the paper's
+   dateline, not a headline. */
 
 .navbar {
   min-height: var(--header-height);
   position: sticky;
   top: 0;
   z-index: 50;
-  border-bottom: var(--border-2);
+  border-bottom: var(--border-3);
   background-color: var(--background-color);
-  padding: 0 var(--spacing);
+  padding: 0 var(--gutter);
   display: flex;
   align-items: center;
-  gap: var(--spacing);
+  justify-content: space-between;
+  gap: var(--spacing-xl);
+  font-family: var(--font-family-monospace);
+  font-size: var(--text-sm);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+
+  a {
+    text-decoration: none;
+  }
 }
 
-/* Nav start section */
-.navbar-start {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  justify-content: flex-start;
-  gap: var(--spacing);
-}
-
-/* Nav links use the display face, matching every other heading-weight
-   element on the site — Bebas Neue's lowercase glyphs are drawn at cap
-   height, so "Docs" reads as "DOCS" without a text-transform. */
-.navbar-start > a:not(.btn-square) {
-  font-family: var(--font-display);
-  letter-spacing: 0.05em;
-  font-size: var(--text-xl);
-}
-
-/* Base `a` already renders --primary at rest; underline (the existing hover
-   treatment, driven by the same --text-decoration custom property) is what
-   actually differentiates the active page. */
-.navbar-start a[aria-current="page"] {
-  --text-decoration: underline;
-}
-
+.navbar-start,
 .navbar-end {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: var(--spacing-xs);
+  gap: clamp(var(--spacing), 2vw, var(--spacing-xl));
+}
+
+/* The star is the only way back to the landing page from the docs. */
+.navbar-home {
+  display: block;
+  width: 1.375rem;
+  height: 1.375rem;
+  color: var(--primary);
+
+  &:hover {
+    background-color: transparent;
+    color: var(--color);
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.navbar-tagline {
+  @media (max-width: 560px) {
+    display: none;
+  }
+}
+
+.navbar-end a[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-color: var(--primary);
 }

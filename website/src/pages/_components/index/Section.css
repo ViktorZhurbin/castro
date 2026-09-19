@@ -1,29 +1,43 @@
+main {
+  counter-reset: section;
+}
+
 .section {
-  padding-block: var(--spacing-4xl);
+  counter-increment: section;
+  border-top: var(--border-8);
+  padding: clamp(1.75rem, 3.4vw, 3.25rem) var(--gutter);
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+
+  p:last-child {
+    margin-bottom: 0;
+  }
 }
 
-.section:nth-of-type(even) {
-  background-color: var(--code-background-color);
-}
-
-/* Own width/margin/padding instead of composing bare-css's `.container` —
-   its breakpoint max-widths would need outranking anyway. The min() keeps a
-   --spacing gutter on each side, including exactly at 768px, where a bare
-   max-width would equal the viewport and collapse the centering margin. */
-.section-body {
-  width: 100%;
-  margin-inline: auto;
-  padding-inline: var(--spacing);
-  max-width: min(768px, 100% - 2 * var(--spacing));
+.section:last-of-type {
+  padding-bottom: clamp(2rem, 4vw, 3.75rem);
 }
 
 .section-title {
-  --font-size: var(--text-3xl);
-  color: var(--muted-color);
+  display: flex;
+  align-items: baseline;
+  gap: clamp(0.875rem, 1.8vw, 1.5rem);
+  margin: 0 0 clamp(1.25rem, 2.6vw, 2rem);
+  padding-bottom: 0.625rem;
+  border-bottom: var(--border-3);
+  --font-size: clamp(1.625rem, 3.4vw, 2.75rem);
+  line-height: 1;
+
+  &::before {
+    content: counter(section, decimal-leading-zero);
+    color: var(--primary);
+  }
 }
 
-/* Direct children only: nested paragraphs belong to their own component's CSS,
-   and this selector would otherwise outrank an island's own status colors. */
-.section-body > p {
-  color: var(--muted-color);
+/* Two-up body: prose beside a card, stacking once either would get too
+   narrow. Each child sets its own measure in `ch`. */
+.section-columns {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: clamp(1.5rem, 3vw, 2.75rem);
 }

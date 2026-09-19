@@ -1,6 +1,5 @@
 import { navSections } from "@/nav";
 
-import { GithubIcon } from "./icons/GithubIcon";
 import { StarIcon } from "./icons/StarIcon";
 import { ThemeToggle } from "./theme/ThemeToggle";
 
@@ -24,16 +23,15 @@ export function Header({ activePath }: HeaderProps) {
   return (
     <header class="navbar">
       <div class="navbar-start">
-        <a href="/" class="btn-square btn-square-primary" aria-label="Home">
+        <a href="/" class="navbar-home" aria-label="Home">
           <StarIcon />
         </a>
-        {navLinks}
+        <span class="navbar-tagline">The People's Framework</span>
       </div>
 
       <div class="navbar-end">
-        <a class="btn-square" href="https://github.com/ViktorZhurbin/castro">
-          <GithubIcon />
-        </a>
+        {navLinks}
+        <a href="https://github.com/ViktorZhurbin/castro">GitHub</a>
         <ThemeToggle />
       </div>
     </header>

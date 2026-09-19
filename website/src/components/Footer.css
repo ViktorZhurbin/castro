@@ -1,52 +1,47 @@
+/* The page's one inverted block: ink ground, paper text, accent slogan. */
+
 .footer {
-  background-color: var(--background-color);
-  padding-block: var(--spacing-3xl);
-  border-top: var(--border-primary-4);
+  background-color: var(--contrast-background);
+  color: var(--contrast-inverse);
+  padding: clamp(1.75rem, 3.4vw, 3.25rem) var(--gutter);
 }
 
-/* ─── Slogan ─── */
+.footer-slogan p {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 3.6vw, 2.875rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: var(--primary);
 
-.footer-slogan {
-  margin-bottom: var(--spacing-xl);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2xs);
-
-  p {
-    margin: 0;
-    font-size: var(--text-xl);
-    font-family: var(--font-display);
-    letter-spacing: 0.05em;
-    color: var(--primary);
-    text-transform: uppercase;
+  /* The block is chalk in dark mode, and gold on chalk is unreadable
+     (~1.4:1). Crimson is the accent that holds up on a light ground. */
+  [data-theme="dark"] & {
+    color: var(--color-crimson);
   }
 }
-
-/* ─── Baseline ─── */
 
 .footer-baseline {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
   gap: var(--spacing-sm);
-
-  @media (min-width: 600px) {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-}
-
-.footer-tagline {
-  font-size: var(--text-sm);
-  color: var(--muted-color);
-}
-
-.footer-meta {
+  margin-top: clamp(1.25rem, 2.6vw, 1.875rem);
+  padding-top: var(--spacing-sm);
+  border-top: 3px solid var(--contrast-inverse);
   font-family: var(--font-family-monospace);
   font-size: var(--text-sm);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 
   a {
     color: inherit;
-    text-decoration: underline;
+    text-decoration-color: currentColor;
+
+    &:hover {
+      background-color: var(--contrast-inverse);
+      color: var(--contrast-background);
+    }
   }
 }

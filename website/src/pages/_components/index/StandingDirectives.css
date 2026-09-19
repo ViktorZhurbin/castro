@@ -1,50 +1,66 @@
+.directives-intro {
+  max-width: 56ch;
+}
+
+/* One row per directive: name and slogan on the left, the plain behaviour on
+   the right, hairlines between rows and a heavy rule closing the list. */
 .directives {
-  margin: var(--spacing-2xl) 0 0;
-  display: grid;
-  /* Wide enough that the three name/prose pairs read as separate blocks and
-     not as one paragraph broken up by code chips. */
-  gap: var(--spacing-xl);
+  margin: clamp(1.25rem, 2.4vw, 1.75rem) 0 0;
+  border-bottom: var(--border-3);
 
   > div {
     display: grid;
-    gap: var(--spacing-xs);
-    justify-items: start;
+    gap: var(--spacing-sm) clamp(1rem, 2vw, 2.25rem);
+    padding: clamp(1.125rem, 2.2vw, 1.625rem) 0;
+    border-top: var(--border-1);
+
+    @media (min-width: 640px) {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
   dt {
     display: flex;
-    align-items: baseline;
-    gap: var(--spacing-xs);
-    font-size: var(--text-base);
-
-    code {
-      font-weight: 600;
-    }
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.625rem;
   }
 
   dd {
     margin: 0;
-    color: var(--muted-color);
-    line-height: 1.6;
   }
 }
 
 .directives-default {
-  font-family: var(--font-display);
-  letter-spacing: 0.05em;
-  color: var(--muted-color);
+  padding: var(--spacing-2xs) 0.5625rem;
+  background-color: var(--primary);
+  color: var(--primary-inverse);
+  font-family: var(--font-family-monospace);
+  font-size: var(--text-sm);
+  letter-spacing: 0.14em;
+  line-height: 1.2;
 }
 
 .directives-slogan {
-  font-style: italic;
-  color: var(--muted-color);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.25rem, 2vw, 1.625rem);
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+/* Second column, spanning both left-hand rows. */
+.directives-behaviour {
+  @media (min-width: 640px) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+  }
 }
 
 .directives-aside {
   display: block;
-  margin-top: var(--spacing-2xl);
-  padding-left: var(--spacing);
-  border-left: var(--border-2);
-  color: var(--muted-color);
-  font-size: var(--text-sm);
+  max-width: 62ch;
+  margin-top: clamp(1.125rem, 2.2vw, 1.5rem);
 }

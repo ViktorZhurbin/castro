@@ -8,19 +8,23 @@
  *   3. Semantic roles (--primary, --background-color, --contrast, …) mapped per
  *      theme in the light/dark blocks below.
  *
+ * The palette is a broadsheet's: one paper, one ink, one accent pigment per
+ * theme. There is no muted text and no tinted surface — hierarchy comes from
+ * type size, weight, and rule thickness, the tools a newspaper press has.
+ *
  * Tokens are unprefixed: material and scale names carry their group (--color-*,
- * --spacing-*, --text-*); role tokens are bare (--primary, --color, --muted-color).
+ * --spacing-*, --text-*); role tokens are bare (--primary, --color).
  */
 
 :root {
   /* ─── GLOBAL SYSTEM SETTINGS ─── */
   --font-family: -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Bebas Neue", sans-serif;
+  --font-display: "Oswald", sans-serif;
+  --font-family-monospace: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   --border-radius: 0rem;
-  --border-width: 2px;
 
-  --font-weight: 500;
+  --font-weight: 400;
   --transition: 0s;
 
   /* Fixed root font size — no responsive type scaling. */
@@ -32,15 +36,11 @@
   --outline-width: 3px;
 
   /* ─── STRUCTURAL DEFAULTS ─── */
-  /* Numeric values the reset/typography read. Previously inherited from the
-	   upstream framework; owned explicitly now that it's gone. */
   --spacing: 1rem;
-  --line-height: 1.5;
+  --line-height: 1.55;
   --typography-spacing-vertical: 1rem;
   --typography-spacing-top: 1.5rem;
   --text-underline-offset: 0.1rem;
-  --font-family-monospace:
-    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
   /* Spacing scale — multiples of the base spacing unit. */
   --spacing-4xs: calc(var(--spacing) * 0.1);
@@ -57,9 +57,9 @@
   --spacing-5xl: calc(var(--spacing) * 5);
   --spacing-6xl: calc(var(--spacing) * 6);
 
-  /* Type scale. */
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
+  /* Type scale. 15px is the floor: small print on a broadsheet is still
+     meant to be read, so nothing in the scale goes below it. */
+  --text-sm: 0.9375rem;
   --text-base: 1rem;
   --text-lg: 1.125rem;
   --text-xl: 1.25rem;
@@ -67,113 +67,65 @@
   --text-3xl: 2.25rem;
   --text-4xl: 3.5rem;
 
-  /* Border system — visual weight is carried by geometry. */
-  --border-2: var(--border-width) solid var(--muted-border-color);
-  --border-3: 3px solid var(--muted-border-color);
-  --border-4: 4px solid var(--muted-border-color);
+  /* Border system — visual weight is carried by rule thickness. All rules
+     are ink; the accent appears on rules only via the --border-primary-*. */
+  --border-1: 1px solid var(--color);
+  --border-2: 2px solid var(--color);
+  --border-3: 3px solid var(--color);
+  --border-4: 4px solid var(--color);
+  --border-8: 8px solid var(--color);
   --border-primary-4: 4px solid var(--primary);
-  --border-primary-8: 8px solid var(--primary);
-
-  /* Per-heading color roles (resolved values are theme-dependent). */
-  --h1-color: var(--primary);
-  --h2-color: var(--color);
-  --h3-color: var(--color);
-  --h4-color: var(--color);
-  --h5-color: var(--color);
-  --h6-color: var(--muted-color);
 
   /* ─── LAYER 1: "LITERAL" MATERIALS ─── */
 
-  /* Inks (text & structural lines) */
-  --ink-black-raw: 15% 0 0;
+  /* Inks (text & rules). The raw triple is exposed for alpha scrims. */
+  --ink-black-raw: 18.9% 0.009 75;
   --ink-black: oklch(var(--ink-black-raw));
-  --ink-white: oklch(98% 0 0);
-  --ink-chalk: oklch(91% 0.016 74); /* Off-white for dark mode text */
-  --ink-graphite: oklch(35% 0 0); /* Heavy grey for light mode muted text */
-  --ink-ash: oklch(70% 0.01 74); /* Pale grey for dark mode muted text */
+  --ink-chalk: oklch(92.4% 0.019 83); /* Dark-mode ink */
 
-  /* Light canvas (backgrounds) */
-  --canvas-cream: oklch(93% 0.012 80);
-  --canvas-newsprint: oklch(89% 0.015 77);
-  --canvas-cardboard: oklch(86% 0.017 79);
+  /* Papers (backgrounds) */
+  --canvas-newsprint: oklch(94.7% 0.014 85);
+  --canvas-soot: oklch(18.5% 0.008 67);
 
-  /* Dark canvas (backgrounds) */
-  --canvas-charcoal: oklch(22% 0.006 56);
-  --canvas-slate: oklch(26% 0.006 56);
+  /* Pigments */
+  --color-crimson: oklch(53% 0.207 22);
+  --color-gold: oklch(79.5% 0.145 84);
 
-  /* Pigments (reds & golds) */
-  --color-crimson-raw: 53% 0.2 20;
-  --color-crimson: oklch(var(--color-crimson-raw));
-  --color-blood: oklch(55% 0.22 25); /* Deep dark-mode secondary red */
-  --color-brick: oklch(65% 0.2 28); /* Dark-mode error/deleted */
-
-  --color-gold-raw: 80% 0.17 80;
-  --color-gold: oklch(var(--color-gold-raw));
-  --color-mustard: oklch(75% 0.18 80); /* Dirtier gold for light-mode accents */
-
-  /* Metals & minerals (greys & greens) */
-  --color-iron: oklch(25% 0.02 250);
-  --color-concrete: oklch(45% 0.01 250);
-  --color-pine: oklch(48% 0.12 150); /* Deep green for light-mode success */
-  --color-sage: oklch(70% 0.15 150); /* Pale green for dark-mode success */
-
-  /* Text selection derives from the primary pigment. */
-  --text-selection-color: oklch(var(--color-crimson-raw) / 25%);
+  /* Status greens & reds — only the museum islands use these. */
+  --color-pine: oklch(48% 0.12 150);
+  --color-sage: oklch(70% 0.15 150);
+  --color-brick: oklch(65% 0.2 28);
 }
 
 /* ─── LAYER 2: LIGHT THEME ─── */
 [data-theme="light"],
 :root:not([data-theme="dark"]) {
-  --background-color: var(--canvas-cream);
+  --background-color: var(--canvas-newsprint);
   --color: var(--ink-black);
-  --muted-color: var(--ink-graphite);
-  --muted-border-color: var(--ink-black);
 
   --primary: var(--color-crimson);
-  --primary-inverse: var(--ink-white);
-
-  --secondary: var(--color-iron);
-  --secondary-inverse: var(--ink-white);
+  --primary-inverse: var(--canvas-newsprint);
 
   --contrast: var(--ink-black);
   --contrast-background: var(--ink-black);
-  --contrast-inverse: var(--ink-white);
+  --contrast-inverse: var(--canvas-newsprint);
 
-  --color-accent: var(--color-mustard);
   --color-success: var(--color-pine);
   --color-error: var(--color-crimson);
-
-  --ins-color: var(--color-success);
-  --del-color: var(--color-error);
-
-  --code-color: var(--ink-black);
-  --code-background-color: var(--canvas-cardboard);
 }
 
 /* ─── LAYER 3: DARK THEME ─── */
 [data-theme="dark"] {
-  --background-color: var(--canvas-charcoal);
+  --background-color: var(--canvas-soot);
   --color: var(--ink-chalk);
-  --muted-color: var(--ink-ash);
-  --muted-border-color: var(--color-concrete);
 
   --primary: var(--color-gold);
-  --primary-inverse: var(--ink-black);
+  --primary-inverse: var(--canvas-soot);
 
-  --secondary: var(--color-blood);
-  --secondary-inverse: var(--ink-white);
+  --contrast: var(--ink-chalk);
+  --contrast-background: var(--ink-chalk);
+  --contrast-inverse: var(--canvas-soot);
 
-  --contrast: var(--ink-white);
-  --contrast-background: var(--ink-white);
-  --contrast-inverse: var(--ink-black);
-
-  --color-accent: var(--color-concrete);
   --color-success: var(--color-sage);
   --color-error: var(--color-brick);
-
-  --ins-color: var(--color-success);
-  --del-color: var(--color-error);
-
-  --code-color: var(--ink-chalk);
-  --code-background-color: var(--canvas-slate);
 }
