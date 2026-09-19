@@ -3,7 +3,7 @@
  *
  * Builds the test site, then checks the HTML output using Bun's test runner.
  * Tests cover the output-dir wipe, static pages, all three directives, component
- * composition, CSS modules, markdown, and the vendored Preact import map. The last block
+ * composition, CSS modules, CSS imported from a package, markdown, and the vendored Preact import map. The last block
  * crosses into dist/castro-island.js to pin the marker attributes the build
  * and the browser runtime have to agree on.
  *
@@ -321,6 +321,15 @@ describe("island import resolution (extensionless + tsconfig alias)", () => {
     expect(html).toContain('directive="comrade:visible"');
     expect(html).toContain('import="/');
     expect(html).toContain("Count:");
+  });
+});
+
+describe("CSS from a package", () => {
+  test("a bare-specifier stylesheet import is bundled into the page's CSS", async () => {
+    const html = await readHtml("package-css.html");
+    expect(html).toContain('href="/package-css.css"');
+    const css = await Bun.file(join(distDir, "package-css.css")).text();
+    expect(css).toContain(".from-package");
   });
 });
 

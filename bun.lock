@@ -34,10 +34,6 @@
         "preact": "^10.29.8",
       },
     },
-    "packages/bare-css": {
-      "name": "@vktrz/bare-css",
-      "version": "0.1.0",
-    },
     "packages/create-castro": {
       "name": "create-castro",
       "version": "0.2.0",
@@ -202,6 +198,7 @@
       "version": "1.0.0",
       "dependencies": {
         "@preact/signals": "^2.8.1",
+        "@test-site/css-package": "workspace:*",
         "@vktrz/castro": "workspace:*",
         "preact": "^10.29.8",
       },
@@ -214,11 +211,14 @@
         "preact": "^10.29.8",
       },
     },
+    "tests/site/css-package": {
+      "name": "@test-site/css-package",
+      "version": "1.0.0",
+    },
     "website": {
       "name": "website",
       "version": "1.0.0",
       "dependencies": {
-        "@vktrz/bare-css": "workspace:*",
         "@vktrz/castro": "workspace:*",
         "preact": "^10.29.8",
       },
@@ -533,6 +533,8 @@
 
     "@test-errors/yaml-broken": ["@test-errors/yaml-broken@workspace:tests/errors/yaml-broken"],
 
+    "@test-site/css-package": ["@test-site/css-package@workspace:tests/site/css-package"],
+
     "@test-site/default": ["@test-site/default@workspace:tests/site"],
 
     "@test-site/srcdir": ["@test-site/srcdir@workspace:tests/site-srcdir"],
@@ -546,8 +548,6 @@
     "@types/whatwg-mimetype": ["@types/whatwg-mimetype@3.0.2", "", {}, "sha512-c2AKvDT8ToxLIOUlN51gTiHXflsfIFisS4pO7pDPoKouJCESkhZnEy623gwP9laCy5lnLDAw1vAzu2vM2YLOrA=="],
 
     "@types/ws": ["@types/ws@8.18.1", "", { "dependencies": { "@types/node": "*" } }, "sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg=="],
-
-    "@vktrz/bare-css": ["@vktrz/bare-css@workspace:packages/bare-css"],
 
     "@vktrz/castro": ["@vktrz/castro@workspace:core"],
 

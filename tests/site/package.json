@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@preact/signals": "^2.8.1",
+    "@test-site/css-package": "workspace:*",
     "@vktrz/castro": "workspace:*",
     "preact": "^10.29.8"
   }

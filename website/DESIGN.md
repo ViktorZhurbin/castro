@@ -17,7 +17,7 @@ The site and the design file are kept in step by hand; nothing syncs them. When 
 
 ## CSS Architecture
 
-The visual system lives in the `@vktrz/bare-css` package (`packages/bare-css/src/`), pulled in via `import "@vktrz/bare-css/index.css"` in `PageShell`. The package is organized as:
+The visual system lives in `src/styles/`, pulled in via `import "../styles/index.css"` in `PageShell`. It is organized as:
 
 - **`tokens.css`** — the source of truth. Global settings (zero radius, no shadows/transitions, the three font families), the raw materials (`--ink-*`, `--canvas-*`, `--color-*`), the spacing/type/border scales, and the theme role variables (`--primary`, `--background-color`, etc.) mapped separately for light and dark.
 - **`reset.css`** — box model, root text defaults, focus outline, `hr`.
@@ -25,7 +25,7 @@ The visual system lives in the `@vktrz/bare-css` package (`packages/bare-css/src
 - **`elements.css`** — pre-styled `button` (bare = the ink-bordered slab; `.primary` fills it), `.btn-square` icon buttons, `.divider`, tables.
 - **`layout.css`** — the responsive `.container`.
 
-The package styles bare tags directly (PicoCSS-style): a plain `<button>` already looks designed; classes only add intent (`.primary`, `.full`) or a distinct shape (`.btn-square`). Anchors that should look like buttons take `role="button"`.
+It styles bare tags directly (PicoCSS-style): a plain `<button>` already looks designed; classes only add intent (`.primary`, `.full`) or a distinct shape (`.btn-square`). Anchors that should look like buttons take `role="button"`.
 
 Each component and page has its own co-located CSS file consuming these tokens. Component classes always win.
 
@@ -84,7 +84,7 @@ Inline code takes a 1.5px ink border — a chip, heavier than a hairline and lig
 
 **Gutter**: `--gutter` (`PageShell.css`) is the side margin for the header, footer, and every landing section, so all edges line up.
 
-**Breakpoints** (documented in `@vktrz/bare-css`): `sm` 576px / `md` 768px / `lg` 1024px / `xl` 1280px / `xxl` 1536px. Landing columns wrap by `flex-basis` instead of breakpoints; each text column caps its measure in `ch`.
+**Breakpoints** (documented in `src/styles/layout.css`): `sm` 576px / `md` 768px / `lg` 1024px / `xl` 1280px / `xxl` 1536px. Landing columns wrap by `flex-basis` instead of breakpoints; each text column caps its measure in `ch`.
 
 **Spacing**: Use `var(--spacing-*)` for fixed gaps. The scale runs from `--spacing-4xs` (0.1× base unit) to `--spacing-6xl` (6× base unit).
 
@@ -106,7 +106,7 @@ Buttons are Oswald 500, uppercase, `--text-lg`. Hover swaps to the inverted ink 
 - **Sections** — `Section` (`website/src/pages/_components/index/Section.tsx`) owns the 8px top rule, the gutter, and the numbered title. Numbers come from a CSS counter. Add a section by rendering one; use `.section-columns` for a prose-beside-card body.
 - **Footer** — the inverted block: slogan in the accent, mono baseline under a paper rule. Docs pages render the same footer, full-width.
 
-Docs pages and `404` have no design file of their own: they take the `bare-css` element styles plus the shared header and footer. Keep them on those defaults; no landing-page treatments. The docs layout (`layouts/docs.css`) adds two things: the page `h1` in the accent, and the `--code-background` fill on `pre` and inline code.
+Docs pages and `404` have no design file of their own: they take the `src/styles/` element styles plus the shared header and footer. Keep them on those defaults; no landing-page treatments. The docs layout (`layouts/docs.css`) adds two things: the page `h1` in the accent, and the `--code-background` fill on `pre` and inline code.
 
 ## Adding New UI
 

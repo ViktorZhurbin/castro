@@ -80,7 +80,7 @@ export const castroExternalsPlugin = {
 
 /**
  * Lets pages import CSS straight from an npm package, e.g.
- * `import "@vktrz/bare-css/style.css"`.
+ * `import "some-package/style.css"` (fixture: `tests/site/pages/package-css.tsx`).
  *
  * compileJSX marks every package.json dependency external (see
  * getProjectDependencies) so JS deps resolve to their installed singletons.

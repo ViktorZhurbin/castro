@@ -1,5 +1,5 @@
 /* Boxed and filled so it reads as a control, not a third nav link. Undoes
-   the base button look from bare-css: no slab padding, no display face. */
+   the base button look from styles/elements.css: no slab padding, no display face. */
 .theme-toggle {
   display: flex;
   padding: 0;

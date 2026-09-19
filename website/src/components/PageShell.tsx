@@ -1,4 +1,4 @@
-import "@vktrz/bare-css/index.css";
+import "../styles/index.css";
 import type { ComponentChildren } from "preact";
 
 import { Header } from "./Header";
@@ -9,7 +9,7 @@ import "./PageShell.css";
 /**
  * Self-hosted latin subsets, downloaded from Google Fonts. Oswald is a
  * variable font: one file covers every weight the site uses (500–700).
- * Body text uses the system sans (`--font-family` in bare-css), so it
+ * Body text uses the system sans (`--font-family` in `styles/tokens.css`), so it
  * needs no file.
  */
 const FONT_FACES = `

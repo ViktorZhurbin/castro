@@ -9,7 +9,6 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@vktrz/bare-css": "workspace:*",
     "@vktrz/castro": "workspace:*",
     "preact": "^10.29.8"
   }

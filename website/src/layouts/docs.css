@@ -28,7 +28,7 @@
     flex: 1; /* Pushes the footer down if the content is short */
 
     /* The page title is the docs' one display-size figure. Scoped here, not
-       in bare-css, so the landing's headings stay ink. */
+       in styles/, so the landing's headings stay ink. */
     h1 {
       color: var(--primary);
     }
