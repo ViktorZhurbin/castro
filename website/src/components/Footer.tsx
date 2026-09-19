@@ -12,8 +12,7 @@ export function Footer() {
         <span>
           <a href="https://github.com/ViktorZhurbin/castro" target="_blank" rel="noopener">
             GitHub
-          </a>{" "}
-          · MIT · © 2026-present
+          </a>
         </span>
       </div>
     </footer>
