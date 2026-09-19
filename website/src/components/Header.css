@@ -13,9 +13,10 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-xl);
+  letter-spacing: normal;
 
   a {
-    text-decoration: none;
+    text-decoration-color: inherit;
   }
 }
 
