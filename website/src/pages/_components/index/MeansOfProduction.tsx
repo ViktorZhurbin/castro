@@ -16,10 +16,10 @@ export function MeansOfProduction() {
         <figure class="production-code">
           <figcaption class="label">pages/index.tsx</figcaption>
           <pre>
-            <code>
-              {"import Counter from "}
-              <span class="production-string">"../components/Counter.island"</span>
-              {`;
+            {/* One expression child, so <code> holds a single text node —
+                syntaxHighlight() skips any block that doesn't. */}
+            <code class="language-tsx">
+              {`import Counter from "../components/Counter.island";
 
 export default function Home() {
   return <Counter initial={5} />;

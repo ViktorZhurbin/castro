@@ -28,7 +28,3 @@
     line-height: 1.7;
   }
 }
-
-.production-string {
-  color: var(--primary);
-}

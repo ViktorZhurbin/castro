@@ -1,6 +1,7 @@
 import type { LayoutProps } from "@vktrz/castro";
 
 import { Footer } from "@/components/Footer";
+import { SyntaxHighlightScript } from "@/components/highlight/SyntaxHighlightScript";
 import { PageShell } from "@/components/PageShell";
 
 import "./default.css";
@@ -15,6 +16,8 @@ export default function DefaultLayout(props: LayoutProps) {
 
         <Footer />
       </main>
+
+      <SyntaxHighlightScript />
     </PageShell>
   );
 }
