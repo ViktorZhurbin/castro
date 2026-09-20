@@ -1,6 +1,7 @@
 import type { LayoutProps } from "@vktrz/castro";
 
 import { Footer } from "@/components/Footer";
+import { SyntaxHighlightScript } from "@/components/highlight/SyntaxHighlightScript";
 import { MenuIcon } from "@/components/icons/MenuIcon";
 import { PageShell } from "@/components/PageShell";
 import { navSections } from "@/nav";
@@ -59,6 +60,8 @@ export default function DocsLayout({
           <Footer />
         </div>
       </div>
+
+      <SyntaxHighlightScript />
     </PageShell>
   );
 }

@@ -1,0 +1,89 @@
+/**
+ * "Pravda Press" — the syntax theme for docs code blocks.
+ *
+ * Two layers, the shape tokens.css uses: --syntax-* role vars, then
+ * ::highlight() rules that read only those vars. Retheming is the role block;
+ * the rules below never change.
+ *
+ * The literal values live here rather than in tokens.css on purpose. Code is
+ * the one surface on this site that needs more hues than the broadsheet
+ * palette has, and a syntax hue is not a material anything else may reach for
+ * — a page or component wanting one of these colours is a bug, and keeping
+ * them out of the token file is what says so. --primary and --color are
+ * referenced, not redefined, so a palette change still reaches code.
+ *
+ * A var() inside ::highlight() resolves against the highlighted element, not
+ * the root, so the role vars are declared on :root and reach <code> by
+ * inheritance. Moving them onto a sibling would silently leave code uncoloured.
+ *
+ * ::highlight() accepts only color, background-color, text-decoration and
+ * text-shadow. font-weight and font-style are dropped silently, so hierarchy
+ * here is hue alone — which is also why comments are not italic, the way print
+ * would set them.
+ *
+ * Every value clears 4.5:1 on --code-background (oklch 88.5%). For an
+ * approximate check, Y ≈ L³: at L 47% the comment grey lands near 4.8:1, and
+ * anything lighter starts failing.
+ */
+
+:root {
+  --syntax-accent: var(--primary);
+  --syntax-markup: oklch(46% 0.09 255);
+  /* Darker and more saturated than the markup blue: an imported name
+     reads as a proper noun among the local ones, without a third hue. */
+  --syntax-import: oklch(33% 0.12 262);
+  /* The one muted value on the site. Comments are the only text a reader
+     skips on purpose, and ::highlight() has no italic to say that with. */
+  --syntax-comment: oklch(47% 0.02 85);
+}
+
+/* The red plate: the words that act, plus the literal values they act on. */
+::highlight(command),
+::highlight(keyword),
+::highlight(number),
+::highlight(constant) {
+  color: var(--syntax-accent);
+}
+
+/* The blue plate: the names of things — JSX elements, strings, the functions
+   being called, what a shell command is given, and a frontmatter key.
+   Separating these from keywords is the whole reason for a second plate; with
+   one colour, `return` and `<Counter>` read as the same kind of word. */
+::highlight(tag),
+::highlight(string),
+::highlight(type),
+::highlight(function),
+::highlight(argument),
+::highlight(key) {
+  color: var(--syntax-markup);
+}
+
+/* The names an import clause binds, in the clause itself. A later use of one
+   is painted by position like any other name — `<Counter>` as a tag,
+   `useState(...)` as a call. */
+::highlight(imported) {
+  color: var(--syntax-import);
+}
+
+/* A markdown heading, hashes included. Bold is the one thing a heading needs
+   and ::highlight() drops font-weight, so the weight is drawn: two shadows of
+   the text's own colour, offset half a pixel each way, thicken the stems. The
+   offset is in em so it tracks the code size. currentColor is avoided here —
+   in a highlight pseudo it resolves against the originating element, not this
+   rule's colour. */
+::highlight(heading) {
+  color: var(--syntax-import);
+  text-shadow:
+    0.025em 0 0 var(--syntax-import),
+    -0.025em 0 0 var(--syntax-import);
+}
+
+::highlight(comment) {
+  color: var(--syntax-comment);
+}
+
+/* attribute and variable carry no rule: they inherit --color. `attribute`
+   exists only to take `class` and `for` away from `keyword`. Punctuation and
+   operators are not tokenized at all — they were two thirds of the ranges on
+   a docs page and painted nothing. Bracket pairs would need nesting depth,
+   which this tokenizer has no notion of. */
