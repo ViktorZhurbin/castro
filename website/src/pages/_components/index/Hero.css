@@ -7,10 +7,14 @@
 }
 
 /* The nameplate is the page's one-off geometry: sized to the viewport
-   directly, not to a token. */
+   directly, not to a token. Text zoom multiplies the vw size, so the word
+   spans about 58% of the width at zoom 1 and leaves room to grow to ~150%
+   before the gutters run out. nowrap keeps a too-wide word on one line
+   instead of dropping the "O". */
 .hero-masthead {
   margin: 0;
-  font-size: clamp(4rem, 25vw, 18.75rem);
+  font-size: clamp(3.5rem, 20vw, 18.75rem);
+  white-space: nowrap;
   line-height: 0.78;
   letter-spacing: -0.02em;
 }
