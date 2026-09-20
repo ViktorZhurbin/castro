@@ -32,7 +32,7 @@ const typescript: Grammar = [
     String.raw`(?<=\bimport\b[^;\n]*?)\b(?!(?:type|as|default|from)\b)[A-Za-z_$][\w$]*\b(?=[^;\n]*?\bfrom\b)`,
   ],
   // JSX element names, from the `<` or `</` that precedes them.
-  ["tag", String.raw`(?<=<\/?)[A-Za-z][\w.-]*`],
+  ["tag", String.raw`(?<=<\/?)(?!typeof\b)[A-Za-z][\w.-]*`],
   // An attribute name: a word assigned a string or a brace expression. Before
   // `keyword`, because `class` and `for` are attribute names in JSX and
   // keywords everywhere else. A plain `const x = "s"` matches this too, which
@@ -50,7 +50,20 @@ const typescript: Grammar = [
   // would also paint JSX text content, which is prose, not code — `>Count:`
   // is excluded by exactly that. `imported` comes first, so a name in an
   // import clause stays a clause name.
-  ["type", String.raw`(?<=[:,({]\s*|\bas\s+|\bextends\s+|\bimplements\s+|\bnew\s+)[A-Z][\w$]*`],
+  [
+    "type",
+    String.raw`(?<=[:,({]\s*|\bas\s+|\bsatisfies\s+|\bextends\s+|\bimplements\s+|\bnew\s+)[A-Z][\w$]*`,
+  ],
+  // The primitive type names, which `type` misses because it requires a
+  // capital. Its own scope rather than a second `type` entry: syntaxHighlight
+  // wraps each source in a named group, and two groups named `type` is a
+  // SyntaxError. Both scopes get the same colour. `void` and `undefined` are
+  // absent — `keyword` and `constant` claim them first, which is where they
+  // read best. Unlike `type`, this rule carries no positional guard, so the
+  // word `object` in JSX text content would paint — accepted, because a
+  // lookbehind covering every position a primitive appears in is longer than
+  // the rule it guards.
+  ["builtin", String.raw`\b(?:string|number|boolean|bigint|symbol|object|unknown|never|any)\b`],
   // Identifier in call position. After `keyword`, so `if (` stays a keyword,
   // and `(` only — a `<` lookahead would paint the left side of `a < b`.
   ["function", String.raw`\b[A-Za-z_$][\w$]*(?=\s*\()`],

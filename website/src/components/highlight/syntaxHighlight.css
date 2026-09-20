@@ -52,6 +52,7 @@
 ::highlight(tag),
 ::highlight(string),
 ::highlight(type),
+::highlight(builtin),
 ::highlight(function),
 ::highlight(argument),
 ::highlight(key) {
