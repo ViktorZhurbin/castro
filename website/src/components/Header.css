@@ -24,20 +24,14 @@
 .navbar-end {
   display: flex;
   align-items: center;
-  gap: var(--spacing-fluid-xs);
+  gap: var(--spacing-fluid-2xs);
 }
 
-/* The star is the only way back to the landing page from the docs. */
+/* The star is the only way back to the landing page from the docs. It reuses
+   .btn-square so it matches the sidebar toggle in size and hover; only the
+   resting color differs. */
 .navbar-home {
-  display: block;
-  width: 1.5rem;
-  height: 1.5rem;
   color: var(--primary);
-
-  &:hover {
-    background-color: transparent;
-    color: var(--color);
-  }
 
   svg {
     display: block;
@@ -52,8 +46,17 @@
   }
 }
 
-.navbar-end a[aria-current="page"] {
-  text-decoration: underline;
-  text-decoration-color: var(--primary);
-  text-decoration-thickness: 3px;
+/* Position already says "link", so the default underline is dropped: it made
+   Docs and GitHub read as the same kind of thing. An underline now means one
+   thing here — the current section. Hover keeps the global ink-block inversion. */
+.navbar-end a {
+  padding: 0.25rem 0.5rem;
+  text-decoration: none;
+
+  &[aria-current="page"] {
+    text-decoration: underline;
+    text-decoration-color: var(--primary);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 6px;
+  }
 }

@@ -35,9 +35,16 @@
   padding-top: var(--spacing-sm);
   border-top: 3px solid var(--contrast-inverse);
 
+  span {
+    letter-spacing: normal;
+  }
+
+  /* Same padding and no underline as `.navbar-end a`, so the GitHub link's
+     text lands on the same right edge as the header links. */
   a {
+    padding: 0.25rem 0.5rem;
     color: inherit;
-    text-decoration-color: currentColor;
+    /* text-decoration: none; */
 
     &:hover {
       background-color: var(--contrast-inverse);

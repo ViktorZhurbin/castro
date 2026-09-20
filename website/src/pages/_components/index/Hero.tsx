@@ -1,15 +1,10 @@
 import "./Hero.css";
-import { StarIcon } from "@/components/icons/StarIcon";
-
 import { CTAButtons } from "./CTAButtons";
 
 export function Hero() {
   return (
     <section class="hero">
-      <div class="hero-masthead">
-        <h1>CASTRO</h1>
-        <StarIcon class="hero-star" />
-      </div>
+      <h1 class="hero-masthead">CASTRO</h1>
 
       <div class="hero-bar" />
 

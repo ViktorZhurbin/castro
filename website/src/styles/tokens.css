@@ -50,6 +50,7 @@
   /* Fluid spacing — grows with the viewport between a phone and a wide
      desktop. The landing page, header, and footer use these; the docs stay
      on the fixed scale above. */
+  --spacing-fluid-2xs: clamp(0.5rem, 1vw, 0.875rem);
   --spacing-fluid-xs: clamp(0.875rem, 1.8vw, 1.5rem);
   --spacing-fluid-sm: clamp(1rem, 2vw, 2rem);
   --spacing-fluid-md: clamp(1.125rem, 2.2vw, 1.625rem);

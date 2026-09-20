@@ -22,7 +22,7 @@ export function Header({ activePath }: HeaderProps) {
   return (
     <header class="navbar label">
       <div class="navbar-start">
-        <a href="/" class="navbar-home" aria-label="Home">
+        <a href="/" class="navbar-home btn-square" aria-label="Home">
           <StarIcon />
         </a>
         <span class="navbar-tagline">The People's Framework</span>
